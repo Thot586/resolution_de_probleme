@@ -4,7 +4,7 @@
         personal: {
           steps: ["Mon contexte", "Un but précis", "Plusieurs pistes", "Comparer les options", "Un premier pas", "Après l’essai"],
           titles: ["Mon contexte", "Quel est mon problème ?", "Quelles pistes puis-je essayer ?", "Quelle option me convient ?", "Quel sera mon premier pas ?", "Après l’essai, où en suis-je ?"],
-          leads: ["", "Une phrase suffit. Je peux laisser des cases vides.", "Je note des idées, même imparfaites. Une seule suffit pour commencer.", "Je choisis une piste faisable et sûre pour moi.", "Je prévois une petite action, un moment et un signe de progrès.", "Je fais le point après l’action et j’ajuste si besoin."],
+          leads: ["", "Une situation, un but, un obstacle. Quelques phrases suffisent.", "Je note des idées, même imparfaites. Une seule suffit pour commencer.", "Je choisis une piste faisable et sûre pour moi.", "Je prévois une petite action, un moment et un signe de progrès.", "Je fais le point après l’action et j’ajuste si besoin."],
           fields: ["Ce qui se passe", "Racontez un fait précis, sans nom ni adresse.", "Le petit changement que je souhaite", "Qu’aimeriez-vous voir changer concrètement ?", "Ce qui me bloque", "Quel est le principal obstacle ?"],
           idea: "Faire autrement, demander de l’aide ou chercher une information : tout peut être une piste.",
           compare: "Laquelle respecte mes besoins, demande une énergie acceptable et peut être essayée sans me mettre en danger ?",

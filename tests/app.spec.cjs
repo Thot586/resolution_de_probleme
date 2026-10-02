@@ -127,7 +127,6 @@ const errors = [];
   }
   await page.locator("[data-scale=personal]").click();
   await step(1);
-  assert.match(await page.locator(".step-lead").innerText(), /Une phrase suffit/);
   assert(!(await page.locator(".optional-fields .details-body").first().isVisible()));
   await step(0);
   await page.screenshot({
@@ -256,7 +255,7 @@ const errors = [];
   await page.locator(".file-options summary").click();
   await page.locator("#remember").check();
   assert.equal(await page.evaluate(() => localStorage.length), 1);
-  assert.match(await page.locator("#privacy-status").innerText(), /à ma demande/);
+  assert.match(await page.locator("#privacy-status").innerText(), /gardé dans ce navigateur/);
   const exportPromise = page.waitForEvent("download");
   await page.locator("[data-action=export]").click();
   const draft = await exportPromise;

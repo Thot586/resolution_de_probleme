@@ -1865,23 +1865,20 @@
           <div>
             <div id="step-container" class="step-card card"></div>
             <p class="privacy-line">
-              <span id="privacy-status"
-                >Ce que j’écris reste dans cette page. Rien n’est envoyé.</span
-              >
+              <span id="privacy-status">Rien n’est envoyé.</span>
             </p>
             <details class="file-options">
-              <summary>Options de brouillon (facultatif)</summary>
+              <summary>Gérer mon brouillon</summary>
               <div class="details-body">
                 <label class="checkbox"
                   ><input type="checkbox" id="remember" />Garder mon brouillon
                   dans ce navigateur</label
                 >
                 <p class="hint">
-                  À activer seulement sur un appareil sûr. Le brouillon n’est
-                  pas chiffré ; d’autres utilisateurs de ce navigateur peuvent
-                  le lire. Sans cette option, fermer ou recharger la page efface
-                  les réponses. Si je ne coche pas cette option, mon texte
-                  disparaît quand je ferme ou recharge la page.
+                  Sans sauvegarde, mes réponses disparaissent si je ferme ou
+                  recharge la page. Avec la sauvegarde, elles restent dans ce
+                  navigateur, sans chiffrement : d’autres personnes utilisant
+                  cet appareil peuvent les lire.
                 </p>
                 <div class="button-row section-gap">
                   <button class="btn small" data-action="export">
@@ -3691,7 +3688,7 @@
         personal: {
           steps: ["Mon contexte", "Un but précis", "Plusieurs pistes", "Comparer les options", "Un premier pas", "Après l’essai"],
           titles: ["Mon contexte", "Quel est mon problème ?", "Quelles pistes puis-je essayer ?", "Quelle option me convient ?", "Quel sera mon premier pas ?", "Après l’essai, où en suis-je ?"],
-          leads: ["", "Une phrase suffit. Je peux laisser des cases vides.", "Je note des idées, même imparfaites. Une seule suffit pour commencer.", "Je choisis une piste faisable et sûre pour moi.", "Je prévois une petite action, un moment et un signe de progrès.", "Je fais le point après l’action et j’ajuste si besoin."],
+          leads: ["", "Une situation, un but, un obstacle. Quelques phrases suffisent.", "Je note des idées, même imparfaites. Une seule suffit pour commencer.", "Je choisis une piste faisable et sûre pour moi.", "Je prévois une petite action, un moment et un signe de progrès.", "Je fais le point après l’action et j’ajuste si besoin."],
           fields: ["Ce qui se passe", "Racontez un fait précis, sans nom ni adresse.", "Le petit changement que je souhaite", "Qu’aimeriez-vous voir changer concrètement ?", "Ce qui me bloque", "Quel est le principal obstacle ?"],
           idea: "Faire autrement, demander de l’aide ou chercher une information : tout peut être une piste.",
           compare: "Laquelle respecte mes besoins, demande une énergie acceptable et peut être essayée sans me mettre en danger ?",
@@ -3907,8 +3904,8 @@
       }
       function updatePrivacy() {
         $("#privacy-status").textContent = remember
-          ? "Brouillon gardé dans ce navigateur à ma demande. Rien n’est envoyé."
-          : "Ce que j’écris reste dans cette page. Rien n’est envoyé.";
+          ? "Brouillon gardé dans ce navigateur. Rien n’est envoyé."
+          : "Rien n’est envoyé.";
         $("#remember").checked = remember;
       }
       function toast(t) {
@@ -4015,7 +4012,7 @@
               "textarea",
               workflow.examples?.[2] || c.obstacle,
             ) +
-            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Si nécessaire : ce que je ressens et ce que je peux changer</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
+            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
         }
         if (i === 2) {
           body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1)) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
