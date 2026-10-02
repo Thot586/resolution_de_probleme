@@ -8,6 +8,7 @@ const pages = [
   "accueil",
   "outil",
   "soutenir",
+  "groupe",
   "proche",
   "violences",
   "comprendre",
@@ -17,11 +18,12 @@ const pages = [
 ];
 
 let html = await read("index.template.html");
-const [baseCss, pathsCss, dataJs, workflowJs, appJs, pageParts] = await Promise.all([
+const [baseCss, pathsCss, dataJs, workflowJs, groupJs, appJs, pageParts] = await Promise.all([
   read("styles/base.css"),
   read("styles/paths.css"),
   read("scripts/data.js"),
   read("scripts/workflows.js"),
+  read("scripts/group.js"),
   read("scripts/app.js"),
   Promise.all(pages.map((name) => read(`pages/${name}.html`))),
 ]);
@@ -36,7 +38,7 @@ html = html.replace(
 );
 html = html.replace(
   "<!-- SCRIPT -->",
-  () => `<script>\n      "use strict";\n${dataJs}\n${workflowJs}\n${appJs}    </script>`,
+  () => `<script>\n      "use strict";\n${dataJs}\n${workflowJs}\n${groupJs}\n${appJs}    </script>`,
 );
 if (html.includes("<!-- STYLES -->") || html.includes("<!-- PAGES -->") || html.includes("<!-- SCRIPT -->")) {
   throw new Error("Un emplacement du modèle n'a pas été rempli.");

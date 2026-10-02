@@ -1685,7 +1685,10 @@
       .scale-card span:not(.scale-arrow) { color: var(--muted); font-size: .88rem; line-height: 1.4; }
       .scale-arrow { position: absolute; right: 16px; top: 18px; color: var(--brand); font-weight: 750; }
       .scale-entry > .hint { margin-top: 10px; }
-      .support-entry { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 26px; padding: 20px 24px; border: 1px solid #bdd7c5; border-radius: 18px; background: #edf6ee; color: var(--ink); text-decoration: none; }
+      .help-others { margin-top: 30px; }
+      .help-others h2 { font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
+      .help-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+      .support-entry { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 112px; padding: 20px 24px; border: 1px solid #bdd7c5; border-radius: 18px; background: #edf6ee; color: var(--ink); text-decoration: none; }
       .support-entry:hover { border-color: var(--brand); }
       .support-entry > span:first-child { display: grid; gap: 2px; }
       .support-entry strong { font-size: 1.12rem; }
@@ -1702,6 +1705,29 @@
       .scale-option[aria-pressed="true"] { border: 2px solid var(--brand); padding: 12px 15px; background: var(--mint); }
       .scale-option strong { font-size: .93rem; }
       .scale-option span { color: var(--muted); font-size: .8rem; line-height: 1.4; }
+      .selected-level { display: grid; gap: 4px; padding: 18px 20px; border: 1px solid #bdd7c5; border-radius: 14px; background: #edf6ee; }
+      .selected-level .tag { justify-self: start; }
+      .selected-level strong { font-size: 1.18rem; }
+      .selected-level > span:last-child { color: var(--muted); }
+      .change-level { margin-top: 10px; }
+      .change-level .scale-options { margin-top: 4px; }
+      .group-principle { margin-bottom: 22px; }
+      .group-overview { margin-bottom: 22px; }
+      .group-overview .teaching-figure { margin-bottom: 0; }
+      .group-layout { display: grid; grid-template-columns: minmax(180px, 250px) minmax(0, 1fr); align-items: start; gap: 20px; }
+      .group-rail { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: #f6f9f4; }
+      .group-rail select { width: 100%; }
+      .group-rail .hint { margin: 16px 0; }
+      .group-step-card { min-width: 0; padding: clamp(20px, 3vw, 32px); }
+      .group-step-card h2 { margin: 20px 0 10px; font-size: clamp(1.5rem, 2.5vw, 2rem); }
+      .group-guidance ul { display: grid; gap: 10px; margin: 24px 0; padding-left: 22px; }
+      .group-guidance li { padding-left: 4px; }
+      .group-method-box { padding: 18px; margin: 16px 0; border-radius: 14px; background: #eff6ef; }
+      .group-method-box .hint { margin-top: 12px; }
+      .group-plan { margin-top: 22px; }
+      .group-plan-list { display: grid; gap: 16px; padding-left: 22px; }
+      .group-plan-list p { white-space: pre-wrap; overflow-wrap: anywhere; }
+      #group-progress { flex: 1; max-width: 210px; }
       .teaching-figure { max-width: 420px; margin: 22px auto; padding: 14px; border-radius: 20px; background: #eaf3eb; }
       .teaching-figure svg { display: block; width: 100%; height: auto; }
       .teaching-figure figcaption { margin: 12px 5px 2px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
@@ -1724,10 +1750,12 @@
 
       @media (max-width: 850px) {
         .scale-grid, .support-stage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .group-layout { grid-template-columns: 1fr; }
       }
       @media (max-width: 600px) {
-        .scale-grid, .scale-options { grid-template-columns: 1fr; }
+        .scale-grid, .scale-options, .help-grid { grid-template-columns: 1fr; }
         .scale-card { min-height: 0; padding: 16px 36px 16px 18px; }
+        .support-entry { min-height: 0; }
         .support-stage-grid { grid-template-columns: 1fr; }
       }
     </style>
@@ -1765,7 +1793,7 @@
           <a href="#accueil" data-page="accueil">Accueil</a
           ><a href="#outil" data-page="outil">Mon problème</a
           ><a href="#soutenir" data-page="soutenir">Soutenir quelqu’un</a
-          ><a href="#proche" data-page="proche">Comment aider un proche ?</a>
+          ><a href="#groupe" data-page="groupe">Aider un groupe</a>
         </nav>
         <a
           class="help-button"
@@ -1784,6 +1812,7 @@
           #outil,
           #recap,
           #proche,
+          #groupe,
           #violences {
             display: none !important;
           }
@@ -1806,22 +1835,22 @@
         <section class="scale-entry" aria-labelledby="scale-entry-title">
           <h2 id="scale-entry-title">Je choisis le niveau de mon problème</h2>
           <div class="scale-grid">
-            <a class="scale-card" href="#outil" data-start-scale="personal">
+            <a class="scale-card" href="#outil-personal" data-start-scale="personal">
               <strong>Personnel</strong>
               <span>Je peux agir moi-même.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
-            <a class="scale-card" href="#outil" data-start-scale="shared">
+            <a class="scale-card" href="#outil-shared" data-start-scale="shared">
               <strong>Entre personnes</strong>
               <span>Il faut en parler avec quelqu’un.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
-            <a class="scale-card" href="#outil" data-start-scale="organization">
+            <a class="scale-card" href="#outil-organization" data-start-scale="organization">
               <strong>Équipe ou institution</strong>
               <span>Des règles ou des moyens comptent.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
-            <a class="scale-card" href="#outil" data-start-scale="public">
+            <a class="scale-card" href="#outil-public" data-start-scale="public">
               <strong>Collectif ou politique</strong>
               <span>Une décision publique est en jeu.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
@@ -1829,10 +1858,19 @@
           </div>
           <p class="hint">Je pourrai changer de niveau dans l’exercice.</p>
         </section>
-        <a class="support-entry" href="#soutenir">
-          <span><strong>Je veux soutenir quelqu’un</strong><small>Écouter, comprendre son besoin, proposer une aide.</small></span>
-          <span aria-hidden="true">↗</span>
-        </a>
+        <section class="help-others" aria-labelledby="help-others-title">
+          <h2 id="help-others-title">Je veux aider d’autres personnes</h2>
+          <div class="help-grid">
+            <a class="support-entry" href="#soutenir">
+              <span><strong>Une personne</strong><small>Écouter son besoin et proposer une aide avec son accord.</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="support-entry" href="#groupe">
+              <span><strong>Un groupe</strong><small>Comprendre ensemble, choisir une action et suivre ses effets.</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
         <div class="quick-paths">
           <span>Autres situations</span>
           <a href="#proche">Comment aider un proche ? ↗</a>
@@ -1999,6 +2037,97 @@
           </details>
           <div class="notice amber section-gap"><strong>Quand l’exercice ne suffit pas.</strong>En cas de menace, de violence, de harcèlement, de risque pour une personne ou de difficulté relevant d’une décision clinique, cherchez un appui compétent et sûr. <a href="#securite">Voir les aides et repères de sécurité</a>.</div>
           <p class="source-note">Cette méthode assemble des repères de premiers secours psychologiques, d’écoute et d’autonomie dans l’apprentissage. Elle n’a pas été évaluée comme intervention propre à ce site. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a></p>
+        </div>
+      </section>
+      <section id="groupe" class="view" aria-labelledby="group-title" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">Parcours collectif · Faciliter sans décider à la place du groupe</div>
+            <h1 id="group-title">Aider un groupe à résoudre un problème</h1>
+            <p>Je prépare une démarche avec les personnes concernées. Je peux commencer à l’étape utile et revenir en arrière.</p>
+          </div>
+          <div class="notice group-principle">
+            <strong>Avant d’enquêter :</strong> le groupe doit pouvoir influencer une décision réelle. Je clarifie qui décide, ce qui peut changer et comment les résultats lui seront rendus.
+          </div>
+          <details class="group-overview">
+            <summary>Voir la démarche en un dessin</summary>
+            <div class="details-body">
+              <figure class="teaching-figure">
+                <svg viewBox="0 0 360 335" role="img" aria-labelledby="group-map-title group-map-desc" xmlns="http://www.w3.org/2000/svg">
+                  <title id="group-map-title">Comprendre, décider, essayer et revoir avec le groupe</title>
+                  <desc id="group-map-desc">Trois blocs se suivent. Comprendre regroupe cadrage, écoute et analyse. Décider regroupe restitution et choix. Essayer et revoir regroupe le test, le suivi et un retour possible à l'écoute.</desc>
+                  <!-- Chaque bloc porte ses propres étapes ; les flèches montrent que la démarche peut être reprise. -->
+                  <g fill="#fff" stroke="#b9d3c4" stroke-width="2">
+                    <rect x="12" y="10" width="336" height="82" rx="15"/>
+                    <rect x="12" y="123" width="336" height="82" rx="15"/>
+                    <rect x="12" y="236" width="336" height="82" rx="15"/>
+                  </g>
+                  <g font-family="Arial, sans-serif" fill="#214d3f" text-anchor="middle">
+                    <text x="180" y="40" font-size="18" font-weight="700">1. Comprendre</text>
+                    <text x="180" y="66" font-size="14">Cadrer · écouter · analyser</text>
+                    <text x="180" y="153" font-size="18" font-weight="700">2. Décider ensemble</text>
+                    <text x="180" y="179" font-size="14">Restituer · choisir</text>
+                    <text x="180" y="266" font-size="18" font-weight="700">3. Essayer et revoir</text>
+                    <text x="180" y="292" font-size="14">Tester · suivre · ajuster</text>
+                  </g>
+                  <g stroke="#367b62" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M180 95v22m-6-7 6 7 6-7"/>
+                    <path d="M180 208v22m-6-7 6 7 6-7"/>
+                  </g>
+                </svg>
+                <figcaption>Le groupe peut revenir à l’écoute si les constats ou l’essai montrent qu’il manque une information.</figcaption>
+              </figure>
+            </div>
+          </details>
+          <div class="group-layout">
+            <aside class="group-rail" aria-label="Choisir une étape du parcours collectif">
+              <label class="label" for="group-stage-select">Aller à une étape</label>
+              <select id="group-stage-select"></select>
+              <p class="hint">Un sondage n’est qu’une option. Pour un petit groupe, une discussion peut suffire.</p>
+              <a class="text-button" href="#soutenir">Pour aider une seule personne ↗</a>
+            </aside>
+            <article class="card group-step-card" aria-labelledby="group-step-title">
+              <div class="step-topline"><span class="tag" id="group-progress-label"></span><div class="progress" id="group-progress" role="progressbar" aria-label="Position dans le parcours collectif" aria-valuemin="1" aria-valuemax="7"></div></div>
+              <h2 id="group-step-title" tabindex="-1"></h2>
+              <p class="step-lead" id="group-step-intro"></p>
+              <div id="group-guidance" class="group-guidance"></div>
+              <div id="group-method-box" class="group-method-box" hidden>
+                <label class="label" for="group-method">Comment écouter le groupe ?</label>
+                <select id="group-method">
+                  <option value="conversation">Discussion de groupe</option>
+                  <option value="interviews">Entretiens individuels</option>
+                  <option value="survey">Sondage court</option>
+                  <option value="existing">Données déjà disponibles</option>
+                </select>
+                <p class="hint" id="group-method-hint"></p>
+              </div>
+              <div class="field section-gap">
+                <label class="label" for="group-note" id="group-note-label">Ma note pour cette étape</label>
+                <textarea id="group-note" maxlength="1200" placeholder="Une décision ou une question à clarifier…"></textarea>
+                <p class="hint">Je note le plan, pas les réponses individuelles ni les noms des participants.</p>
+              </div>
+              <p class="source-note" id="group-step-source"></p>
+              <div class="footer-actions">
+                <button class="btn" id="group-back" type="button">← Étape précédente</button>
+                <button class="btn primary" id="group-next" type="button">Étape suivante →</button>
+              </div>
+            </article>
+          </div>
+          <details class="group-plan" id="group-plan">
+            <summary>Voir mon plan de travail</summary>
+            <div class="details-body">
+              <div id="group-plan-content" aria-live="polite"></div>
+              <div class="button-row section-gap">
+                <button class="btn small" id="group-download" type="button">Télécharger mon plan</button>
+                <button class="btn small danger" id="group-clear" type="button">Effacer mes notes</button>
+              </div>
+              <p class="hint">Les notes restent dans cette page tant qu’elle est ouverte. Le fichier téléchargé contient ce que j’ai écrit.</p>
+            </div>
+          </details>
+          <div class="notice amber section-gap">
+            <strong>Si le groupe subit des violences ou des représailles :</strong> je ne lance pas une confrontation collective. Je cherche une aide adaptée et sûre. <a href="#securite">Voir les repères de sécurité</a>.
+          </div>
+          <p class="source-note">Ce parcours assemble des cadres d’évaluation et d’amélioration, et des guides de participation. Il n’a pas été évalué comme intervention propre à ce site. <a href="#ref-22">[22]</a> <a href="#ref-23">[23]</a> <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a></p>
         </div>
       </section>
       <section id="proche" class="view" hidden>
@@ -3164,6 +3293,9 @@
             <li class="reference" id="ref-22" data-ref="22"><div><span class="ref-label">Cadre pratique · Amélioration en équipe</span><p>Institute for Healthcare Improvement. <em>Model for Improvement.</em> <a href="https://www.ihi.org/library/model-for-improvement" target="_blank" rel="noopener noreferrer">Cadre IHI ↗</a></p><small>Objectif, mesure, changement et cycles de test. Cadre de pratique, pas une preuve d’efficacité pour cet outil.</small></div></li>
             <li class="reference" id="ref-23" data-ref="23"><div><span class="ref-label">Cadre institutionnel · Évaluation collective</span><p>Centers for Disease Control and Prevention. (2024). <em>CDC Program Evaluation Framework.</em> <a href="https://www.cdc.gov/mmwr/volumes/73/rr/rr7306a1.htm" target="_blank" rel="noopener noreferrer">Cadre CDC ↗</a></p><small>Contexte, participation, preuve, équité et usage des résultats ; transposition prudente hors santé publique.</small></div></li>
             <li class="reference" id="ref-24" data-ref="24"><div><span class="ref-label">Guide institutionnel · Politique publique</span><p>World Health Organization Regional Office for Europe. (2022). <em>Systems thinking for noncommunicable disease prevention policy.</em> <a href="https://www.who.int/europe/publications/i/item/WHO-EURO-2022-4195-43954-61946" target="_blank" rel="noopener noreferrer">Guide OMS ↗</a></p><small>Repères de définition du problème, d’acteurs, de mise en œuvre et d’évaluation ; exemples de santé publique, sans validité universelle.</small></div></li>
+            <li class="reference" id="ref-25" data-ref="25"><div><span class="ref-label">Guide institutionnel · Participation</span><p>Organisation for Economic Co-operation and Development. (2022). <em>OECD Guidelines for Citizen Participation Processes.</em> <a href="https://www.oecd.org/en/publications/oecd-guidelines-for-citizen-participation-processes_f765caf6-en.html" target="_blank" rel="noopener noreferrer">Guide OCDE ↗</a></p><small>Précise l’influence réelle sur la décision, l’inclusion et le retour aux personnes participantes. À adapter à la taille et au pouvoir du groupe.</small></div></li>
+            <li class="reference" id="ref-26" data-ref="26"><div><span class="ref-label">Guides pratiques · Enquête et données</span><p>Government Digital Service. <em>Getting users’ consent for research</em> ; <em>Managing user research data and participant privacy.</em> <a href="https://www.gov.uk/service-manual/user-research/getting-users-consent-for-research" target="_blank" rel="noopener noreferrer">Consentement ↗</a> ; <a href="https://www.gov.uk/service-manual/user-research/managing-user-research-data-participant-privacy" target="_blank" rel="noopener noreferrer">Données et confidentialité ↗</a>.</p><small>Repères pratiques pour limiter les données collectées et expliquer leur usage. Les règles applicables dépendent du contexte local.</small></div></li>
+            <li class="reference" id="ref-27" data-ref="27"><div><span class="ref-label">Guide pratique · Restitution</span><p>Government Digital Service. <em>Sharing user research findings.</em> <a href="https://www.gov.uk/service-manual/user-research/sharing-user-research-findings" target="_blank" rel="noopener noreferrer">Guide de restitution ↗</a>.</p><small>Conseils pour présenter des constats utiles aux personnes concernées et aux décideurs, avec leurs limites.</small></div></li>
           </ol>
         </div>
       </section>
@@ -3829,6 +3961,210 @@
         },
       };
 
+      // A facilitator's planning notes stay in memory. The tool never collects survey responses.
+      const groupStages = [
+        {
+          short: "Cadrer",
+          title: "Qui participe et qui décide ?",
+          intro: "Je vérifie avec le groupe ce qui peut vraiment changer avant de demander des témoignages.",
+          points: [
+            "Qui est touché, et qui risque de ne pas être entendu ?",
+            "Quelle décision le groupe peut-il prendre ? Qui doit autoriser ou financer la suite ?",
+            "Comment chacun peut-il participer librement, sans risque inutile ?",
+          ],
+          note: "Le périmètre, les personnes à associer et la décision possible",
+          refs: [23, 25],
+        },
+        {
+          short: "Écouter",
+          title: "Comment comprendre les besoins ?",
+          intro: "Je regarde ce qui est déjà connu. Puis je choisis avec le groupe la méthode la plus légère qui répond à une question utile.",
+          points: [
+            "Quelle question devra éclairer la décision ?",
+            "Qui invite-t-on, et qui peut manquer parmi les réponses ?",
+            "Avant de recueillir des données, j’explique leur usage et je demande l’accord des participants.",
+          ],
+          note: "La question à éclairer, la méthode choisie et les personnes à écouter",
+          refs: [23, 26],
+        },
+        {
+          short: "Analyser",
+          title: "Que montrent les informations ?",
+          intro: "Je sépare les faits, les récits, les hypothèses et ce que les données ne permettent pas de conclure.",
+          points: [
+            "Pour un sondage, combien de personnes ont été invitées et combien ont répondu ?",
+            "Les absents et les réponses différentes changent-ils l’interprétation ?",
+            "Une différence observée ne prouve pas à elle seule qu’une action en est la cause.",
+          ],
+          note: "Les constats solides, les désaccords et les limites des données",
+          refs: [23, 26],
+        },
+        {
+          short: "Restituer",
+          title: "Les personnes se reconnaissent-elles dans le résultat ?",
+          intro: "Je rends les constats au groupe avant de fixer une solution. Je laisse une place aux corrections et aux désaccords.",
+          points: [
+            "Je présente quelques constats clairs, avec leurs limites, sans dévoiler de réponse identifiable.",
+            "Je demande : « Qu’avons-nous mal compris ? Qu’est-ce qui manque ? »",
+            "J’explique ce qui sera décidé ensuite, par qui, et quand le groupe aura un retour.",
+          ],
+          note: "La restitution prévue, les corrections et les questions encore ouvertes",
+          refs: [23, 25, 27],
+        },
+        {
+          short: "Choisir",
+          title: "Quel changement voulons-nous essayer ?",
+          intro: "Le groupe choisit une priorité. Je relie un objectif observable aux pistes proposées et aux contraintes réelles.",
+          points: [
+            "Quel changement serait utile pour qui, et à quelle échéance ?",
+            "Quelles pistes viennent des personnes concernées, et quelles autres options existent ?",
+            "Quels moyens, autorisations, effets indésirables et désaccords faut-il examiner ?",
+          ],
+          note: "Une priorité, un signe de progrès et les pistes à comparer",
+          refs: [22, 23, 25],
+        },
+        {
+          short: "Tester",
+          title: "Quel petit essai pouvons-nous faire ?",
+          intro: "Je prépare avec les personnes concernées un essai limité, autorisé et réversible avant une mise en œuvre plus large.",
+          points: [
+            "Qui fait quoi, quand et avec quels moyens ? Qui donne son accord ?",
+            "Qu’espérons-nous observer, et quels effets gênants surveiller ?",
+            "Si l’essai ne convient pas, comment l’arrêter ou le modifier ?",
+          ],
+          note: "L’essai, les responsabilités, les mesures et les conditions d’arrêt",
+          refs: [22],
+        },
+        {
+          short: "Suivre",
+          title: "Qu’avons-nous appris ?",
+          intro: "Je compare ce qui était attendu à ce qui s’est passé, puis le groupe décide de continuer, modifier ou arrêter.",
+          points: [
+            "Qu’a-t-on observé avant et après l’essai ? Pour quelles personnes ?",
+            "Qu’est-ce qui a aidé, manqué ou causé un effet inattendu ?",
+            "Quand et comment rendre la décision finale aux participants ?",
+          ],
+          note: "Le bilan, la décision prise et la date du prochain retour au groupe",
+          refs: [22, 23, 25],
+        },
+      ];
+      const groupMethods = {
+        conversation: "Une discussion suffit parfois pour un petit groupe. Je donne aussi la parole aux personnes discrètes ; les absents restent à prendre en compte.",
+        interviews: "Je rencontre des personnes aux situations différentes. Je note les thèmes sans attribuer les propos à une personne identifiable.",
+        survey: "Je teste quelques questions neutres et compréhensibles. Je note combien ont été invités et combien ont répondu ; je ne généralise pas au-delà du groupe consulté.",
+        existing: "Je vérifie la date, la définition et les lacunes des données déjà disponibles. Je les confronte à ce que vivent les personnes concernées.",
+      };
+      let groupIndex = 0;
+      let groupMethod = "conversation";
+      const groupNotes = Array(groupStages.length).fill("");
+
+      function renderGroupPlan() {
+        const box = document.querySelector("#group-plan-content");
+        box.replaceChildren();
+        const written = groupNotes.map((note, i) => [note.trim(), i]).filter(([note]) => note);
+        if (!written.length) {
+          const empty = document.createElement("p");
+          empty.textContent = "Je n’ai pas encore noté de décision. Je peux utiliser le parcours sans écrire.";
+          box.append(empty);
+        } else {
+          const list = document.createElement("ol");
+          list.className = "group-plan-list";
+          for (const [note, i] of written) {
+            const item = document.createElement("li");
+            const heading = document.createElement("strong");
+            const body = document.createElement("p");
+            heading.textContent = groupStages[i].short + " · " + groupStages[i].title;
+            body.textContent = note;
+            item.append(heading, body);
+            list.append(item);
+          }
+          box.append(list);
+        }
+        document.querySelector("#group-clear").disabled = !written.length;
+      }
+
+      function renderGroup(focus = false) {
+        const stage = groupStages[groupIndex];
+        document.querySelector("#group-stage-select").value = String(groupIndex);
+        document.querySelector("#group-progress-label").textContent = `${groupIndex + 1} / ${groupStages.length} · ${stage.short}`;
+        const progress = document.querySelector("#group-progress");
+        progress.setAttribute("aria-valuenow", String(groupIndex + 1));
+        progress.innerHTML = `<span style="width:${((groupIndex + 1) / groupStages.length) * 100}%"></span>`;
+        const title = document.querySelector("#group-step-title");
+        title.textContent = stage.title;
+        document.querySelector("#group-step-intro").textContent = stage.intro;
+        const guidance = document.querySelector("#group-guidance");
+        const list = document.createElement("ul");
+        for (const point of stage.points) {
+          const item = document.createElement("li");
+          item.textContent = point;
+          list.append(item);
+        }
+        guidance.replaceChildren(list);
+        document.querySelector("#group-method-box").hidden = groupIndex !== 1;
+        document.querySelector("#group-method").value = groupMethod;
+        document.querySelector("#group-method-hint").textContent = groupMethods[groupMethod];
+        document.querySelector("#group-note-label").textContent = stage.note + " (facultatif)";
+        document.querySelector("#group-note").value = groupNotes[groupIndex];
+        const source = document.querySelector("#group-step-source");
+        source.replaceChildren(document.createTextNode("Repères : "));
+        for (const number of stage.refs) {
+          const link = document.createElement("a");
+          link.href = `#ref-${number}`;
+          link.textContent = `[${number}]`;
+          source.append(link, document.createTextNode(" "));
+        }
+        document.querySelector("#group-back").hidden = groupIndex === 0;
+        document.querySelector("#group-next").textContent = groupIndex === groupStages.length - 1 ? "Voir mon plan →" : "Étape suivante →";
+        renderGroupPlan();
+        if (focus) {
+          title.focus({ preventScroll: true });
+          title.scrollIntoView({ block: "start", behavior: "instant" });
+        }
+      }
+
+      function initGroup() {
+        const selector = document.querySelector("#group-stage-select");
+        for (const [i, stage] of groupStages.entries()) {
+          const option = document.createElement("option");
+          option.value = String(i);
+          option.textContent = `${i + 1}. ${stage.short}`;
+          selector.append(option);
+        }
+        selector.addEventListener("change", () => { groupIndex = Number(selector.value); renderGroup(true); });
+        document.querySelector("#group-method").addEventListener("change", (event) => {
+          groupMethod = event.target.value;
+          document.querySelector("#group-method-hint").textContent = groupMethods[groupMethod];
+        });
+        document.querySelector("#group-note").addEventListener("input", (event) => {
+          groupNotes[groupIndex] = event.target.value;
+          renderGroupPlan();
+        });
+        document.querySelector("#group-back").addEventListener("click", () => { groupIndex -= 1; renderGroup(true); });
+        document.querySelector("#group-next").addEventListener("click", () => {
+          if (groupIndex < groupStages.length - 1) { groupIndex += 1; renderGroup(true); }
+          else {
+            const plan = document.querySelector("#group-plan");
+            plan.open = true;
+            plan.querySelector("summary").focus();
+            plan.scrollIntoView({ block: "start", behavior: "instant" });
+          }
+        });
+        document.querySelector("#group-download").addEventListener("click", () => {
+          const lines = ["PLAN DE TRAVAIL · AIDER UN GROUPE", "Méthode d’écoute envisagée : " + document.querySelector(`#group-method option[value="${groupMethod}"]`).textContent, ""];
+          groupStages.forEach((stage, i) => lines.push(`${i + 1}. ${stage.title}\n${groupNotes[i].trim() || "À préciser avec le groupe."}\n`));
+          download("plan-groupe-pas-a-pas.txt", lines.join("\n"), "text/plain;charset=utf-8");
+        });
+        document.querySelector("#group-clear").addEventListener("click", () => {
+          confirmAction("Effacer mes notes ?", "Les notes de ce parcours seront effacées de cette page.", () => {
+            groupNotes.fill("");
+            document.querySelector("#group-note").value = "";
+            renderGroupPlan();
+          }, "Effacer");
+        });
+        renderGroup();
+      }
+
       // Standalone, zero-dependency application. User input is escaped before HTML rendering.
       const $ = (s, r = document) => r.querySelector(s),
         $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -3877,6 +4213,7 @@
           step: 0,
           context: "daily",
           scale: "personal",
+          scaleChosen: false,
           safety: "",
           energy: "",
           fields: {
@@ -3925,6 +4262,7 @@
         const clean = fresh();
         clean.context = raw.context;
         clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
+        clean.scaleChosen = raw.scaleChosen === true;
         clean.step =
           Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
             ? raw.step
@@ -4050,7 +4388,11 @@
         const leads = workflow.leads;
         let body = "";
         if (i === 0) {
-          body = `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("")}</div></fieldset><fieldset class="section-gap"><legend>Je choisis le domaine</legend><div class="contexts">${Object.entries(
+          const scaleButtons = Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("");
+          const scaleChoice = state.scaleChosen
+            ? `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong><span>${scales[state.scale][1]}</span></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>`
+            : `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
+          body = `${scaleChoice}<fieldset class="section-gap"><legend>Je choisis le domaine</legend><div class="contexts">${Object.entries(
             contexts,
           )
             .map(
@@ -4551,12 +4893,23 @@
       function route() {
         hideTooltip();
         const hash = location.hash.slice(1) || "accueil";
+        const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
+        if (scaleMatch) {
+          state.scale = scaleMatch[1];
+          state.scaleChosen = true;
+          state.step = 0;
+          if (state.context === "daily" && state.scale === "organization") state.context = "work";
+          if (state.context === "daily" && state.scale === "public") state.context = "collective";
+          persist();
+        }
         const page = hash.startsWith("ref-")
           ? "bibliographie"
+          : scaleMatch ? "outil"
           : [
                 "accueil",
                 "outil",
                 "soutenir",
+                "groupe",
                 "proche",
                 "violences",
                 "comprendre",
@@ -4578,10 +4931,12 @@
         setMenuOpen(false);
         if (page === "recap") renderRecap();
         if (page === "outil") renderStep();
+        if (page === "groupe") renderGroup();
         const title = {
           accueil: "Choisir un parcours",
           outil: "Mon problème",
           soutenir: "Soutenir quelqu’un",
+          groupe: "Aider un groupe",
           proche: "Comment aider un proche ?",
           violences: "Violentomètre",
           comprendre: "Comprendre",
@@ -4626,6 +4981,7 @@
       $$("[data-start-scale]").forEach((a) =>
         a.addEventListener("click", () => {
           state.scale = a.dataset.startScale;
+          state.scaleChosen = true;
           state.step = 0;
           persist();
           renderStep();
@@ -4725,9 +5081,11 @@
         }
         if (b.dataset.scale) {
           state.scale = b.dataset.scale;
+          state.scaleChosen = true;
+          history.replaceState(null, "", "#outil-" + state.scale);
           persist();
           renderStep();
-          $(`[data-scale="${state.scale}"]`).focus();
+          $("#change-level summary").focus();
           return;
         }
         if (b.dataset.need) {
@@ -4961,6 +5319,7 @@
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
       renderMeter();
+      initGroup();
       route();
     </script>
 

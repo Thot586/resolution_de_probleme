@@ -46,6 +46,7 @@
           step: 0,
           context: "daily",
           scale: "personal",
+          scaleChosen: false,
           safety: "",
           energy: "",
           fields: {
@@ -94,6 +95,7 @@
         const clean = fresh();
         clean.context = raw.context;
         clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
+        clean.scaleChosen = raw.scaleChosen === true;
         clean.step =
           Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
             ? raw.step
@@ -219,7 +221,11 @@
         const leads = workflow.leads;
         let body = "";
         if (i === 0) {
-          body = `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("")}</div></fieldset><fieldset class="section-gap"><legend>Je choisis le domaine</legend><div class="contexts">${Object.entries(
+          const scaleButtons = Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("");
+          const scaleChoice = state.scaleChosen
+            ? `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong><span>${scales[state.scale][1]}</span></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>`
+            : `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
+          body = `${scaleChoice}<fieldset class="section-gap"><legend>Je choisis le domaine</legend><div class="contexts">${Object.entries(
             contexts,
           )
             .map(
@@ -720,12 +726,23 @@
       function route() {
         hideTooltip();
         const hash = location.hash.slice(1) || "accueil";
+        const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
+        if (scaleMatch) {
+          state.scale = scaleMatch[1];
+          state.scaleChosen = true;
+          state.step = 0;
+          if (state.context === "daily" && state.scale === "organization") state.context = "work";
+          if (state.context === "daily" && state.scale === "public") state.context = "collective";
+          persist();
+        }
         const page = hash.startsWith("ref-")
           ? "bibliographie"
+          : scaleMatch ? "outil"
           : [
                 "accueil",
                 "outil",
                 "soutenir",
+                "groupe",
                 "proche",
                 "violences",
                 "comprendre",
@@ -747,10 +764,12 @@
         setMenuOpen(false);
         if (page === "recap") renderRecap();
         if (page === "outil") renderStep();
+        if (page === "groupe") renderGroup();
         const title = {
           accueil: "Choisir un parcours",
           outil: "Mon problème",
           soutenir: "Soutenir quelqu’un",
+          groupe: "Aider un groupe",
           proche: "Comment aider un proche ?",
           violences: "Violentomètre",
           comprendre: "Comprendre",
@@ -795,6 +814,7 @@
       $$("[data-start-scale]").forEach((a) =>
         a.addEventListener("click", () => {
           state.scale = a.dataset.startScale;
+          state.scaleChosen = true;
           state.step = 0;
           persist();
           renderStep();
@@ -894,9 +914,11 @@
         }
         if (b.dataset.scale) {
           state.scale = b.dataset.scale;
+          state.scaleChosen = true;
+          history.replaceState(null, "", "#outil-" + state.scale);
           persist();
           renderStep();
-          $(`[data-scale="${state.scale}"]`).focus();
+          $("#change-level summary").focus();
           return;
         }
         if (b.dataset.need) {
@@ -1130,4 +1152,5 @@
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
       renderMeter();
+      initGroup();
       route();

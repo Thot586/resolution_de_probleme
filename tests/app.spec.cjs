@@ -99,11 +99,19 @@ const errors = [];
   ]) {
     await page.locator(`#accueil [data-start-scale="${scale}"]`).click();
     await visible("#outil");
-    assert.equal(await page.locator(`#step-container [data-scale="${scale}"]`).getAttribute("aria-pressed"), "true");
+    assert.equal(new URL(page.url()).hash, `#outil-${scale}`);
+    assert((await page.locator("#selected-level").innerText()).includes(await page.locator(`#accueil [data-start-scale="${scale}"] strong`).innerText()));
+    assert(!(await page.locator("#change-level [data-scale]").first().isVisible()));
     await step(1);
     assert.match(await page.locator("#step-title").innerText(), expected);
     await visit("accueil");
   }
+  const direct = await context.newPage();
+  await direct.goto(url + "#outil-public");
+  assert(await direct.locator("#outil").isVisible());
+  assert.match(await direct.locator("#selected-level").innerText(), /Collectif ou politique/);
+  assert(!(await direct.locator("#change-level [data-scale]").first().isVisible()));
+  await direct.close();
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
   await visible("#soutenir svg[aria-labelledby='journey-title journey-desc']");
@@ -117,6 +125,29 @@ const errors = [];
   assert(await page.locator('#need-guidance a[href="#proche"]').isVisible());
   await page.locator('#soutenir a[href="#proche"]').first().click();
   await visible("#proche");
+  await visit("groupe");
+  await page.locator("#groupe .group-overview summary").click();
+  await visible("#groupe svg[aria-labelledby='group-map-title group-map-desc']");
+  assert.match(await page.locator("#groupe svg").textContent(), /Décider ensemble/);
+  await page.locator("#groupe .group-overview summary").click();
+  assert.match(await page.locator("#group-step-title").innerText(), /Qui participe/);
+  await page.locator("#group-note").fill("Décision : améliorer les horaires d’accueil.");
+  await page.locator("#group-next").click();
+  await page.locator("#group-method").selectOption("survey");
+  assert.match(await page.locator("#group-method-hint").innerText(), /combien ont répondu/);
+  await page.locator("#group-stage-select").selectOption("3");
+  assert.match(await page.locator("#group-step-title").innerText(), /reconnaissent/);
+  await page.locator("#group-plan summary").click();
+  assert.match(await page.locator("#group-plan-content").innerText(), /améliorer les horaires/);
+  assert.equal(await page.evaluate(() => localStorage.length), 0);
+  const groupDownload = page.waitForEvent("download");
+  await page.locator("#group-download").click();
+  assert.equal((await groupDownload).suggestedFilename(), "plan-groupe-pas-a-pas.txt");
+  await page.screenshot({ path: path.join(output, "desktop-group.png"), fullPage: true });
+  await axe("group");
+  await page.locator("#group-clear").click();
+  await page.locator("#dialog-confirm").click();
+  assert.match(await page.locator("#group-plan-content").innerText(), /pas encore noté/);
   await visit("outil");
   await visible("#step-title");
   await step(0);
@@ -127,12 +158,16 @@ const errors = [];
     ["organization", /Quel problème le système produit/],
     ["public", /Qui est touché et quelle décision manque/],
   ]) {
+    await page.locator("#change-level summary").click();
     await page.locator(`[data-scale=${scale}]`).click();
+    assert.equal(new URL(page.url()).hash, `#outil-${scale}`);
     await step(1);
     assert.match(await page.locator("#step-title").innerText(), expected);
     await step(0);
   }
+  await page.locator("#change-level summary").click();
   await page.locator("[data-scale=personal]").click();
+  assert.equal(new URL(page.url()).hash, "#outil-personal");
   await step(1);
   assert(!(await page.locator(".optional-fields .details-body").first().isVisible()));
   await step(0);
@@ -405,6 +440,7 @@ const errors = [];
       "accueil",
       "outil",
       "soutenir",
+      "groupe",
       "proche",
       "violences",
       "comprendre",
@@ -429,6 +465,9 @@ const errors = [];
   await page.locator("#accueil .teaching-figure").screenshot({ path: path.join(output, "method-mobile.png") });
   await visit("soutenir");
   await page.locator("#soutenir .teaching-figure").screenshot({ path: path.join(output, "support-figure-mobile.png") });
+  await visit("groupe");
+  await page.screenshot({ path: path.join(output, "mobile-group.png"), fullPage: true });
+  await axe("mobile-group");
   await visit("comprendre");
   await guides.nth(0).locator("summary").click();
   await guides.nth(1).locator("summary").click();

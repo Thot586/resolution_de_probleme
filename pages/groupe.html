@@ -1,0 +1,91 @@
+      <section id="groupe" class="view" aria-labelledby="group-title" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">Parcours collectif · Faciliter sans décider à la place du groupe</div>
+            <h1 id="group-title">Aider un groupe à résoudre un problème</h1>
+            <p>Je prépare une démarche avec les personnes concernées. Je peux commencer à l’étape utile et revenir en arrière.</p>
+          </div>
+          <div class="notice group-principle">
+            <strong>Avant d’enquêter :</strong> le groupe doit pouvoir influencer une décision réelle. Je clarifie qui décide, ce qui peut changer et comment les résultats lui seront rendus.
+          </div>
+          <details class="group-overview">
+            <summary>Voir la démarche en un dessin</summary>
+            <div class="details-body">
+              <figure class="teaching-figure">
+                <svg viewBox="0 0 360 335" role="img" aria-labelledby="group-map-title group-map-desc" xmlns="http://www.w3.org/2000/svg">
+                  <title id="group-map-title">Comprendre, décider, essayer et revoir avec le groupe</title>
+                  <desc id="group-map-desc">Trois blocs se suivent. Comprendre regroupe cadrage, écoute et analyse. Décider regroupe restitution et choix. Essayer et revoir regroupe le test, le suivi et un retour possible à l'écoute.</desc>
+                  <!-- Chaque bloc porte ses propres étapes ; les flèches montrent que la démarche peut être reprise. -->
+                  <g fill="#fff" stroke="#b9d3c4" stroke-width="2">
+                    <rect x="12" y="10" width="336" height="82" rx="15"/>
+                    <rect x="12" y="123" width="336" height="82" rx="15"/>
+                    <rect x="12" y="236" width="336" height="82" rx="15"/>
+                  </g>
+                  <g font-family="Arial, sans-serif" fill="#214d3f" text-anchor="middle">
+                    <text x="180" y="40" font-size="18" font-weight="700">1. Comprendre</text>
+                    <text x="180" y="66" font-size="14">Cadrer · écouter · analyser</text>
+                    <text x="180" y="153" font-size="18" font-weight="700">2. Décider ensemble</text>
+                    <text x="180" y="179" font-size="14">Restituer · choisir</text>
+                    <text x="180" y="266" font-size="18" font-weight="700">3. Essayer et revoir</text>
+                    <text x="180" y="292" font-size="14">Tester · suivre · ajuster</text>
+                  </g>
+                  <g stroke="#367b62" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M180 95v22m-6-7 6 7 6-7"/>
+                    <path d="M180 208v22m-6-7 6 7 6-7"/>
+                  </g>
+                </svg>
+                <figcaption>Le groupe peut revenir à l’écoute si les constats ou l’essai montrent qu’il manque une information.</figcaption>
+              </figure>
+            </div>
+          </details>
+          <div class="group-layout">
+            <aside class="group-rail" aria-label="Choisir une étape du parcours collectif">
+              <label class="label" for="group-stage-select">Aller à une étape</label>
+              <select id="group-stage-select"></select>
+              <p class="hint">Un sondage n’est qu’une option. Pour un petit groupe, une discussion peut suffire.</p>
+              <a class="text-button" href="#soutenir">Pour aider une seule personne ↗</a>
+            </aside>
+            <article class="card group-step-card" aria-labelledby="group-step-title">
+              <div class="step-topline"><span class="tag" id="group-progress-label"></span><div class="progress" id="group-progress" role="progressbar" aria-label="Position dans le parcours collectif" aria-valuemin="1" aria-valuemax="7"></div></div>
+              <h2 id="group-step-title" tabindex="-1"></h2>
+              <p class="step-lead" id="group-step-intro"></p>
+              <div id="group-guidance" class="group-guidance"></div>
+              <div id="group-method-box" class="group-method-box" hidden>
+                <label class="label" for="group-method">Comment écouter le groupe ?</label>
+                <select id="group-method">
+                  <option value="conversation">Discussion de groupe</option>
+                  <option value="interviews">Entretiens individuels</option>
+                  <option value="survey">Sondage court</option>
+                  <option value="existing">Données déjà disponibles</option>
+                </select>
+                <p class="hint" id="group-method-hint"></p>
+              </div>
+              <div class="field section-gap">
+                <label class="label" for="group-note" id="group-note-label">Ma note pour cette étape</label>
+                <textarea id="group-note" maxlength="1200" placeholder="Une décision ou une question à clarifier…"></textarea>
+                <p class="hint">Je note le plan, pas les réponses individuelles ni les noms des participants.</p>
+              </div>
+              <p class="source-note" id="group-step-source"></p>
+              <div class="footer-actions">
+                <button class="btn" id="group-back" type="button">← Étape précédente</button>
+                <button class="btn primary" id="group-next" type="button">Étape suivante →</button>
+              </div>
+            </article>
+          </div>
+          <details class="group-plan" id="group-plan">
+            <summary>Voir mon plan de travail</summary>
+            <div class="details-body">
+              <div id="group-plan-content" aria-live="polite"></div>
+              <div class="button-row section-gap">
+                <button class="btn small" id="group-download" type="button">Télécharger mon plan</button>
+                <button class="btn small danger" id="group-clear" type="button">Effacer mes notes</button>
+              </div>
+              <p class="hint">Les notes restent dans cette page tant qu’elle est ouverte. Le fichier téléchargé contient ce que j’ai écrit.</p>
+            </div>
+          </details>
+          <div class="notice amber section-gap">
+            <strong>Si le groupe subit des violences ou des représailles :</strong> je ne lance pas une confrontation collective. Je cherche une aide adaptée et sûre. <a href="#securite">Voir les repères de sécurité</a>.
+          </div>
+          <p class="source-note">Ce parcours assemble des cadres d’évaluation et d’amélioration, et des guides de participation. Il n’a pas été évalué comme intervention propre à ce site. <a href="#ref-22">[22]</a> <a href="#ref-23">[23]</a> <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a></p>
+        </div>
+      </section>
