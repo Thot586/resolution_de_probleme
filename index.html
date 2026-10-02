@@ -1442,6 +1442,122 @@
           animation: none !important;
         }
       }
+
+      /* The same A4 layout is measured on screen and used for printing. */
+      #print-document {
+        display: none;
+      }
+      #print-document.print-measuring {
+        display: block;
+        position: absolute;
+        left: -20000px;
+        top: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .print-page {
+        width: 180mm;
+        height: 266mm;
+        position: relative;
+        color: #172c25;
+        background: white;
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.5;
+        break-after: page;
+        page-break-after: always;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .print-page:last-child {
+        break-after: auto;
+        page-break-after: auto;
+      }
+      .print-page-body {
+        height: 253mm;
+        display: flow-root;
+      }
+      .print-document-heading {
+        margin: 0 0 6mm;
+      }
+      .print-document-heading h1 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 25pt;
+        line-height: 1.2;
+        color: #173f35;
+        margin: 0 0 2.5mm;
+      }
+      .print-document-heading p {
+        font-size: 9pt;
+        color: #526058;
+        margin: 0;
+      }
+      .print-document-heading.continued h1 {
+        font-size: 15pt;
+      }
+      .print-card {
+        border: 1px solid #c1ccc3;
+        border-radius: 2mm;
+        padding: 4mm;
+        margin: 0 0 3mm;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .print-card h2 {
+        font-family: inherit;
+        font-size: 11.5pt;
+        font-weight: 650;
+        letter-spacing: 0;
+        line-height: 1.4;
+        margin: 0 0 3mm;
+      }
+      .print-entry {
+        margin: 0 0 2.5mm;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .print-entry:last-child {
+        margin-bottom: 0;
+      }
+      .print-entry-label {
+        font-size: 8.5pt;
+        font-weight: 600;
+        color: #526058;
+      }
+      .print-entry-text {
+        margin: 1mm 0 0;
+        font-size: 10.5pt;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      .print-page-footer {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-top: 1px solid #d7dfd8;
+        padding-top: 2mm;
+        display: flex;
+        justify-content: space-between;
+        gap: 5mm;
+        font-size: 8pt;
+        color: #526058;
+      }
+      .print-closing-note {
+        font-size: 9pt;
+        margin: 3mm 0 0;
+        color: #526058;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
       @media print {
         .skip,
         header,
@@ -1493,7 +1609,26 @@
           display: none;
         }
         .recap-grid {
-          gap: 12px;
+          display: block;
+        }
+        .recap-section {
+          margin-bottom: 12px;
+        }
+        .recap-section dt {
+          break-after: avoid;
+          page-break-after: avoid;
+        }
+        .recap-section dd {
+          orphans: 3;
+          widows: 3;
+        }
+        body.print-ready #main {
+          display: none !important;
+        }
+        body.print-ready #print-document {
+          display: block !important;
+          position: static !important;
+          visibility: visible !important;
         }
         .page-heading h1 {
           font-size: 25pt;
@@ -2798,6 +2933,7 @@
         ><a href="#bibliographie">Sources</a>
       </div>
     </footer>
+    <div id="print-document" aria-hidden="true"></div>
     <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <dialog id="confirm-dialog" aria-labelledby="dialog-title">
@@ -3456,6 +3592,209 @@
                   dd("Prochaine étape", f.next)),
           );
       }
+
+      // Pack complete cards first, then complete label/answer pairs. Only answers
+      // taller than a page are continued, at paragraph/sentence/word boundaries.
+      // Measurements use the exact same typography as the print media layout.
+      function preparePrint() {
+        renderRecap();
+        const documentRoot = $("#print-document");
+        document.body.classList.remove("print-ready");
+        documentRoot.replaceChildren();
+        documentRoot.classList.add("print-measuring");
+        const pages = [];
+        let pageBody;
+        const make = (tag, className, text) => {
+          const el = document.createElement(tag);
+          if (className) el.className = className;
+          if (text !== undefined) el.textContent = text;
+          return el;
+        };
+        const newPage = () => {
+          const page = make("section", "print-page");
+          pageBody = make("div", "print-page-body");
+          const heading = make(
+            "div",
+            "print-document-heading" + (pages.length ? " continued" : ""),
+          );
+          heading.append(
+            make(
+              "h1",
+              "",
+              "Mon prochain pas" + (pages.length ? " · suite" : ""),
+            ),
+          );
+          if (!pages.length)
+            heading.append(
+              make(
+                "p",
+                "",
+                "Fiche personnelle · Pas à pas · Outil éducatif, sans validation clinique propre.",
+              ),
+            );
+          pageBody.append(heading);
+          page.append(pageBody, make("div", "print-page-footer"));
+          documentRoot.append(page);
+          pages.push(page);
+        };
+        // The last card's bottom includes its margin; scrollHeight alone can
+        // ignore that margin in some layout engines.
+        const fits = () => {
+          const children = [...pageBody.children];
+          const last = children.at(-1);
+          const limit = pageBody.getBoundingClientRect().bottom;
+          const bottom =
+            last.getBoundingClientRect().bottom +
+            parseFloat(getComputedStyle(last).marginBottom || 0);
+          return bottom <= limit - 1;
+        };
+        const makeCard = (title, continued = false) => {
+          const card = make("article", "print-card");
+          card.append(make("h2", "", title + (continued ? " · suite" : "")));
+          return card;
+        };
+        const makeEntry = (label, text, continued = false) => {
+          const entry = make("div", "print-entry");
+          entry.append(
+            make(
+              "div",
+              "print-entry-label",
+              label + (continued ? " (suite)" : ""),
+            ),
+            make("p", "print-entry-text", text),
+          );
+          return entry;
+        };
+        const sources = $$("#recap-content .recap-section").map((section) => ({
+          title: $("h3", section).firstChild.textContent,
+          entries: $$("dt", section).map((dt) => [
+            dt.textContent,
+            dt.nextElementSibling.textContent,
+          ]),
+        }));
+        newPage();
+        for (const source of sources) {
+          let card = makeCard(source.title);
+          for (const [label, text] of source.entries)
+            card.append(makeEntry(label, text));
+          pageBody.append(card);
+          if (fits()) continue;
+          card.remove();
+          // If the whole card fits on a fresh page, preserve it as a unit.
+          if (pageBody.children.length > 1) newPage();
+          pageBody.append(card);
+          if (fits()) continue;
+          card.remove();
+          card = makeCard(source.title);
+          pageBody.append(card);
+          let sectionContinued = false;
+          const continueCard = () => {
+            if (card.children.length === 1) card.remove();
+            else sectionContinued = true;
+            if (pageBody.children.length > 1) newPage();
+            card = makeCard(source.title, sectionContinued);
+            pageBody.append(card);
+          };
+          for (const [label, fullText] of source.entries) {
+            let entry = makeEntry(label, fullText);
+            card.append(entry);
+            if (fits()) continue;
+            const previous = {
+              body: pageBody,
+              card,
+              continued: sectionContinued,
+              pageCount: pages.length,
+            };
+            entry.remove();
+            continueCard();
+            card.append(entry);
+            if (fits()) continue;
+            // This answer cannot fit even on a fresh page. Use the remaining
+            // space on the original page instead of leaving a large blank area.
+            entry.remove();
+            card.remove();
+            if (pages.length > previous.pageCount) pages.pop().remove();
+            pageBody = previous.body;
+            card = previous.card;
+            sectionContinued = previous.continued;
+            if (!card.isConnected) pageBody.append(card);
+            card.append(entry);
+            const characters = Array.from(fullText);
+            let offset = 0;
+            while (offset < characters.length) {
+              const answer = $(".print-entry-text", entry);
+              let low = 0,
+                high = characters.length - offset;
+              while (low < high) {
+                const mid = Math.ceil((low + high) / 2);
+                answer.textContent = characters
+                  .slice(offset, offset + mid)
+                  .join("");
+                if (fits()) low = mid;
+                else high = mid - 1;
+              }
+              if (
+                low < 120 &&
+                (card.children.length > 2 || pageBody.children.length > 2)
+              ) {
+                entry.remove();
+                continueCard();
+                card.append(entry);
+                continue;
+              }
+              if (!low) throw new Error("Print entry cannot fit on an A4 page");
+              let count = low;
+              if (offset + count < characters.length) {
+                const prefix = characters
+                  .slice(offset, offset + count)
+                  .join("");
+                const thresholds = [
+                  prefix.lastIndexOf("\n") + 1,
+                  [...prefix.matchAll(/[.!?…][ \n]/g)].at(-1)?.index + 1 || 0,
+                  prefix.lastIndexOf(" ") + 1,
+                ];
+                const boundary = thresholds.find(
+                  (n) => n >= prefix.length * 0.6,
+                );
+                if (boundary)
+                  count = Array.from(prefix.slice(0, boundary)).length;
+              }
+              answer.textContent = characters
+                .slice(offset, offset + count)
+                .join("");
+              offset += count;
+              if (offset < characters.length) {
+                continueCard();
+                entry = makeEntry(label, "", true);
+                card.append(entry);
+              }
+            }
+          }
+        }
+        const note = make(
+          "p",
+          "print-closing-note",
+          "Vous pouvez ajuster ce plan, demander un appui ou choisir un pas plus petit. Document personnel à conserver en lieu sûr.",
+        );
+        pageBody.append(note);
+        if (!fits()) {
+          note.remove();
+          newPage();
+          pageBody.append(note);
+        }
+        pages.forEach((page, i) => {
+          $(".print-page-footer", page).append(
+            make("span", "", "Pas à pas · Résolution de problème"),
+            make("span", "", `Page ${i + 1} / ${pages.length}`),
+          );
+        });
+        documentRoot.classList.remove("print-measuring");
+        document.body.classList.add("print-ready");
+      }
+      function finishPrint() {
+        document.body.classList.remove("print-ready");
+        $("#print-document").classList.remove("print-measuring");
+      }
       function formatDate(s) {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(s || "")) return "";
         const [y, m, d] = s.split("-");
@@ -3860,7 +4199,8 @@
         }),
       );
       window.addEventListener("hashchange", route);
-      window.addEventListener("beforeprint", renderRecap);
+      window.addEventListener("beforeprint", preparePrint);
+      window.addEventListener("afterprint", finishPrint);
       document.addEventListener("input", (e) => {
         const el = e.target;
         if (el.dataset.field) {
@@ -3995,7 +4335,7 @@
             exportText();
             break;
           case "print":
-            renderRecap();
+            preparePrint();
             window.print();
             break;
           case "reset":

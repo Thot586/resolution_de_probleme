@@ -64,3 +64,15 @@ node tests/app.spec.cjs
 ```
 
 Pour utiliser des dépendances déjà installées, définir `QA_NODE_MODULES` avec leur chemin. Les captures de test sont écrites hors du dépôt, dans `/tmp/pas-a-pas-checks` par défaut (modifiable via `QA_OUTPUT`). Aucun test automatisé ne remplace une évaluation clinique ou des tests d’utilisabilité avec des personnes concernées.
+
+## Mise en page de l’impression PDF
+
+La fiche est paginée en A4 portrait avec des marges de 15 mm et une numérotation des pages. Les petits blocs sont conservés entiers. Un bloc plus long est réparti entre les pages en gardant ensemble chaque libellé et sa réponse ; une réponse dépassant la hauteur d’une page est poursuivie à une limite de paragraphe, de phrase ou de mot, avec la mention « suite ». Aucun texte n’est tronqué. Le formulaire original reste inchangé.
+
+Les essais de `tests/print.spec.cjs` couvrent des réponses courtes, développées, très longues et une saisie sans espaces, ainsi que la conservation intégrale des réponses et l’absence de débordement. Exécuter avec les mêmes dépendances que la suite principale :
+
+```sh
+node tests/print.spec.cjs
+```
+
+Pour le rendu prévu, conserver le format A4 portrait et désactiver les en-têtes et pieds de page ajoutés par le navigateur. Une modification du format de papier, des marges ou de l’échelle dans la boîte de dialogue d’impression peut modifier le rendu.
