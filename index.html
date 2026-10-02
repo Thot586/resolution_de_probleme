@@ -1,0 +1,4174 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Un outil de résolution de problème pas à pas : clarifier, explorer, choisir, agir et faire le point. Exemples adaptés, soutien aux proches et repères face aux violences."
+    />
+    <meta name="theme-color" content="#183e38" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Pas à pas — Résoudre un problème</title>
+    <style>
+      :root {
+        --ink: #203b36;
+        --muted: #586962;
+        --brand: #24594d;
+        --deep: #173f35;
+        --mint: #e9f2eb;
+        --paper: #f6f7f2;
+        --line: #d9e2d9;
+        --white: #fff;
+        --ochre: #805419;
+        --amber: #fff3d9;
+        --red: #923f3b;
+        --rose: #fff0ed;
+        --shadow: 0 10px 35px #233e3510;
+        --radius: 20px;
+        font-size: 16px;
+        color-scheme: light;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      #main:focus {
+        outline: none;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 110px;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.65;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+      button,
+      a,
+      input,
+      textarea,
+      select,
+      summary {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button,
+      a {
+        touch-action: manipulation;
+      }
+      button {
+        cursor: pointer;
+      }
+      a {
+        color: var(--brand);
+        text-underline-offset: 4px;
+      }
+      button {
+        color: inherit;
+      }
+      button:disabled {
+        cursor: default;
+        opacity: 0.55;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+      h1,
+      h2 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 500;
+        letter-spacing: -0.035em;
+        line-height: 1.15;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 3.05rem);
+      }
+      h2 {
+        font-size: clamp(1.7rem, 3vw, 2.25rem);
+      }
+      h3 {
+        font-size: 1.04rem;
+        line-height: 1.4;
+      }
+      p + p {
+        margin-top: 0.8rem;
+      }
+      ul,
+      ol {
+        padding-left: 1.3rem;
+      }
+      li + li {
+        margin-top: 0.5rem;
+      }
+      strong {
+        font-weight: 650;
+      }
+      :focus-visible {
+        outline: 3px solid #a06c25;
+        outline-offset: 4px;
+      }
+      input:focus-visible,
+      textarea:focus-visible,
+      select:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .skip {
+        position: fixed;
+        top: -100px;
+        left: 1rem;
+        background: var(--deep);
+        color: white;
+        z-index: 100;
+        padding: 0.75rem;
+      }
+      .skip:focus {
+        top: 1rem;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: #fbfcf8f5;
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(14px);
+      }
+      .navbar {
+        max-width: 1320px;
+        margin: auto;
+        padding: 15px 32px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--deep);
+        white-space: nowrap;
+        font-weight: 750;
+        font-size: 1.14rem;
+        letter-spacing: -0.025em;
+      }
+      .brandmark {
+        display: grid;
+        place-items: center;
+        background: var(--deep);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+      }
+      .brandmark svg {
+        width: 24px;
+        height: 24px;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: auto;
+      }
+      nav a {
+        font-size: 0.87rem;
+        text-decoration: none;
+        color: var(--muted);
+        padding: 10px 13px;
+        border-radius: 8px;
+        font-weight: 560;
+      }
+      nav a:hover {
+        background: var(--mint);
+      }
+      nav a[aria-current="page"] {
+        background: var(--mint);
+        color: var(--deep);
+      }
+      .help-button {
+        border: 1px solid #d3c7b6;
+        background: transparent;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      .menu-toggle {
+        display: none;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 12px;
+      }
+      main {
+        max-width: 1180px;
+        padding: 38px 32px 70px;
+        margin: auto;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.69rem;
+        font-weight: 750;
+        color: var(--brand);
+        margin-bottom: 10px;
+      }
+      .intro {
+        display: flex;
+        justify-content: space-between;
+        gap: 28px;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+      .intro p {
+        color: var(--muted);
+        margin-top: 12px;
+        max-width: 610px;
+      }
+      .attribution {
+        font-size: 0.73rem;
+        line-height: 1.6;
+        border-left: 2px solid #c0d2c2;
+        padding-left: 16px;
+        max-width: 260px;
+        flex-shrink: 0;
+        color: var(--muted);
+      }
+      .attribution strong {
+        display: block;
+        color: var(--brand);
+        font-size: 0.78rem;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: 236px minmax(0, 1fr);
+        gap: 28px;
+        align-items: start;
+      }
+      .side {
+        position: sticky;
+        top: 105px;
+      }
+      .side-label {
+        font-size: 0.71rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        margin: 0 0 16px 10px;
+      }
+      .steps {
+        padding: 0;
+        list-style: none;
+        margin: 0;
+      }
+      .steps li + li {
+        margin-top: 7px;
+      }
+      .step-link {
+        border: 0;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        text-align: left;
+        width: 100%;
+        border-radius: 12px;
+        padding: 11px 12px;
+      }
+      .step-link:hover {
+        background: #edf0e8;
+      }
+      .step-link[aria-current="step"] {
+        background: var(--deep);
+        color: white;
+      }
+      .step-num {
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        min-width: 29px;
+        height: 29px;
+        font-size: 0.76rem;
+      }
+      .step-link[aria-current="step"] .step-num {
+        border-color: #ffffff55;
+        background: #ffffff15;
+      }
+      .step-text b {
+        font-size: 0.88rem;
+        display: block;
+        font-weight: 600;
+        line-height: 1.35;
+      }
+      .step-text small {
+        font-size: 0.73rem;
+        color: var(--muted);
+      }
+      .step-link[aria-current="step"] small {
+        color: #d0e2d4;
+      }
+      .side-note {
+        padding: 19px 14px;
+        font-size: 0.84rem;
+        color: var(--muted);
+      }
+      .side-note strong {
+        display: block;
+        color: var(--brand);
+        font-weight: 550;
+        margin-bottom: 4px;
+      }
+      .side-actions {
+        border-top: 1px solid var(--line);
+        padding: 16px 10px;
+      }
+      .side-actions button {
+        font-size: 0.85rem;
+      }
+      .card {
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .step-card {
+        padding: 32px 38px;
+      }
+      .step-topline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 23px;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: var(--mint);
+        color: var(--brand);
+        font-size: 0.71rem;
+        font-weight: 650;
+        letter-spacing: 0.025em;
+      }
+      .step-meta {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+      .progress {
+        height: 4px;
+        background: #edf1e9;
+        border-radius: 4px;
+        overflow: hidden;
+        width: 88px;
+      }
+      .progress span {
+        height: 100%;
+        display: block;
+        background: #729b73;
+        transition: width 0.25s;
+      }
+      .step-lead {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.96rem;
+        max-width: 600px;
+      }
+      .step-content {
+        margin-top: 28px;
+      }
+      .section-gap {
+        margin-top: 26px;
+      }
+      .label,
+      legend {
+        display: block;
+        font-weight: 650;
+        font-size: 0.92rem;
+        margin-bottom: 9px;
+      }
+      .subtle {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      fieldset {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        min-width: 0;
+      }
+      fieldset + fieldset {
+        margin-top: 24px;
+      }
+      .contexts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .context {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        min-height: 87px;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        padding: 13px 17px;
+        text-align: left;
+        gap: 4px;
+      }
+      .context:hover {
+        border-color: var(--brand);
+        background: #f8faf6;
+      }
+      .context[aria-pressed="true"] {
+        border: 2px solid var(--brand);
+        padding: 12px 16px;
+        background: #f0f6ef;
+      }
+      .context-icon {
+        font-size: 1.1rem;
+        line-height: 1;
+      }
+      .context-icon svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+      }
+      .context span:last-child {
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .choice-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+        padding: 9px 13px;
+        font-size: 0.83rem;
+      }
+      .pill[aria-pressed="true"] {
+        background: var(--mint);
+        border-color: var(--brand);
+        box-shadow: inset 0 0 0 1px var(--brand);
+      }
+      .pill:hover {
+        background: #f0f5ec;
+      }
+      .notice {
+        padding: 16px 19px;
+        border-radius: 12px;
+        font-size: 0.88rem;
+        line-height: 1.65;
+        background: var(--mint);
+        border: 1px solid #d0e1d0;
+      }
+      .notice strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .notice.amber {
+        background: var(--amber);
+        border-color: #ecd8b1;
+        color: #674819;
+      }
+      .notice.red {
+        background: var(--rose);
+        border-color: #edcbc4;
+        color: #793a36;
+      }
+      .notice a {
+        color: inherit;
+        font-weight: 650;
+      }
+      .example {
+        margin: 13px 0 0;
+        padding: 13px 16px;
+        background: #f7f8f3;
+        border-left: 3px solid #c7d6b8;
+        border-radius: 0 9px 9px 0;
+        font-size: 0.85rem;
+        color: #4e6252;
+      }
+      .example small {
+        font-size: 0.67rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        display: block;
+        color: #576c50;
+        margin-bottom: 4px;
+        font-weight: 700;
+      }
+      .example p {
+        margin: 0;
+      }
+      .field {
+        margin-bottom: 22px;
+      }
+      .field:last-child {
+        margin-bottom: 0;
+      }
+      input[type="text"],
+      input[type="date"],
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid #c8d4cb;
+        border-radius: 10px;
+        background: #fdfefb;
+        color: var(--ink);
+        padding: 12px 14px;
+        font-size: 0.93rem;
+        min-height: 47px;
+      }
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+        display: block;
+        line-height: 1.6;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: #6e7970;
+        opacity: 1;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 0.79rem;
+        margin: 6px 0 0;
+      }
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .field-row .field {
+        margin: 0;
+      }
+      .footer-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 24px;
+        border-top: 1px solid #e6ebe3;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 46px;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--brand);
+        border-radius: 9px;
+        padding: 10px 17px;
+        font-weight: 650;
+        font-size: 0.87rem;
+        text-decoration: none;
+        text-align: center;
+        line-height: 1.4;
+      }
+      .btn:hover {
+        background: #f0f5ef;
+      }
+      .btn.primary {
+        background: var(--brand);
+        border-color: var(--brand);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        background: var(--deep);
+      }
+      .btn.danger {
+        color: var(--red);
+        border-color: #d5b1ac;
+        background: #fff;
+      }
+      .btn.small {
+        min-height: 38px;
+        padding: 7px 12px;
+        font-size: 0.79rem;
+      }
+      .text-button {
+        border: 0;
+        background: transparent;
+        color: var(--brand);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        padding: 7px 0;
+        font-size: 0.84rem;
+      }
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+      .privacy-line {
+        margin: 16px 3px 0;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--muted);
+        font-size: 0.75rem;
+      }
+      .privacy-line svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .file-options {
+        margin-top: 20px;
+      }
+      .file-options summary {
+        font-size: 0.83rem;
+      }
+      .checkbox {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        font-size: 0.87rem;
+        font-weight: 500;
+      }
+      .checkbox input {
+        margin-top: 6px;
+        accent-color: var(--brand);
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      details {
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fff;
+      }
+      details + details {
+        margin-top: 12px;
+      }
+      summary {
+        cursor: pointer;
+        padding: 14px 17px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary:after {
+        content: "+";
+        font-weight: 400;
+        font-size: 1.15rem;
+      }
+      details[open] > summary:after {
+        content: "−";
+      }
+      details[open] > summary {
+        border-bottom: 1px solid #e8ede6;
+      }
+      .details-body {
+        padding: 16px 19px;
+        font-size: 0.9rem;
+        line-height: 1.75;
+      }
+      .details-body p + p {
+        margin-top: 0.8rem;
+      }
+      .details-body ul {
+        margin: 0.6rem 0;
+      }
+      .error {
+        color: var(--red);
+        font-size: 0.86rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+      .option-card {
+        border: 1px solid var(--line);
+        padding: 20px;
+        border-radius: 13px;
+        margin-bottom: 14px;
+        box-shadow: none;
+      }
+      .option-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .option-head .label {
+        margin: 0;
+      }
+      .remove {
+        border: 0;
+        background: transparent;
+        font-size: 0.8rem;
+        color: var(--red);
+        padding: 8px;
+      }
+      .option-card h3 {
+        overflow-wrap: anywhere;
+      }
+      .option-card.selected {
+        border: 2px solid var(--brand);
+        padding: 19px;
+        background: #fbfdf8;
+      }
+      .option-card .field-row {
+        margin-top: 16px;
+      }
+      .option-card textarea {
+        min-height: 82px;
+      }
+      .callout-number {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        background: var(--mint);
+        border-radius: 50%;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+      }
+      .page-heading {
+        max-width: 730px;
+        margin: 0 0 28px;
+      }
+      .page-heading p {
+        color: var(--muted);
+        margin-top: 15px;
+      }
+      .page-narrow {
+        max-width: 860px;
+        margin: auto;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .padded {
+        padding: 25px;
+      }
+      .padded h3 {
+        margin-bottom: 10px;
+      }
+      .padded p {
+        font-size: 0.92rem;
+        color: var(--muted);
+      }
+      .block-heading {
+        margin: 35px 0 15px;
+        font-size: 1.4rem;
+      }
+      .citation {
+        font-size: 0.75em;
+        white-space: nowrap;
+        vertical-align: super;
+        text-decoration: none;
+        font-family: ui-sans-serif, sans-serif;
+        letter-spacing: 0;
+      }
+      .procon {
+        border-radius: 15px;
+        padding: 23px;
+        background: var(--mint);
+        border: 1px solid #cee0d1;
+      }
+      .procon.avoid {
+        background: var(--rose);
+        border-color: #e8ccc8;
+      }
+      .procon h3 {
+        color: var(--brand);
+      }
+      .procon.avoid h3 {
+        color: var(--red);
+      }
+      .procon ul {
+        font-size: 0.89rem;
+        margin-bottom: 0;
+      }
+      .support-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 22px;
+      }
+      .support-card {
+        padding: 28px;
+      }
+      .support-question {
+        font-family: Georgia, serif;
+        font-size: 1.6rem;
+        line-height: 1.4;
+        letter-spacing: -0.02em;
+        margin: 12px 0 20px;
+      }
+      .say {
+        background: var(--mint);
+        border-radius: 12px;
+        padding: 18px 21px;
+        margin: 18px 0;
+        border: 1px solid #cfdfcf;
+        font-size: 1.05rem;
+        font-family: Georgia, serif;
+        line-height: 1.6;
+      }
+      .mini-steps {
+        display: grid;
+        gap: 16px;
+        margin: 22px 0;
+      }
+      .mini-step {
+        display: flex;
+        gap: 13px;
+        font-size: 0.9rem;
+      }
+      .mini-step strong {
+        display: block;
+        margin-bottom: 3px;
+      }
+      .mini-step p {
+        color: var(--muted);
+      }
+      .meter-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 22px;
+        align-items: start;
+      }
+      .meter {
+        display: grid;
+        gap: 7px;
+      }
+      .meter button {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: space-between;
+        width: 100%;
+        text-align: left;
+        border-radius: 9px;
+        padding: 13px 15px;
+        border: 1px solid transparent;
+        border-left: 5px solid #2f7655;
+        background: #e7f2e7;
+        color: #1f533e;
+        font-size: 0.89rem;
+        min-height: 58px;
+      }
+      .meter button:nth-child(2) {
+        background: #edf3df;
+        border-left-color: #658348;
+      }
+      .meter button:nth-child(3) {
+        background: #fff3d5;
+        border-left-color: #a57522;
+        color: #67460d;
+      }
+      .meter button:nth-child(4) {
+        background: #fff0df;
+        border-left-color: #ad612e;
+        color: #7b411a;
+      }
+      .meter button:nth-child(5) {
+        background: #fbe4de;
+        border-left-color: #a8443d;
+        color: #7a3430;
+      }
+      .meter button:nth-child(6) {
+        background: #f5d9d4;
+        border-left-color: #8c2e2e;
+        color: #752323;
+      }
+      .meter button[aria-pressed="true"] {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+      }
+      .meter button small {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.035em;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+      .meter-detail {
+        padding: 25px;
+        position: sticky;
+        top: 105px;
+      }
+      .meter-detail h3 {
+        font-family: Georgia, serif;
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin: 12px 0;
+      }
+      .meter-detail p {
+        font-size: 0.9rem;
+      }
+      .meter-detail .label {
+        margin-top: 20px;
+      }
+      .meter-detail ul {
+        font-size: 0.87rem;
+      }
+      .source-note {
+        font-size: 0.77rem;
+        color: var(--muted);
+        margin-top: 18px;
+      }
+      .bibliography {
+        counter-reset: refs;
+        list-style: none;
+        padding: 0;
+      }
+      .reference {
+        padding: 20px 0;
+        border-bottom: 1px solid var(--line);
+        scroll-margin-top: 110px;
+        display: grid;
+        grid-template-columns: 35px 1fr;
+        gap: 12px;
+        font-size: 0.87rem;
+      }
+      .reference:before {
+        content: attr(data-ref);
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        width: 29px;
+        height: 29px;
+        border-radius: 7px;
+        color: var(--brand);
+        font-size: 0.73rem;
+      }
+      .reference p {
+        margin: 0;
+      }
+      .reference a {
+        overflow-wrap: anywhere;
+      }
+      .reference small {
+        display: block;
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-top: 6px;
+      }
+      .reference:target {
+        background: var(--mint);
+        border-radius: 12px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      .ref-label {
+        display: inline-block;
+        color: var(--brand);
+        font-size: 0.66rem;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        font-weight: 750;
+        margin-bottom: 6px;
+      }
+      .glossary-button {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        border-bottom: 1px dotted var(--brand);
+        color: var(--brand);
+        font: inherit;
+        line-height: inherit;
+        text-align: left;
+      }
+      .tooltip {
+        position: fixed;
+        z-index: 70;
+        max-width: 310px;
+        background: var(--deep);
+        color: #fff;
+        font-size: 0.84rem;
+        line-height: 1.55;
+        border-radius: 10px;
+        padding: 14px 17px;
+        box-shadow: 0 5px 20px #0003;
+      }
+      .tooltip[hidden] {
+        display: none;
+      }
+      .recap-grid {
+        display: grid;
+        gap: 15px;
+      }
+      .recap-section {
+        padding: 23px;
+      }
+      .recap-section h3 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .recap-section dt {
+        color: var(--muted);
+        font-size: 0.75rem;
+        margin-top: 12px;
+      }
+      .recap-section dd {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        margin: 3px 0 0;
+        font-size: 0.92rem;
+      }
+      .recap-section dl {
+        margin: 0;
+      }
+      .recap-section .empty {
+        font-style: italic;
+        color: var(--muted);
+      }
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 28px;
+        max-width: 500px;
+        width: calc(100% - 32px);
+        color: var(--ink);
+        box-shadow: 0 20px 80px #0003;
+      }
+      dialog::backdrop {
+        background: #10271ea6;
+        backdrop-filter: blur(3px);
+      }
+      dialog h2 {
+        font-size: 1.7rem;
+        margin-bottom: 15px;
+      }
+      dialog p {
+        font-size: 0.91rem;
+        margin-bottom: 20px;
+      }
+      .toast {
+        position: fixed;
+        bottom: 22px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--deep);
+        color: white;
+        z-index: 90;
+        padding: 12px 20px;
+        box-shadow: var(--shadow);
+        border-radius: 12px;
+        font-size: 0.85rem;
+        max-width: calc(100% - 32px);
+        width: max-content;
+      }
+      footer {
+        max-width: 1116px;
+        margin: 0 auto 22px;
+        border-top: 1px solid var(--line);
+        padding: 18px 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        font-size: 0.74rem;
+        color: var(--muted);
+      }
+      .foot-links {
+        display: flex;
+        gap: 16px;
+      }
+      .print-only {
+        display: none;
+      }
+      @media (min-width: 1500px) {
+        main {
+          padding-top: 48px;
+        }
+        .intro {
+          margin-bottom: 38px;
+        }
+      }
+      @media (max-width: 1100px) {
+        .navbar {
+          gap: 14px;
+          padding: 13px 22px;
+        }
+        nav a {
+          padding: 9px 9px;
+          font-size: 0.79rem;
+        }
+        .brand {
+          font-size: 1rem;
+        }
+        .help-button {
+          font-size: 0.75rem;
+        }
+        main {
+          padding: 30px 24px 60px;
+        }
+        .workspace {
+          grid-template-columns: 205px minmax(0, 1fr);
+          gap: 20px;
+        }
+        .step-card {
+          padding: 28px;
+        }
+        .attribution {
+          max-width: 220px;
+        }
+        .context {
+          padding: 12px;
+        }
+        .context[aria-pressed="true"] {
+          padding: 11px;
+        }
+        footer {
+          margin: 0 24px 20px;
+        }
+      }
+      @media (max-width: 850px) {
+        .menu-toggle {
+          display: block;
+          margin-left: auto;
+        }
+        .navbar {
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        nav {
+          display: none;
+          order: 4;
+          width: 100%;
+          margin: 0;
+          flex-wrap: wrap;
+          border-top: 1px solid var(--line);
+          padding-top: 10px;
+        }
+        nav.open {
+          display: flex;
+        }
+        nav a {
+          font-size: 0.9rem;
+        }
+        .help-button {
+          font-size: 0.77rem;
+        }
+        .intro {
+          align-items: flex-start;
+        }
+        .attribution {
+          max-width: 190px;
+        }
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+        .side {
+          position: static;
+        }
+        .side-label,
+        .step-text small,
+        .side-note {
+          display: none;
+        }
+        .steps {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          gap: 6px;
+        }
+        .steps li + li {
+          margin: 0;
+        }
+        .step-link {
+          flex-direction: column;
+          text-align: center;
+          gap: 6px;
+          padding: 10px 4px;
+        }
+        .step-text b {
+          font-size: 0.72rem;
+          font-weight: 550;
+        }
+        .step-num {
+          min-width: 25px;
+          height: 25px;
+        }
+        .side-actions {
+          border: 0;
+          padding: 8px 0 0;
+          text-align: right;
+        }
+        .step-card {
+          padding: 30px;
+        }
+        .privacy-line {
+          margin-top: 12px;
+        }
+        h1 {
+          font-size: 2.6rem;
+        }
+        .meter-detail {
+          top: 115px;
+        }
+      }
+      @media (max-width: 600px) {
+        .navbar {
+          padding: 11px 16px;
+        }
+        .brandmark {
+          width: 32px;
+          height: 32px;
+        }
+        .brand {
+          font-size: 1rem;
+        }
+        .help-button {
+          padding: 8px 9px;
+        }
+        .menu-toggle {
+          font-size: 0.8rem;
+          padding: 8px 10px;
+        }
+        main {
+          padding: 26px 16px 45px;
+        }
+        .intro {
+          display: block;
+          margin-bottom: 23px;
+        }
+        .intro p {
+          font-size: 0.9rem;
+          margin-top: 10px;
+        }
+        .attribution {
+          max-width: none;
+          margin-top: 16px;
+          border: 0;
+          padding: 0;
+          font-size: 0.67rem;
+        }
+        .attribution strong {
+          font-size: 0.7rem;
+          display: inline;
+        }
+        .attribution .credit-title {
+          display: inline;
+        }
+        .attribution strong:before {
+          content: " · ";
+        }
+        .intro h1,
+        .page-heading h1 {
+          font-size: 2.1rem;
+        }
+        .eyebrow {
+          font-size: 0.63rem;
+          margin-bottom: 8px;
+        }
+        .steps {
+          gap: 3px;
+        }
+        .step-link {
+          padding: 9px 2px;
+          border-radius: 9px;
+        }
+        .step-text b {
+          font-size: 0.62rem;
+        }
+        .step-num {
+          font-size: 0.7rem;
+        }
+        .side-actions {
+          padding-top: 8px;
+        }
+        .workspace {
+          gap: 13px;
+        }
+        .step-card {
+          padding: 23px 19px;
+          border-radius: 16px;
+        }
+        .step-topline {
+          margin-bottom: 20px;
+        }
+        .step-meta {
+          font-size: 0.7rem;
+        }
+        .step-content {
+          margin-top: 23px;
+        }
+        h2 {
+          font-size: 1.8rem;
+        }
+        .step-lead {
+          font-size: 0.9rem;
+        }
+        .contexts {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+        .context {
+          min-height: 75px;
+          padding: 10px 14px;
+        }
+        .context[aria-pressed="true"] {
+          padding: 9px 13px;
+        }
+        .context span:last-child {
+          font-size: 0.8rem;
+        }
+        .context-icon {
+          font-size: 1rem;
+        }
+        .field-row,
+        .two-col,
+        .meter-layout {
+          grid-template-columns: 1fr;
+        }
+        .field-row {
+          gap: 20px;
+        }
+        .footer-actions {
+          margin-top: 23px;
+          align-items: stretch;
+        }
+        .footer-actions .btn {
+          padding: 10px 13px;
+          font-size: 0.8rem;
+        }
+        .choice-stack .pill {
+          font-size: 0.8rem;
+          flex: 1 1 auto;
+        }
+        .option-card {
+          padding: 15px;
+        }
+        .option-card.selected {
+          padding: 14px;
+        }
+        .support-card,
+        .padded {
+          padding: 21px;
+        }
+        .meter-detail {
+          position: static;
+        }
+        .page-heading {
+          margin-bottom: 23px;
+        }
+        .page-heading p {
+          font-size: 0.92rem;
+        }
+        .support-question {
+          font-size: 1.35rem;
+        }
+        .procon {
+          padding: 20px;
+        }
+        .reference {
+          grid-template-columns: 27px 1fr;
+          gap: 10px;
+        }
+        .reference:before {
+          width: 25px;
+          height: 25px;
+        }
+        footer {
+          margin: 0 16px 16px;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .recap-section {
+          padding: 20px;
+        }
+        .privacy-line {
+          align-items: flex-start;
+        }
+        .block-heading {
+          margin-top: 28px;
+        }
+        .meter button {
+          font-size: 0.87rem;
+        }
+        .notice {
+          padding: 14px 16px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *:before,
+        *:after {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+      @media print {
+        .skip,
+        header,
+        footer,
+        .intro,
+        .side,
+        .privacy-line,
+        .file-options,
+        .no-print,
+        .footer-actions,
+        .toast,
+        dialog,
+        .tooltip {
+          display: none !important;
+        }
+        body {
+          background: #fff;
+          color: #111;
+          font-size: 11pt;
+        }
+        main {
+          max-width: none;
+          padding: 0;
+        }
+        .view {
+          display: none !important;
+        }
+        #recap {
+          display: block !important;
+        }
+        .page-heading {
+          margin-bottom: 20px;
+        }
+        .card {
+          box-shadow: none;
+          border: 1px solid #bbb;
+          break-inside: avoid;
+          border-radius: 6px;
+        }
+        .recap-section {
+          padding: 15px;
+        }
+        .print-only {
+          display: block;
+          font-size: 9pt;
+          color: #444;
+        }
+        .recap-section button {
+          display: none;
+        }
+        .recap-grid {
+          gap: 12px;
+        }
+        .page-heading h1 {
+          font-size: 25pt;
+        }
+        .page-heading p {
+          font-size: 11pt;
+        }
+        .recap-section dd {
+          font-size: 11pt;
+        }
+        .recap-section dt {
+          font-size: 9pt;
+        }
+        .tag {
+          background: #eee;
+          color: #222;
+        }
+        .notice {
+          border: 1px solid #aaa;
+          background: #fff;
+          font-size: 10pt;
+        }
+        a {
+          color: inherit;
+          text-decoration: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#main">Aller au contenu</a>
+    <header>
+      <div class="navbar">
+        <a class="brand" href="#outil" aria-label="Pas à pas, mon problème"
+          ><span class="brandmark" aria-hidden="true"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path
+                d="M4 17h5v-5h5V7h6M16 3l4 4-4 4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              /></svg></span
+          >Pas à pas</a
+        >
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="navigation"
+        >
+          Menu ☰
+        </button>
+        <nav id="navigation" aria-label="Navigation principale">
+          <a href="#outil" data-page="outil">Mon problème</a
+          ><a href="#proche" data-page="proche">Aider un proche</a
+          ><a href="#violences" data-page="violences">Violentomètre</a
+          ><a href="#comprendre" data-page="comprendre">Comprendre</a
+          ><a href="#bibliographie" data-page="bibliographie">Bibliographie</a>
+        </nav>
+        <a
+          class="help-button"
+          href="#securite"
+          style="text-decoration: none; color: var(--red)"
+          >Besoin d’aide ?</a
+        >
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <noscript
+        ><style>
+          .view[hidden] {
+            display: block !important;
+          }
+          #outil,
+          #recap,
+          #proche,
+          #violences {
+            display: none !important;
+          }
+          header,
+          footer {
+            position: static;
+          }
+        </style>
+        <div class="notice amber">
+          Activez JavaScript pour utiliser le parcours interactif. Les
+          explications, les références et les contacts d’aide restent
+          disponibles ci-dessous.
+        </div></noscript
+      >
+      <section id="outil" class="view" aria-label="Mon problème">
+        <div class="intro">
+          <div>
+            <div class="eyebrow">Un problème · Un pas à la fois</div>
+            <h1>Et si on y voyait plus clair ?</h1>
+            <p>
+              Posez la situation, explorez vos options et choisissez un premier
+              pas réalisable.
+            </p>
+          </div>
+          <div class="attribution">
+            <span class="credit-title">Adapté en version numérique par</span
+            ><strong
+              >Dr. FENOHASINA - Psychiatre - développeur d'application
+              web</strong
+            >
+          </div>
+        </div>
+        <div class="workspace">
+          <aside class="side" aria-label="Étapes du parcours">
+            <p class="side-label">Votre cheminement</p>
+            <ol class="steps" id="steps"></ol>
+            <div class="side-note">
+              <strong>Pas besoin de tout régler aujourd’hui.</strong>Vous pouvez
+              revenir sur chaque étape, ou faire une pause.
+            </div>
+            <div class="side-actions">
+              <a class="text-button" href="#recap">Voir mon récapitulatif ↗</a>
+            </div>
+          </aside>
+          <div>
+            <div id="step-container" class="step-card card"></div>
+            <p class="privacy-line">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                aria-hidden="true"
+              >
+                <rect x="5" y="10" width="14" height="11" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg
+              ><span id="privacy-status"
+                >Vos réponses restent dans cet onglet. Aucune transmission par
+                l’outil.</span
+              >
+            </p>
+            <details class="file-options">
+              <summary>Mon brouillon : garder, reprendre ou effacer</summary>
+              <div class="details-body">
+                <label class="checkbox"
+                  ><input type="checkbox" id="remember" />Garder automatiquement
+                  mon brouillon sur cet appareil</label
+                >
+                <p class="hint">
+                  À activer seulement sur un appareil sûr. Le brouillon n’est
+                  pas chiffré ; d’autres utilisateurs de ce navigateur peuvent
+                  le lire. Sans cette option, fermer ou recharger la page efface
+                  les réponses.
+                </p>
+                <div class="button-row section-gap">
+                  <button class="btn small" data-action="export">
+                    Télécharger le brouillon</button
+                  ><button class="btn small" data-action="import">
+                    Reprendre un fichier</button
+                  ><input
+                    id="import-file"
+                    type="file"
+                    accept=".json,application/json"
+                    hidden
+                  /><button class="btn small danger" data-action="reset">
+                    Tout effacer
+                  </button>
+                </div>
+                <p class="hint">
+                  Les fichiers téléchargés contiennent vos réponses.
+                  Conservez-les en lieu sûr. Évitez les noms, adresses et autres
+                  informations identifiantes.
+                </p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+      <section id="proche" class="view" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">Être présent, sans prendre la place</div>
+            <h1>Aider un proche</h1>
+            <p>
+              Avant de chercher une solution, demandez ce qui serait utile
+              maintenant. Une présence attentive peut déjà être une aide.
+              <a class="citation" href="#ref-5">[5]</a>
+            </p>
+          </div>
+          <div class="support-card card">
+            <span class="tag">La question de départ</span>
+            <p class="support-question">
+              « Tu préfères que je t’écoute, qu’on cherche des pistes, ou que je
+              t’aide concrètement ? »
+            </p>
+            <div
+              class="support-tabs"
+              id="support-modes"
+              aria-label="Type d’aide"
+            >
+              <button
+                class="pill"
+                data-support-mode="listen"
+                aria-pressed="true"
+              >
+                Écouter</button
+              ><button
+                class="pill"
+                data-support-mode="solve"
+                aria-pressed="false"
+              >
+                Chercher ensemble</button
+              ><button
+                class="pill"
+                data-support-mode="practical"
+                aria-pressed="false"
+              >
+                Aider concrètement
+              </button>
+            </div>
+            <div id="support-content"></div>
+          </div>
+          <h2 class="block-heading">Adapter l’aide à la situation</h2>
+          <label class="label" for="support-context"
+            >Ce que traverse mon proche</label
+          ><select id="support-context">
+            <option value="mental">Détresse ou trouble psychique</option>
+            <option value="couple">Difficulté dans le couple</option>
+            <option value="work">Travail ou études</option>
+            <option value="grief">Deuil, perte ou maladie</option>
+            <option value="material">Précarité, démarches ou isolement</option>
+            <option value="young">Enfant ou adolescent</option>
+          </select>
+          <div id="support-context-content" class="section-gap"></div>
+          <div class="two-col section-gap">
+            <div class="procon">
+              <h3>✓ À faire</h3>
+              <ul>
+                <li>Demander l’accord avant de conseiller.</li>
+                <li>Écouter les mots et les priorités de la personne.</li>
+                <li>Proposer une aide précise et limitée.</li>
+                <li>Demander : « Est-ce que cela t’aide ? »</li>
+              </ul>
+            </div>
+            <div class="procon avoid">
+              <h3>× À éviter</h3>
+              <ul>
+                <li>« À ta place… », « Il suffit de… »</li>
+                <li>Minimiser, culpabiliser ou imposer un diagnostic.</li>
+                <li>Faire raconter les détails d’un traumatisme.</li>
+                <li>
+                  Promettre de tout régler ou d’être disponible sans limite.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <details class="section-gap">
+            <summary>Et si la personne refuse mon aide ?</summary>
+            <div class="details-body">
+              <p>
+                Respectez son rythme et laissez une proposition ouverte : « Je
+                reste disponible si tu en as envie. » Vous pouvez aussi nommer
+                vos limites et chercher du soutien pour vous-même. Le refus
+                d’aide ne justifie pas de décider à sa place.
+              </p>
+              <p>
+                En cas de danger immédiat, de menace suicidaire ou de risque
+                pour un enfant, une aide urgente peut être nécessaire.
+                <a href="#securite">Voir les repères de sécurité</a>.
+              </p>
+            </div>
+          </details>
+          <p class="source-note">
+            Conseils de soutien issus de guides professionnels, adaptés au
+            quotidien. Ils ne constituent pas une psychothérapie ni une
+            formation à l’intervention de crise. <a href="#ref-5">[5]</a>
+            <a href="#ref-6">[6]</a>
+          </p>
+        </div>
+      </section>
+      <section id="violences" class="view" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">Reconnaître · Se protéger · Être soutenu</div>
+            <h1>Un désaccord… ou de la violence ?</h1>
+            <p>
+              Choisissez une relation, puis cliquez sur un comportement pour
+              comprendre les repères et les possibilités d’aide.
+            </p>
+          </div>
+          <details>
+            <summary>Qu’est-ce qu’un violentomètre ?</summary>
+            <div class="details-body">
+              <p>
+                C’est un support visuel de sensibilisation : des exemples aident
+                à repérer le respect, le contrôle ou les violences dans une
+                relation. Le modèle diffusé par le Centre Hubertine Auclert
+                concerne les relations amoureuses.
+                <a class="citation" href="#ref-7">[7]</a>
+              </p>
+              <p>
+                <strong
+                  >Les cinq variantes ci-dessous sont une création pédagogique
+                  pour cette page.</strong
+                >
+                Elles ne sont ni des échelles cliniques validées, ni des outils
+                prédictifs, ni un avis juridique. Les couleurs servent à lire
+                les situations ; elles ne calculent aucun niveau de risque.
+              </p>
+              <p>
+                Les violences ne suivent pas forcément une progression. Un seul
+                acte peut être grave. Des moments respectueux n’annulent jamais
+                une violence.
+              </p>
+            </div>
+          </details>
+          <div class="section-gap">
+            <label class="label" for="violence-context"
+              >Dans quelle relation ?</label
+            ><select id="violence-context">
+              <option value="couple">Couple / partenaires</option>
+              <option value="work">Employeur ou responsable / salarié</option>
+              <option value="care">
+                Professionnel de santé / personne soignée
+              </option>
+              <option value="education">Enseignant / élève ou étudiant</option>
+              <option value="family">
+                Parent ou adulte responsable / enfant
+              </option>
+            </select>
+          </div>
+          <p class="hint" id="violence-context-note"></p>
+          <div class="meter-layout section-gap">
+            <div>
+              <div
+                class="meter"
+                id="meter"
+                aria-label="Comportements à explorer"
+              ></div>
+              <p class="source-note">
+                Repères sans score. Aucune sélection n’est enregistrée.
+              </p>
+            </div>
+            <article
+              class="card meter-detail"
+              id="meter-detail"
+              aria-live="polite"
+            ></article>
+          </div>
+          <div class="notice red section-gap">
+            <strong
+              >La violence n’est pas un problème à résoudre à deux à tout
+              prix.</strong
+            >N’imposez pas une confrontation ou une médiation lorsqu’il existe
+            de la peur, du contrôle ou des représailles. La responsabilité de la
+            violence appartient à son auteur.
+            <a href="#securite">Trouver du soutien en sécurité →</a>
+            <a class="citation" href="#ref-6">[6]</a>
+          </div>
+          <p class="source-note">
+            Situations formulées pour cette page à partir des repères OMS, OIT
+            et UNESCO. Le contexte de pouvoir compte ; les droits et recours
+            précis dépendent du pays. <a href="#ref-6">[6]</a>
+            <a href="#ref-8">[8]</a> <a href="#ref-9">[9]</a>
+            <a href="#ref-10">[10]</a> <a href="#ref-11">[11]</a>
+          </p>
+        </div>
+      </section>
+      <section id="comprendre" class="view" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">Le pourquoi, à votre rythme</div>
+            <h1>Comprendre la démarche</h1>
+            <p>
+              La résolution de problème transforme une difficulté en options et
+              en actions vérifiables. Elle commence aussi par reconnaître ce qui
+              ne dépend pas de nous.
+            </p>
+          </div>
+          <div class="two-col">
+            <div class="procon">
+              <h3>Ce que l’outil peut apporter</h3>
+              <ul>
+                <li>Mettre de l’ordre dans une situation confuse.</li>
+                <li>Élargir les pistes au-delà de la première idée.</li>
+                <li>Préparer une petite action concrète.</li>
+                <li>Apprendre de l’essai et ajuster sans se juger.</li>
+              </ul>
+            </div>
+            <div class="procon avoid">
+              <h3>Ses limites</h3>
+              <ul>
+                <li>Il ne diagnostique rien et ne garantit aucun résultat.</li>
+                <li>Il ne remplace pas un soin ou une aide spécialisée.</li>
+                <li>
+                  Il ne supprime ni la précarité ni les rapports de pouvoir.
+                </li>
+                <li>Son efficacité propre n’a pas été évaluée.</li>
+              </ul>
+            </div>
+          </div>
+          <h2 class="block-heading">Les principes</h2>
+          <details>
+            <summary>1. Décrire les faits, le but et l’obstacle</summary>
+            <div class="details-body">
+              <p>
+                Un problème devient plus abordable quand on distingue la
+                situation actuelle, le changement souhaité et ce qui l’empêche.
+                Décrire une scène précise aide davantage qu’un jugement global
+                sur soi ou sur autrui.
+              </p>
+              <p>
+                Cette structure s’appuie sur le module 6 du Projet IPT, conçu
+                dans un programme de réadaptation pour des personnes vivant avec
+                un trouble schizophrénique. Ici, le vocabulaire et les exemples
+                sont réécrits pour un usage quotidien. Ce n’est pas la
+                reproduction du protocole clinique.
+                <a class="citation" href="#ref-1">[1]</a>
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>2. Explorer d’abord, comparer ensuite</summary>
+            <div class="details-body">
+              <p>
+                Cherchez plusieurs possibilités, puis examinez leurs bénéfices,
+                contraintes, coûts et risques pour vous et les autres. Une
+                option peut être de demander de l’aide, d’obtenir une
+                information, de négocier une ressource ou de reporter une
+                décision pour se protéger.
+              </p>
+              <p>
+                Le choix final vous appartient. La page n’attribue pas de score
+                automatique à vos solutions : la sécurité, vos valeurs et les
+                conditions réelles ne se résument pas à une somme de points.
+                <a class="citation" href="#ref-1">[1]</a>
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>3. Préparer une action et une solution de repli</summary>
+            <div class="details-body">
+              <p>
+                Précisez quoi faire, quand, avec qui et à quelle échelle. Une
+                <button class="glossary-button" data-term="implementation">
+                  intention de mise en œuvre
+                </button>
+                relie une situation à une action : « Si cette situation se
+                présente, alors je ferai ceci. »
+              </p>
+              <p>
+                Une
+                <button class="glossary-button" data-term="meta">
+                  méta-analyse
+                </button>
+                en psychologie sociale soutient l’intérêt de ces plans pour
+                atteindre des objectifs, dans des contextes variés. C’est un
+                appui indirect à cette fonctionnalité, pas une preuve
+                d’efficacité de cette page ni une garantie en cas de violence ou
+                de crise. <a class="citation" href="#ref-4">[4]</a>
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>4. Réévaluer l’essai, sans se juger</summary>
+            <div class="details-body">
+              <p>
+                Comparez ce qui s’est passé au petit changement que vous
+                espériez. Un essai non concluant peut révéler une ressource
+                manquante, un obstacle collectif ou un objectif trop large.
+                Réduisez l’action, changez de piste ou cherchez un appui.
+              </p>
+              <p>
+                Accompagner un deuil, une maladie ou une injustice n’exige pas
+                de « trouver le positif ». L’objectif peut devenir : traverser
+                la situation avec plus de soutien et moins de charge.
+                <a class="citation" href="#ref-3">[3]</a>
+                <a class="citation" href="#ref-5">[5]</a>
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>Le contexte social et culturel compte</summary>
+            <div class="details-body">
+              <p>
+                Le revenu, le logement, les discriminations, les conditions de
+                travail et l’accès aux soins influencent les possibilités
+                d’action. Un obstacle institutionnel ne traduit pas un manque de
+                volonté. Les ressources peuvent être individuelles, familiales,
+                communautaires, associatives ou collectives.
+                <a class="citation" href="#ref-12">[12]</a>
+              </p>
+              <p>
+                Demandez quelles solutions ont du sens pour la personne, dans sa
+                langue et ses relations. Une aide familiale, spirituelle ou
+                communautaire peut être envisagée si elle est souhaitée et sûre.
+                La culture ne justifie pas la violence. L’adaptation doit être
+                discutée localement ; une version française ne suffit pas à
+                assurer une validité interculturelle.
+                <a class="citation" href="#ref-5">[5]</a>
+              </p>
+            </div>
+          </details>
+          <h2 class="block-heading">Que disent les études ?</h2>
+          <details>
+            <summary>Thérapie de résolution de problème et dépression</summary>
+            <div class="details-body">
+              <p>
+                <span class="tag"
+                  ><button class="glossary-button" data-term="meta">
+                    Méta-analyse
+                  </button>
+                  d’<button class="glossary-button" data-term="random">
+                    essais randomisés
+                  </button></span
+                >
+              </p>
+              <p>
+                Cuijpers et coll. (2018) rassemblent 30 essais, soit 3 530
+                adultes, comparant une thérapie de résolution de problème à des
+                conditions témoins, à d’autres psychothérapies ou à des
+                médicaments. Sur les 9 études à faible risque de
+                <button class="glossary-button" data-term="bias">biais</button>,
+                l’effet sur les symptômes dépressifs face aux témoins est
+                modeste :
+                <strong
+                  ><button class="glossary-button" data-term="effect">g</button>
+                  = 0,34 ;
+                  <button class="glossary-button" data-term="interval">
+                    IC à 95 %
+                  </button>
+                  [0,22 ; 0,46]</strong
+                >. <a class="citation" href="#ref-2">[2]</a>
+              </p>
+              <p>
+                L’effet global est plus grand, mais très
+                <button class="glossary-button" data-term="heterogeneity">
+                  hétérogène</button
+                >. Les biais et la préférence des chercheurs pour cette méthode
+                peuvent gonfler les résultats. Ces essais concernent une
+                thérapie structurée ; ils ne démontrent pas qu’un formulaire
+                autonome produira le même bénéfice.
+              </p>
+              <p>
+                <strong>Portée :</strong> soutien à la méthode clinique ;
+                extrapolation indirecte à cet outil quotidien. Aucune
+                supériorité générale sur les autres psychothérapies n’est
+                établie ici.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>Une adaptation communautaire au Zimbabwe</summary>
+            <div class="details-body">
+              <p>
+                <span class="tag"
+                  ><button class="glossary-button" data-term="cluster">
+                    Essai randomisé en grappes
+                  </button></span
+                >
+              </p>
+              <p>
+                Chibanda et coll. (2016) ont étudié 573 adultes dans 24 centres
+                de soins primaires à Harare. Un programme culturellement adapté,
+                assuré par des intervenantes communautaires formées, a été
+                comparé à des soins usuels renforcés. Les symptômes de troubles
+                mentaux courants étaient plus faibles à six mois dans le groupe
+                intervention. <a class="citation" href="#ref-13">[13]</a>
+              </p>
+              <p>
+                <strong>Limites :</strong> population majoritairement féminine,
+                contexte urbain spécifique, accompagnement humain et plusieurs
+                composantes du programme. On ne peut pas isoler l’effet d’une
+                fiche de résolution de problème ni généraliser automatiquement à
+                tous les pays.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              Recommandations professionnelles et choix d’interface
+            </summary>
+            <div class="details-body">
+              <p>
+                PM+ de l’OMS associe plusieurs stratégies psychologiques et
+                prévoit formation et supervision. Les premiers secours
+                psychologiques et les recommandations sur les violences
+                soutiennent l’écoute, le respect des choix, la sécurité et
+                l’aide concrète. Ce sont des guides ; ce ne sont pas des essais
+                évaluant notre application.
+                <a class="citation" href="#ref-3">[3]</a>
+                <a class="citation" href="#ref-5">[5]</a>
+                <a class="citation" href="#ref-6">[6]</a>
+              </p>
+              <p>
+                Les étapes visibles, les exemples et les détails repliables
+                suivent des recommandations d’ergonomie. La navigation au
+                clavier, les intitulés explicites et les contrastes visent les
+                critères WCAG 2.2. Ces choix ne remplacent pas des tests
+                d’utilisabilité avec le public cible ni un audit complet
+                d’accessibilité. <a class="citation" href="#ref-14">[14]</a>
+                <a class="citation" href="#ref-15">[15]</a>
+              </p>
+            </div>
+          </details>
+          <h2 class="block-heading">À faire / À éviter</h2>
+          <div class="two-col">
+            <div class="procon">
+              <h3>✓ Des habitudes aidantes</h3>
+              <ul>
+                <li>Traiter un problème à la fois.</li>
+                <li>Choisir un but concret et réaliste.</li>
+                <li>Préserver son énergie et sa sécurité.</li>
+                <li>Tester une petite action et prévoir un bilan.</li>
+              </ul>
+            </div>
+            <div class="procon avoid">
+              <h3>× Des pièges fréquents</h3>
+              <ul>
+                <li>Attendre la solution parfaite.</li>
+                <li>Vouloir contrôler la réaction d’autrui.</li>
+                <li>Confondre violence et désaccord ordinaire.</li>
+                <li>Conclure qu’un essai raté est un échec personnel.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="notice amber section-gap">
+            <strong>Mise en garde</strong>Cet outil éducatif ne remplace pas une
+            évaluation médicale, psychologique, sociale ou juridique. Une
+            détresse persistante, une désorganisation importante, des idées
+            suicidaires ou des violences justifient un soutien adapté. Ne
+            modifiez pas un traitement sur la base de cette page.
+            <a href="#securite">Consulter les repères de sécurité</a>.
+          </div>
+          <details class="section-gap">
+            <summary>Petit glossaire</summary>
+            <div class="details-body" id="glossary-list"></div>
+          </details>
+          <div class="button-row section-gap">
+            <a class="btn primary" href="#outil">Revenir à mon problème →</a
+            ><a class="btn" href="#bibliographie">Consulter les sources</a>
+          </div>
+        </div>
+      </section>
+      <section id="securite" class="view" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">La sécurité passe avant l’exercice</div>
+            <h1>Vous n’avez pas à gérer cela seul.</h1>
+            <p>
+              Ces repères s’adressent à tous les pays. Les ressources
+              disponibles et les modalités d’accès varient selon votre lieu de
+              vie.
+            </p>
+          </div>
+          <div class="notice red">
+            <strong
+              >Danger immédiat, blessure grave ou risque de passage à l’acte
+              suicidaire</strong
+            >Rejoignez si possible un lieu sûr et sollicitez les services
+            d’urgence locaux ou le service de soins le plus proche. Si vous êtes
+            menacé, les forces de l’ordre locales peuvent être une option
+            lorsque les contacter est sûr et pertinent dans votre contexte. Une
+            personne de confiance ou une association peut vous aider à accéder à
+            la ressource la plus sûre.
+          </div>
+          <div class="two-col section-gap">
+            <div class="card padded">
+              <h3>Une aide dans votre pays</h3>
+              <p>
+                Recherchez une ligne d’écoute par pays et par besoin. Vérifiez
+                les horaires, langues et moyens de contact.
+              </p>
+              <a
+                class="btn section-gap"
+                href="https://findahelpline.com/fr-FR"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Find A Helpline ↗</a
+              >
+              <p class="hint">
+                Annuaire international ; ce n’est pas un service d’intervention
+                d’urgence.
+              </p>
+            </div>
+            <div class="card padded">
+              <h3>Pour un enfant ou un adolescent</h3>
+              <p>
+                Parlez à un adulte sûr, extérieur à la situation si nécessaire,
+                ou à un service de protection de l’enfance.
+              </p>
+              <a
+                class="btn section-gap"
+                href="https://childhelplineinternational.org/helplines/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Lignes d’aide par pays ↗</a
+              >
+              <p class="hint">
+                Child Helpline International. Tous les pays n’ont pas de ligne
+                répertoriée.
+              </p>
+            </div>
+          </div>
+          <details class="section-gap" open>
+            <summary>En cas de violences ou de contrôle</summary>
+            <div class="details-body">
+              <ul>
+                <li>
+                  Vous pouvez chercher de l’aide sans avoir de preuve et sans
+                  savoir comment nommer ce que vous vivez.
+                </li>
+                <li>
+                  Évitez de confronter l’auteur si cela augmente le danger. Un
+                  professionnel ou une association spécialisée peut aider à
+                  préparer la suite en sécurité.
+                </li>
+                <li>
+                  Si votre appareil est surveillé, utilisez si possible un
+                  appareil sûr. Ne téléchargez pas et n’enregistrez pas de
+                  brouillon sensible.
+                </li>
+                <li>
+                  Conserver des traces peut être utile seulement si cela ne vous
+                  expose pas davantage ; leur utilité juridique varie selon le
+                  pays.
+                </li>
+              </ul>
+              <p>
+                En cas de strangulation, de difficulté à respirer, de perte de
+                connaissance ou d’agression sexuelle récente, demandez
+                rapidement une évaluation médicale, même en l’absence de marque
+                visible. <a class="citation" href="#ref-6">[6]</a>
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>Si un proche évoque le suicide</summary>
+            <div class="details-body">
+              <p>
+                Prenez ses propos au sérieux. Demandez calmement s’il pense à se
+                suicider et s’il se sent en danger maintenant. En cas de risque
+                immédiat, ne le laissez pas seul si vous pouvez rester sans vous
+                mettre en danger et sollicitez les urgences locales. À distance,
+                essayez de mobiliser une personne sûre à proximité. Ne promettez
+                pas de garder un danger vital secret.
+                <a class="citation" href="#ref-17">[17]</a>
+              </p>
+              <p>
+                Ne tentez pas de le maîtriser physiquement ou de saisir une
+                arme. Un professionnel doit évaluer la situation ; cet outil ne
+                le fait pas.
+                <a
+                  href="https://www.iasp.info/crisis-centres-helplines/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Ressources de l’Association internationale pour la prévention
+                  du suicide ↗</a
+                >
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>Confidentialité de cette page</summary>
+            <div class="details-body">
+              <p>
+                Le texte saisi n’est envoyé à aucun serveur par l’application.
+                Il n’y a ni compte, ni outil d’analyse d’audience, ni police
+                chargée depuis un service externe. L’hébergeur peut toutefois
+                recevoir les informations techniques habituelles lors de
+                l’ouverture du site.
+              </p>
+              <p>
+                La sauvegarde facultative reste dans ce navigateur, sans
+                chiffrement. Le bouton « Tout effacer » retire ce brouillon,
+                mais ne supprime ni vos téléchargements, ni vos impressions, ni
+                l’historique de navigation. Les liens externes ouvrent des sites
+                avec leur propre politique de confidentialité.
+              </p>
+            </div>
+          </details>
+          <div class="notice amber section-gap">
+            <strong>Besoin de masquer la page rapidement ?</strong>Le bouton
+            ci-dessous remplace cette page par Wikipédia. Il ne supprime pas
+            l’historique, les fichiers téléchargés ou un brouillon déjà
+            enregistré.
+            <div class="button-row" style="margin-top: 12px">
+              <button class="btn" data-action="quick-exit">
+                Quitter cette page ↗</button
+              ><button class="btn danger" data-action="reset">
+                Effacer mon brouillon
+              </button>
+            </div>
+          </div>
+          <p class="source-note">
+            Repères issus des recommandations OMS et des annuaires
+            internationaux. Leur adaptation doit tenir compte de la sécurité,
+            des ressources et du cadre local. <a href="#ref-5">[5]</a>
+            <a href="#ref-6">[6]</a> <a href="#ref-16">[16]</a>
+          </p>
+        </div>
+      </section>
+      <section id="bibliographie" class="view" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">Transparence & sources</div>
+            <h1>Bibliographie</h1>
+            <p>
+              Les études, les recommandations et les choix de conception sont
+              distingués. Sélection raisonnée, non exhaustive ; références
+              vérifiées le 2 octobre 2026.
+            </p>
+          </div>
+          <div class="notice">
+            <strong>Ce qui a été adapté</strong>La progression s’appuie sur le
+            module fourni du Projet IPT. Les formulations, exemples et
+            interfaces sont originaux. Les fiches annexes portant une
+            restriction de modification ne sont pas reproduites. Les résultats
+            des études ne valent pas validation de cette application.
+          </div>
+          <ol class="bibliography" id="references">
+            <li class="reference" id="ref-1" data-ref="1">
+              <div>
+                <span class="ref-label"
+                  >Support d’origine · Réadaptation psychosociale</span
+                >
+                <p>
+                  Briand, C., Bélanger, R., Hamel, V., Villeneuve, K., & Hébert,
+                  L. (2003). <em>Module 6 : Résolution de problèmes.</em> Projet
+                  IPT.
+                </p>
+                <small
+                  >Document fourni par l’utilisateur, mars 2003, notamment p. 3,
+                  8 et 25–37. Pas de lien public vérifié. Une adaptation de la
+                  démarche ne constitue pas le programme IPT complet.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-2" data-ref="2">
+              <div>
+                <span class="ref-label"
+                  >Synthèse quantitative · Psychologie clinique</span
+                >
+                <p>
+                  Cuijpers, P., de Wit, L., Kleiboer, A., Karyotaki, E., &
+                  Ebert, D. D. (2018). Problem-solving therapy for adult
+                  depression: An updated meta-analysis.
+                  <em>European Psychiatry, 48</em>, 27–37.
+                  <a
+                    href="https://doi.org/10.1016/j.eurpsy.2017.11.006"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >doi:10.1016/j.eurpsy.2017.11.006 ↗</a
+                  >
+                </p>
+                <small
+                  >30 essais randomisés ; pertinence clinique, extrapolation
+                  indirecte à un outil autonome.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-3" data-ref="3">
+              <div>
+                <span class="ref-label"
+                  >Guide d’intervention · Santé mentale internationale</span
+                >
+                <p>
+                  World Health Organization. (2018).
+                  <em
+                    >Problem management plus (PM+): Individual psychological
+                    help for adults impaired by distress in communities exposed
+                    to adversity</em
+                  >
+                  (version 1.1, WHO/MSD/MER/18.5).
+                  <a
+                    href="https://www.who.int/publications/i/item/WHO-MSD-MER-18.5/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Publication OMS ↗</a
+                  >
+                </p>
+                <small
+                  >Programme à plusieurs composantes, avec accompagnement formé
+                  ; cette page ne délivre pas PM+.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-4" data-ref="4">
+              <div>
+                <span class="ref-label"
+                  >Méta-analyse · Psychologie sociale</span
+                >
+                <p>
+                  Gollwitzer, P. M., & Sheeran, P. (2006). Implementation
+                  intentions and goal achievement: A meta-analysis of effects
+                  and processes.
+                  <em>Advances in Experimental Social Psychology, 38</em>,
+                  69–119.
+                  <a
+                    href="https://doi.org/10.1016/S0065-2601(06)38002-1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >doi:10.1016/S0065-2601(06)38002-1 ↗</a
+                  >
+                </p>
+                <small
+                  >Appui aux plans « si… alors… » ; objectifs et populations
+                  variés.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-5" data-ref="5">
+              <div>
+                <span class="ref-label"
+                  >Guide de consensus · Soutien psychosocial</span
+                >
+                <p>
+                  World Health Organization, War Trauma Foundation, & World
+                  Vision International. (2011).
+                  <em>Psychological first aid: Guide for field workers.</em>
+                  WHO.
+                  <a
+                    href="https://www.who.int/publications/i/item/9789241548205"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Guide OMS ↗</a
+                  >
+                </p>
+                <small
+                  >Écoute, besoins pratiques, dignité et adaptation culturelle.
+                  Extrapolation au soutien quotidien ; pas une preuve directe
+                  sur cette interface.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-6" data-ref="6">
+              <div>
+                <span class="ref-label"
+                  >Recommandations cliniques · Violences</span
+                >
+                <p>
+                  World Health Organization. (2014).
+                  <em
+                    >Health care for women subjected to intimate partner
+                    violence or sexual violence: A clinical handbook.</em
+                  >
+                  <a
+                    href="https://www.who.int/publications/i/item/WHO-RHR-14.26"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Manuel OMS ↗</a
+                  >
+                  Voir aussi les
+                  <a
+                    href="https://www.who.int/publications/i/item/9789241548595"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >recommandations cliniques et politiques de 2013 ↗</a
+                  >.
+                </p>
+                <small
+                  >Source centrée sur les femmes victimes de violences
+                  conjugales ou sexuelles. L’extension des principes d’accueil à
+                  d’autres relations et genres est une adaptation, pas une
+                  validation de ces variantes.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-7" data-ref="7">
+              <div>
+                <span class="ref-label"
+                  >Outil de sensibilisation · Violences dans le couple</span
+                >
+                <p>
+                  Centre Hubertine Auclert. (s. d.). <em>Le Violentomètre.</em>
+                  <a
+                    href="https://www.centre-hubertine-auclert.fr/egalitheque/publication/le-violentometre"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Outil et présentation ↗</a
+                  >
+                </p>
+                <small
+                  >Outil issu du travail des observatoires de Paris et de
+                  Seine-Saint-Denis, de l’association En Avant Toute(s) et de la
+                  Mairie de Paris, adapté et diffusé par le Centre. Pas une
+                  échelle de prédiction clinique.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-8" data-ref="8">
+              <div>
+                <span class="ref-label">Norme internationale · Travail</span>
+                <p>
+                  International Labour Organization. (2019).
+                  <em>Violence and Harassment Convention, 2019 (No. 190).</em>
+                  <a
+                    href="https://www.ilo.org/resource/other/c190-violence-and-harassment-convention-2019-no-190"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Convention OIT ↗</a
+                  >
+                </p>
+                <small
+                  >Cadre normatif, non étude clinique. Ratification, droit
+                  applicable et procédures diffèrent selon le pays.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-9" data-ref="9">
+              <div>
+                <span class="ref-label"
+                  >Repères institutionnels · Éducation</span
+                >
+                <p>
+                  UNESCO. (2022).
+                  <em
+                    >Q&A: The role of teachers in preventing and addressing
+                    school violence.</em
+                  >
+                  <a
+                    href="https://www.unesco.org/en/articles/qa-role-teachers-preventing-and-addressing-school-violence"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Publication UNESCO ↗</a
+                  >
+                </p>
+                <small
+                  >Violences physiques, psychologiques et sexuelles ; repères
+                  adaptés ici à la relation pédagogique.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-10" data-ref="10">
+              <div>
+                <span class="ref-label"
+                  >Synthèse institutionnelle · Enfance</span
+                >
+                <p>
+                  World Health Organization. (s. d.).
+                  <em>Child maltreatment.</em>
+                  <a
+                    href="https://www.who.int/news-room/fact-sheets/detail/child-maltreatment"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Fiche OMS ↗</a
+                  >
+                  Voir aussi
+                  <a
+                    href="https://www.who.int/news-room/fact-sheets/detail/corporal-punishment-and-health"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Corporal punishment of children and health ↗</a
+                  >.
+                </p>
+                <small
+                  >Sources évolutives consultées le 2 octobre 2026. Les liens
+                  entre châtiments corporels et nombreux effets à long terme
+                  reposent largement sur des études observationnelles.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-11" data-ref="11">
+              <div>
+                <span class="ref-label"
+                  >Charte internationale · Droits dans les soins</span
+                >
+                <p>
+                  World Health Organization. (2024).
+                  <em>Patient safety rights charter.</em>
+                  <a
+                    href="https://www.who.int/publications/i/item/9789240093249"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Charte OMS ↗</a
+                  >
+                </p>
+                <small
+                  >Dignité, information, participation, sécurité et droits. Ne
+                  remplace pas le droit national.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-12" data-ref="12">
+              <div>
+                <span class="ref-label"
+                  >Synthèse · Santé publique et déterminants sociaux</span
+                >
+                <p>
+                  World Health Organization & Calouste Gulbenkian Foundation.
+                  (2014). <em>Social determinants of mental health.</em> WHO.
+                  <a
+                    href="https://www.who.int/publications/i/item/9789241506809"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Rapport OMS ↗</a
+                  >
+                </p>
+                <small
+                  >Éclaire les contraintes structurelles. Aucun outil individuel
+                  ne se substitue à une action sociale ou collective.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-13" data-ref="13">
+              <div>
+                <span class="ref-label"
+                  >Essai randomisé · Soins communautaires au Zimbabwe</span
+                >
+                <p>
+                  Chibanda, D., Weiss, H. A., Verhey, R., Simms, V., Munjoma,
+                  R., Rusakaniko, S., Chingono, A., Munetsi, E., Bere, T.,
+                  Manda, E., Abas, M., & Araya, R. (2016). Effect of a primary
+                  care–based psychological intervention on symptoms of common
+                  mental disorders in Zimbabwe: A randomized clinical trial.
+                  <em>JAMA, 316</em>(24), 2618–2626.
+                  <a
+                    href="https://doi.org/10.1001/jama.2016.19102"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >doi:10.1001/jama.2016.19102 ↗</a
+                  >
+                </p>
+                <small
+                  >Randomisation de centres, 573 adultes, suivi à six mois.
+                  Programme accompagné et adapté culturellement ; pas un essai
+                  d’auto-assistance numérique.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-14" data-ref="14">
+              <div>
+                <span class="ref-label"
+                  >Ergonomie · Recommandations de conception</span
+                >
+                <p>
+                  Nielsen Norman Group.
+                  <em
+                    ><a
+                      href="https://www.nngroup.com/articles/progressive-disclosure/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Progressive disclosure ↗</a
+                    ></em
+                  >
+                  ;
+                  <em
+                    ><a
+                      href="https://www.nngroup.com/articles/recognition-and-recall/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Memory recognition and recall in user interfaces ↗</a
+                    ></em
+                  >
+                  ;
+                  <em
+                    ><a
+                      href="https://www.nngroup.com/articles/ten-usability-heuristics/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >10 usability heuristics for user interface design ↗</a
+                    ></em
+                  >.
+                </p>
+                <small
+                  >Recommandations professionnelles et heuristiques, distinctes
+                  d’une validation expérimentale du parcours.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-15" data-ref="15">
+              <div>
+                <span class="ref-label">Standard · Accessibilité</span>
+                <p>
+                  World Wide Web Consortium.
+                  <em>Web Content Accessibility Guidelines (WCAG) 2.2.</em>
+                  <a
+                    href="https://www.w3.org/TR/WCAG22/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Recommandation W3C ↗</a
+                  >
+                  ;
+                  <a
+                    href="https://www.w3.org/WAI/WCAG22/Understanding/content-on-hover-or-focus.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >contenus au survol et au focus ↗</a
+                  >.
+                </p>
+                <small
+                  >Référentiel de conception. Aucune certification de conformité
+                  revendiquée.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-16" data-ref="16">
+              <div>
+                <span class="ref-label">Annuaires · Aide internationale</span>
+                <p>
+                  <a
+                    href="https://www.iasp.info/crisis-centres-helplines/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >International Association for Suicide Prevention — Crisis
+                    centres & helplines ↗</a
+                  >
+                  ;
+                  <a
+                    href="https://findahelpline.com/fr-FR"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Find A Helpline ↗</a
+                  >
+                  ;
+                  <a
+                    href="https://childhelplineinternational.org/helplines/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Child Helpline International ↗</a
+                  >.
+                </p>
+                <small
+                  >Ressources pratiques, non sources d’efficacité. Disponibilité
+                  et accès à vérifier localement.</small
+                >
+              </div>
+            </li>
+            <li class="reference" id="ref-17" data-ref="17">
+              <div>
+                <span class="ref-label"
+                  >Conseils institutionnels · Prévention du suicide</span
+                >
+                <p>
+                  World Health Organization.
+                  <em>Suicide — Questions and answers.</em>
+                  <a
+                    href="https://www.who.int/news-room/questions-and-answers/item/suicide"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Repères OMS ↗</a
+                  >
+                  ; National Institute of Mental Health.
+                  <em>Frequently asked questions about suicide.</em>
+                  <a
+                    href="https://www.nimh.nih.gov/health/publications/suicide-faq"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Repères NIMH ↗</a
+                  >.
+                </p>
+                <small
+                  >Sources de conseils au public ; les coordonnées américaines
+                  présentes sur le site NIMH ne sont pas transposables à tous
+                  les pays.</small
+                >
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section id="recap" class="view" hidden>
+        <div class="page-narrow">
+          <div class="page-heading">
+            <div class="eyebrow">Votre repère pour la suite</div>
+            <h1>Mon prochain pas</h1>
+            <p>
+              Un plan que vous pouvez ajuster. Seuls les éléments que vous avez
+              saisis apparaissent ici.
+            </p>
+            <p class="print-only">
+              Pas à pas · Fiche personnelle de résolution de problème · Outil
+              éducatif, sans validation clinique propre.
+            </p>
+          </div>
+          <div id="recap-content" class="recap-grid"></div>
+          <div class="button-row section-gap no-print">
+            <button class="btn primary" data-action="print">
+              Imprimer / enregistrer en PDF</button
+            ><button class="btn" data-action="text">
+              Télécharger le récapitulatif</button
+            ><button class="btn" data-step="5">
+              Faire le point après l’essai →
+            </button>
+          </div>
+          <p class="hint no-print">
+            Le document contient vos réponses personnelles. Sur un appareil
+            partagé, évitez de le conserver ou de l’imprimer.
+          </p>
+          <div class="notice section-gap">
+            Une action non réalisée ou un résultat décevant n’est pas un
+            jugement sur vous. Revenez à une étape, cherchez un appui ou
+            choisissez un pas plus petit.
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>Pas à pas · Un outil pour les difficultés du quotidien.</span>
+      <div class="foot-links">
+        <a href="#securite">Sécurité & confidentialité</a
+        ><a href="#bibliographie">Sources</a>
+      </div>
+    </footer>
+    <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <dialog id="confirm-dialog" aria-labelledby="dialog-title">
+      <h2 id="dialog-title"></h2>
+      <p id="dialog-description"></p>
+      <div class="button-row">
+        <button class="btn primary" id="dialog-confirm">Confirmer</button
+        ><button class="btn" id="dialog-cancel">Annuler</button>
+      </div>
+    </dialog>
+    <script>
+      "use strict";
+      // Standalone, zero-dependency application. User input is escaped before HTML rendering.
+      const $ = (s, r = document) => r.querySelector(s),
+        $$ = (s, r = document) => [...r.querySelectorAll(s)];
+      const esc = (v) =>
+        String(v ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const KEY = "pas-a-pas.brouillon.v1";
+      const contextIcon = (k) => {
+        const paths = {
+          daily: "M3 10l9-7 9 7M5 9v12h14V9M9 21v-7h6v7",
+          work: "M8 6V3h8v3M3 6h18v14H3zM3 11c6 4 12 4 18 0M10 12h4",
+          couple:
+            "M12 20S2 14 2 8a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 6-10 12-10 12z",
+          family:
+            "M3 20v-4a4 4 0 0 1 8 0v4M13 20v-4a4 4 0 0 1 8 0v4M10 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M20 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
+          study:
+            "M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1v15",
+          health: "M9 3h6v6h6v6h-6v6H9v-6H3V9h6z",
+        };
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[k]}"/></svg>`;
+      };
+      const contexts = {
+        daily: {
+          label: "Vie quotidienne",
+          icon: "⌂",
+          situation:
+            "Depuis deux semaines, je repousse le rangement de mes papiers et je ne retrouve plus les factures.",
+          goal: "Retrouver les deux factures à régler cette semaine.",
+          obstacle:
+            "Les papiers sont mélangés et je ne sais pas par quoi commencer.",
+          control: "Choisir un dossier et y consacrer dix minutes.",
+          outside: "Le temps de réponse des organismes.",
+          ideas: [
+            "Trier seulement les courriers de ce mois.",
+            "Demander à une personne de confiance de m’aider dix minutes.",
+            "Contacter l’organisme pour obtenir un duplicata.",
+          ],
+          action:
+            "Ouvrir les cinq courriers les plus récents pendant dix minutes.",
+          support: "Une personne de confiance, à côté de moi ou au téléphone.",
+          backup:
+            "Si je me sens débordé, je m’arrête après une enveloppe et je demande un appui.",
+          measure: "J’ai identifié les deux factures et leur date limite.",
+          result:
+            "J’ai retrouvé une facture. Il me manque un duplicata pour la seconde.",
+        },
+        work: {
+          label: "Travail",
+          icon: "▣",
+          situation:
+            "Cette semaine, deux responsables m’ont confié trois dossiers urgents avec la même échéance.",
+          goal: "Obtenir un ordre de priorité et un délai réaliste pour ces dossiers.",
+          obstacle:
+            "Je n’ai pas assez de temps et les priorités ne sont pas partagées.",
+          control: "Rendre visibles les tâches et demander un arbitrage.",
+          outside: "La décision finale et les effectifs disponibles.",
+          ideas: [
+            "Lister les tâches et demander un ordre de priorité écrit.",
+            "Proposer un report argumenté pour un dossier.",
+            "Demander l’appui d’un collègue ou d’un représentant du personnel.",
+          ],
+          action:
+            "Préparer la liste des trois dossiers et le temps nécessaire pour chacun.",
+          support: "Un collègue de confiance ou un représentant du personnel.",
+          backup:
+            "Si mon responsable n’est pas disponible, j’envoie une demande factuelle de priorisation.",
+          measure:
+            "Un ordre de priorité ou un rendez-vous d’arbitrage est fixé.",
+          result:
+            "Deux priorités ont été clarifiées ; le délai du troisième dossier reste à négocier.",
+        },
+        couple: {
+          label: "Couple & relations",
+          icon: "♧",
+          situation:
+            "Cette semaine, nous avons annulé deux moments ensemble car nos horaires n’étaient pas coordonnés.",
+          goal: "Proposer un moment ensemble compatible avec nos deux horaires.",
+          obstacle: "Nous n’avons pas comparé nos disponibilités.",
+          control: "Exprimer mon besoin et proposer deux créneaux.",
+          outside: "La disponibilité et la réponse de mon partenaire.",
+          ideas: [
+            "Proposer un échange calme de quinze minutes.",
+            "Mettre nos disponibilités sur un calendrier partagé, avec notre accord.",
+            "Prévoir une activité courte et peu coûteuse.",
+          ],
+          action:
+            "Demander un moment pour parler de nos disponibilités, si je me sens en sécurité.",
+          support: "Un moment calme, sans interruption.",
+          backup:
+            "Si le moment ne convient pas, je propose un autre créneau sans insister.",
+          measure: "Nous avons choisi un créneau qui convient à chacun.",
+          result:
+            "Nous avons prévu une promenade ; le calendrier partagé ne nous convenait pas.",
+        },
+        family: {
+          label: "Famille",
+          icon: "♧",
+          situation:
+            "Le matin, mon enfant et moi nous pressons et nous arrivons souvent en retard.",
+          goal: "Préparer un départ plus calme deux matins cette semaine.",
+          obstacle:
+            "Les affaires ne sont pas prêtes et la routine est trop longue.",
+          control:
+            "Préparer mes affaires et proposer une routine adaptée à l’âge de mon enfant.",
+          outside: "Les imprévus et le rythme de mon enfant.",
+          ideas: [
+            "Préparer les sacs ensemble la veille.",
+            "Dessiner une courte routine avec mon enfant.",
+            "Réduire une tâche non indispensable le matin.",
+          ],
+          action:
+            "Préparer le sac et les vêtements avec mon enfant ce soir, sans pression.",
+          support: "Un autre adulte sûr si disponible.",
+          backup:
+            "Si mon enfant est fatigué, je prépare l’essentiel et nous essayons ensemble un autre soir.",
+          measure: "Le départ s’est fait avec une étape de moins à gérer.",
+          result:
+            "Le sac était prêt. Le petit-déjeuner a demandé plus de temps que prévu.",
+        },
+        study: {
+          label: "Études",
+          icon: "▤",
+          situation:
+            "Je dois rendre un travail la semaine prochaine et je n’ai pas commencé le plan.",
+          goal: "Rédiger un plan provisoire en trois parties.",
+          obstacle:
+            "La consigne me semble floue et j’essaie de tout lire avant d’écrire.",
+          control: "Écrire mes questions et commencer un brouillon.",
+          outside: "La date de réponse de l’enseignant.",
+          ideas: [
+            "Écrire un plan provisoire sans chercher la perfection.",
+            "Demander une précision sur la consigne.",
+            "Travailler vingt minutes avec un camarade.",
+          ],
+          action:
+            "Relire la consigne et noter trois idées pendant quinze minutes.",
+          support: "La consigne et un camarade disponible.",
+          backup:
+            "Si je bloque, je note une seule question à poser à l’enseignant.",
+          measure: "J’ai un plan de trois titres, même imparfait.",
+          result: "J’ai rédigé deux titres et identifié une question précise.",
+        },
+        health: {
+          label: "Santé & soins",
+          icon: "✚",
+          situation:
+            "J’ai manqué deux rendez-vous car le trajet était difficile à organiser.",
+          goal: "Préparer le déplacement pour mon prochain rendez-vous.",
+          obstacle: "Le coût du transport et l’absence d’accompagnement.",
+          control:
+            "Informer l’équipe de mes difficultés et demander les options disponibles.",
+          outside: "Les transports et les aides réellement accessibles.",
+          ideas: [
+            "Demander un autre horaire ou une modalité à distance si elle convient aux soins.",
+            "Chercher une aide au transport avec un travailleur social.",
+            "Demander à un proche s’il peut accompagner le trajet.",
+          ],
+          action:
+            "Contacter le secrétariat pour expliquer l’obstacle de transport.",
+          support: "Un proche ou un intervenant social, avec mon accord.",
+          backup:
+            "Si je n’arrive pas à téléphoner, je prépare un court message avec une personne sûre.",
+          measure:
+            "J’ai une option de déplacement ou une autre modalité convenue avec l’équipe.",
+          result:
+            "Le secrétariat m’a proposé un autre horaire ; le transport reste à confirmer.",
+        },
+      };
+      const stepNames = [
+        ["Cadrer", "Mon contexte"],
+        ["Clarifier", "Un but précis"],
+        ["Imaginer", "Plusieurs pistes"],
+        ["Choisir", "Comparer les options"],
+        ["Agir", "Un premier pas"],
+        ["Réévaluer", "Apprendre de l’essai"],
+      ];
+      const glossary = {
+        meta: [
+          "Méta-analyse",
+          "Méthode qui combine statistiquement les résultats de plusieurs études portant sur une question comparable. Sa fiabilité dépend de la qualité et de la compatibilité des études.",
+        ],
+        random: [
+          "Essai randomisé",
+          "Étude dans laquelle le hasard détermine le groupe d’intervention ou de comparaison. Cela réduit certains biais, sans les éliminer tous.",
+        ],
+        cluster: [
+          "Essai randomisé en grappes",
+          "Étude où le hasard répartit des groupes entiers, par exemple des centres de santé, et non chaque personne séparément.",
+        ],
+        heterogeneity: [
+          "Hétérogénéité",
+          "Variabilité entre les résultats des études. Elle peut refléter des différences de populations, de méthodes, de traitements ou de contexte.",
+        ],
+        interval: [
+          "Intervalle de confiance",
+          "Intervalle calculé pour exprimer l’incertitude statistique autour d’une estimation. À 95 %, la méthode couvrirait la vraie valeur dans 95 % des répétitions idéales de l’étude ; cela ne prend pas en compte tous les biais.",
+        ],
+        effect: [
+          "g de Hedges",
+          "Différence moyenne standardisée entre groupes, exprimée en unités d’écart-type. Ce n’est ni un pourcentage de guérison ni la probabilité qu’une personne aille mieux.",
+        ],
+        power: [
+          "Asymétrie de pouvoir",
+          "Situation où une personne dispose de davantage d’autorité, de ressources ou de moyens de pression que l’autre.",
+        ],
+        control: [
+          "Marge de manœuvre",
+          "Ce sur quoi vous pouvez agir, seul ou avec de l’aide. Elle dépend aussi des ressources et des contraintes autour de vous.",
+        ],
+        rumination: [
+          "Rumination",
+          "Revenir en boucle sur les mêmes pensées sans avancer vers une décision ou un soutien utile.",
+        ],
+        implementation: [
+          "Intention de mise en œuvre",
+          "Un plan « si… alors… » : vous prévoyez ce que vous ferez lorsqu’une situation précise se présentera.",
+        ],
+        coercion: [
+          "Contrôle coercitif",
+          "Ensemble de comportements qui restreignent la liberté par la surveillance, l’isolement, les menaces ou la dépendance imposée.",
+        ],
+        consent: [
+          "Consentement",
+          "Accord libre et éclairé, qui peut être retiré. Le silence, la peur ou une pression ne valent pas accord.",
+        ],
+        validation: [
+          "Valider une émotion",
+          "Reconnaître ce que la personne ressent, sans devoir approuver toutes ses interprétations ou tous ses actes.",
+        ],
+        bias: [
+          "Biais",
+          "Élément d’une étude qui peut déformer systématiquement ses résultats.",
+        ],
+        efficacy: [
+          "Efficacité",
+          "Capacité d’une intervention à produire un effet dans les conditions où elle a été étudiée. Ce résultat ne se transfère pas automatiquement à d’autres situations.",
+        ],
+      };
+      function term(k) {
+        return `<button type="button" class="glossary-button" data-term="${k}">${glossary[k][0].toLowerCase()}</button>`;
+      }
+      function fresh() {
+        return {
+          version: 1,
+          step: 0,
+          context: "daily",
+          safety: "",
+          energy: "",
+          fields: {
+            situation: "",
+            goal: "",
+            obstacle: "",
+            emotion: "",
+            control: "",
+            outside: "",
+            action: "",
+            when: "",
+            support: "",
+            backup: "",
+            measure: "",
+            reviewDate: "",
+            result: "",
+            learning: "",
+            next: "",
+            trial: "notyet",
+          },
+          options: [
+            { id: 1, text: "", plus: "", minus: "" },
+            { id: 2, text: "", plus: "", minus: "" },
+            { id: 3, text: "", plus: "", minus: "" },
+          ],
+          chosen: null,
+        };
+      }
+      let state = fresh(),
+        remember = false,
+        nextId = 4,
+        previousFocus = null,
+        pendingConfirm = null,
+        supportMode = "listen",
+        meterIndex = 0;
+      function validateDraft(raw) {
+        if (
+          !raw ||
+          raw.version !== 1 ||
+          !Object.hasOwn(contexts, raw.context) ||
+          !Array.isArray(raw.options) ||
+          raw.options.length < 1 ||
+          raw.options.length > 8
+        )
+          throw Error("invalid");
+        const clean = fresh();
+        clean.context = raw.context;
+        clean.step =
+          Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
+            ? raw.step
+            : 0;
+        clean.energy = ["", "ready", "pause"].includes(raw.energy)
+          ? raw.energy
+          : "";
+        clean.safety = ["", "safe", "unsure", "danger"].includes(raw.safety)
+          ? raw.safety
+          : "";
+        if (!raw.fields || typeof raw.fields !== "object")
+          throw Error("invalid");
+        Object.keys(clean.fields).forEach((k) => {
+          if (typeof raw.fields[k] === "string")
+            clean.fields[k] = raw.fields[k].slice(0, 6000);
+        });
+        clean.fields.trial = ["notyet", "yes", "partly", "no"].includes(
+          clean.fields.trial,
+        )
+          ? clean.fields.trial
+          : "notyet";
+        const ids = new Set();
+        clean.options = raw.options.map((o, i) => {
+          if (!o || typeof o.text !== "string") throw Error("invalid");
+          const id = i + 1;
+          ids.add(id);
+          return {
+            id,
+            text: o.text.slice(0, 6000),
+            plus: typeof o.plus === "string" ? o.plus.slice(0, 6000) : "",
+            minus: typeof o.minus === "string" ? o.minus.slice(0, 6000) : "",
+          };
+        });
+        const choice = raw.options.findIndex((o) => o.id === raw.chosen);
+        clean.chosen =
+          choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
+        return clean;
+      }
+      try {
+        const saved = localStorage.getItem(KEY);
+        if (saved) {
+          state = validateDraft(JSON.parse(saved));
+          remember = true;
+          nextId = state.options.length + 1;
+        }
+      } catch (e) {
+        /* Corrupt or unavailable storage does not block use. */
+      }
+      function persist() {
+        if (!remember) return;
+        try {
+          localStorage.setItem(KEY, JSON.stringify(state));
+        } catch (e) {
+          remember = false;
+          $("#remember").checked = false;
+          updatePrivacy();
+          toast(
+            "La sauvegarde a échoué. Téléchargez votre brouillon pour le conserver.",
+          );
+        }
+      }
+      function updatePrivacy() {
+        $("#privacy-status").textContent = remember
+          ? "Brouillon conservé sur cet appareil, sans chiffrement. Aucune transmission par l’outil."
+          : "Vos réponses restent dans cet onglet. Aucune transmission par l’outil.";
+        $("#remember").checked = remember;
+      }
+      function toast(t) {
+        $("#toast").textContent = t;
+        $("#toast").hidden = false;
+        clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => ($("#toast").hidden = true), 5500);
+      }
+      function confirmAction(title, text, action, label = "Confirmer") {
+        previousFocus = document.activeElement;
+        $("#dialog-title").textContent = title;
+        $("#dialog-description").textContent = text;
+        $("#dialog-confirm").textContent = label;
+        pendingConfirm = action;
+        $("#confirm-dialog").showModal();
+        $("#dialog-cancel").focus();
+      }
+      function closeDialog() {
+        const d = $("#confirm-dialog");
+        d.close();
+        pendingConfirm = null;
+        if (previousFocus?.isConnected) previousFocus.focus();
+      }
+      $("#dialog-cancel").addEventListener("click", closeDialog);
+      $("#confirm-dialog").addEventListener("cancel", (e) => {
+        e.preventDefault();
+        closeDialog();
+      });
+      $("#dialog-confirm").addEventListener("click", () => {
+        const fn = pendingConfirm;
+        closeDialog();
+        fn?.();
+      });
+      function example(text) {
+        return `<div class="example"><small>Exemple fictif · ${esc(contexts[state.context].label)}</small><p>${esc(text)}</p></div>`;
+      }
+      function field(key, label, hint = "", type = "textarea", ex = "") {
+        const val = state.fields[key] || "",
+          id = "field-" + key;
+        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${hint}</p>` : ""}${ex ? example(ex) : ""}</div>`;
+      }
+      const comparisonExamples = {
+        daily: [
+          "Un tri limité est plus facile à commencer.",
+          "Je peux ne pas retrouver une facture plus ancienne.",
+        ],
+        work: [
+          "Une liste factuelle rend la charge visible.",
+          "Cela demande une préparation et ne garantit pas un arbitrage.",
+        ],
+        couple: [
+          "Un temps calme permet de comparer nos disponibilités.",
+          "Mon partenaire peut ne pas être disponible à ce moment.",
+        ],
+        family: [
+          "Le matin comporte moins de tâches.",
+          "Il faut trouver un moment adapté le soir.",
+        ],
+        study: [
+          "Un premier brouillon donne une base à améliorer.",
+          "Je devrai peut-être le revoir après une précision de consigne.",
+        ],
+        health: [
+          "L’équipe connaît mon obstacle et peut proposer des options.",
+          "Une autre modalité de consultation peut être indisponible ou inadaptée.",
+        ],
+      };
+      function renderSteps() {
+        $("#steps").innerHTML = stepNames
+          .map(
+            (s, i) =>
+              `<li><button class="step-link" data-step="${i}"${i === state.step ? ' aria-current="step"' : ""}><span class="step-num">${i + 1}</span><span class="step-text"><b>${s[0]}</b><small>${s[1]}</small></span></button></li>`,
+          )
+          .join("");
+      }
+      function renderStep(focus = false) {
+        hideTooltip();
+        renderSteps();
+        const c = contexts[state.context],
+          i = state.step;
+        const titles = [
+          "Quel est votre contexte ?",
+          "Quel problème, précisément ?",
+          "Quelles pistes pourriez-vous essayer ?",
+          "Quelle option vous convient ?",
+          "Quel sera votre premier pas ?",
+          "Qu’avez-vous appris de cet essai ?",
+        ];
+        const leads = [
+          "Les exemples s’adaptent à votre choix. Vos réponses restent les vôtres.",
+          "Une situation, un but, un obstacle. Quelques phrases suffisent.",
+          "Notez vos idées avant de les juger. Deux ou trois pistes sont un bon départ.",
+          "Comparez les bénéfices et les contraintes, puis choisissez vous-même.",
+          "Préparez une action assez petite pour pouvoir la tenter.",
+          "Faites le point après l’action. Vous pouvez ajuster sans repartir de zéro.",
+        ];
+        let body = "";
+        if (i === 0) {
+          body = `<fieldset><legend>Le domaine de votre problème</legend><div class="contexts">${Object.entries(
+            contexts,
+          )
+            .map(
+              ([k, v]) =>
+                `<button type="button" class="context" data-context="${k}" aria-pressed="${state.context === k}"><span class="context-icon" aria-hidden="true">${contextIcon(k)}</span><span>${v.label}</span></button>`,
+            )
+            .join(
+              "",
+            )}</div><p class="hint">Plusieurs domaines se croisent ? Choisissez celui qui vous aide le plus.</p></fieldset><fieldset class="section-gap"><legend>Êtes-vous en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+            ["safe", "Oui, je peux réfléchir"],
+            ["unsure", "J’ai un doute"],
+            ["danger", "Je me sens en danger"],
+          ]
+            .map(
+              ([k, v]) =>
+                `<button class="pill" type="button" data-safety="${k}" aria-pressed="${state.safety === k}">${v}</button>`,
+            )
+            .join(
+              "",
+            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>La priorité est votre sécurité.</strong>Mettez l’exercice de côté si nécessaire. Vous pouvez chercher de l’aide sans devoir terminer le parcours.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>Un doute mérite d’être écouté.</strong>La peur, les menaces ou le contrôle ne sont pas de simples difficultés de communication. <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">S’il y a des menaces, du contrôle ou de la violence, <a href="#violences">consultez les repères de sécurité</a>.</p>`}<details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je me sens trop chargé pour commencer</summary><div class="details-body"><p>Vous pouvez vous arrêter. Si cela vous convient, posez les pieds au sol, regardez autour de vous et respirez naturellement. Choisissez une seule petite difficulté, ou demandez à une personne sûre de rester avec vous.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#proche">Comment être accompagné</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Pause choisie. Rien ne vous oblige à poursuivre maintenant. Vous pouvez reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
+        }
+        if (i === 1) {
+          body =
+            field(
+              "situation",
+              "Ce qui se passe",
+              "Décrivez une scène observable : quand, où, avec qui ? Évitez les informations identifiantes.",
+              "textarea",
+              c.situation,
+            ) +
+            field(
+              "goal",
+              "Le petit changement que je souhaite",
+              "Un résultat concret, réaliste et important pour vous.",
+              "textarea",
+              c.goal,
+            ) +
+            field(
+              "obstacle",
+              "Ce qui me bloque",
+              "Un manque de temps, d’information, de ressources, une difficulté relationnelle…",
+              "textarea",
+              c.obstacle,
+            ) +
+            `<details><summary>Mes émotions et ma marge de manœuvre (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Une émotion n’est pas une faute. Vous pouvez la nommer sans devoir la faire disparaître.", "text")}${field("control", "Ce sur quoi je peux agir", "Votre " + term("control") + " inclut la possibilité de demander un appui.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details>`;
+        }
+        if (i === 2) {
+          body = `<div class="notice"><strong>Pour l’instant, ouvrez les possibilités.</strong>Faire autrement, demander un appui, obtenir une information… Pensez aussi aux ressources collectives.</div><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example(c.ideas[j]) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button><p class="hint">Vous pouvez avancer avec une seule piste si c’est tout ce qui est possible aujourd’hui.</p>`;
+        }
+        if (i === 3) {
+          const options = state.options.filter((o) => o.text.trim());
+          body = options.length
+            ? `<p class="subtle" style="margin-bottom:17px">Une piste utile doit aussi être sûre et réalisable. Il n’y a pas de « meilleure solution » calculée automatiquement.</p>${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(c.ideas[0])}</p><p><strong>Apport possible :</strong> ${esc(comparisonExamples[state.context][0])}</p><p><strong>Limite :</strong> ${esc(comparisonExamples[state.context][1])}</p></div></details><details><summary>Quelques questions pour décider</summary><div class="details-body"><ul><li>Cette option respecte-t-elle mes besoins et ceux des autres ?</li><li>Est-elle faisable avec les ressources dont je dispose ?</li><li>Quels effets immédiats et à plus long terme ?</li><li>Puis-je essayer à petite échelle, avec un risque acceptable ?</li><li>Ai-je besoin d’un avis médical, social ou juridique ?</li></ul></div></details>`
+            : `<div class="notice amber"><strong>Vous n’avez pas encore noté de piste.</strong>Revenez à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
+        }
+        if (i === 4) {
+          const chosen = state.options.find((o) => o.id === state.chosen);
+          body = `<div class="notice"><strong>Mon option</strong>${chosen ? esc(chosen.text) : "Aucune option choisie. Vous pouvez en choisir une à l’étape précédente."}</div><div class="section-gap">${field("action", "La toute première action", "Une action observable et assez petite pour votre énergie du moment.", "textarea", c.action)}${field("when", "Quand et où ?", "Vous pouvez écrire une date, un moment ou une occasion précise.", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("support", "Avec quel appui ? (facultatif)", "Une personne, une information, du temps, un service ou un matériel.", "textarea", c.support)}<details><summary>Prévoir un obstacle et un plan de repli</summary><div class="details-body">${field("backup", "Si ça bloque… alors…", "C’est une " + term("implementation") + ". Évitez les options qui mettent en danger.", "textarea", c.backup)}</div></details><div class="section-gap">${field("measure", "Comment verrai-je un petit progrès ?", "Un signe simple, observable, sans exiger un résultat parfait.", "textarea", c.measure)}${field("reviewDate", "Quand faire le point ? (facultatif)", "Cette date figure sur votre fiche ; aucun rappel automatique n’est envoyé.", "date")}</div></div>`;
+        }
+        if (i === 5) {
+          body = `<fieldset><legend>Où en êtes-vous de l’action ?</legend><div class="choice-stack">${[
+            ["notyet", "Pas encore essayé"],
+            ["yes", "Essayé"],
+            ["partly", "En partie"],
+            ["no", "Je n’ai pas pu"],
+          ]
+            .map(
+              ([k, v]) =>
+                `<button class="pill" data-trial="${k}" aria-pressed="${state.fields.trial === k}">${v}</button>`,
+            )
+            .join(
+              "",
+            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Vous pouvez garder votre plan pour plus tard.</strong>Le bilan se remplit après l’essai. Pas besoin d’inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même une tentative partielle apporte une information.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que vous espériez</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, simplifier, changer de piste, chercher un appui ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+        }
+        $("#step-container").innerHTML =
+          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2><p class="step-lead">${leads[i]}</p><div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+        if (focus) {
+          $("#step-title").focus({ preventScroll: true });
+          $("#step-container").scrollIntoView({
+            block: "start",
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "instant"
+              : "smooth",
+          });
+        }
+      }
+      function changeStep(i) {
+        state.step = Math.max(0, Math.min(5, i));
+        persist();
+        if (location.hash !== "#outil") {
+          location.hash = "outil";
+          renderStep();
+        } else renderStep(true);
+      }
+      function goNext() {
+        if (state.step === 4 || state.step === 5) {
+          renderRecap();
+          location.hash = "recap";
+          return;
+        }
+        if (state.step === 2 && !state.options.some((o) => o.text.trim())) {
+          toast("Notez au moins une piste pour pouvoir la comparer.");
+          $("#ideas textarea")?.focus();
+          return;
+        }
+        if (
+          state.step === 3 &&
+          !state.options.some((o) => o.id === state.chosen && o.text.trim())
+        ) {
+          toast(
+            "Choisissez une option, ou revenez en arrière pour en imaginer une.",
+          );
+          $("#step-title").focus();
+          return;
+        }
+        changeStep(state.step + 1);
+      }
+      function renderRecap() {
+        const f = state.fields,
+          c = contexts[state.context],
+          choice = state.options.find((o) => o.id === state.chosen);
+        const dd = (k, v) =>
+          `<dt>${k}</dt><dd${v ? "" : ' class="empty"'}>${v ? esc(v) : "Non renseigné"}</dd>`;
+        const block = (title, idx, content) =>
+          `<article class="card recap-section"><h3>${title}<button class="text-button no-print" data-step="${idx}">Modifier</button></h3><dl>${content}</dl></article>`;
+        $("#recap-content").innerHTML =
+          block(
+            "1. Ma situation",
+            1,
+            dd("Contexte", c.label) +
+              dd("Les faits", f.situation) +
+              dd("Mon but", f.goal) +
+              dd("Mon obstacle", f.obstacle) +
+              (f.emotion ? dd("Mon ressenti", f.emotion) : "") +
+              (f.control ? dd("Ma marge de manœuvre", f.control) : "") +
+              (f.outside ? dd("Ce qui ne dépend pas de moi", f.outside) : ""),
+          ) +
+          block(
+            "2. Mes options",
+            2,
+            state.options
+              .filter((o) => o.text.trim())
+              .map(
+                (o, j) =>
+                  dd("Piste " + (j + 1), o.text) +
+                  (o.plus ? dd("Bénéfices envisagés", o.plus) : "") +
+                  (o.minus ? dd("Contraintes et risques", o.minus) : ""),
+              )
+              .join("") || dd("Pistes", ""),
+          ) +
+          block("3. Mon choix", 3, dd("Option retenue", choice?.text)) +
+          block(
+            "4. Mon premier pas",
+            4,
+            dd("Action", f.action) +
+              dd("Quand et où", f.when) +
+              dd("Appui", f.support) +
+              dd("Si ça bloque", f.backup) +
+              dd("Signe de progrès", f.measure) +
+              dd("Date du bilan", formatDate(f.reviewDate)),
+          ) +
+          block(
+            "5. Mon bilan",
+            5,
+            dd(
+              "Statut",
+              {
+                notyet: "Pas encore essayé",
+                yes: "Essayé",
+                partly: "Essayé en partie",
+                no: "Je n’ai pas pu",
+              }[f.trial],
+            ) +
+              (f.trial === "notyet"
+                ? ""
+                : dd("Résultat", f.result) +
+                  dd("Ce que j’en retiens", f.learning) +
+                  dd("Prochaine étape", f.next)),
+          );
+      }
+      function formatDate(s) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(s || "")) return "";
+        const [y, m, d] = s.split("-");
+        return `${d}/${m}/${y}`;
+      }
+      function download(name, content, mime) {
+        const a = document.createElement("a"),
+          url = URL.createObjectURL(new Blob([content], { type: mime }));
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+      }
+      function exportText() {
+        renderRecap();
+        const parts = $$(".recap-section").map((section) => {
+          const title = $("h3", section).firstChild.textContent;
+          return (
+            title +
+            "\n" +
+            $$("dt", section)
+              .map(
+                (dt) =>
+                  dt.textContent + " : " + dt.nextElementSibling.textContent,
+              )
+              .join("\n")
+          );
+        });
+        download(
+          "mon-prochain-pas.txt",
+          "MON PROCHAIN PAS\nFiche personnelle — Pas à pas\n\n" +
+            parts.join("\n\n") +
+            "\n\nOutil éducatif. Document personnel à conserver en lieu sûr.",
+          "text/plain;charset=utf-8",
+        );
+      }
+      const supportModes = {
+        listen: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Faites une place à son récit</strong><p>« Qu’est-ce qui est le plus difficile pour toi aujourd’hui ? » Laissez des silences ; ne cherchez pas les détails à tout prix.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Reformulez sans interpréter</strong><p>« Si je comprends bien, ce qui te pèse surtout, c’est… » Vérifiez que vous avez compris.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Reconnaissez l’émotion</strong><p>« Cela semble vraiment éprouvant. » Vous pouvez reconnaître son émotion — c’est ${term("validation")} — sans affirmer que toutes ses interprétations sont exactes.</p></div></div></div><div class="say">« Je n’ai pas forcément de réponse, mais je peux rester un moment avec toi. »</div><p class="subtle">Vous n’avez pas besoin de remplir le silence avec un conseil.</p>`,
+        solve: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Obtenez son accord</strong><p>« Est-ce que tu veux qu’on cherche ensemble un petit pas possible ? » Un non est une réponse valable.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Partez de sa priorité</strong><p>Demandez le changement qu’elle souhaite. Faites émerger ses idées avant de proposer les vôtres.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Laissez-lui le choix</strong><p>Comparez deux ou trois pistes. Aidez à préparer une action ; proposez de refaire le point à un moment convenu.</p></div></div></div><div class="say">« Parmi ces pistes, laquelle te paraît faisable et respectueuse de ce que tu souhaites ? »</div><a class="btn" href="#outil">Ouvrir le parcours ensemble →</a><p class="hint">Écrivez avec son accord, si possible sur son appareil. Le parcours en cours n’est pas effacé.</p>`,
+        practical: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Proposez quelque chose de précis</strong><p>Un repas, un trajet, vingt minutes pour un formulaire, ou une présence à un rendez-vous si elle le souhaite.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Convenez de vos limites</strong><p>Précisez ce que vous pouvez faire et quand. N’agissez pas à son insu, hors nécessité de protection urgente.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Vérifiez que l’aide convient</strong><p>« Tu préfères que je fasse avec toi ou que je m’occupe seulement de cette partie ? »</p></div></div></div><div class="say">« Je peux t’aider à préparer cet appel demain. Est-ce que cela te serait utile ? »</div><p class="subtle">Réduire une charge concrète peut être plus utile qu’ajouter des conseils.</p>`,
+      };
+      const supportContexts = {
+        mental: [
+          "Détresse ou trouble psychique",
+          "Proposez une tâche simple et une présence calme. Évitez « secoue-toi » ou « pense autrement ». Demandez si la personne souhaite contacter un professionnel ou un proche sûr.",
+          "Si elle rapporte une expérience que vous ne partagez pas : « Je vois que cela t’inquiète. Je ne le perçois pas de la même façon, mais je veux t’aider à te sentir en sécurité. »",
+          "Une désorganisation nouvelle, un danger immédiat ou des idées suicidaires nécessitent une évaluation adaptée. Ne modifiez pas son traitement et ne vous mettez pas en position de soignant.",
+        ],
+        couple: [
+          "Difficulté dans le couple",
+          "Écoutez sans décider à sa place de rester ou de partir. Demandez si elle peut exprimer un désaccord sans avoir peur.",
+          "« Te sens-tu libre de dire non ? Qu’est-ce qui te ferait te sentir plus en sécurité ? »",
+          "S’il y a peur, emprise, menace ou représailles, privilégiez une aide individuelle spécialisée. N’organisez pas vous-même une confrontation ou une médiation de couple.",
+        ],
+        work: [
+          "Travail ou études",
+          "Aidez à distinguer la charge de travail, les ressources manquantes et les relations de pouvoir. Un problème d’organisation n’est pas toujours un manque de compétences.",
+          "« On peut lister ce qui est demandé, ce qui est possible et l’appui qui te serait utile. »",
+          "En cas de harcèlement ou de discrimination, chercher un interlocuteur sûr : représentant du personnel, association, service de santé ou instance indépendante selon le contexte. Ne promettez pas la confidentialité d’une procédure que vous ne connaissez pas.",
+        ],
+        grief: [
+          "Deuil, perte ou maladie",
+          "Il n’y a pas toujours de solution à chercher. Proposez une présence, une aide matérielle, un moment de repos. Respectez les pratiques culturelles ou spirituelles souhaitées par la personne.",
+          "« Je ne peux pas enlever cette peine. Je peux être là, ou t’aider pour une chose concrète aujourd’hui. »",
+          "Évitez les délais imposés au deuil, les comparaisons et l’obligation de tirer une leçon positive. Une souffrance intense ou persistante peut justifier un soutien professionnel.",
+        ],
+        material: [
+          "Précarité, démarches ou isolement",
+          "Commencez par le besoin prioritaire : logement, alimentation, revenu, soins, lien social. Aidez à repérer les droits et ressources réellement accessibles.",
+          "« Qu’est-ce qui est le plus urgent ? Veux-tu qu’on fasse cette démarche ensemble ? »",
+          "Ne ramenez pas une contrainte économique ou administrative à la motivation de la personne. Demandez son accord avant de partager une information ou de contacter un service.",
+        ],
+        young: [
+          "Enfant ou adolescent",
+          "Utilisez des mots adaptés à l’âge, laissez le temps et proposez des choix simples. L’adulte reste responsable de la protection.",
+          "« Merci de me l’avoir dit. Ce n’est pas ta faute. Je vais chercher de l’aide pour te protéger et t’expliquer ce qui se passe. »",
+          "En cas de violence, ne menez pas d’interrogatoire et ne promettez pas un secret absolu. Cherchez un professionnel ou un adulte sûr, hors de l’entourage impliqué si nécessaire.",
+        ],
+      };
+      function renderSupport() {
+        $("#support-content").innerHTML = supportModes[supportMode];
+        $$("[data-support-mode]").forEach((b) =>
+          b.setAttribute(
+            "aria-pressed",
+            String(b.dataset.supportMode === supportMode),
+          ),
+        );
+        const v = supportContexts[$("#support-context").value];
+        $("#support-context-content").innerHTML =
+          `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young"].includes($("#support-context").value) ? '<a href="#violences" class="text-button">Explorer les repères de violence →</a>' : ""}</article>`;
+      }
+      // These are educational examples, not validated scales or risk scores.
+      const violenceData = {
+        couple: {
+          note: "Tous les genres et toutes les orientations sont concernés. Les comportements respectueux n’annulent pas les violences.",
+          refs: "[6, 7]",
+          items: [
+            [
+              "Respect",
+              "Vos choix, vos relations et vos refus sont respectés.",
+              "Vous pouvez exprimer un désaccord sans avoir peur. Chacun garde ses liens, son intimité et une liberté de choix.",
+              "Continuez à respecter les limites et les besoins de chacun.",
+            ],
+            [
+              "Désaccord sans peur",
+              "Vous n’êtes pas d’accord, mais pouvez en parler librement.",
+              "Un désaccord n’est pas en lui-même une violence. L’absence de peur, de pression et de punition est un repère important.",
+              "Choisissez un moment calme si chacun le souhaite. Un désaccord n’oblige pas à trouver immédiatement un compromis.",
+            ],
+            [
+              "Signal préoccupant",
+              "Votre partenaire insiste après un refus ou vous rabaisse.",
+              "Les remarques dégradantes et les pressions méritent d’être prises au sérieux, même présentées comme de l’humour.",
+              "Parlez-en à une personne sûre. Vous n’avez pas à prouver que cela se produit assez souvent pour demander du soutien.",
+            ],
+            [
+              "Contrôle / violence",
+              "Votre téléphone, vos relations ou votre argent sont contrôlés.",
+              "La surveillance imposée, l’isolement et la privation de ressources peuvent relever du contrôle coercitif.",
+              "Cherchez un appui confidentiel depuis un appareil sûr si possible. Une confrontation peut augmenter le danger.",
+            ],
+            [
+              "Violence / menace",
+              "Votre partenaire vous menace ou vous impose un acte sexuel.",
+              "La menace, la contrainte sexuelle et le chantage sont des violences. Être en couple ne vaut jamais consentement.",
+              "Priorisez votre sécurité et demandez un soutien spécialisé. Des soins peuvent être nécessaires.",
+            ],
+            [
+              "Urgence possible",
+              "Votre partenaire vous frappe, vous étrangle ou vous enferme.",
+              "Ces actes peuvent mettre la vie en danger. Une strangulation peut entraîner des complications même sans trace visible.",
+              "Cherchez un lieu sûr et une aide urgente. Après une strangulation, demandez rapidement une évaluation médicale.",
+            ],
+          ],
+        },
+        work: {
+          note: "La relation hiérarchique crée une asymétrie de pouvoir. Ces repères ne remplacent pas l’examen du contexte ni le droit local.",
+          refs: "[8]",
+          items: [
+            [
+              "Respect",
+              "Les tâches sont claires et vos questions sont accueillies.",
+              "Le travail et ses contraintes peuvent être discutés sans humiliation ni discrimination.",
+              "Les demandes restent compatibles avec la dignité, la santé et les droits applicables.",
+            ],
+            [
+              "Désaccord professionnel",
+              "Un retour critique porte sur le travail, sans vous dénigrer.",
+              "Une évaluation défavorable ou un désaccord ne constitue pas automatiquement un harcèlement. La forme, les faits et le contexte comptent.",
+              "Demandez des critères et des attentes précis, si cette discussion est sûre.",
+            ],
+            [
+              "Signal préoccupant",
+              "Les remarques dévalorisantes ou exclusions se multiplient.",
+              "Des moqueries, une mise à l’écart ou des remarques discriminatoires doivent être prises au sérieux. Un seul acte peut déjà être grave.",
+              "Cherchez un interlocuteur fiable et extérieur à l’auteur. Notez les faits seulement si cela est sûr pour vous.",
+            ],
+            [
+              "Abus de pouvoir",
+              "On vous humilie ou vous menace pour vous faire céder.",
+              "Des moyens de pression, des tâches délibérément humiliantes ou une dépendance économique exploitée peuvent constituer des violences.",
+              "Un représentant du personnel, un service de santé ou une association peut aider à évaluer les options locales.",
+            ],
+            [
+              "Violence / coercition",
+              "Des faveurs sexuelles sont exigées ou des représailles annoncées.",
+              "L’emploi, le salaire ou l’évolution professionnelle ne doivent pas servir à imposer des actes sexuels ou à faire taire une alerte.",
+              "Cherchez une aide spécialisée, indépendante si le canal interne n’est pas sûr.",
+            ],
+            [
+              "Urgence possible",
+              "Vous êtes agressé, retenu de force ou menacé physiquement.",
+              "La priorité devient la protection immédiate, indépendamment de la position hiérarchique.",
+              "Éloignez-vous si possible et sollicitez les secours locaux ou une aide sûre à proximité.",
+            ],
+          ],
+        },
+        care: {
+          note: "Repères centrés sur les droits de la personne soignée. Une procédure contraignante exige une analyse clinique et juridique propre au pays ; l’outil ne tranche pas sa légalité.",
+          refs: "[11]",
+          items: [
+            [
+              "Respect",
+              "On vous explique les soins et on écoute vos choix.",
+              "Vous êtes traité avec dignité ; votre intimité, vos questions et votre participation sont prises en compte.",
+              "Demandez une explication, un interprète ou un accompagnement si vous en avez besoin.",
+            ],
+            [
+              "Désaccord de soins",
+              "Vous discutez d’une recommandation sans être rabaissé.",
+              "Ne pas partager un avis médical ne suffit pas à caractériser une violence. Vous devez pouvoir comprendre le raisonnement et les options.",
+              "Vous pouvez demander des précisions ou un autre avis selon les possibilités locales.",
+            ],
+            [
+              "Signal préoccupant",
+              "Vos douleurs, vos questions ou votre intimité sont négligées.",
+              "Le manque d’écoute ou une exposition injustifiée de l’intimité mérite d’être signalé, même sans intention de nuire connue.",
+              "Demandez un interlocuteur sûr, une personne de confiance ou un représentant des usagers si disponible.",
+            ],
+            [
+              "Maltraitance",
+              "On vous humilie ou vous menace pour obtenir l’obéissance.",
+              "L’autorité de soin ne justifie pas la dégradation, la discrimination ou la punition.",
+              "Cherchez une aide indépendante de l’auteur et demandez que les soins restent assurés en sécurité.",
+            ],
+            [
+              "Violence / exploitation",
+              "On vous impose des gestes sexuels ou vous exploite.",
+              "La relation de soins ne justifie aucune exploitation sexuelle ou financière.",
+              "Sollicitez une aide spécialisée et, si nécessaire, des soins dans un autre lieu sûr.",
+            ],
+            [
+              "Urgence possible",
+              "Vous subissez une agression ou une privation de soins vitaux.",
+              "Une violence en cours, une blessure grave ou l’impossibilité d’accéder à un soin urgent nécessite une réponse immédiate.",
+              "Contactez un professionnel sûr, les urgences locales ou une instance de protection selon ce qui est accessible.",
+            ],
+          ],
+        },
+        education: {
+          note: "« Enseignant / élève ou étudiant » : le repère vaut pour l’école et l’enseignement supérieur, en tenant compte de l’âge et de la dépendance pédagogique.",
+          refs: "[9, 10]",
+          items: [
+            [
+              "Respect",
+              "Vous pouvez poser des questions et être traité avec dignité.",
+              "Les règles et évaluations sont expliquées ; les erreurs peuvent servir à apprendre.",
+              "Une exigence pédagogique est compatible avec le respect.",
+            ],
+            [
+              "Désaccord pédagogique",
+              "Une correction ou une note est expliquée sans humiliation.",
+              "Une note décevante ou une règle raisonnable n’est pas, à elle seule, une violence.",
+              "Demandez un retour précis et les possibilités de réexamen selon le contexte.",
+            ],
+            [
+              "Signal préoccupant",
+              "On vous ridiculise ou fait des commentaires déplacés.",
+              "Les moqueries et remarques sexistes, racistes ou dégradantes ne sont pas des outils pédagogiques acceptables.",
+              "Parlez-en à un adulte sûr ou à un interlocuteur indépendant dans l’établissement.",
+            ],
+            [
+              "Abus d’autorité",
+              "On vous humilie publiquement ou vous isole pour vous punir.",
+              "Cette asymétrie pédagogique peut rendre difficile le fait de dire non ou de signaler un abus.",
+              "Vous pouvez chercher un soutien extérieur à la personne qui vous évalue.",
+            ],
+            [
+              "Violence / coercition",
+              "On impose un secret ou un contact sexuel en usant de l’autorité.",
+              "Les menaces sur les notes, le diplôme ou l’avenir pour obtenir un acte sexuel sont graves. Pour un mineur, la responsabilité de protection appartient aux adultes.",
+              "Cherchez un adulte sûr ou un service de protection. Ne rencontrez pas seul l’auteur pour régler la situation.",
+            ],
+            [
+              "Urgence possible",
+              "Vous êtes frappé, agressé ou retenu de force.",
+              "La violence physique ou sexuelle et les menaces immédiates nécessitent une protection.",
+              "Éloignez-vous si possible et cherchez une aide urgente ou un adulte sûr à proximité.",
+            ],
+          ],
+        },
+        family: {
+          note: "Ces repères portent sur les responsabilités des adultes. Un enfant n’a jamais à résoudre seul la violence d’un parent.",
+          refs: "[10]",
+          items: [
+            [
+              "Respect",
+              "L’adulte vous écoute et pose des limites sans violence.",
+              "Des règles adaptées à l’âge peuvent protéger l’enfant sans l’humilier. Ses besoins et sa dignité sont pris en compte.",
+              "Les adultes expliquent les limites et restent responsables de la sécurité.",
+            ],
+            [
+              "Frustration sans violence",
+              "Vous êtes contrarié par une règle, mais pouvez en parler.",
+              "Ne pas obtenir tout ce que l’on souhaite n’est pas en soi une maltraitance. Une règle doit rester adaptée à l’âge, aux besoins et à la sécurité.",
+              "Vous pouvez exprimer votre ressenti à un adulte qui vous écoute.",
+            ],
+            [
+              "Signal préoccupant",
+              "On se moque de vous ou vous fait porter les problèmes des adultes.",
+              "Le dénigrement, les insultes ou la culpabilisation peuvent être des violences psychologiques.",
+              "Parlez à un adulte sûr, y compris en dehors de la famille. Ce n’est pas votre faute.",
+            ],
+            [
+              "Maltraitance",
+              "On vous fait peur, vous humilie ou vous prive de besoins essentiels.",
+              "L’intimidation, la négligence et les privations mettant en danger la santé ou le développement nécessitent une aide.",
+              "Un professionnel de santé, un enseignant sûr ou la protection de l’enfance peut être un appui.",
+            ],
+            [
+              "Violence",
+              "On vous frappe ou vous impose des gestes sexuels.",
+              "Les coups ne sont pas un moyen éducatif acceptable. Aucun enfant n’est responsable des violences subies.",
+              "Cherchez un adulte sûr ou un service de protection. Vous n’avez pas à confronter l’auteur.",
+            ],
+            [
+              "Urgence possible",
+              "Vous êtes blessé, menacé gravement ou empêché de vous mettre à l’abri.",
+              "La protection immédiate passe avant toute explication ou exercice de résolution de problème.",
+              "Rejoignez si possible un adulte sûr et demandez une aide urgente locale.",
+            ],
+          ],
+        },
+      };
+      function renderMeter() {
+        const key = $("#violence-context").value,
+          d = violenceData[key];
+        $("#violence-context-note").textContent = d.note;
+        $("#meter").innerHTML = d.items
+          .map(
+            (v, j) =>
+              `<button type="button" data-meter="${j}" aria-pressed="${meterIndex === j}" aria-controls="meter-detail"><span><small>${esc(v[0])}</small>${esc(v[1])}</span><span aria-hidden="true">↗</span></button>`,
+          )
+          .join("");
+        renderMeterDetail();
+      }
+      function glossarize(text) {
+        return esc(text)
+          .replace(/contrôle coercitif/g, term("coercion"))
+          .replace(/consentement/g, term("consent"))
+          .replace(/asymétrie pédagogique/g, term("power"));
+      }
+      function renderMeterDetail() {
+        const d = violenceData[$("#violence-context").value],
+          v = d.items[meterIndex];
+        $("#meter-detail").innerHTML =
+          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
+        $$("[data-meter]").forEach((b) =>
+          b.setAttribute(
+            "aria-pressed",
+            String(Number(b.dataset.meter) === meterIndex),
+          ),
+        );
+      }
+      function route() {
+        hideTooltip();
+        const hash = location.hash.slice(1) || "outil";
+        const page = hash.startsWith("ref-")
+          ? "bibliographie"
+          : [
+                "outil",
+                "proche",
+                "violences",
+                "comprendre",
+                "bibliographie",
+                "securite",
+                "recap",
+              ].includes(hash)
+            ? hash
+            : "outil";
+        $$(".view").forEach((el) => (el.hidden = el.id !== page));
+        $$("nav a").forEach((a) => {
+          if (
+            a.dataset.page === page ||
+            (page === "recap" && a.dataset.page === "outil")
+          )
+            a.setAttribute("aria-current", "page");
+          else a.removeAttribute("aria-current");
+        });
+        $("nav").classList.remove("open");
+        $(".menu-toggle").setAttribute("aria-expanded", "false");
+        if (page === "recap") renderRecap();
+        if (page === "outil") renderStep();
+        const title = {
+          outil: "Mon problème",
+          proche: "Aider un proche",
+          violences: "Violentomètre",
+          comprendre: "Comprendre",
+          bibliographie: "Bibliographie",
+          securite: "Sécurité & aide",
+          recap: "Mon prochain pas",
+        }[page];
+        document.title = title + " — Pas à pas";
+        if (hash.startsWith("ref-")) {
+          const ref = document.getElementById(hash);
+          if (ref) {
+            ref.tabIndex = -1;
+            ref.focus({ preventScroll: true });
+            ref.scrollIntoView({ block: "start" });
+          }
+        } else {
+          $("#main").focus({ preventScroll: true });
+          window.scrollTo({ top: 0, behavior: "instant" });
+        }
+      }
+      $(".menu-toggle").addEventListener("click", () => {
+        const open = $("nav").classList.toggle("open");
+        $(".menu-toggle").setAttribute("aria-expanded", String(open));
+      });
+      $(".skip").addEventListener("click", (e) => {
+        e.preventDefault();
+        $("#main").focus();
+        $("#main").scrollIntoView({ block: "start" });
+      });
+      $$("nav a").forEach((a) =>
+        a.addEventListener("click", () => {
+          if (a.hash === location.hash) route();
+          $("nav").classList.remove("open");
+          $(".menu-toggle").setAttribute("aria-expanded", "false");
+        }),
+      );
+      window.addEventListener("hashchange", route);
+      window.addEventListener("beforeprint", renderRecap);
+      document.addEventListener("input", (e) => {
+        const el = e.target;
+        if (el.dataset.field) {
+          state.fields[el.dataset.field] = el.value;
+          persist();
+        }
+        if (el.dataset.option) {
+          const o = state.options.find(
+            (o) => o.id === Number(el.dataset.option),
+          );
+          if (o) {
+            o[el.dataset.prop] = el.value;
+            if (!o.text.trim() && state.chosen === o.id) state.chosen = null;
+            persist();
+          }
+        }
+      });
+      document.addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        if (b.dataset.step !== undefined) {
+          changeStep(Number(b.dataset.step));
+          return;
+        }
+        if (b.dataset.context) {
+          state.context = b.dataset.context;
+          persist();
+          renderStep();
+          $(`[data-context="${state.context}"]`).focus();
+          toast(
+            "Exemples adaptés : " +
+              contexts[state.context].label +
+              ". Vos réponses sont conservées.",
+          );
+          return;
+        }
+        if (b.dataset.safety) {
+          state.safety = b.dataset.safety;
+          persist();
+          renderStep();
+          $(`[data-safety="${state.safety}"]`).focus();
+          return;
+        }
+        if (b.dataset.trial) {
+          state.fields.trial = b.dataset.trial;
+          persist();
+          renderStep();
+          $(`[data-trial="${state.fields.trial}"]`).focus();
+          return;
+        }
+        if (b.dataset.choose) {
+          state.chosen = Number(b.dataset.choose);
+          persist();
+          renderStep();
+          $(`[data-choose="${state.chosen}"]`).focus();
+          toast(
+            "Option choisie. Vous pouvez maintenant préparer votre action.",
+          );
+          return;
+        }
+        if (b.dataset.remove) {
+          const id = Number(b.dataset.remove),
+            o = state.options.find((o) => o.id === id);
+          const remove = () => {
+            state.options = state.options.filter((o) => o.id !== id);
+            if (state.chosen === id) state.chosen = null;
+            persist();
+            renderStep();
+            $("#ideas textarea")?.focus();
+          };
+          if (o.text || o.plus || o.minus)
+            confirmAction(
+              "Retirer cette piste ?",
+              "Son texte et ses notes de comparaison seront effacés.",
+              remove,
+              "Retirer",
+            );
+          else remove();
+          return;
+        }
+        if (b.dataset.supportMode) {
+          supportMode = b.dataset.supportMode;
+          renderSupport();
+          return;
+        }
+        if (b.dataset.meter !== undefined) {
+          meterIndex = Number(b.dataset.meter);
+          renderMeterDetail();
+          if (matchMedia("(max-width:600px)").matches)
+            $("#meter-detail").scrollIntoView({
+              block: "start",
+              behavior: "smooth",
+            });
+          return;
+        }
+        switch (b.dataset.action) {
+          case "next":
+            goNext();
+            break;
+          case "back":
+            changeStep(state.step - 1);
+            break;
+          case "pause":
+            state.energy = "pause";
+            persist();
+            renderStep();
+            toast("Vous pouvez faire une pause et reprendre à votre rythme.");
+            break;
+          case "add":
+            if (state.options.length < 8) {
+              const id = nextId++;
+              state.options.push({ id, text: "", plus: "", minus: "" });
+              persist();
+              renderStep();
+              $("#idea-" + id).focus();
+            }
+            break;
+          case "export":
+            download(
+              "mon-brouillon-pas-a-pas.json",
+              JSON.stringify(state, null, 2),
+              "application/json",
+            );
+            toast(
+              "Brouillon téléchargé. Il contient vos réponses personnelles.",
+            );
+            break;
+          case "import":
+            $("#import-file").click();
+            break;
+          case "text":
+            exportText();
+            break;
+          case "print":
+            renderRecap();
+            window.print();
+            break;
+          case "reset":
+            confirmAction(
+              "Effacer mon brouillon ?",
+              "Toutes vos réponses dans cette page et la sauvegarde de ce navigateur seront supprimées. Vos téléchargements, impressions et historique ne seront pas effacés.",
+              () => {
+                let removed = true;
+                try {
+                  localStorage.removeItem(KEY);
+                } catch (e) {
+                  removed = false;
+                }
+                state = fresh();
+                remember = false;
+                nextId = 4;
+                updatePrivacy();
+                renderStep();
+                renderRecap();
+                if (location.hash === "recap") location.hash = "outil";
+                toast(
+                  removed
+                    ? "Brouillon effacé. Vous pouvez repartir d’un nouveau problème."
+                    : "Réponses effacées de la page ; le stockage du navigateur n’a pas pu être effacé.",
+                );
+              },
+              "Tout effacer",
+            );
+            break;
+          case "meter-back": {
+            const selected = $("[data-meter][aria-pressed=true]");
+            selected?.focus();
+            selected?.scrollIntoView({ block: "center", behavior: "smooth" });
+            break;
+          }
+          case "quick-exit":
+            location.replace("https://www.wikipedia.org/");
+            break;
+        }
+      });
+      $("#remember").addEventListener("change", (e) => {
+        remember = e.target.checked;
+        if (remember) {
+          persist();
+          toast(
+            remember
+              ? "Sauvegarde activée sur cet appareil."
+              : "Sauvegarde indisponible.",
+          );
+        } else {
+          try {
+            localStorage.removeItem(KEY);
+            toast("Sauvegarde désactivée et retirée de ce navigateur.");
+          } catch (e) {
+            toast(
+              "Impossible de retirer la sauvegarde. Vérifiez les paramètres de votre navigateur.",
+            );
+          }
+        }
+        updatePrivacy();
+      });
+      $("#import-file").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        e.target.value = "";
+        if (!file) return;
+        if (file.size > 250000) {
+          toast(
+            "Ce fichier est trop volumineux. Choisissez un brouillon de cet outil.",
+          );
+          return;
+        }
+        try {
+          const imported = validateDraft(JSON.parse(await file.text()));
+          confirmAction(
+            "Reprendre ce brouillon ?",
+            "Le fichier remplacera les réponses actuellement affichées. Téléchargez-les d’abord si vous souhaitez les garder.",
+            () => {
+              state = imported;
+              nextId = state.options.length + 1;
+              persist();
+              renderStep();
+              if (location.hash !== "#outil") location.hash = "outil";
+              else renderStep(true);
+              toast("Brouillon repris. Vos réponses sont modifiables.");
+            },
+            "Reprendre",
+          );
+        } catch (e) {
+          toast(
+            "Fichier non reconnu. Utilisez un brouillon JSON téléchargé depuis cet outil.",
+          );
+        }
+      });
+      $("#support-context").addEventListener("change", renderSupport);
+      $("#violence-context").addEventListener("change", () => {
+        meterIndex = 0;
+        renderMeter();
+      });
+      // A single tooltip works with hover, keyboard focus and touch; Escape dismisses it.
+      let tooltipOwner = null,
+        tipTimer = null;
+      function showTooltip(b) {
+        const k = b.dataset.term;
+        if (!glossary[k]) return;
+        clearTimeout(tipTimer);
+        if (tooltipOwner && tooltipOwner !== b)
+          tooltipOwner.removeAttribute("aria-describedby");
+        tooltipOwner = b;
+        const tip = $("#tooltip");
+        tip.textContent = glossary[k][1];
+        tip.hidden = false;
+        b.setAttribute("aria-describedby", "tooltip");
+        const r = b.getBoundingClientRect(),
+          width = Math.min(310, innerWidth - 24);
+        tip.style.width = width + "px";
+        const tr = tip.getBoundingClientRect();
+        tip.style.left =
+          Math.max(12, Math.min(r.left, innerWidth - width - 12)) + "px";
+        tip.style.top =
+          (r.bottom + tr.height + 18 < innerHeight
+            ? r.bottom + 8
+            : Math.max(10, r.top - tr.height - 8)) + "px";
+      }
+      function hideTooltip() {
+        clearTimeout(tipTimer);
+        $("#tooltip").hidden = true;
+        tooltipOwner?.removeAttribute("aria-describedby");
+        tooltipOwner = null;
+      }
+      document.addEventListener("mouseover", (e) => {
+        const b = e.target.closest("[data-term]");
+        if (b) showTooltip(b);
+        if (e.target.closest("#tooltip")) clearTimeout(tipTimer);
+      });
+      document.addEventListener("mouseout", (e) => {
+        if (e.target.closest("[data-term],#tooltip"))
+          tipTimer = setTimeout(() => {
+            if (
+              !$("#tooltip").matches(":hover") &&
+              !tooltipOwner?.matches(":hover,:focus")
+            )
+              hideTooltip();
+          }, 160);
+      });
+      document.addEventListener("focusin", (e) => {
+        if (e.target.matches("[data-term]")) showTooltip(e.target);
+        else if (!e.target.closest("#tooltip")) hideTooltip();
+      });
+      document.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-term]");
+        if (b) showTooltip(b);
+        else if (!e.target.closest("#tooltip")) hideTooltip();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          hideTooltip();
+          if ($("nav").classList.contains("open")) {
+            $("nav").classList.remove("open");
+            $(".menu-toggle").setAttribute("aria-expanded", "false");
+            $(".menu-toggle").focus();
+          }
+        }
+      });
+      window.addEventListener("resize", hideTooltip);
+      window.addEventListener("scroll", hideTooltip, { passive: true });
+      $("#glossary-list").innerHTML = Object.values(glossary)
+        .map(([k, v]) => `<p><strong>${esc(k)}.</strong> ${esc(v)}</p>`)
+        .join("");
+      updatePrivacy();
+      renderStep();
+      renderSupport();
+      renderMeter();
+      route();
+    </script>
+  </body>
+</html>
