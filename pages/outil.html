@@ -1,0 +1,84 @@
+      <section id="outil" class="view" aria-label="Mon problème" hidden>
+        <div class="intro">
+          <div>
+            <div class="eyebrow">Un problème · Un pas à la fois</div>
+            <h1>Et si on y voyait plus clair ?</h1>
+            <p>
+              Un peu de clarté, puis une petite action. Quelques mots suffisent
+              à chaque étape.
+            </p>
+          </div>
+          <div class="attribution">
+            <span class="credit-title">Adapté en version numérique par</span
+            ><strong
+              >Dr. FENOHASINA - Psychiatre - développeur d'application
+              web</strong
+            >
+          </div>
+        </div>
+        <div class="workspace">
+          <aside class="side" aria-label="Étapes du parcours">
+            <p class="side-label">Votre cheminement</p>
+            <ol class="steps" id="steps"></ol>
+            <div class="side-note">
+              <strong>À votre rythme.</strong>Vous pouvez revenir en arrière ou
+              faire une pause.
+            </div>
+            <div class="side-actions">
+              <a class="text-button" href="#recap">Voir mon récapitulatif ↗</a>
+            </div>
+          </aside>
+          <div>
+            <div id="step-container" class="step-card card"></div>
+            <p class="privacy-line">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                aria-hidden="true"
+              >
+                <rect x="5" y="10" width="14" height="11" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg
+              ><span id="privacy-status"
+                >Sans sauvegarde, fermer ou recharger efface vos réponses. Elles
+                ne sont pas envoyées.</span
+              >
+            </p>
+            <details class="file-options">
+              <summary>Garder ou reprendre mon brouillon</summary>
+              <div class="details-body">
+                <label class="checkbox"
+                  ><input type="checkbox" id="remember" />Garder automatiquement
+                  mon brouillon sur cet appareil</label
+                >
+                <p class="hint">
+                  À activer seulement sur un appareil sûr. Le brouillon n’est
+                  pas chiffré ; d’autres utilisateurs de ce navigateur peuvent
+                  le lire. Sans cette option, fermer ou recharger la page efface
+                  les réponses.
+                </p>
+                <div class="button-row section-gap">
+                  <button class="btn small" data-action="export">
+                    Télécharger le brouillon</button
+                  ><button class="btn small" data-action="import">
+                    Reprendre un fichier</button
+                  ><input
+                    id="import-file"
+                    type="file"
+                    accept=".json,application/json"
+                    hidden
+                  /><button class="btn small danger" data-action="reset">
+                    Tout effacer
+                  </button>
+                </div>
+                <p class="hint">
+                  Les fichiers téléchargés contiennent vos réponses.
+                  Conservez-les en lieu sûr. Évitez les noms, adresses et autres
+                  informations identifiantes.
+                </p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>

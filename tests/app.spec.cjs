@@ -78,12 +78,37 @@ const errors = [];
       JSON.stringify(axeIssues, null, 2),
     );
   };
-  await visible("#step-title");
+  await visible("#accueil");
   assert.equal(
     await page.locator("nav a[aria-current=page]").innerText(),
-    "Mon problème",
+    "Accueil",
   );
   assert.equal(await page.evaluate(() => localStorage.length), 0);
+  await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
+  await page.locator('#accueil a[href="#soutenir"]').first().click();
+  await visible("#soutenir");
+  await page.screenshot({ path: path.join(output, "desktop-support.png"), fullPage: true });
+  await page.locator("#support-relation").selectOption("learner");
+  await page.locator("[data-need=advice]").click();
+  assert.match(await page.locator("#need-guidance").innerText(), /accord/);
+  assert.match(await page.locator("#need-guidance").innerText(), /encadrement/);
+  await page.locator("#support-relation").selectOption("close");
+  assert(await page.locator('#need-guidance a[href="#proche"]').isVisible());
+  await page.locator('#soutenir a[href="#proche"]').first().click();
+  await visible("#proche");
+  await visit("outil");
+  await visible("#step-title");
+  for (const [scale, expected] of [
+    ["shared", /Qu’est-ce qui compte pour chacun/],
+    ["organization", /Quel problème le système produit/],
+    ["public", /Qui est touché et quelle décision manque/],
+  ]) {
+    await page.locator(`[data-scale=${scale}]`).click();
+    await step(1);
+    assert.match(await page.locator("#step-title").innerText(), expected);
+    await step(0);
+  }
+  await page.locator("[data-scale=personal]").click();
   await page.screenshot({
     path: path.join(output, "desktop-start.png"),
     fullPage: true,
@@ -313,7 +338,7 @@ const errors = [];
   await axe("theory");
   await visit("bibliographie");
   await axe("references");
-  await page.locator("nav a[data-page=comprendre]").click();
+  await page.locator('footer a[href="#comprendre"]').click();
   await page
     .locator("summary")
     .filter({ hasText: "Thérapie de résolution" })
@@ -339,7 +364,9 @@ const errors = [];
   for (const width of [320, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     for (const hash of [
+      "accueil",
       "outil",
+      "soutenir",
       "proche",
       "violences",
       "comprendre",
@@ -368,9 +395,10 @@ const errors = [];
   });
   await page.locator(".menu-toggle").click();
   await visible("#navigation");
-  await page.locator("nav a[data-page=violences]").click();
+  await page.locator("nav a[data-page=soutenir]").click();
   await page.locator("#navigation").waitFor({ state: "hidden" });
   assert(!(await page.locator("#navigation").isVisible()));
+  await visit("violences");
   await page.selectOption("#violence-context", "couple");
   await page.locator('[data-meter="3"]').click();
   await page.evaluate(() => {
@@ -399,6 +427,7 @@ const errors = [];
   });
   const bp = await blocked.newPage();
   await bp.goto(url);
+  await bp.evaluate(() => { location.hash = "outil"; });
   await bp.locator(".file-options summary").click();
   await bp.locator("#remember").click();
   assert(!(await bp.locator("#remember").isChecked()));
@@ -406,7 +435,7 @@ const errors = [];
   const offline = await browser.newContext();
   const op = await offline.newPage();
   await op.goto("file://" + path.join(root, "index.html"));
-  assert(await op.locator("#step-title").isVisible());
+  assert(await op.locator("#accueil").isVisible());
   await offline.close();
   const nojs = await browser.newContext({ javaScriptEnabled: false });
   const np = await nojs.newPage();

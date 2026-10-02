@@ -1,0 +1,538 @@
+      const contexts = {
+        daily: {
+          label: "Vie quotidienne",
+          icon: "⌂",
+          situation:
+            "Depuis deux semaines, je repousse le rangement de mes papiers et je ne retrouve plus les factures.",
+          goal: "Retrouver les deux factures à régler cette semaine.",
+          obstacle:
+            "Les papiers sont mélangés et je ne sais pas par quoi commencer.",
+          control: "Choisir un dossier et y consacrer dix minutes.",
+          outside: "Le temps de réponse des organismes.",
+          ideas: [
+            "Trier seulement les courriers de ce mois.",
+            "Demander à une personne de confiance de m’aider dix minutes.",
+            "Demander une copie de la facture à l’organisme.",
+          ],
+          action:
+            "Ouvrir les cinq courriers les plus récents pendant dix minutes.",
+          support: "Une personne de confiance, à côté de moi ou au téléphone.",
+          backup:
+            "Si je me sens débordé, je m’arrête après une enveloppe et je demande un appui.",
+          measure: "J’ai identifié les deux factures et leur date limite.",
+          result:
+            "J’ai retrouvé une facture. Je dois demander une copie de la seconde.",
+        },
+        work: {
+          label: "Travail",
+          icon: "▣",
+          situation:
+            "Cette semaine, deux responsables m’ont confié trois dossiers urgents avec la même échéance.",
+          goal: "Obtenir un ordre de priorité et un délai réaliste pour ces dossiers.",
+          obstacle:
+            "Je n’ai pas assez de temps et les priorités ne sont pas partagées.",
+          control:
+            "Lister les tâches et demander lesquelles sont prioritaires.",
+          outside: "La décision finale et les effectifs disponibles.",
+          ideas: [
+            "Lister les tâches et demander un ordre de priorité écrit.",
+            "Demander plus de temps pour un dossier en expliquant pourquoi.",
+            "Demander l’appui d’un collègue ou d’un représentant du personnel.",
+          ],
+          action:
+            "Préparer la liste des trois dossiers et le temps nécessaire pour chacun.",
+          support: "Un collègue de confiance ou un représentant du personnel.",
+          backup:
+            "Si mon responsable est absent, j’envoie la liste des tâches pour demander les priorités.",
+          measure:
+            "Je sais quel dossier traiter en premier, ou un rendez-vous est fixé pour en décider.",
+          result:
+            "Deux priorités ont été clarifiées ; le délai du troisième dossier reste à négocier.",
+        },
+        couple: {
+          label: "Couple & relations",
+          icon: "♧",
+          situation:
+            "Cette semaine, nous avons annulé deux moments ensemble car nos horaires n’étaient pas coordonnés.",
+          goal: "Proposer un moment ensemble compatible avec nos deux horaires.",
+          obstacle: "Nous n’avons pas comparé nos disponibilités.",
+          control: "Exprimer mon besoin et proposer deux créneaux.",
+          outside: "La disponibilité et la réponse de mon partenaire.",
+          ideas: [
+            "Proposer un échange calme de quinze minutes.",
+            "Mettre nos disponibilités sur un calendrier partagé, avec notre accord.",
+            "Prévoir une activité courte et peu coûteuse.",
+          ],
+          action:
+            "Demander un moment pour parler de nos disponibilités, si je me sens en sécurité.",
+          support: "Un moment calme, sans interruption.",
+          backup:
+            "Si le moment ne convient pas, je propose un autre créneau sans insister.",
+          measure: "Nous avons choisi un créneau qui convient à chacun.",
+          result:
+            "Nous avons prévu une promenade ; le calendrier partagé ne nous convenait pas.",
+        },
+        family: {
+          label: "Famille",
+          icon: "♧",
+          situation:
+            "Le matin, mon enfant et moi nous pressons et nous arrivons souvent en retard.",
+          goal: "Préparer un départ plus calme deux matins cette semaine.",
+          obstacle:
+            "Les affaires ne sont pas prêtes et la routine est trop longue.",
+          control:
+            "Préparer mes affaires et proposer une routine adaptée à l’âge de mon enfant.",
+          outside: "Les imprévus et le rythme de mon enfant.",
+          ideas: [
+            "Préparer les sacs ensemble la veille.",
+            "Dessiner une courte routine avec mon enfant.",
+            "Réduire une tâche non indispensable le matin.",
+          ],
+          action:
+            "Préparer le sac et les vêtements avec mon enfant ce soir, sans pression.",
+          support: "Un autre adulte sûr si disponible.",
+          backup:
+            "Si mon enfant est fatigué, je prépare l’essentiel et nous essayons ensemble un autre soir.",
+          measure: "Le départ s’est fait avec une étape de moins à gérer.",
+          result:
+            "Le sac était prêt. Le petit-déjeuner a demandé plus de temps que prévu.",
+        },
+        study: {
+          label: "Études",
+          icon: "▤",
+          situation:
+            "Je dois rendre un travail la semaine prochaine et je n’ai pas commencé le plan.",
+          goal: "Rédiger un plan provisoire en trois parties.",
+          obstacle:
+            "La consigne me semble floue et j’essaie de tout lire avant d’écrire.",
+          control: "Écrire mes questions et commencer un brouillon.",
+          outside: "La date de réponse de l’enseignant.",
+          ideas: [
+            "Écrire un plan provisoire sans chercher la perfection.",
+            "Demander une précision sur la consigne.",
+            "Travailler vingt minutes avec un camarade.",
+          ],
+          action:
+            "Relire la consigne et noter trois idées pendant quinze minutes.",
+          support: "La consigne et un camarade disponible.",
+          backup:
+            "Si je bloque, je note une seule question à poser à l’enseignant.",
+          measure: "J’ai un plan de trois titres, même imparfait.",
+          result: "J’ai rédigé deux titres et identifié une question précise.",
+        },
+        health: {
+          label: "Santé & soins",
+          icon: "✚",
+          situation:
+            "J’ai manqué deux rendez-vous car le trajet était difficile à organiser.",
+          goal: "Préparer le déplacement pour mon prochain rendez-vous.",
+          obstacle: "Le coût du transport et l’absence d’accompagnement.",
+          control:
+            "Informer l’équipe de mes difficultés et demander les options disponibles.",
+          outside: "Les transports et les aides réellement accessibles.",
+          ideas: [
+            "Demander un autre horaire ou une modalité à distance si elle convient aux soins.",
+            "Chercher une aide au transport avec un travailleur social.",
+            "Demander à un proche s’il peut accompagner le trajet.",
+          ],
+          action:
+            "Contacter le secrétariat pour expliquer l’obstacle de transport.",
+          support: "Un proche ou un intervenant social, avec mon accord.",
+          backup:
+            "Si je n’arrive pas à téléphoner, je prépare un court message avec une personne sûre.",
+          measure:
+            "J’ai une option de déplacement ou une autre modalité convenue avec l’équipe.",
+          result:
+            "Le secrétariat m’a proposé un autre horaire ; le transport reste à confirmer.",
+        },
+        collective: {
+          label: "Vie collective",
+          icon: "◇",
+          situation: "Dans mon quartier, l’arrêt de bus le plus proche reste difficile d’accès pour plusieurs habitants.",
+          goal: "Faire connaître les difficultés d’accès et obtenir une réponse de l’autorité compétente.",
+          obstacle: "Je ne sais pas qui décide ni quelles demandes ont déjà été faites.",
+          control: "Recueillir des faits publics et chercher le bon interlocuteur avec les personnes concernées.",
+          outside: "La décision de l’autorité, le budget et le calendrier de travaux.",
+          ideas: ["Demander aux personnes concernées ce qui leur serait utile, avec leur accord.", "Identifier le service responsable et consulter les informations publiques.", "Préparer une demande collective claire avec un objectif précis."],
+          action: "Identifier le service responsable de l’arrêt et une source publique sur les démarches possibles.",
+          support: "Des personnes concernées qui souhaitent participer et une association locale.",
+          backup: "Si l’interlocuteur n’est pas clair, demander une orientation à la collectivité locale.",
+          measure: "Nous connaissons le bon interlocuteur et pouvons formuler une demande vérifiable.",
+          result: "Le service responsable a été identifié ; nous préparons une demande avec les personnes intéressées.",
+        },
+      };
+      const scales = {
+        personal: ["Personnel", "Ce que je peux essayer moi-même, avec de l’aide si besoin."],
+        shared: ["Entre personnes", "Ce qui demande un accord ou une discussion avec d’autres."],
+        organization: ["Équipe ou institution", "Ce qui dépend aussi de règles, de moyens ou d’une décision d’organisation."],
+        public: ["Collectif ou politique", "Ce qui concerne un groupe et une décision publique ; agir avec les personnes concernées."],
+      };
+      const glossary = {
+        meta: [
+          "Méta-analyse",
+          "Méthode qui combine statistiquement les résultats de plusieurs études portant sur une question comparable. Sa fiabilité dépend de la qualité et de la compatibilité des études.",
+        ],
+        random: [
+          "Essai randomisé",
+          "Étude dans laquelle le hasard détermine le groupe d’intervention ou de comparaison. Cela réduit certains biais, sans les éliminer tous.",
+        ],
+        cluster: [
+          "Essai randomisé en grappes",
+          "Étude où le hasard répartit des groupes entiers, par exemple des centres de santé, et non chaque personne séparément.",
+        ],
+        heterogeneity: [
+          "Hétérogénéité",
+          "Variabilité entre les résultats des études. Elle peut refléter des différences de populations, de méthodes, de traitements ou de contexte.",
+        ],
+        interval: [
+          "Intervalle de confiance",
+          "Intervalle calculé pour exprimer l’incertitude statistique autour d’une estimation. À 95 %, la méthode couvrirait la vraie valeur dans 95 % des répétitions idéales de l’étude ; cela ne prend pas en compte tous les biais.",
+        ],
+        effect: [
+          "g de Hedges",
+          "Différence moyenne standardisée entre groupes, exprimée en unités d’écart-type. Ce n’est ni un pourcentage de guérison ni la probabilité qu’une personne aille mieux.",
+        ],
+        power: [
+          "Asymétrie de pouvoir",
+          "Situation où une personne dispose de davantage d’autorité, de ressources ou de moyens de pression que l’autre.",
+        ],
+        control: [
+          "Marge de manœuvre",
+          "Ce sur quoi vous pouvez agir, seul ou avec de l’aide. Elle dépend aussi des ressources et des contraintes autour de vous.",
+        ],
+        rumination: [
+          "Rumination",
+          "Revenir en boucle sur les mêmes pensées sans avancer vers une décision ou un soutien utile.",
+        ],
+        implementation: [
+          "Intention de mise en œuvre",
+          "Un plan « si… alors… » : vous prévoyez ce que vous ferez lorsqu’une situation précise se présentera.",
+        ],
+        coercion: [
+          "Contrôle coercitif",
+          "Ensemble de comportements qui restreignent la liberté par la surveillance, l’isolement, les menaces ou la dépendance imposée.",
+        ],
+        consent: [
+          "Consentement",
+          "Accord libre et éclairé, qui peut être retiré. Le silence, la peur ou une pression ne valent pas accord.",
+        ],
+        validation: [
+          "Valider une émotion",
+          "Reconnaître ce que la personne ressent, sans devoir approuver toutes ses interprétations ou tous ses actes.",
+        ],
+        bias: [
+          "Biais",
+          "Élément d’une étude qui peut déformer systématiquement ses résultats.",
+        ],
+        efficacy: [
+          "Efficacité",
+          "Capacité d’une intervention à produire un effet dans les conditions où elle a été étudiée. Ce résultat ne se transfère pas automatiquement à d’autres situations.",
+        ],
+      };
+      const comparisonExamples = {
+        daily: [
+          "Un tri limité est plus facile à commencer.",
+          "Je peux ne pas retrouver une facture plus ancienne.",
+        ],
+        work: [
+          "Une liste factuelle rend la charge visible.",
+          "Cela prend du temps et ne garantit pas une réponse.",
+        ],
+        couple: [
+          "Un temps calme permet de comparer nos disponibilités.",
+          "Mon partenaire peut ne pas être disponible à ce moment.",
+        ],
+        family: [
+          "Le matin comporte moins de tâches.",
+          "Il faut trouver un moment adapté le soir.",
+        ],
+        study: [
+          "Un premier brouillon donne une base à améliorer.",
+          "Je devrai peut-être le revoir après une précision de consigne.",
+        ],
+        health: [
+          "L’équipe connaît mon obstacle et peut proposer des options.",
+          "Une autre modalité de consultation peut être indisponible ou inadaptée.",
+        ],
+        collective: [
+          "Une demande documentée rend la difficulté visible.",
+          "Une réponse publique peut prendre du temps et ne garantit pas un changement.",
+        ],
+      };
+      const supportModes = {
+        listen: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Faites une place à son récit</strong><p>« Qu’est-ce qui est le plus difficile pour toi aujourd’hui ? » Laissez des silences ; ne cherchez pas les détails à tout prix.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Reformulez sans interpréter</strong><p>« Si je comprends bien, ce qui te pèse surtout, c’est… » Vérifiez que vous avez compris.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Reconnaissez l’émotion</strong><p>« Cela semble vraiment éprouvant. » Reconnaître sa peine ne vous oblige pas à être d’accord sur tout.</p></div></div></div><div class="say">« Je n’ai pas forcément de réponse, mais je peux rester un moment avec toi. »</div>`,
+        solve: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Obtenez son accord</strong><p>« Est-ce que tu veux qu’on cherche ensemble un petit pas possible ? » Un non est une réponse valable.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Partez de sa priorité</strong><p>Demandez le changement qu’elle souhaite. Faites émerger ses idées avant de proposer les vôtres.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Laissez-lui le choix</strong><p>Comparez deux ou trois pistes. Aidez à préparer une action ; proposez de refaire le point à un moment convenu.</p></div></div></div><div class="say">« Laquelle de ces pistes te conviendrait le mieux ? »</div><a class="btn" href="#outil">Ouvrir le parcours ensemble →</a><p class="hint">Écrivez avec son accord, si possible sur son appareil. Le parcours en cours n’est pas effacé.</p>`,
+        practical: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Proposez quelque chose de précis</strong><p>Un repas, un trajet, vingt minutes pour un formulaire, ou une présence à un rendez-vous si elle le souhaite.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Convenez de vos limites</strong><p>Précisez ce que vous pouvez faire et quand. N’agissez pas à son insu, hors nécessité de protection urgente.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Vérifiez que l’aide convient</strong><p>« Tu préfères que je fasse avec toi ou que je m’occupe seulement de cette partie ? »</p></div></div></div><div class="say">« Je peux t’aider à préparer cet appel demain. Est-ce que cela te serait utile ? »</div>`,
+      };
+      const supportContexts = {
+        mental: [
+          "Détresse ou trouble psychique",
+          "Proposez une tâche simple et une présence calme. Évitez « secoue-toi » ou « pense autrement ». Demandez si la personne souhaite contacter un professionnel ou un proche sûr.",
+          "Si elle rapporte une expérience que vous ne partagez pas : « Je vois que cela t’inquiète. Je ne le perçois pas de la même façon, mais je veux t’aider à te sentir en sécurité. »",
+          "Si la personne devient très confuse, ne peut plus gérer les gestes du quotidien ou évoque le suicide, cherchez une aide professionnelle. En cas de danger immédiat, une aide urgente est nécessaire. Ne modifiez pas son traitement.",
+        ],
+        couple: [
+          "Difficulté dans le couple",
+          "Écoutez sans décider à sa place de rester ou de partir. Demandez si elle peut exprimer un désaccord sans avoir peur.",
+          "« Te sens-tu libre de dire non ? Qu’est-ce qui te ferait te sentir plus en sécurité ? »",
+          "S’il y a peur, contrôle, menace ou crainte d’une punition, privilégiez une aide individuelle spécialisée. N’organisez pas vous-même une confrontation ou une médiation de couple.",
+        ],
+        work: [
+          "Travail ou études",
+          "Aidez à distinguer la charge de travail, les ressources manquantes et les relations de pouvoir. Un problème d’organisation n’est pas toujours un manque de compétences.",
+          "« On peut lister ce qui est demandé, ce qui est possible et l’appui qui te serait utile. »",
+          "En cas de harcèlement ou de discrimination, chercher un interlocuteur sûr : représentant du personnel, association, service de santé ou instance indépendante selon le contexte. Ne promettez pas la confidentialité d’une procédure que vous ne connaissez pas.",
+        ],
+        grief: [
+          "Deuil, perte ou maladie",
+          "Il n’y a pas toujours de solution à chercher. Proposez une présence, une aide matérielle, un moment de repos. Respectez les pratiques culturelles ou spirituelles souhaitées par la personne.",
+          "« Je ne peux pas enlever cette peine. Je peux être là, ou t’aider pour une chose concrète aujourd’hui. »",
+          "Évitez les délais imposés au deuil, les comparaisons et l’obligation de tirer une leçon positive. Une souffrance intense ou persistante peut justifier un soutien professionnel.",
+        ],
+        material: [
+          "Précarité, démarches ou isolement",
+          "Commencez par le besoin prioritaire : logement, alimentation, revenu, soins, lien social. Aidez à repérer les droits et ressources réellement accessibles.",
+          "« Qu’est-ce qui est le plus urgent ? Veux-tu qu’on fasse cette démarche ensemble ? »",
+          "Ne ramenez pas une contrainte économique ou administrative à la motivation de la personne. Demandez son accord avant de partager une information ou de contacter un service.",
+        ],
+        young: [
+          "Enfant ou adolescent",
+          "Utilisez des mots adaptés à l’âge, laissez le temps et proposez des choix simples. L’adulte reste responsable de la protection.",
+          "« Merci de me l’avoir dit. Ce n’est pas ta faute. Je vais chercher de l’aide pour te protéger et t’expliquer ce qui se passe. »",
+          "En cas de violence, ne menez pas d’interrogatoire et ne promettez pas un secret absolu. Cherchez un professionnel ou un adulte sûr, hors de l’entourage impliqué si nécessaire.",
+        ],
+      };
+      const needGuidance = {
+        listen: [
+          "Écouter sans interrompre",
+          "« Je t’écoute. Qu’est-ce que tu voudrais que je comprenne ? »",
+          "Reformuler avec ses mots. Vérifier : « Est-ce que j’ai bien compris ? » Ne proposer une piste que si la personne le souhaite.",
+        ],
+        clarify: [
+          "Aider à voir plus clair",
+          "« Quel point aimerais-tu éclaircir en premier ? »",
+          "Distinguer les faits, le ressenti, les contraintes et les ressources. Laisser la personne choisir ce qui compte pour elle.",
+        ],
+        practical: [
+          "Proposer une aide précise",
+          "« Est-ce que ce serait utile que je fasse cette tâche avec toi ? »",
+          "Proposer une action limitée dans le temps. Demander l’accord avant de contacter quelqu’un ou de partager une information.",
+        ],
+        advice: [
+          "Partager un avis avec son accord",
+          "« J’ai une idée. Est-ce que tu veux l’entendre ? »",
+          "Donner une idée brève, puis demander ce qu’elle en pense. Son contexte peut rendre votre expérience peu applicable.",
+        ],
+      };
+      const violenceData = {
+        couple: {
+          note: "Tous les genres et toutes les orientations sont concernés. Des moments respectueux n’effacent pas les violences.",
+          refs: "[6, 7]",
+          items: [
+            [
+              "Respect",
+              "Vos choix, vos relations et vos refus sont respectés.",
+              "Vous pouvez exprimer un désaccord sans avoir peur. Chacun garde ses liens, son intimité et une liberté de choix.",
+              "Continuez à respecter les limites et les besoins de chacun.",
+            ],
+            [
+              "Désaccord sans peur",
+              "Vous n’êtes pas d’accord, mais pouvez en parler librement.",
+              "Un désaccord n’est pas en lui-même une violence. L’absence de peur, de pression et de punition est un repère important.",
+              "Choisissez un moment calme si chacun le souhaite. Un désaccord n’oblige pas à trouver immédiatement un compromis.",
+            ],
+            [
+              "Signal préoccupant",
+              "Votre partenaire insiste après un refus ou vous rabaisse.",
+              "Les remarques dégradantes et les pressions méritent d’être prises au sérieux, même présentées comme de l’humour.",
+              "Parlez-en à une personne sûre. Vous n’avez pas à prouver que cela se produit assez souvent pour demander du soutien.",
+            ],
+            [
+              "Contrôle / violence",
+              "Votre téléphone, vos relations ou votre argent sont contrôlés.",
+              "La surveillance imposée, l’isolement et la privation de ressources peuvent relever du contrôle coercitif.",
+              "Cherchez un appui confidentiel depuis un appareil sûr si possible. Une confrontation peut augmenter le danger.",
+            ],
+            [
+              "Violence / menace",
+              "Votre partenaire vous menace ou vous impose un acte sexuel.",
+              "La menace, la contrainte sexuelle et le chantage sont des violences. Être en couple ne vaut jamais consentement.",
+              "Priorisez votre sécurité et demandez un soutien spécialisé. Des soins peuvent être nécessaires.",
+            ],
+            [
+              "Urgence possible",
+              "Votre partenaire vous frappe, vous étrangle ou vous enferme.",
+              "Ces actes peuvent mettre la vie en danger. Une strangulation peut entraîner des complications même sans trace visible.",
+              "Cherchez un lieu sûr et une aide urgente. Après une strangulation, demandez rapidement une évaluation médicale.",
+            ],
+          ],
+        },
+        work: {
+          note: "Un responsable dispose de moyens de pression sur le salarié. Les droits et recours dépendent du pays.",
+          refs: "[8]",
+          items: [
+            [
+              "Respect",
+              "Les tâches sont claires et vos questions sont accueillies.",
+              "Le travail et ses contraintes peuvent être discutés sans humiliation ni discrimination.",
+              "Les demandes restent compatibles avec la dignité, la santé et les droits applicables.",
+            ],
+            [
+              "Désaccord professionnel",
+              "Un retour critique porte sur le travail, sans vous dénigrer.",
+              "Une critique sur le travail ou un désaccord ne constitue pas automatiquement un harcèlement. La forme, les faits et le contexte comptent.",
+              "Demandez des critères et des attentes précis, si cette discussion est sûre.",
+            ],
+            [
+              "Signal préoccupant",
+              "Les remarques dévalorisantes ou exclusions se multiplient.",
+              "Des moqueries, une mise à l’écart ou des remarques discriminatoires doivent être prises au sérieux. Un seul acte peut déjà être grave.",
+              "Cherchez un interlocuteur fiable et extérieur à l’auteur. Notez les faits seulement si cela est sûr pour vous.",
+            ],
+            [
+              "Abus de pouvoir",
+              "On vous humilie ou vous menace pour vous faire céder.",
+              "Des moyens de pression, des tâches délibérément humiliantes ou une dépendance économique exploitée peuvent constituer des violences.",
+              "Un représentant du personnel, un service de santé ou une association peut aider à évaluer les options locales.",
+            ],
+            [
+              "Violence / coercition",
+              "Des faveurs sexuelles sont exigées ou des représailles annoncées.",
+              "L’emploi, le salaire ou l’évolution professionnelle ne doivent pas servir à imposer des actes sexuels ou à faire taire une alerte.",
+              "Cherchez une aide spécialisée, indépendante si le canal interne n’est pas sûr.",
+            ],
+            [
+              "Urgence possible",
+              "Vous êtes agressé, retenu de force ou menacé physiquement.",
+              "La priorité devient la protection immédiate, indépendamment de la position hiérarchique.",
+              "Éloignez-vous si possible et sollicitez les secours locaux ou une aide sûre à proximité.",
+            ],
+          ],
+        },
+        care: {
+          note: "Repères centrés sur les droits de la personne soignée. Une procédure contraignante exige une analyse clinique et juridique propre au pays ; l’outil ne tranche pas sa légalité.",
+          refs: "[11]",
+          items: [
+            [
+              "Respect",
+              "On vous explique les soins et on écoute vos choix.",
+              "Vous êtes traité avec dignité ; votre intimité, vos questions et votre participation sont prises en compte.",
+              "Demandez une explication, un interprète ou un accompagnement si vous en avez besoin.",
+            ],
+            [
+              "Désaccord de soins",
+              "Vous discutez d’une recommandation sans être rabaissé.",
+              "Ne pas partager un avis médical ne suffit pas à caractériser une violence. Vous devez pouvoir comprendre le raisonnement et les options.",
+              "Vous pouvez demander des précisions ou un autre avis selon les possibilités locales.",
+            ],
+            [
+              "Signal préoccupant",
+              "Vos douleurs, vos questions ou votre intimité sont négligées.",
+              "Le manque d’écoute ou une exposition injustifiée de l’intimité mérite d’être signalé, même sans intention de nuire connue.",
+              "Demandez un interlocuteur sûr, une personne de confiance ou un représentant des usagers si disponible.",
+            ],
+            [
+              "Maltraitance",
+              "On vous humilie ou vous menace pour obtenir l’obéissance.",
+              "L’autorité de soin ne justifie pas la dégradation, la discrimination ou la punition.",
+              "Cherchez une aide indépendante de l’auteur et demandez que les soins restent assurés en sécurité.",
+            ],
+            [
+              "Violence / exploitation",
+              "On vous impose des gestes sexuels ou vous exploite.",
+              "La relation de soins ne justifie aucune exploitation sexuelle ou financière.",
+              "Sollicitez une aide spécialisée et, si nécessaire, des soins dans un autre lieu sûr.",
+            ],
+            [
+              "Urgence possible",
+              "Vous subissez une agression ou une privation de soins vitaux.",
+              "Une violence en cours, une blessure grave ou l’impossibilité d’accéder à un soin urgent nécessite une réponse immédiate.",
+              "Contactez un professionnel sûr, les urgences locales ou une instance de protection selon ce qui est accessible.",
+            ],
+          ],
+        },
+        education: {
+          note: "« Enseignant / élève ou étudiant » : le repère vaut pour l’école et l’enseignement supérieur, en tenant compte de l’âge et de la dépendance pédagogique.",
+          refs: "[9, 10]",
+          items: [
+            [
+              "Respect",
+              "Vous pouvez poser des questions et être traité avec dignité.",
+              "Les règles et évaluations sont expliquées ; les erreurs peuvent servir à apprendre.",
+              "Une exigence pédagogique est compatible avec le respect.",
+            ],
+            [
+              "Désaccord pédagogique",
+              "Une correction ou une note est expliquée sans humiliation.",
+              "Une note décevante ou une règle raisonnable n’est pas, à elle seule, une violence.",
+              "Demandez un retour précis et les possibilités de réexamen selon le contexte.",
+            ],
+            [
+              "Signal préoccupant",
+              "On vous ridiculise ou fait des commentaires déplacés.",
+              "Les moqueries et remarques sexistes, racistes ou dégradantes ne sont pas des outils pédagogiques acceptables.",
+              "Parlez-en à un adulte sûr ou à un interlocuteur indépendant dans l’établissement.",
+            ],
+            [
+              "Abus d’autorité",
+              "On vous humilie publiquement ou vous isole pour vous punir.",
+              "Cette asymétrie pédagogique peut rendre difficile le fait de dire non ou de signaler un abus.",
+              "Vous pouvez chercher un soutien extérieur à la personne qui vous évalue.",
+            ],
+            [
+              "Violence / coercition",
+              "On impose un secret ou un contact sexuel en usant de l’autorité.",
+              "Les menaces sur les notes, le diplôme ou l’avenir pour obtenir un acte sexuel sont graves. Pour un mineur, la responsabilité de protection appartient aux adultes.",
+              "Cherchez un adulte sûr ou un service de protection. Ne rencontrez pas seul l’auteur pour régler la situation.",
+            ],
+            [
+              "Urgence possible",
+              "Vous êtes frappé, agressé ou retenu de force.",
+              "La violence physique ou sexuelle et les menaces immédiates nécessitent une protection.",
+              "Éloignez-vous si possible et cherchez une aide urgente ou un adulte sûr à proximité.",
+            ],
+          ],
+        },
+        family: {
+          note: "Ces repères portent sur les responsabilités des adultes. Un enfant n’a jamais à résoudre seul la violence d’un parent.",
+          refs: "[10]",
+          items: [
+            [
+              "Respect",
+              "L’adulte vous écoute et pose des limites sans violence.",
+              "Des règles adaptées à l’âge peuvent protéger l’enfant sans l’humilier. Ses besoins et sa dignité sont pris en compte.",
+              "Les adultes expliquent les limites et restent responsables de la sécurité.",
+            ],
+            [
+              "Frustration sans violence",
+              "Vous êtes contrarié par une règle, mais pouvez en parler.",
+              "Ne pas obtenir tout ce que l’on souhaite n’est pas en soi une maltraitance. Une règle doit rester adaptée à l’âge, aux besoins et à la sécurité.",
+              "Vous pouvez exprimer votre ressenti à un adulte qui vous écoute.",
+            ],
+            [
+              "Signal préoccupant",
+              "On se moque de vous ou vous fait porter les problèmes des adultes.",
+              "Le dénigrement, les insultes ou la culpabilisation peuvent être des violences psychologiques.",
+              "Parlez à un adulte sûr, y compris en dehors de la famille. Ce n’est pas votre faute.",
+            ],
+            [
+              "Maltraitance",
+              "On vous fait peur, vous humilie ou vous prive de besoins essentiels.",
+              "L’intimidation, la négligence et les privations mettant en danger la santé ou le développement nécessitent une aide.",
+              "Un professionnel de santé, un enseignant sûr ou la protection de l’enfance peut être un appui.",
+            ],
+            [
+              "Violence",
+              "On vous frappe ou vous impose des gestes sexuels.",
+              "Les coups ne sont pas un moyen éducatif acceptable. Aucun enfant n’est responsable des violences subies.",
+              "Cherchez un adulte sûr ou un service de protection. Vous n’avez pas à confronter l’auteur.",
+            ],
+            [
+              "Urgence possible",
+              "Vous êtes blessé, menacé gravement ou empêché de vous mettre à l’abri.",
+              "La protection immédiate passe avant toute explication ou exercice de résolution de problème.",
+              "Rejoignez si possible un adulte sûr et demandez une aide urgente locale.",
+            ],
+          ],
+        },
+      };

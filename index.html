@@ -1678,13 +1678,63 @@
           text-decoration: none;
         }
       }
+
+      .welcome-hero {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(32px, 6vw, 68px);
+        border-radius: 28px;
+        color: #fff;
+        background: radial-gradient(circle at 88% 12%, #68a88c 0, transparent 31%), linear-gradient(135deg, #143c34, #1f6755);
+      }
+      .welcome-hero .eyebrow { color: #c9edda; }
+      .welcome-hero h1 { max-width: 780px; font-size: clamp(2.3rem, 5vw, 4.2rem); }
+      .welcome-hero p { max-width: 620px; margin-top: 18px; color: #e4f3e9; font-size: 1.08rem; }
+      .path-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
+      .path-card { display: flex; flex-direction: column; min-height: 270px; padding: 30px; border: 1px solid var(--line); border-radius: 24px; background: #fff; box-shadow: var(--shadow); text-decoration: none; color: var(--ink); transition: transform .18s ease, box-shadow .18s ease; }
+      .path-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px #233e3522; }
+      .path-card:focus-visible { outline-offset: 5px; }
+      .path-primary { background: #edf6ee; border-color: #bdd7c5; }
+      .path-number { color: var(--brand); font-size: .78rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+      .path-card h2 { margin-top: 22px; font-size: clamp(1.55rem, 2.3vw, 2.2rem); }
+      .path-card p { margin-top: 12px; color: var(--muted); }
+      .path-action { margin-top: auto; padding-top: 24px; font-weight: 750; color: var(--brand); }
+      .quick-paths { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 20px 4px; border-bottom: 1px solid var(--line); }
+      .quick-paths span { color: var(--muted); font-size: .85rem; font-weight: 700; }
+      .quick-paths a { font-size: .88rem; }
+      .welcome-explain { margin: 44px 0 12px; }
+      .welcome-explain > p { color: var(--muted); margin-top: 8px; }
+      .preview-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 22px 0; padding: 0; list-style: none; }
+      .preview-steps li { display: grid; gap: 3px; margin: 0; padding: 18px; border-radius: 16px; background: #fff; border: 1px solid var(--line); }
+      .preview-steps span { color: var(--muted); font-size: .9rem; }
+      .journey-figure { margin: 28px 0; padding: 20px 24px; border-radius: 22px; background: #eaf3eb; }
+      .journey-figure svg { display: block; width: 100%; height: auto; }
+      .journey-figure figcaption { max-width: 700px; margin: 4px auto 0; color: var(--muted); font-size: .9rem; }
+      .support-stage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .stage-card, .need-lab { padding: 28px; }
+      .stage-card h2, .need-lab h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); margin: 15px 0; }
+      .stage-card p + p { margin-top: 14px; }
+      .need-lab { margin-top: 18px; }
+      .need-heading { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
+      .need-heading p { font-size: .82rem; color: var(--muted); }
+      .need-lab select { max-width: 390px; }
+      .need-guidance { padding: 22px; margin-top: 20px; border-left: 4px solid var(--brand); border-radius: 0 14px 14px 0; background: #f2f8f2; }
+      .need-guidance .say { margin: 14px 0; }
+      .need-guidance .hint { margin-top: 12px; }
+      .need-guidance .text-button { display: inline-block; margin-top: 12px; }
+
+      @media (max-width: 850px) {
+        .path-grid, .support-stage-grid { grid-template-columns: 1fr; }
+        .preview-steps { grid-template-columns: 1fr; }
+      }
     </style>
+
   </head>
   <body>
     <a class="skip" href="#main">Aller au contenu</a>
     <header>
       <div class="navbar">
-        <a class="brand" href="#outil" aria-label="Pas à pas, mon problème"
+        <a class="brand" href="#accueil" aria-label="Pas à pas, accueil"
           ><span class="brandmark" aria-hidden="true"
             ><svg
               viewBox="0 0 24 24"
@@ -1708,11 +1758,10 @@
           Menu ☰
         </button>
         <nav id="navigation" aria-label="Navigation principale">
-          <a href="#outil" data-page="outil">Mon problème</a
-          ><a href="#proche" data-page="proche">Aider un proche</a
-          ><a href="#violences" data-page="violences">Violentomètre</a
-          ><a href="#comprendre" data-page="comprendre">Comprendre</a
-          ><a href="#bibliographie" data-page="bibliographie">Bibliographie</a>
+          <a href="#accueil" data-page="accueil">Accueil</a
+          ><a href="#outil" data-page="outil">Mon problème</a
+          ><a href="#soutenir" data-page="soutenir">Soutenir quelqu’un</a
+          ><a href="#proche" data-page="proche">Comment aider un proche ?</a>
         </nav>
         <a
           class="help-button"
@@ -1745,7 +1794,44 @@
           disponibles ci-dessous.
         </div></noscript
       >
-      <section id="outil" class="view" aria-label="Mon problème">
+            <section id="accueil" class="view" aria-labelledby="welcome-title">
+        <div class="welcome-hero">
+          <div class="eyebrow">Pas à pas · Une question à la fois</div>
+          <h1 id="welcome-title">Aujourd’hui, je veux…</h1>
+          <p>Choisissez votre situation. Vous pourrez changer de chemin à tout moment.</p>
+        </div>
+        <div class="path-grid" aria-label="Choisir un parcours">
+          <a class="path-card path-primary" href="#outil">
+            <span class="path-number">01 · Pour moi</span>
+            <h2>Je veux avancer sur mon problème</h2>
+            <p>Je décris ma situation, je cherche des pistes, puis je choisis un premier pas.</p>
+            <span class="path-action">Commencer mon parcours <span aria-hidden="true">↗</span></span>
+          </a>
+          <a class="path-card" href="#soutenir">
+            <span class="path-number">02 · Pour une autre personne</span>
+            <h2>Je veux soutenir quelqu’un</h2>
+            <p>J’écoute, je repère ce dont la personne a besoin, puis je propose une aide adaptée.</p>
+            <span class="path-action">Préparer une conversation <span aria-hidden="true">↗</span></span>
+          </a>
+        </div>
+        <div class="quick-paths">
+          <span>Autres situations</span>
+          <a href="#proche">Comment aider un proche ? ↗</a>
+          <a href="#violences">Reconnaître une violence ↗</a>
+          <a href="#securite">Trouver une aide urgente ↗</a>
+        </div>
+        <div class="welcome-explain">
+          <h2>Comment ça se passe ?</h2>
+          <p>Une vue courte avant de commencer. Les explications détaillées restent disponibles si vous en avez besoin.</p>
+          <ol class="preview-steps">
+            <li><b>Comprendre</b><span>Ce qui se passe et ce qui compte.</span></li>
+            <li><b>Choisir</b><span>Une aide ou une piste adaptée.</span></li>
+            <li><b>Essayer</b><span>Un petit pas, puis un bilan.</span></li>
+          </ol>
+          <a class="text-button" href="#comprendre">Comprendre la méthode et ses limites ↗</a>
+        </div>
+      </section>
+      <section id="outil" class="view" aria-label="Mon problème" hidden>
         <div class="intro">
           <div>
             <div class="eyebrow">Un problème · Un pas à la fois</div>
@@ -1829,16 +1915,83 @@
           </div>
         </div>
       </section>
+      <section id="soutenir" class="view" hidden>
+        <div class="page-narrow support-journey">
+          <div class="page-heading">
+            <div class="eyebrow">Écouter · Comprendre · Agir avec la personne</div>
+            <h1>Soutenir quelqu’un, sans prendre sa place</h1>
+            <p>Une bonne aide commence par la situation et les souhaits de la personne. Le parcours ci-dessous prépare une conversation ; il ne juge pas la personne et ne décide pas pour elle.</p>
+          </div>
+          <figure class="journey-figure">
+            <svg viewBox="0 0 720 170" role="img" aria-labelledby="journey-title journey-desc" xmlns="http://www.w3.org/2000/svg">
+              <title id="journey-title">Quatre étapes pour soutenir une personne</title>
+              <desc id="journey-desc">Écouter les faits et le ressenti, vérifier ce que la personne souhaite, choisir une aide avec son accord, puis faire le point. Si la sécurité est menacée, chercher une aide adaptée avant l’exercice.</desc>
+              <path d="M120 75H600" stroke="#8eac9b" stroke-width="4" stroke-linecap="round"/>
+              <g fill="#173f35" stroke="#fff" stroke-width="5"><circle cx="92" cy="75" r="32"/><circle cx="270" cy="75" r="32"/><circle cx="450" cy="75" r="32"/><circle cx="628" cy="75" r="32"/></g>
+              <g fill="#fff" text-anchor="middle" font-size="21" font-weight="700"><text x="92" y="83">1</text><text x="270" y="83">2</text><text x="450" y="83">3</text><text x="628" y="83">4</text></g>
+              <g fill="#203b36" text-anchor="middle" font-size="17" font-weight="650"><text x="92" y="132">Écouter</text><text x="270" y="132">Vérifier</text><text x="450" y="132">Choisir</text><text x="628" y="132">Revoir</text></g>
+            </svg>
+            <figcaption>La personne aidée choisit la direction. On peut revenir à l’écoute si le besoin change. Si elle est en danger, on cherche d’abord un soutien adapté.</figcaption>
+          </figure>
+          <div class="support-stage-grid">
+            <article class="card stage-card">
+              <span class="tag">1 · Écouter avant de conseiller</span>
+              <h2>« Qu’est-ce qui est difficile pour toi en ce moment ? »</h2>
+              <p>Laissez la personne raconter à sa manière. Reformulez : « Si je comprends bien, le plus difficile est… » Puis demandez si vous avez bien compris.</p>
+              <p class="hint">Évitez de comparer tout de suite avec votre propre expérience.</p>
+            </article>
+            <article class="card stage-card">
+              <span class="tag">2 · Relever le besoin</span>
+              <h2>« De quoi aurais-tu besoin de ma part ? »</h2>
+              <p>Demandez ce qui aiderait aujourd’hui : être écouté, comprendre la situation, recevoir une aide concrète, ou discuter d’une idée. La réponse peut être « je ne sais pas ».</p>
+            </article>
+          </div>
+          <div class="card need-lab" id="need-lab">
+            <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div><p>Aucun choix n’est enregistré.</p></div>
+            <label class="label" for="support-relation">Dans quelle relation ?</label>
+            <select id="support-relation">
+              <option value="colleague">Collègue</option>
+              <option value="learner">Personne que j’encadre ou forme</option>
+              <option value="close">Proche</option>
+              <option value="other">Autre relation</option>
+            </select>
+            <fieldset class="section-gap"><legend>Quel besoin la personne exprime-t-elle ?</legend><div class="choice-stack" id="need-choices">
+              <button class="pill" type="button" data-need="listen" aria-pressed="true">Être écoutée</button>
+              <button class="pill" type="button" data-need="clarify" aria-pressed="false">Voir plus clair</button>
+              <button class="pill" type="button" data-need="practical" aria-pressed="false">Une aide concrète</button>
+              <button class="pill" type="button" data-need="advice" aria-pressed="false">Un avis ou un retour</button>
+            </div></fieldset>
+            <div id="need-guidance" class="need-guidance" aria-live="polite"></div>
+          </div>
+          <article class="card stage-card section-gap">
+            <span class="tag">4 · Faire le point</span>
+            <h2>Vérifier si l’aide a vraiment servi</h2>
+            <p>« Est-ce que ce que j’ai fait t’a aidé ? Qu’est-ce qui serait plus utile la prochaine fois ? » On peut ajuster ou s’arrêter. On respecte un refus.</p>
+          </article>
+          <details class="section-gap">
+            <summary>Exemple : un médecin expérimenté et de jeunes collègues</summary>
+            <div class="details-body">
+              <p><strong>La situation :</strong> de jeunes médecins parlent d’une difficulté actuelle. Le médecin expérimenté répond en racontant ce qu’il vivait à leur âge. Ils se sentent moins écoutés et n’osent plus se confier.</p>
+              <p><strong>Un autre départ :</strong> « Merci de me l’avoir dit. Qu’est-ce qui est le plus difficile aujourd’hui ? » Puis : « Tu voudrais que je t’écoute, que je t’aide à chercher des options, ou que je partage mon expérience ? »</p>
+              <p><strong>S’il veut raconter son expérience :</strong> demander d’abord : « Est-ce qu’un exemple de mon expérience t’aiderait ? » Laisser ensuite la personne dire ce qui est pertinent dans son contexte.</p>
+              <p><strong>Si la confiance a déjà été abîmée :</strong> « Je crois que j’ai comparé trop vite avec mon époque. Je n’ai pas assez écouté ce que tu vis maintenant. Je veux mieux comprendre, si tu le souhaites. »</p>
+            </div>
+          </details>
+          <div class="notice amber section-gap"><strong>Quand l’exercice ne suffit pas.</strong>En cas de menace, de violence, de harcèlement, de risque pour une personne ou de difficulté relevant d’une décision clinique, cherchez un appui compétent et sûr. <a href="#securite">Voir les aides et repères de sécurité</a>.</div>
+          <p class="source-note">Cette méthode assemble des repères de premiers secours psychologiques, d’écoute et d’autonomie dans l’apprentissage. Elle n’a pas été évaluée comme intervention propre à ce site. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a></p>
+        </div>
+      </section>
       <section id="proche" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
             <div class="eyebrow">Être présent, sans prendre la place</div>
-            <h1>Aider un proche</h1>
+            <h1>Comment aider un proche ?</h1>
             <p>
               Commencez par demander ce qui lui serait utile. Écouter peut déjà
               aider.
               <a class="citation" href="#ref-5">[5]</a>
             </p>
+            <p><a href="#soutenir">Voir d’abord la démarche pour soutenir quelqu’un ↗</a></p>
           </div>
           <div class="support-card card">
             <span class="tag">La question de départ</span>
@@ -2067,6 +2220,13 @@
               </ul>
             </div>
           </div>
+          <details class="section-gap">
+            <summary>Pourquoi montrer les étapes avant l’exercice ?</summary>
+            <div class="details-body">
+              <p>Une vue courte aide à savoir où l’on va. Les détails restent facultatifs pour ne pas charger la première page. Des exemples peuvent aider à commencer ; ils ne remplacent pas l’adaptation à sa propre situation. Ces choix s’appuient sur les principes de charge cognitive et d’apprentissage des adultes, sans preuve que cette interface précise soit supérieure à une autre. <a class="citation" href="#ref-20">[20]</a> <a class="citation" href="#ref-21">[21]</a></p>
+              <p>Dans l’aide à autrui, nous demandons d’abord ce que la personne souhaite. En formation, l’autonomie et la sécurité dans la conversation favorisent un retour utilisable ; le rapport hiérarchique exige une attention particulière. <a class="citation" href="#ref-18">[18]</a> <a class="citation" href="#ref-19">[19]</a></p>
+            </div>
+          </details>
           <h2 class="block-heading">Les principes</h2>
           <details>
             <summary>1. Décrire les faits, le but et l’obstacle</summary>
@@ -2924,6 +3084,13 @@
                 >
               </div>
             </li>
+            <li class="reference" id="ref-18" data-ref="18"><div><span class="ref-label">Étude qualitative · Retour en formation clinique</span><p>Johnson, C. E. et al. (2020). <em>Psychological safety in feedback: What does it look like and how can educators work with learners to foster it?</em> <a href="https://pubmed.ncbi.nlm.nih.gov/32170881/" target="_blank" rel="noopener noreferrer">Notice PubMed ↗</a></p><small>Analyse de conversations de retour en formation ; éclaire la confiance et la parole des apprenants, sans tester ce site.</small></div></li>
+            <li class="reference" id="ref-19" data-ref="19"><div><span class="ref-label">Article conceptuel · Autonomie en supervision</span><p>Sawatsky, A. P. et al. (2022). <em>Autonomy and developing physicians: Reimagining supervision using self-determination theory.</em> <a href="https://pubmed.ncbi.nlm.nih.gov/34091940/" target="_blank" rel="noopener noreferrer">Notice PubMed ↗</a></p><small>Propose un cadre pour concilier supervision et autonomie ; ce n’est pas une évaluation de l’interface.</small></div></li>
+            <li class="reference" id="ref-20" data-ref="20"><div><span class="ref-label">Revue · Charge cognitive en pédagogie médicale</span><p><em>Use of Cognitive Load Theory to Deploy Instructional Technology for Undergraduate Medical Education: a Scoping Review.</em> (2022). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9054949/" target="_blank" rel="noopener noreferrer">Article ↗</a></p><small>Appuie la segmentation, les exemples et la limitation des détails non essentiels. Effets variables selon l’expertise et la tâche.</small></div></li>
+            <li class="reference" id="ref-21" data-ref="21"><div><span class="ref-label">Synthèse · Apprentissage des adultes</span><p>Palis, A. G., &amp; Quiros, P. A. (2014). <em>Adult Learning Principles and Presentation Pearls.</em> <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4005174/" target="_blank" rel="noopener noreferrer">Article ↗</a></p><small>Décrit la pertinence, les besoins de l’apprenant et l’interactivité ; principes à adapter, sans règle universelle.</small></div></li>
+            <li class="reference" id="ref-22" data-ref="22"><div><span class="ref-label">Cadre pratique · Amélioration en équipe</span><p>Institute for Healthcare Improvement. <em>Model for Improvement.</em> <a href="https://www.ihi.org/library/model-for-improvement" target="_blank" rel="noopener noreferrer">Cadre IHI ↗</a></p><small>Objectif, mesure, changement et cycles de test. Cadre de pratique, pas une preuve d’efficacité pour cet outil.</small></div></li>
+            <li class="reference" id="ref-23" data-ref="23"><div><span class="ref-label">Cadre institutionnel · Évaluation collective</span><p>Centers for Disease Control and Prevention. (2024). <em>CDC Program Evaluation Framework.</em> <a href="https://www.cdc.gov/mmwr/volumes/73/rr/rr7306a1.htm" target="_blank" rel="noopener noreferrer">Cadre CDC ↗</a></p><small>Contexte, participation, preuve, équité et usage des résultats ; transposition prudente hors santé publique.</small></div></li>
+            <li class="reference" id="ref-24" data-ref="24"><div><span class="ref-label">Guide institutionnel · Politique publique</span><p>World Health Organization Regional Office for Europe. (2022). <em>Systems thinking for noncommunicable disease prevention policy.</em> <a href="https://www.who.int/europe/publications/i/item/WHO-EURO-2022-4195-43954-61946" target="_blank" rel="noopener noreferrer">Guide OMS ↗</a></p><small>Repères de définition du problème, d’acteurs, de mise en œuvre et d’évaluation ; exemples de santé publique, sans validité universelle.</small></div></li>
           </ol>
         </div>
       </section>
@@ -2937,7 +3104,7 @@
               saisis apparaissent ici.
             </p>
             <p class="print-only">
-              Pas à pas · Fiche personnelle de résolution de problème · Outil
+              Pas à pas · Fiche de résolution de problème · Outil
               éducatif, sans validation clinique propre.
             </p>
           </div>
@@ -2962,11 +3129,14 @@
           </div>
         </div>
       </section>
+
     </main>
     <footer>
       <span>Pas à pas · Un outil pour les difficultés du quotidien.</span>
       <div class="foot-links">
-        <a href="#securite">Sécurité & confidentialité</a
+        <a href="#comprendre">Comprendre</a
+        ><a href="#violences">Repérer une violence</a
+        ><a href="#securite">Sécurité & confidentialité</a
         ><a href="#bibliographie">Sources</a>
       </div>
     </footer>
@@ -2983,36 +3153,6 @@
     </dialog>
     <script>
       "use strict";
-      // Standalone, zero-dependency application. User input is escaped before HTML rendering.
-      const $ = (s, r = document) => r.querySelector(s),
-        $$ = (s, r = document) => [...r.querySelectorAll(s)];
-      const esc = (v) =>
-        String(v ?? "").replace(
-          /[&<>"']/g,
-          (c) =>
-            ({
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            })[c],
-        );
-      const KEY = "pas-a-pas.brouillon.v1";
-      const contextIcon = (k) => {
-        const paths = {
-          daily: "M3 10l9-7 9 7M5 9v12h14V9M9 21v-7h6v7",
-          work: "M8 6V3h8v3M3 6h18v14H3zM3 11c6 4 12 4 18 0M10 12h4",
-          couple:
-            "M12 20S2 14 2 8a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 6-10 12-10 12z",
-          family:
-            "M3 20v-4a4 4 0 0 1 8 0v4M13 20v-4a4 4 0 0 1 8 0v4M10 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M20 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
-          study:
-            "M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1v15",
-          health: "M9 3h6v6h6v6h-6v6H9v-6H3V9h6z",
-        };
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[k]}"/></svg>`;
-      };
       const contexts = {
         daily: {
           label: "Vie quotidienne",
@@ -3160,15 +3300,28 @@
           result:
             "Le secrétariat m’a proposé un autre horaire ; le transport reste à confirmer.",
         },
+        collective: {
+          label: "Vie collective",
+          icon: "◇",
+          situation: "Dans mon quartier, l’arrêt de bus le plus proche reste difficile d’accès pour plusieurs habitants.",
+          goal: "Faire connaître les difficultés d’accès et obtenir une réponse de l’autorité compétente.",
+          obstacle: "Je ne sais pas qui décide ni quelles demandes ont déjà été faites.",
+          control: "Recueillir des faits publics et chercher le bon interlocuteur avec les personnes concernées.",
+          outside: "La décision de l’autorité, le budget et le calendrier de travaux.",
+          ideas: ["Demander aux personnes concernées ce qui leur serait utile, avec leur accord.", "Identifier le service responsable et consulter les informations publiques.", "Préparer une demande collective claire avec un objectif précis."],
+          action: "Identifier le service responsable de l’arrêt et une source publique sur les démarches possibles.",
+          support: "Des personnes concernées qui souhaitent participer et une association locale.",
+          backup: "Si l’interlocuteur n’est pas clair, demander une orientation à la collectivité locale.",
+          measure: "Nous connaissons le bon interlocuteur et pouvons formuler une demande vérifiable.",
+          result: "Le service responsable a été identifié ; nous préparons une demande avec les personnes intéressées.",
+        },
       };
-      const stepNames = [
-        ["Commencer", "Mon contexte"],
-        ["Clarifier", "Un but précis"],
-        ["Imaginer", "Plusieurs pistes"],
-        ["Choisir", "Comparer les options"],
-        ["Agir", "Un premier pas"],
-        ["Faire le point", "Après l’essai"],
-      ];
+      const scales = {
+        personal: ["Personnel", "Ce que je peux essayer moi-même, avec de l’aide si besoin."],
+        shared: ["Entre personnes", "Ce qui demande un accord ou une discussion avec d’autres."],
+        organization: ["Équipe ou institution", "Ce qui dépend aussi de règles, de moyens ou d’une décision d’organisation."],
+        public: ["Collectif ou politique", "Ce qui concerne un groupe et une décision publique ; agir avec les personnes concernées."],
+      };
       const glossary = {
         meta: [
           "Méta-analyse",
@@ -3231,166 +3384,6 @@
           "Capacité d’une intervention à produire un effet dans les conditions où elle a été étudiée. Ce résultat ne se transfère pas automatiquement à d’autres situations.",
         ],
       };
-      function term(k) {
-        return `<button type="button" class="glossary-button" data-term="${k}">${glossary[k][0].toLowerCase()}</button>`;
-      }
-      function fresh() {
-        return {
-          version: 1,
-          step: 0,
-          context: "daily",
-          safety: "",
-          energy: "",
-          fields: {
-            situation: "",
-            goal: "",
-            obstacle: "",
-            emotion: "",
-            control: "",
-            outside: "",
-            action: "",
-            when: "",
-            support: "",
-            backup: "",
-            measure: "",
-            reviewDate: "",
-            result: "",
-            learning: "",
-            next: "",
-            trial: "notyet",
-          },
-          options: [
-            { id: 1, text: "", plus: "", minus: "" },
-            { id: 2, text: "", plus: "", minus: "" },
-          ],
-          chosen: null,
-        };
-      }
-      let state = fresh(),
-        remember = false,
-        nextId = 4,
-        previousFocus = null,
-        pendingConfirm = null,
-        supportMode = "listen",
-        meterIndex = 0;
-      function validateDraft(raw) {
-        if (
-          !raw ||
-          raw.version !== 1 ||
-          !Object.hasOwn(contexts, raw.context) ||
-          !Array.isArray(raw.options) ||
-          raw.options.length < 1 ||
-          raw.options.length > 8
-        )
-          throw Error("invalid");
-        const clean = fresh();
-        clean.context = raw.context;
-        clean.step =
-          Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
-            ? raw.step
-            : 0;
-        clean.energy = ["", "ready", "pause"].includes(raw.energy)
-          ? raw.energy
-          : "";
-        clean.safety = ["", "safe", "unsure", "danger"].includes(raw.safety)
-          ? raw.safety
-          : "";
-        if (!raw.fields || typeof raw.fields !== "object")
-          throw Error("invalid");
-        Object.keys(clean.fields).forEach((k) => {
-          if (typeof raw.fields[k] === "string")
-            clean.fields[k] = raw.fields[k].slice(0, 6000);
-        });
-        clean.fields.trial = ["notyet", "yes", "partly", "no"].includes(
-          clean.fields.trial,
-        )
-          ? clean.fields.trial
-          : "notyet";
-        const ids = new Set();
-        clean.options = raw.options.map((o, i) => {
-          if (!o || typeof o.text !== "string") throw Error("invalid");
-          const id = i + 1;
-          ids.add(id);
-          return {
-            id,
-            text: o.text.slice(0, 6000),
-            plus: typeof o.plus === "string" ? o.plus.slice(0, 6000) : "",
-            minus: typeof o.minus === "string" ? o.minus.slice(0, 6000) : "",
-          };
-        });
-        const choice = raw.options.findIndex((o) => o.id === raw.chosen);
-        clean.chosen =
-          choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
-        return clean;
-      }
-      try {
-        const saved = localStorage.getItem(KEY);
-        if (saved) {
-          state = validateDraft(JSON.parse(saved));
-          remember = true;
-          nextId = state.options.length + 1;
-        }
-      } catch (e) {
-        /* Corrupt or unavailable storage does not block use. */
-      }
-      function persist() {
-        if (!remember) return;
-        try {
-          localStorage.setItem(KEY, JSON.stringify(state));
-        } catch (e) {
-          remember = false;
-          $("#remember").checked = false;
-          updatePrivacy();
-          toast(
-            "La sauvegarde a échoué. Téléchargez votre brouillon pour le conserver.",
-          );
-        }
-      }
-      function updatePrivacy() {
-        $("#privacy-status").textContent = remember
-          ? "Brouillon conservé sur cet appareil, sans chiffrement. Aucune transmission par l’outil."
-          : "Sans sauvegarde, fermer ou recharger efface vos réponses. Elles ne sont pas envoyées.";
-        $("#remember").checked = remember;
-      }
-      function toast(t) {
-        $("#toast").textContent = t;
-        $("#toast").hidden = false;
-        clearTimeout(toast.timer);
-        toast.timer = setTimeout(() => ($("#toast").hidden = true), 5500);
-      }
-      function confirmAction(title, text, action, label = "Confirmer") {
-        previousFocus = document.activeElement;
-        $("#dialog-title").textContent = title;
-        $("#dialog-description").textContent = text;
-        $("#dialog-confirm").textContent = label;
-        pendingConfirm = action;
-        $("#confirm-dialog").showModal();
-        $("#dialog-cancel").focus();
-      }
-      function closeDialog() {
-        const d = $("#confirm-dialog");
-        d.close();
-        pendingConfirm = null;
-        if (previousFocus?.isConnected) previousFocus.focus();
-      }
-      $("#dialog-cancel").addEventListener("click", closeDialog);
-      $("#confirm-dialog").addEventListener("cancel", (e) => {
-        e.preventDefault();
-        closeDialog();
-      });
-      $("#dialog-confirm").addEventListener("click", () => {
-        const fn = pendingConfirm;
-        closeDialog();
-        fn?.();
-      });
-      function example(text, label = "") {
-        return `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary><div class="example"><small>Exemple fictif · ${esc(contexts[state.context].label)}</small><p>${esc(text)}</p></div></details>`;
-      }
-      function field(key, label, hint = "", type = "textarea", ex = "") {
-        const val = state.fields[key] || "",
-          id = "field-" + key;
-        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${hint}</p>` : ""}${ex ? example(ex, label) : ""}</div>`;
-      }
       const comparisonExamples = {
         daily: [
           "Un tri limité est plus facile à commencer.",
@@ -3416,462 +3409,11 @@
           "L’équipe connaît mon obstacle et peut proposer des options.",
           "Une autre modalité de consultation peut être indisponible ou inadaptée.",
         ],
+        collective: [
+          "Une demande documentée rend la difficulté visible.",
+          "Une réponse publique peut prendre du temps et ne garantit pas un changement.",
+        ],
       };
-      function renderSteps() {
-        $("#steps").innerHTML = stepNames
-          .map(
-            (s, i) =>
-              `<li><button class="step-link" data-step="${i}"${i === state.step ? ' aria-current="step"' : ""}><span class="step-num">${i + 1}</span><span class="step-text"><b>${s[0]}</b><small>${s[1]}</small></span></button></li>`,
-          )
-          .join("");
-      }
-      function renderStep(focus = false) {
-        hideTooltip();
-        renderSteps();
-        const c = contexts[state.context],
-          i = state.step;
-        const titles = [
-          "Quel est votre contexte ?",
-          "Quel problème, précisément ?",
-          "Quelles pistes pourriez-vous essayer ?",
-          "Quelle option vous convient ?",
-          "Quel sera votre premier pas ?",
-          "Après l’essai, où en êtes-vous ?",
-        ];
-        const leads = [
-          "Choisissez le domaine pour adapter les exemples.",
-          "Une situation, un but, un obstacle. Quelques phrases suffisent.",
-          "Notez deux idées, même imparfaites. Une seule suffit pour commencer.",
-          "Choisissez une piste faisable et sûre pour vous. Vous pourrez la changer.",
-          "Une petite action, un moment et un signe de progrès.",
-          "Faites le point après l’action. Vous pouvez ajuster sans repartir de zéro.",
-        ];
-        let body = "";
-        if (i === 0) {
-          body = `<fieldset><legend>Le domaine de votre problème</legend><div class="contexts">${Object.entries(
-            contexts,
-          )
-            .map(
-              ([k, v]) =>
-                `<button type="button" class="context" data-context="${k}" aria-pressed="${state.context === k}"><span class="context-icon" aria-hidden="true">${contextIcon(k)}</span><span>${v.label}</span></button>`,
-            )
-            .join(
-              "",
-            )}</div></fieldset><fieldset class="section-gap"><legend>Êtes-vous en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
-            ["safe", "Oui, je peux réfléchir"],
-            ["unsure", "J’ai un doute"],
-            ["danger", "Je me sens en danger"],
-          ]
-            .map(
-              ([k, v]) =>
-                `<button class="pill" type="button" data-safety="${k}" aria-pressed="${state.safety === k}">${v}</button>`,
-            )
-            .join(
-              "",
-            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Votre sécurité passe avant l’exercice.</strong>Vous pouvez chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="#violences">Voir les repères de sécurité</a>.</p>`}<details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Besoin d’une pause ?</summary><div class="details-body"><p>Vous pouvez vous arrêter ici, choisir une difficulté plus petite ou demander à une personne de confiance de rester avec vous.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#proche">Comment être accompagné</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Pause choisie. Rien ne vous oblige à poursuivre maintenant. Vous pouvez reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
-        }
-        if (i === 1) {
-          body =
-            field(
-              "situation",
-              "Ce qui se passe",
-              "Racontez un fait précis, sans nom ni adresse.",
-              "textarea",
-              c.situation,
-            ) +
-            field(
-              "goal",
-              "Le petit changement que je souhaite",
-              "Qu’aimeriez-vous voir changer concrètement ?",
-              "textarea",
-              c.goal,
-            ) +
-            field(
-              "obstacle",
-              "Ce qui me bloque",
-              "Quel est le principal obstacle ?",
-              "textarea",
-              c.obstacle,
-            ) +
-            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details>`;
-        }
-        if (i === 2) {
-          body = `<p class="hint">Faire autrement, demander de l’aide ou chercher une information : tout peut être une piste.</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example(c.ideas[j], "Piste " + (j + 1)) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
-        }
-        if (i === 3) {
-          const options = state.options.filter((o) => o.text.trim());
-          body = options.length
-            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(c.ideas[0])}</p><p><strong>Apport possible :</strong> ${esc(comparisonExamples[state.context][0])}</p><p><strong>Limite :</strong> ${esc(comparisonExamples[state.context][1])}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>Laquelle respecte mes besoins, demande une énergie acceptable et peut être essayée sans me mettre en danger ?</p><p>Si les conséquences sont importantes, demandez un avis adapté avant d’agir.</p></div></details>`
-            : `<div class="notice amber"><strong>Vous n’avez pas encore noté de piste.</strong>Revenez à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
-        }
-        if (i === 4) {
-          const chosen = state.options.find((o) => o.id === state.chosen);
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Aucune piste choisie. Vous pouvez revenir à l’étape précédente."}</div><div class="section-gap">${field("action", "Ma première action", "Choisissez une action assez petite pour commencer.", "textarea", c.action)}${field("when", "Quand et où ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", "Comment saurai-je que j’ai avancé ?", "Un petit signe concret suffit.", "textarea", c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Prévoyez une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand faire le point ?", "Une date pour votre fiche, sans rappel automatique.", "date")}</div></details></div>`;
-        }
-        if (i === 5) {
-          body = `<fieldset><legend>Où en êtes-vous de l’action ?</legend><div class="choice-stack">${[
-            ["notyet", "Pas encore essayé"],
-            ["yes", "Essayé"],
-            ["partly", "En partie"],
-            ["no", "Je n’ai pas pu"],
-          ]
-            .map(
-              ([k, v]) =>
-                `<button class="pill" data-trial="${k}" aria-pressed="${state.fields.trial === k}">${v}</button>`,
-            )
-            .join(
-              "",
-            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Vous pouvez garder votre plan pour plus tard.</strong>Le bilan se remplit après l’essai. Pas besoin d’inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si vous n’avez fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que vous espériez</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
-        }
-        $("#step-container").innerHTML =
-          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2><p class="step-lead">${leads[i]}</p><div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
-        if (focus) {
-          $("#step-title").focus({ preventScroll: true });
-          $("#step-container").scrollIntoView({
-            block: "start",
-            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-              ? "instant"
-              : "smooth",
-          });
-        }
-      }
-      function changeStep(i) {
-        state.step = Math.max(0, Math.min(5, i));
-        persist();
-        if (location.hash !== "#outil") {
-          location.hash = "outil";
-          renderStep();
-        } else renderStep(true);
-      }
-      function goNext() {
-        if (state.step === 4 || state.step === 5) {
-          renderRecap();
-          location.hash = "recap";
-          return;
-        }
-        if (state.step === 2 && !state.options.some((o) => o.text.trim())) {
-          toast("Notez au moins une piste pour pouvoir la comparer.");
-          $("#ideas textarea")?.focus();
-          return;
-        }
-        if (
-          state.step === 3 &&
-          !state.options.some((o) => o.id === state.chosen && o.text.trim())
-        ) {
-          toast(
-            "Choisissez une option, ou revenez en arrière pour en imaginer une.",
-          );
-          $("#step-title").focus();
-          return;
-        }
-        changeStep(state.step + 1);
-      }
-      function renderRecap() {
-        const f = state.fields,
-          c = contexts[state.context],
-          choice = state.options.find((o) => o.id === state.chosen);
-        const dd = (k, v) =>
-          `<dt>${k}</dt><dd${v ? "" : ' class="empty"'}>${v ? esc(v) : "Non renseigné"}</dd>`;
-        const block = (title, idx, content) =>
-          `<article class="card recap-section"><h3>${title}<button class="text-button no-print" data-step="${idx}">Modifier</button></h3><dl>${content}</dl></article>`;
-        $("#recap-content").innerHTML =
-          block(
-            "1. Ma situation",
-            1,
-            dd("Contexte", c.label) +
-              dd("Les faits", f.situation) +
-              dd("Mon but", f.goal) +
-              dd("Mon obstacle", f.obstacle) +
-              (f.emotion ? dd("Mon ressenti", f.emotion) : "") +
-              (f.control ? dd("Ma marge de manœuvre", f.control) : "") +
-              (f.outside ? dd("Ce qui ne dépend pas de moi", f.outside) : ""),
-          ) +
-          block(
-            "2. Mes options",
-            2,
-            state.options
-              .filter((o) => o.text.trim())
-              .map(
-                (o, j) =>
-                  dd("Piste " + (j + 1), o.text) +
-                  (o.plus ? dd("Bénéfices envisagés", o.plus) : "") +
-                  (o.minus ? dd("Contraintes et risques", o.minus) : ""),
-              )
-              .join("") || dd("Pistes", ""),
-          ) +
-          block("3. Mon choix", 3, dd("Option retenue", choice?.text)) +
-          block(
-            "4. Mon premier pas",
-            4,
-            dd("Action", f.action) +
-              dd("Quand et où", f.when) +
-              (f.support ? dd("Appui", f.support) : "") +
-              (f.backup ? dd("Si ça bloque", f.backup) : "") +
-              dd("Signe de progrès", f.measure) +
-              (f.reviewDate
-                ? dd("Date du bilan", formatDate(f.reviewDate))
-                : ""),
-          ) +
-          block(
-            "5. Mon bilan",
-            5,
-            dd(
-              "Statut",
-              {
-                notyet: "Pas encore essayé",
-                yes: "Essayé",
-                partly: "Essayé en partie",
-                no: "Je n’ai pas pu",
-              }[f.trial],
-            ) +
-              (f.trial === "notyet"
-                ? ""
-                : dd("Résultat", f.result) +
-                  dd("Ce que j’en retiens", f.learning) +
-                  dd("Prochaine étape", f.next)),
-          );
-      }
-
-      // Pack complete cards first, then complete label/answer pairs. Only answers
-      // taller than a page are continued, at paragraph/sentence/word boundaries.
-      // Measurements use the exact same typography as the print media layout.
-      function preparePrint() {
-        renderRecap();
-        const documentRoot = $("#print-document");
-        document.body.classList.remove("print-ready");
-        documentRoot.replaceChildren();
-        documentRoot.classList.add("print-measuring");
-        const pages = [];
-        let pageBody;
-        const make = (tag, className, text) => {
-          const el = document.createElement(tag);
-          if (className) el.className = className;
-          if (text !== undefined) el.textContent = text;
-          return el;
-        };
-        const newPage = () => {
-          const page = make("section", "print-page");
-          pageBody = make("div", "print-page-body");
-          const heading = make(
-            "div",
-            "print-document-heading" + (pages.length ? " continued" : ""),
-          );
-          heading.append(
-            make(
-              "h1",
-              "",
-              "Mon prochain pas" + (pages.length ? " · suite" : ""),
-            ),
-          );
-          if (!pages.length)
-            heading.append(
-              make(
-                "p",
-                "",
-                "Fiche personnelle · Pas à pas · Outil éducatif, sans validation clinique propre.",
-              ),
-            );
-          pageBody.append(heading);
-          page.append(pageBody, make("div", "print-page-footer"));
-          documentRoot.append(page);
-          pages.push(page);
-        };
-        // The last card's bottom includes its margin; scrollHeight alone can
-        // ignore that margin in some layout engines.
-        const fits = () => {
-          const children = [...pageBody.children];
-          const last = children.at(-1);
-          const limit = pageBody.getBoundingClientRect().bottom;
-          const bottom =
-            last.getBoundingClientRect().bottom +
-            parseFloat(getComputedStyle(last).marginBottom || 0);
-          return bottom <= limit - 1;
-        };
-        const makeCard = (title, continued = false) => {
-          const card = make("article", "print-card");
-          card.append(make("h2", "", title + (continued ? " · suite" : "")));
-          return card;
-        };
-        const makeEntry = (label, text, continued = false) => {
-          const entry = make("div", "print-entry");
-          entry.append(
-            make(
-              "div",
-              "print-entry-label",
-              label + (continued ? " (suite)" : ""),
-            ),
-            make("p", "print-entry-text", text),
-          );
-          return entry;
-        };
-        const sources = $$("#recap-content .recap-section").map((section) => ({
-          title: $("h3", section).firstChild.textContent,
-          entries: $$("dt", section).map((dt) => [
-            dt.textContent,
-            dt.nextElementSibling.textContent,
-          ]),
-        }));
-        newPage();
-        for (const source of sources) {
-          let card = makeCard(source.title);
-          for (const [label, text] of source.entries)
-            card.append(makeEntry(label, text));
-          pageBody.append(card);
-          if (fits()) continue;
-          card.remove();
-          // If the whole card fits on a fresh page, preserve it as a unit.
-          if (pageBody.children.length > 1) newPage();
-          pageBody.append(card);
-          if (fits()) continue;
-          card.remove();
-          card = makeCard(source.title);
-          pageBody.append(card);
-          let sectionContinued = false;
-          const continueCard = () => {
-            if (card.children.length === 1) card.remove();
-            else sectionContinued = true;
-            if (pageBody.children.length > 1) newPage();
-            card = makeCard(source.title, sectionContinued);
-            pageBody.append(card);
-          };
-          for (const [label, fullText] of source.entries) {
-            let entry = makeEntry(label, fullText);
-            card.append(entry);
-            if (fits()) continue;
-            const previous = {
-              body: pageBody,
-              card,
-              continued: sectionContinued,
-              pageCount: pages.length,
-            };
-            entry.remove();
-            continueCard();
-            card.append(entry);
-            if (fits()) continue;
-            // This answer cannot fit even on a fresh page. Use the remaining
-            // space on the original page instead of leaving a large blank area.
-            entry.remove();
-            card.remove();
-            if (pages.length > previous.pageCount) pages.pop().remove();
-            pageBody = previous.body;
-            card = previous.card;
-            sectionContinued = previous.continued;
-            if (!card.isConnected) pageBody.append(card);
-            card.append(entry);
-            const characters = Array.from(fullText);
-            let offset = 0;
-            while (offset < characters.length) {
-              const answer = $(".print-entry-text", entry);
-              let low = 0,
-                high = characters.length - offset;
-              while (low < high) {
-                const mid = Math.ceil((low + high) / 2);
-                answer.textContent = characters
-                  .slice(offset, offset + mid)
-                  .join("");
-                if (fits()) low = mid;
-                else high = mid - 1;
-              }
-              if (
-                low < 120 &&
-                (card.children.length > 2 || pageBody.children.length > 2)
-              ) {
-                entry.remove();
-                continueCard();
-                card.append(entry);
-                continue;
-              }
-              if (!low) throw new Error("Print entry cannot fit on an A4 page");
-              let count = low;
-              if (offset + count < characters.length) {
-                const prefix = characters
-                  .slice(offset, offset + count)
-                  .join("");
-                const thresholds = [
-                  prefix.lastIndexOf("\n") + 1,
-                  [...prefix.matchAll(/[.!?…][ \n]/g)].at(-1)?.index + 1 || 0,
-                  prefix.lastIndexOf(" ") + 1,
-                ];
-                const boundary = thresholds.find(
-                  (n) => n >= prefix.length * 0.6,
-                );
-                if (boundary)
-                  count = Array.from(prefix.slice(0, boundary)).length;
-              }
-              answer.textContent = characters
-                .slice(offset, offset + count)
-                .join("");
-              offset += count;
-              if (offset < characters.length) {
-                continueCard();
-                entry = makeEntry(label, "", true);
-                card.append(entry);
-              }
-            }
-          }
-        }
-        const note = make(
-          "p",
-          "print-closing-note",
-          "Vous pouvez ajuster ce plan, demander un appui ou choisir un pas plus petit. Document personnel à conserver en lieu sûr.",
-        );
-        pageBody.append(note);
-        if (!fits()) {
-          note.remove();
-          newPage();
-          pageBody.append(note);
-        }
-        pages.forEach((page, i) => {
-          $(".print-page-footer", page).append(
-            make("span", "", "Pas à pas · Résolution de problème"),
-            make("span", "", `Page ${i + 1} / ${pages.length}`),
-          );
-        });
-        documentRoot.classList.remove("print-measuring");
-        document.body.classList.add("print-ready");
-      }
-      function finishPrint() {
-        document.body.classList.remove("print-ready");
-        $("#print-document").classList.remove("print-measuring");
-      }
-      function formatDate(s) {
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(s || "")) return "";
-        const [y, m, d] = s.split("-");
-        return `${d}/${m}/${y}`;
-      }
-      function download(name, content, mime) {
-        const a = document.createElement("a"),
-          url = URL.createObjectURL(new Blob([content], { type: mime }));
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 30000);
-      }
-      function exportText() {
-        renderRecap();
-        const parts = $$(".recap-section").map((section) => {
-          const title = $("h3", section).firstChild.textContent;
-          return (
-            title +
-            "\n" +
-            $$("dt", section)
-              .map(
-                (dt) =>
-                  dt.textContent + " : " + dt.nextElementSibling.textContent,
-              )
-              .join("\n")
-          );
-        });
-        download(
-          "mon-prochain-pas.txt",
-          "MON PROCHAIN PAS\nFiche personnelle - Pas à pas\n\n" +
-            parts.join("\n\n") +
-            "\n\nOutil éducatif. Document personnel à conserver en lieu sûr.",
-          "text/plain;charset=utf-8",
-        );
-      }
       const supportModes = {
         listen: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Faites une place à son récit</strong><p>« Qu’est-ce qui est le plus difficile pour toi aujourd’hui ? » Laissez des silences ; ne cherchez pas les détails à tout prix.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Reformulez sans interpréter</strong><p>« Si je comprends bien, ce qui te pèse surtout, c’est… » Vérifiez que vous avez compris.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Reconnaissez l’émotion</strong><p>« Cela semble vraiment éprouvant. » Reconnaître sa peine ne vous oblige pas à être d’accord sur tout.</p></div></div></div><div class="say">« Je n’ai pas forcément de réponse, mais je peux rester un moment avec toi. »</div>`,
         solve: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Obtenez son accord</strong><p>« Est-ce que tu veux qu’on cherche ensemble un petit pas possible ? » Un non est une réponse valable.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Partez de sa priorité</strong><p>Demandez le changement qu’elle souhaite. Faites émerger ses idées avant de proposer les vôtres.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Laissez-lui le choix</strong><p>Comparez deux ou trois pistes. Aidez à préparer une action ; proposez de refaire le point à un moment convenu.</p></div></div></div><div class="say">« Laquelle de ces pistes te conviendrait le mieux ? »</div><a class="btn" href="#outil">Ouvrir le parcours ensemble →</a><p class="hint">Écrivez avec son accord, si possible sur son appareil. Le parcours en cours n’est pas effacé.</p>`,
@@ -3915,23 +3457,28 @@
           "En cas de violence, ne menez pas d’interrogatoire et ne promettez pas un secret absolu. Cherchez un professionnel ou un adulte sûr, hors de l’entourage impliqué si nécessaire.",
         ],
       };
-      function renderSupport() {
-        $("#support-content").innerHTML = supportModes[supportMode];
-        $$("[data-support-mode]").forEach((b) =>
-          b.setAttribute(
-            "aria-pressed",
-            String(b.dataset.supportMode === supportMode),
-          ),
-        );
-        const v = supportContexts[$("#support-context").value];
-        if (!v) {
-          $("#support-context-content").replaceChildren();
-          return;
-        }
-        $("#support-context-content").innerHTML =
-          `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young"].includes($("#support-context").value) ? '<a href="#violences" class="text-button">Explorer les repères de violence →</a>' : ""}</article>`;
-      }
-      // These are educational examples, not validated scales or risk scores.
+      const needGuidance = {
+        listen: [
+          "Écouter sans interrompre",
+          "« Je t’écoute. Qu’est-ce que tu voudrais que je comprenne ? »",
+          "Reformuler avec ses mots. Vérifier : « Est-ce que j’ai bien compris ? » Ne proposer une piste que si la personne le souhaite.",
+        ],
+        clarify: [
+          "Aider à voir plus clair",
+          "« Quel point aimerais-tu éclaircir en premier ? »",
+          "Distinguer les faits, le ressenti, les contraintes et les ressources. Laisser la personne choisir ce qui compte pour elle.",
+        ],
+        practical: [
+          "Proposer une aide précise",
+          "« Est-ce que ce serait utile que je fasse cette tâche avec toi ? »",
+          "Proposer une action limitée dans le temps. Demander l’accord avant de contacter quelqu’un ou de partager une information.",
+        ],
+        advice: [
+          "Partager un avis avec son accord",
+          "« J’ai une idée. Est-ce que tu veux l’entendre ? »",
+          "Donner une idée brève, puis demander ce qu’elle en pense. Son contexte peut rendre votre expérience peu applicable.",
+        ],
+      };
       const violenceData = {
         couple: {
           note: "Tous les genres et toutes les orientations sont concernés. Des moments respectueux n’effacent pas les violences.",
@@ -4144,6 +3691,759 @@
           ],
         },
       };
+
+      // The same state shape and print sheet serve four distinct journeys.
+      // Copy, prompts, examples and tools change with the scale selected in step 1.
+      const workflows = {
+        personal: {
+          steps: ["Mon contexte", "Un but précis", "Plusieurs pistes", "Comparer les options", "Un premier pas", "Après l’essai"],
+          titles: ["Dans quel domaine est mon problème ?", "Quel est mon problème, précisément ?", "Quelles pistes puis-je essayer ?", "Quelle option me convient ?", "Quel sera mon premier pas ?", "Après l’essai, où en suis-je ?"],
+          leads: ["Je choisis le domaine et l’échelle qui ressemblent le plus à ma situation.", "Une situation, un but, un obstacle. Quelques phrases suffisent.", "Je note des idées, même imparfaites. Une seule suffit pour commencer.", "Je choisis une piste faisable et sûre pour moi.", "Je prévois une petite action, un moment et un signe de progrès.", "Je fais le point après l’action et j’ajuste si besoin."],
+          fields: ["Ce qui se passe", "Racontez un fait précis, sans nom ni adresse.", "Le petit changement que je souhaite", "Qu’aimeriez-vous voir changer concrètement ?", "Ce qui me bloque", "Quel est le principal obstacle ?"],
+          idea: "Faire autrement, demander de l’aide ou chercher une information : tout peut être une piste.",
+          compare: "Laquelle respecte mes besoins, demande une énergie acceptable et peut être essayée sans me mettre en danger ?",
+          action: ["Ma première action", "Choisissez une action assez petite pour commencer.", "Comment saurai-je que j’ai avancé ?", "Un petit signe concret suffit."],
+          tools: [
+            null,
+            ["Faits · but · obstacle", "Décrire une scène concrète évite de confondre une difficulté avec un jugement global sur soi.", "#ref-3"],
+            ["Chercher plusieurs pistes", "Une information, une demande d’aide ou une petite action peuvent être des pistes différentes.", "#ref-3"],
+            ["Comparer sans viser la perfection", "Regarder la faisabilité, les risques et les ressources disponibles.", "#ref-3"],
+            ["Si… alors…", "Prévoir quand commencer et quoi faire si un obstacle apparaît.", "#ref-4"],
+          ],
+        },
+        shared: {
+          steps: ["La relation", "Comprendre chacun", "Des pistes communes", "Un accord possible", "Essayer ensemble", "Revoir l’accord"],
+          titles: ["Avec qui le problème se pose-t-il ?", "Qu’est-ce qui compte pour chacun ?", "Quelles pistes pouvons-nous envisager ?", "Quelle piste respecte nos limites ?", "Quel essai pouvons-nous proposer ?", "L’accord a-t-il été utile ?"],
+          leads: ["Je choisis le domaine et indique qu’une autre personne est concernée.", "Je distingue les faits, mon besoin et ce que je sais réellement du besoin de l’autre.", "Je prépare des propositions, sans supposer l’accord de l’autre personne.", "Je compare les effets pour chacun et la liberté réelle de refuser.", "Je propose un échange ou un essai, avec un moment pour refaire le point.", "Je demande ce qui a fonctionné pour chacun et ce qui doit changer."],
+          fields: ["Ce qui s’est passé entre nous", "Décrivez des faits observables, sans attribuer d’intention à l’autre.", "Ce que je souhaite pour la relation", "Quel changement serait acceptable pour moi et à discuter avec l’autre ?", "Ce qui empêche l’accord", "Quelles informations, limites ou contraintes restent à clarifier ?"],
+          examples: ["Nous avons discuté deux fois d’une tâche, mais nous n’avons pas clarifié qui ferait quoi.", "Nous voulons choisir une répartition que chacun peut accepter.", "Nous ne connaissons pas encore les contraintes de l’autre."],
+          idea: "Préparer plusieurs propositions et garder de la place pour les idées de l’autre personne.",
+          ideas: ["Demander un moment pour écouter le point de vue de chacun.", "Proposer deux façons de répartir la tâche, à discuter ensemble.", "Demander l’aide d’un tiers sûr si les deux personnes le souhaitent."],
+          comparison: ["Chacun peut exprimer son besoin et ses limites.", "L’autre personne peut refuser ou proposer autre chose."],
+          compare: "La personne peut-elle dire non librement ? Est-ce un essai juste pour les deux ?",
+          action: ["Ma proposition de premier pas", "Formulez une invitation, pas une décision prise à la place de l’autre.", "Comment saurons-nous si cela aide ?", "Définissez un signe que chacun pourra observer."],
+          actionExamples: ["Proposer un échange de quinze minutes pour écouter nos contraintes.", "Nous avons nommé une répartition qui convient à chacun, ou les désaccords restants."],
+          tools: [null, ["Écoute et reformulation", "Demander le point de vue de l’autre, puis reformuler et vérifier ce que l’on a compris.", "#ref-5"], ["Options co-construites", "Inviter l’autre personne à proposer ses propres pistes avant de choisir.", "#ref-5"], ["Accord libre", "Un compromis n’est utile que si chacun peut exprimer ses limites sans peur.", "#ref-6"], ["Essai réversible", "Prévoir quand demander à chacun si l’accord fonctionne.", "#ref-4"]],
+        },
+        organization: {
+          steps: ["Le système", "Définir le problème", "Changements possibles", "Choisir un test", "Tester à petite échelle", "Mesurer et ajuster"],
+          titles: ["Dans quelle équipe ou institution ?", "Quel problème le système produit-il ?", "Quels changements pourrions-nous tester ?", "Quel test est faisable et équitable ?", "Comment tester à petite échelle ?", "Qu’avons-nous appris du test ?"],
+          leads: ["Je choisis le domaine et repère les personnes touchées.", "Je décris les faits, le résultat recherché et les contraintes de l’organisation.", "Je cherche des changements de processus, de ressources ou de coordination.", "Je considère les bénéfices, les effets indésirables et qui devra décider.", "Je définis un petit test, un responsable et un indicateur simple.", "Je compare le résultat attendu aux observations et je décide d’ajuster ou d’arrêter."],
+          fields: ["Le problème observé dans l’organisation", "Précisez où, quand et pour qui le problème apparaît.", "Le résultat que l’équipe cherche", "Qu’est-ce qui devrait changer pour les personnes concernées ?", "Les contraintes ou causes possibles", "Distinguez les faits vérifiés des hypothèses à examiner."],
+          examples: ["Dans l’équipe, trois demandes urgentes arrivent le même jour sans règle de priorité partagée.", "L’équipe saura quelle demande traiter en premier et qui décide.", "Les priorités sont fixées par plusieurs responsables et ne sont pas visibles par tous."],
+          idea: "Chercher des changements de processus, de coordination ou de ressources ; inclure les personnes qui font le travail.",
+          ideas: ["Cartographier une étape du travail avec les personnes concernées.", "Tester une nouvelle coordination sur une seule situation.", "Demander une ressource ou une décision au responsable compétent."],
+          comparison: ["Un petit test permet d’observer si le changement aide.", "Un test local peut ne pas refléter tous les cas et demander du temps."],
+          compare: "Le test est-il sûr, mesurable et acceptable pour les personnes concernées ?",
+          action: ["Le petit test à organiser", "Précisez qui doit valider, où et quand le test aura lieu.", "Quel indicateur observer ?", "Choisissez une mesure simple, utile et sans données personnelles inutiles."],
+          actionExamples: ["Proposer au responsable un test de priorisation pour la prochaine réunion d’équipe.", "Les trois demandes ont un ordre de priorité connu par l’équipe."],
+          tools: [null, ["Définir un objectif", "Le modèle d’amélioration commence par ce que l’équipe cherche à accomplir.", "#ref-22"], ["Idées avec l’équipe", "Les personnes concernées par le processus peuvent révéler des contraintes invisibles de l’extérieur.", "#ref-22"], ["Choisir une mesure", "Préciser comment savoir si le changement améliore la situation et pour qui.", "#ref-22"], ["Cycle tester · observer · ajuster", "Un test à petite échelle permet d’apprendre avant une mise en œuvre plus large.", "#ref-22"]],
+        },
+        public: {
+          steps: ["Le sujet public", "Définir l’enjeu", "Leviers collectifs", "Choisir une voie", "Une démarche civique", "Suivre la réponse"],
+          titles: ["Quel problème collectif ou politique ?", "Qui est touché et quelle décision manque ?", "Quels leviers collectifs existent ?", "Quelle démarche est légitime et faisable ?", "Quelle première démarche pouvons-nous faire ?", "Quelle réponse avons-nous obtenue ?"],
+          leads: ["Je choisis le domaine, sans prétendre parler au nom d’un groupe entier.", "Je distingue les témoignages, les données, les hypothèses et la décision publique visée.", "J’explore les démarches accessibles aux personnes concernées.", "Je considère les effets, les ressources, le calendrier et qui décide.", "Je prépare une demande vérifiable, avec les personnes qui souhaitent participer.", "Je documente la réponse, les limites et la prochaine décision collective."],
+          fields: ["Le problème public observé", "Décrivez des faits vérifiables et évitez les données personnelles.", "Le changement public recherché", "Quelle décision, règle, ressource ou pratique devrait évoluer ?", "Ce qui manque pour agir", "Qui décide ? Quelles preuves, alliances ou ressources manquent ?"],
+          examples: ["Plusieurs habitants signalent que l’arrêt de bus est difficile d’accès ; les informations publiques ne précisent pas les travaux prévus.", "Obtenir une réponse sur les aménagements possibles et leur calendrier.", "Nous ne savons pas encore quel service décide ni quelles personnes souhaitent participer."],
+          idea: "Explorer information publique, consultation, association, demande argumentée ou dialogue avec le décideur compétent.",
+          ideas: ["Demander aux personnes concernées si elles souhaitent participer et comment.", "Identifier l’autorité compétente et les informations publiques existantes.", "Préparer une demande collective avec un objectif et des faits vérifiables."],
+          comparison: ["La démarche peut rendre le problème visible et obtenir une réponse.", "Une réponse ne garantit ni financement ni changement immédiat."],
+          compare: "Les personnes concernées ont-elles réellement voix au chapitre ? La démarche respecte-t-elle leurs choix et leurs risques ?",
+          action: ["La première démarche collective", "Précisez qui participe volontairement et à quelle autorité s’adresser.", "Quel signe de progrès public ?", "Par exemple : un rendez-vous, une réponse écrite ou une décision documentée."],
+          actionExamples: ["Demander aux personnes intéressées si elles souhaitent coécrire une question au service compétent.", "Le service a répondu par écrit ou indiqué une date de rendez-vous."],
+          tools: [null, ["Problème et personnes concernées", "Identifier le contexte, les groupes touchés et les effets potentiellement inégaux.", "#ref-23"], ["Carte des acteurs", "Repérer qui décide, qui met en œuvre et qui subit les conséquences.", "#ref-24"], ["Effets attendus et effets indésirables", "Comparer les options avec leurs coûts, leurs effets et la possibilité d’un suivi public.", "#ref-24"], ["Demande vérifiable", "Relier la démarche, la décision attendue et un indicateur de réponse.", "#ref-23"]],
+        },
+      };
+
+      // Standalone, zero-dependency application. User input is escaped before HTML rendering.
+      const $ = (s, r = document) => r.querySelector(s),
+        $$ = (s, r = document) => [...r.querySelectorAll(s)];
+      const esc = (v) =>
+        String(v ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const KEY = "pas-a-pas.brouillon.v1";
+      const contextIcon = (k) => {
+        const paths = {
+          daily: "M3 10l9-7 9 7M5 9v12h14V9M9 21v-7h6v7",
+          work: "M8 6V3h8v3M3 6h18v14H3zM3 11c6 4 12 4 18 0M10 12h4",
+          couple:
+            "M12 20S2 14 2 8a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 6-10 12-10 12z",
+          family:
+            "M3 20v-4a4 4 0 0 1 8 0v4M13 20v-4a4 4 0 0 1 8 0v4M10 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M20 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
+          study:
+            "M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1v15",
+          health: "M9 3h6v6h6v6h-6v6H9v-6H3V9h6z",
+          collective: "M4 20h16M6 20V9l6-5 6 5v11M9 12h6M9 16h6",
+        };
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[k]}"/></svg>`;
+      };
+      const stepNames = [
+        ["Commencer", "Mon contexte"],
+        ["Clarifier", "Un but précis"],
+        ["Imaginer", "Plusieurs pistes"],
+        ["Choisir", "Comparer les options"],
+        ["Agir", "Un premier pas"],
+        ["Faire le point", "Après l’essai"],
+      ];
+      function term(k) {
+        return `<button type="button" class="glossary-button" data-term="${k}">${glossary[k][0].toLowerCase()}</button>`;
+      }
+      function fresh() {
+        return {
+          version: 1,
+          step: 0,
+          context: "daily",
+          scale: "personal",
+          safety: "",
+          energy: "",
+          fields: {
+            situation: "",
+            goal: "",
+            obstacle: "",
+            emotion: "",
+            control: "",
+            outside: "",
+            action: "",
+            when: "",
+            support: "",
+            backup: "",
+            measure: "",
+            reviewDate: "",
+            result: "",
+            learning: "",
+            next: "",
+            trial: "notyet",
+          },
+          options: [
+            { id: 1, text: "", plus: "", minus: "" },
+            { id: 2, text: "", plus: "", minus: "" },
+          ],
+          chosen: null,
+        };
+      }
+      let state = fresh(),
+        remember = false,
+        nextId = 4,
+        previousFocus = null,
+        pendingConfirm = null,
+        supportMode = "listen",
+        selectedNeed = "listen",
+        meterIndex = 0;
+      function validateDraft(raw) {
+        if (
+          !raw ||
+          raw.version !== 1 ||
+          !Object.hasOwn(contexts, raw.context) ||
+          !Array.isArray(raw.options) ||
+          raw.options.length < 1 ||
+          raw.options.length > 8
+        )
+          throw Error("invalid");
+        const clean = fresh();
+        clean.context = raw.context;
+        clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
+        clean.step =
+          Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
+            ? raw.step
+            : 0;
+        clean.energy = ["", "ready", "pause"].includes(raw.energy)
+          ? raw.energy
+          : "";
+        clean.safety = ["", "safe", "unsure", "danger"].includes(raw.safety)
+          ? raw.safety
+          : "";
+        if (!raw.fields || typeof raw.fields !== "object")
+          throw Error("invalid");
+        Object.keys(clean.fields).forEach((k) => {
+          if (typeof raw.fields[k] === "string")
+            clean.fields[k] = raw.fields[k].slice(0, 6000);
+        });
+        clean.fields.trial = ["notyet", "yes", "partly", "no"].includes(
+          clean.fields.trial,
+        )
+          ? clean.fields.trial
+          : "notyet";
+        const ids = new Set();
+        clean.options = raw.options.map((o, i) => {
+          if (!o || typeof o.text !== "string") throw Error("invalid");
+          const id = i + 1;
+          ids.add(id);
+          return {
+            id,
+            text: o.text.slice(0, 6000),
+            plus: typeof o.plus === "string" ? o.plus.slice(0, 6000) : "",
+            minus: typeof o.minus === "string" ? o.minus.slice(0, 6000) : "",
+          };
+        });
+        const choice = raw.options.findIndex((o) => o.id === raw.chosen);
+        clean.chosen =
+          choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
+        return clean;
+      }
+      try {
+        const saved = localStorage.getItem(KEY);
+        if (saved) {
+          state = validateDraft(JSON.parse(saved));
+          remember = true;
+          nextId = state.options.length + 1;
+        }
+      } catch (e) {
+        /* Corrupt or unavailable storage does not block use. */
+      }
+      function persist() {
+        if (!remember) return;
+        try {
+          localStorage.setItem(KEY, JSON.stringify(state));
+        } catch (e) {
+          remember = false;
+          $("#remember").checked = false;
+          updatePrivacy();
+          toast(
+            "La sauvegarde a échoué. Téléchargez votre brouillon pour le conserver.",
+          );
+        }
+      }
+      function updatePrivacy() {
+        $("#privacy-status").textContent = remember
+          ? "Brouillon conservé sur cet appareil, sans chiffrement. Aucune transmission par l’outil."
+          : "Sans sauvegarde, fermer ou recharger efface vos réponses. Elles ne sont pas envoyées.";
+        $("#remember").checked = remember;
+      }
+      function toast(t) {
+        $("#toast").textContent = t;
+        $("#toast").hidden = false;
+        clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => ($("#toast").hidden = true), 5500);
+      }
+      function confirmAction(title, text, action, label = "Confirmer") {
+        previousFocus = document.activeElement;
+        $("#dialog-title").textContent = title;
+        $("#dialog-description").textContent = text;
+        $("#dialog-confirm").textContent = label;
+        pendingConfirm = action;
+        $("#confirm-dialog").showModal();
+        $("#dialog-cancel").focus();
+      }
+      function closeDialog() {
+        const d = $("#confirm-dialog");
+        d.close();
+        pendingConfirm = null;
+        if (previousFocus?.isConnected) previousFocus.focus();
+      }
+      $("#dialog-cancel").addEventListener("click", closeDialog);
+      $("#confirm-dialog").addEventListener("cancel", (e) => {
+        e.preventDefault();
+        closeDialog();
+      });
+      $("#dialog-confirm").addEventListener("click", () => {
+        const fn = pendingConfirm;
+        closeDialog();
+        fn?.();
+      });
+      function example(text, label = "") {
+        return `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary><div class="example"><small>Exemple fictif · ${esc(state.scale === "personal" ? contexts[state.context].label : scales[state.scale][0])}</small><p>${esc(text)}</p></div></details>`;
+      }
+      function field(key, label, hint = "", type = "textarea", ex = "") {
+        const val = state.fields[key] || "",
+          id = "field-" + key;
+        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${hint}</p>` : ""}${ex ? example(ex, label) : ""}</div>`;
+      }
+      function renderSteps() {
+        const workflow = workflows[state.scale];
+        $("#steps").innerHTML = stepNames
+          .map(
+            (s, i) =>
+              `<li><button class="step-link" data-step="${i}"${i === state.step ? ' aria-current="step"' : ""}><span class="step-num">${i + 1}</span><span class="step-text"><b>${s[0]}</b><small>${workflow.steps[i]}</small></span></button></li>`,
+          )
+          .join("");
+      }
+      function renderStep(focus = false) {
+        hideTooltip();
+        renderSteps();
+        const c = contexts[state.context],
+          i = state.step,
+          workflow = workflows[state.scale];
+        const titles = workflow.titles;
+        const leads = workflow.leads;
+        let body = "";
+        if (i === 0) {
+          body = `<fieldset><legend>Je choisis le domaine de mon problème</legend><div class="contexts">${Object.entries(
+            contexts,
+          )
+            .map(
+              ([k, v]) =>
+                `<button type="button" class="context" data-context="${k}" aria-pressed="${state.context === k}"><span class="context-icon" aria-hidden="true">${contextIcon(k)}</span><span>${v.label}</span></button>`,
+            )
+            .join(
+              "",
+            )}</div><details class="section-gap"><summary>Ma situation n’est pas dans la liste</summary><div class="details-body"><p>Je peux choisir le domaine le plus proche. Par exemple, logement, argent, démarches ou numérique peuvent entrer dans « Vie quotidienne ». Une question de quartier, de transport ou de service public peut entrer dans « Vie collective ». Les questions suivantes s’adaptent surtout à l’échelle que je choisis.</p></div></details></fieldset><fieldset class="section-gap"><legend>À quelle échelle se situe mon problème ?</legend><p class="hint">Je peux choisir l’échelle la plus proche. Ce choix adapte les repères, sans changer mes réponses.</p><div class="choice-stack">${Object.entries(scales).map(([key, [label]]) => `<button class="pill" type="button" data-scale="${key}" aria-pressed="${state.scale === key}">${label}</button>`).join("")}</div><p class="hint section-gap">${scales[state.scale][1]}</p></fieldset><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+            ["safe", "Oui, je peux réfléchir"],
+            ["unsure", "J’ai un doute"],
+            ["danger", "Je me sens en danger"],
+          ]
+            .map(
+              ([k, v]) =>
+                `<button class="pill" type="button" data-safety="${k}" aria-pressed="${state.safety === k}">${v}</button>`,
+            )
+            .join(
+              "",
+            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="#violences">Voir les repères de sécurité</a>.</p>`}`;
+        }
+        if (i === 1) {
+          body =
+            `${state.scale === "organization" || state.scale === "public" ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées, les décisions à prendre et les ressources disponibles. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : ""}` +
+            field(
+              "situation",
+              workflow.fields[0],
+              workflow.fields[1],
+              "textarea",
+              workflow.examples?.[0] || c.situation,
+            ) +
+            field(
+              "goal",
+              workflow.fields[2],
+              workflow.fields[3],
+              "textarea",
+              workflow.examples?.[1] || c.goal,
+            ) +
+            field(
+              "obstacle",
+              workflow.fields[4],
+              workflow.fields[5],
+              "textarea",
+              workflow.examples?.[2] || c.obstacle,
+            ) +
+            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
+        }
+        if (i === 2) {
+          body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1)) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
+        }
+        if (i === 3) {
+          const options = state.options.filter((o) => o.text.trim());
+          body = options.length
+            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc((workflow.ideas || c.ideas)[0])}</p><p><strong>Apport possible :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[0])}</p><p><strong>Limite :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[1])}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${workflow.compare}</p><p>Si les conséquences sont importantes, demandez un avis adapté avant d’agir.</p></div></details>`
+            : `<div class="notice amber"><strong>Vous n’avez pas encore noté de piste.</strong>Revenez à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
+        }
+        if (i === 4) {
+          const chosen = state.options.find((o) => o.id === state.chosen);
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Aucune piste choisie. Vous pouvez revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", workflow.actionExamples?.[0] || c.action)}${field("when", "Quand et où ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", workflow.action[2], workflow.action[3], "textarea", workflow.actionExamples?.[1] || c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Prévoyez une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand faire le point ?", "Une date pour votre fiche, sans rappel automatique.", "date")}</div></details></div>`;
+        }
+        if (i === 5) {
+          body = `<fieldset><legend>Où en êtes-vous de l’action ?</legend><div class="choice-stack">${[
+            ["notyet", "Pas encore essayé"],
+            ["yes", "Essayé"],
+            ["partly", "En partie"],
+            ["no", "Je n’ai pas pu"],
+          ]
+            .map(
+              ([k, v]) =>
+                `<button class="pill" data-trial="${k}" aria-pressed="${state.fields.trial === k}">${v}</button>`,
+            )
+            .join(
+              "",
+            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Vous pouvez garder votre plan pour plus tard.</strong>Le bilan se remplit après l’essai. Pas besoin d’inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si vous n’avez fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que vous espériez</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+        }
+        if (workflow.tools[i]) {
+          const [name, description, source] = workflow.tools[i];
+          body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${description}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
+        }
+        $("#step-container").innerHTML =
+          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2><p class="step-lead">${leads[i]}</p><div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+        if (focus) {
+          $("#step-title").focus({ preventScroll: true });
+          $("#step-container").scrollIntoView({
+            block: "start",
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "instant"
+              : "smooth",
+          });
+        }
+      }
+      function changeStep(i) {
+        state.step = Math.max(0, Math.min(5, i));
+        persist();
+        if (location.hash !== "#outil") {
+          location.hash = "outil";
+          renderStep();
+        } else renderStep(true);
+      }
+      function goNext() {
+        if (state.step === 4 || state.step === 5) {
+          renderRecap();
+          location.hash = "recap";
+          return;
+        }
+        if (state.step === 2 && !state.options.some((o) => o.text.trim())) {
+          toast("Notez au moins une piste pour pouvoir la comparer.");
+          $("#ideas textarea")?.focus();
+          return;
+        }
+        if (
+          state.step === 3 &&
+          !state.options.some((o) => o.id === state.chosen && o.text.trim())
+        ) {
+          toast(
+            "Choisissez une option, ou revenez en arrière pour en imaginer une.",
+          );
+          $("#step-title").focus();
+          return;
+        }
+        changeStep(state.step + 1);
+      }
+      function renderRecap() {
+        const planTitle = {
+          personal: "Mon prochain pas",
+          shared: "Notre accord à essayer",
+          organization: "Notre test d’amélioration",
+          public: "Notre démarche collective",
+        }[state.scale];
+        $("#recap .page-heading h1").textContent = planTitle;
+        const f = state.fields,
+          c = contexts[state.context],
+          choice = state.options.find((o) => o.id === state.chosen);
+        const dd = (k, v) =>
+          `<dt>${k}</dt><dd${v ? "" : ' class="empty"'}>${v ? esc(v) : "Non renseigné"}</dd>`;
+        const block = (title, idx, content) =>
+          `<article class="card recap-section"><h3>${title}<button class="text-button no-print" data-step="${idx}">Modifier</button></h3><dl>${content}</dl></article>`;
+        $("#recap-content").innerHTML =
+          block(
+            "1. Ma situation",
+            1,
+            dd("Contexte", c.label) +
+              dd("Échelle", scales[state.scale][0]) +
+              dd("Les faits", f.situation) +
+              dd("Mon but", f.goal) +
+              dd("Mon obstacle", f.obstacle) +
+              (f.emotion ? dd("Mon ressenti", f.emotion) : "") +
+              (f.control ? dd("Ma marge de manœuvre", f.control) : "") +
+              (f.outside ? dd("Ce qui ne dépend pas de moi", f.outside) : ""),
+          ) +
+          block(
+            "2. Mes options",
+            2,
+            state.options
+              .filter((o) => o.text.trim())
+              .map(
+                (o, j) =>
+                  dd("Piste " + (j + 1), o.text) +
+                  (o.plus ? dd("Bénéfices envisagés", o.plus) : "") +
+                  (o.minus ? dd("Contraintes et risques", o.minus) : ""),
+              )
+              .join("") || dd("Pistes", ""),
+          ) +
+          block("3. Mon choix", 3, dd("Option retenue", choice?.text)) +
+          block(
+            "4. Mon premier pas",
+            4,
+            dd("Action", f.action) +
+              dd("Quand et où", f.when) +
+              (f.support ? dd("Appui", f.support) : "") +
+              (f.backup ? dd("Si ça bloque", f.backup) : "") +
+              dd("Signe de progrès", f.measure) +
+              (f.reviewDate
+                ? dd("Date du bilan", formatDate(f.reviewDate))
+                : ""),
+          ) +
+          block(
+            "5. Mon bilan",
+            5,
+            dd(
+              "Statut",
+              {
+                notyet: "Pas encore essayé",
+                yes: "Essayé",
+                partly: "Essayé en partie",
+                no: "Je n’ai pas pu",
+              }[f.trial],
+            ) +
+              (f.trial === "notyet"
+                ? ""
+                : dd("Résultat", f.result) +
+                  dd("Ce que j’en retiens", f.learning) +
+                  dd("Prochaine étape", f.next)),
+          );
+      }
+
+      // Pack complete cards first, then complete label/answer pairs. Only answers
+      // taller than a page are continued, at paragraph/sentence/word boundaries.
+      // Measurements use the exact same typography as the print media layout.
+      function preparePrint() {
+        renderRecap();
+        const documentRoot = $("#print-document");
+        document.body.classList.remove("print-ready");
+        documentRoot.replaceChildren();
+        documentRoot.classList.add("print-measuring");
+        const pages = [];
+        let pageBody;
+        const make = (tag, className, text) => {
+          const el = document.createElement(tag);
+          if (className) el.className = className;
+          if (text !== undefined) el.textContent = text;
+          return el;
+        };
+        const newPage = () => {
+          const page = make("section", "print-page");
+          pageBody = make("div", "print-page-body");
+          const heading = make(
+            "div",
+            "print-document-heading" + (pages.length ? " continued" : ""),
+          );
+          heading.append(
+            make(
+              "h1",
+              "",
+              $("#recap .page-heading h1").textContent + (pages.length ? " · suite" : ""),
+            ),
+          );
+          if (!pages.length)
+            heading.append(
+              make(
+                "p",
+                "",
+                "Fiche de travail · Pas à pas · Outil éducatif, sans validation clinique propre.",
+              ),
+            );
+          pageBody.append(heading);
+          page.append(pageBody, make("div", "print-page-footer"));
+          documentRoot.append(page);
+          pages.push(page);
+        };
+        // The last card's bottom includes its margin; scrollHeight alone can
+        // ignore that margin in some layout engines.
+        const fits = () => {
+          const children = [...pageBody.children];
+          const last = children.at(-1);
+          const limit = pageBody.getBoundingClientRect().bottom;
+          const bottom =
+            last.getBoundingClientRect().bottom +
+            parseFloat(getComputedStyle(last).marginBottom || 0);
+          return bottom <= limit - 1;
+        };
+        const makeCard = (title, continued = false) => {
+          const card = make("article", "print-card");
+          card.append(make("h2", "", title + (continued ? " · suite" : "")));
+          return card;
+        };
+        const makeEntry = (label, text, continued = false) => {
+          const entry = make("div", "print-entry");
+          entry.append(
+            make(
+              "div",
+              "print-entry-label",
+              label + (continued ? " (suite)" : ""),
+            ),
+            make("p", "print-entry-text", text),
+          );
+          return entry;
+        };
+        const sources = $$("#recap-content .recap-section").map((section) => ({
+          title: $("h3", section).firstChild.textContent,
+          entries: $$("dt", section).map((dt) => [
+            dt.textContent,
+            dt.nextElementSibling.textContent,
+          ]),
+        }));
+        newPage();
+        for (const source of sources) {
+          let card = makeCard(source.title);
+          for (const [label, text] of source.entries)
+            card.append(makeEntry(label, text));
+          pageBody.append(card);
+          if (fits()) continue;
+          card.remove();
+          // If the whole card fits on a fresh page, preserve it as a unit.
+          if (pageBody.children.length > 1) newPage();
+          pageBody.append(card);
+          if (fits()) continue;
+          card.remove();
+          card = makeCard(source.title);
+          pageBody.append(card);
+          let sectionContinued = false;
+          const continueCard = () => {
+            if (card.children.length === 1) card.remove();
+            else sectionContinued = true;
+            if (pageBody.children.length > 1) newPage();
+            card = makeCard(source.title, sectionContinued);
+            pageBody.append(card);
+          };
+          for (const [label, fullText] of source.entries) {
+            let entry = makeEntry(label, fullText);
+            card.append(entry);
+            if (fits()) continue;
+            const previous = {
+              body: pageBody,
+              card,
+              continued: sectionContinued,
+              pageCount: pages.length,
+            };
+            entry.remove();
+            continueCard();
+            card.append(entry);
+            if (fits()) continue;
+            // This answer cannot fit even on a fresh page. Use the remaining
+            // space on the original page instead of leaving a large blank area.
+            entry.remove();
+            card.remove();
+            if (pages.length > previous.pageCount) pages.pop().remove();
+            pageBody = previous.body;
+            card = previous.card;
+            sectionContinued = previous.continued;
+            if (!card.isConnected) pageBody.append(card);
+            card.append(entry);
+            const characters = Array.from(fullText);
+            let offset = 0;
+            while (offset < characters.length) {
+              const answer = $(".print-entry-text", entry);
+              let low = 0,
+                high = characters.length - offset;
+              while (low < high) {
+                const mid = Math.ceil((low + high) / 2);
+                answer.textContent = characters
+                  .slice(offset, offset + mid)
+                  .join("");
+                if (fits()) low = mid;
+                else high = mid - 1;
+              }
+              if (
+                low < 120 &&
+                (card.children.length > 2 || pageBody.children.length > 2)
+              ) {
+                entry.remove();
+                continueCard();
+                card.append(entry);
+                continue;
+              }
+              if (!low) throw new Error("Print entry cannot fit on an A4 page");
+              let count = low;
+              if (offset + count < characters.length) {
+                const prefix = characters
+                  .slice(offset, offset + count)
+                  .join("");
+                const thresholds = [
+                  prefix.lastIndexOf("\n") + 1,
+                  [...prefix.matchAll(/[.!?…][ \n]/g)].at(-1)?.index + 1 || 0,
+                  prefix.lastIndexOf(" ") + 1,
+                ];
+                const boundary = thresholds.find(
+                  (n) => n >= prefix.length * 0.6,
+                );
+                if (boundary)
+                  count = Array.from(prefix.slice(0, boundary)).length;
+              }
+              answer.textContent = characters
+                .slice(offset, offset + count)
+                .join("");
+              offset += count;
+              if (offset < characters.length) {
+                continueCard();
+                entry = makeEntry(label, "", true);
+                card.append(entry);
+              }
+            }
+          }
+        }
+        const note = make(
+          "p",
+          "print-closing-note",
+          "Vous pouvez ajuster ce plan, demander un appui ou choisir un pas plus petit. Document personnel à conserver en lieu sûr.",
+        );
+        pageBody.append(note);
+        if (!fits()) {
+          note.remove();
+          newPage();
+          pageBody.append(note);
+        }
+        pages.forEach((page, i) => {
+          $(".print-page-footer", page).append(
+            make("span", "", "Pas à pas · Résolution de problème"),
+            make("span", "", `Page ${i + 1} / ${pages.length}`),
+          );
+        });
+        documentRoot.classList.remove("print-measuring");
+        document.body.classList.add("print-ready");
+      }
+      function finishPrint() {
+        document.body.classList.remove("print-ready");
+        $("#print-document").classList.remove("print-measuring");
+      }
+      function formatDate(s) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(s || "")) return "";
+        const [y, m, d] = s.split("-");
+        return `${d}/${m}/${y}`;
+      }
+      function download(name, content, mime) {
+        const a = document.createElement("a"),
+          url = URL.createObjectURL(new Blob([content], { type: mime }));
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+      }
+      function exportText() {
+        renderRecap();
+        const parts = $$(".recap-section").map((section) => {
+          const title = $("h3", section).firstChild.textContent;
+          return (
+            title +
+            "\n" +
+            $$("dt", section)
+              .map(
+                (dt) =>
+                  dt.textContent + " : " + dt.nextElementSibling.textContent,
+              )
+              .join("\n")
+          );
+        });
+        download(
+          "mon-prochain-pas.txt",
+          $("#recap .page-heading h1").textContent.toUpperCase() + "\nFiche de travail - Pas à pas\n\n" +
+            parts.join("\n\n") +
+            "\n\nOutil éducatif. Document personnel à conserver en lieu sûr.",
+          "text/plain;charset=utf-8",
+        );
+      }
+      function renderSupport() {
+        $("#support-content").innerHTML = supportModes[supportMode];
+        $$("[data-support-mode]").forEach((b) =>
+          b.setAttribute(
+            "aria-pressed",
+            String(b.dataset.supportMode === supportMode),
+          ),
+        );
+        const v = supportContexts[$("#support-context").value];
+        if (!v) {
+          $("#support-context-content").replaceChildren();
+          return;
+        }
+        $("#support-context-content").innerHTML =
+          `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young"].includes($("#support-context").value) ? '<a href="#violences" class="text-button">Explorer les repères de violence →</a>' : ""}</article>`;
+      }
+      function renderNeedGuidance() {
+        const [title, phrase, action] = needGuidance[selectedNeed];
+        const relation = $("#support-relation").value;
+        const relationNote = {
+          colleague: "Entre collègues, tenir compte de la charge réelle, des rôles et des ressources disponibles.",
+          learner: "Dans une relation d’encadrement, votre position peut rendre un refus difficile. Dites explicitement que la personne peut choisir le type d’aide et demander un autre interlocuteur.",
+          close: "Avec un proche, demander ce qu’il souhaite et respecter ses limites. Le lien familial ne donne pas le droit de décider à sa place.",
+          other: "Adapter la proposition à la relation, aux ressources et à la liberté réelle de refuser.",
+        }[relation];
+        $("#need-guidance").innerHTML = `<h3>${title}</h3><p class="say">${phrase}</p><p>${action}</p><p class="hint">${relationNote}</p>${relation === "close" ? '<a class="text-button" href="#proche">Voir aussi : comment aider un proche ? ↗</a>' : ""}<p class="source-note">Après l’échange : « Est-ce que cette aide te convient ? »</p>`;
+        $$("[data-need]").forEach((button) =>
+          button.setAttribute("aria-pressed", String(button.dataset.need === selectedNeed)),
+        );
+      }
+      // These are educational examples, not validated scales or risk scores.
       function renderMeter() {
         const key = $("#violence-context").value,
           d = violenceData[key];
@@ -4176,11 +4476,13 @@
       }
       function route() {
         hideTooltip();
-        const hash = location.hash.slice(1) || "outil";
+        const hash = location.hash.slice(1) || "accueil";
         const page = hash.startsWith("ref-")
           ? "bibliographie"
           : [
+                "accueil",
                 "outil",
+                "soutenir",
                 "proche",
                 "violences",
                 "comprendre",
@@ -4189,7 +4491,7 @@
                 "recap",
               ].includes(hash)
             ? hash
-            : "outil";
+            : "accueil";
         $$(".view").forEach((el) => (el.hidden = el.id !== page));
         $$("nav a").forEach((a) => {
           if (
@@ -4204,13 +4506,15 @@
         if (page === "recap") renderRecap();
         if (page === "outil") renderStep();
         const title = {
+          accueil: "Choisir un parcours",
           outil: "Mon problème",
-          proche: "Aider un proche",
+          soutenir: "Soutenir quelqu’un",
+          proche: "Comment aider un proche ?",
           violences: "Violentomètre",
           comprendre: "Comprendre",
           bibliographie: "Bibliographie",
           securite: "Sécurité & aide",
-          recap: "Mon prochain pas",
+          recap: $("#recap .page-heading h1").textContent,
         }[page];
         document.title = title + " - Pas à pas";
         if (hash.startsWith("ref-")) {
@@ -4327,6 +4631,18 @@
         if (b.dataset.supportMode) {
           supportMode = b.dataset.supportMode;
           renderSupport();
+          return;
+        }
+        if (b.dataset.scale) {
+          state.scale = b.dataset.scale;
+          persist();
+          renderStep();
+          $(`[data-scale="${state.scale}"]`).focus();
+          return;
+        }
+        if (b.dataset.need) {
+          selectedNeed = b.dataset.need;
+          renderNeedGuidance();
           return;
         }
         if (b.dataset.meter !== undefined) {
@@ -4550,8 +4866,11 @@
       updatePrivacy();
       renderStep();
       renderSupport();
+      $("#support-relation").addEventListener("change", renderNeedGuidance);
+      renderNeedGuidance();
       renderMeter();
       route();
     </script>
+
   </body>
 </html>

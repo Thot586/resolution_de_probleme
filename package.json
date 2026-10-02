@@ -1,0 +1,15 @@
+{
+  "name": "pas-a-pas-resolution-de-probleme",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Parcours interactif de résolution de problème et d'accompagnement",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node tests/app.spec.cjs",
+    "test:print": "node tests/print.spec.cjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "playwright": "^1.55.1"
+  }
+}
