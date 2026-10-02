@@ -4,6 +4,7 @@
             <div class="eyebrow">Parcours collectif · Faciliter sans décider à la place du groupe</div>
             <h1 id="group-title">Aider un groupe à résoudre un problème</h1>
             <p>Je prépare une démarche avec les personnes concernées. Je peux commencer à l’étape utile et revenir en arrière.</p>
+            <p class="hint">Ce guide ne crée pas de sondage et n’analyse pas les réponses : il m’aide à préparer les décisions avec le groupe.</p>
             <p class="hint glossary-instruction">Un terme souligné ? Je peux le toucher pour voir sa définition et un exemple.</p>
           </div>
           <div class="notice group-principle">
@@ -63,8 +64,10 @@
               </div>
               <div class="field section-gap">
                 <label class="label" for="group-note" id="group-note-label">Ma note pour cette étape</label>
-                <textarea id="group-note" maxlength="1200" placeholder="Une décision ou une question à clarifier…"></textarea>
-                <p class="hint">Je note le plan, pas les réponses individuelles ni les noms des participants.</p>
+                <p class="hint" id="group-note-prompt"></p>
+                <div class="example" style="margin-bottom:12px"><small>Exemple fictif</small><p id="group-note-example"></p></div>
+                <textarea id="group-note" maxlength="1200" aria-describedby="group-note-prompt group-note-privacy"></textarea>
+                <p class="hint" id="group-note-privacy">Je note le plan, pas les réponses individuelles ni les noms des participants.</p>
               </div>
               <p class="source-note" id="group-step-source"></p>
               <div class="footer-actions">

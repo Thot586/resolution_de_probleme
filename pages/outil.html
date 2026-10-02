@@ -3,18 +3,23 @@
           <div>
             <div class="eyebrow">Exercice</div>
             <h1>Mon problème</h1>
+            <p>Je pars d’une situation concrète. Je peux passer une question si je ne sais pas encore y répondre.</p>
           </div>
         </div>
         <div class="workspace">
           <aside class="side" aria-label="Étapes du parcours">
-            <p class="side-label">Votre cheminement</p>
+            <p class="side-label">Mes étapes</p>
             <ol class="steps" id="steps"></ol>
+            <details class="mobile-step-picker" id="mobile-step-picker">
+              <summary id="mobile-step-summary">Choisir une étape</summary>
+              <ol class="steps" id="mobile-steps"></ol>
+            </details>
             <div class="side-note">
-              <strong>À votre rythme.</strong>Vous pouvez revenir en arrière ou
+              <strong>À mon rythme.</strong>Je peux revenir en arrière ou
               faire une pause.
             </div>
             <div class="side-actions">
-              <a class="text-button" href="#recap">Voir mon récapitulatif ↗</a>
+              <a class="text-button" id="recap-shortcut" href="#recap" hidden>Voir mes réponses ↗</a>
             </div>
           </aside>
           <div>
@@ -50,7 +55,7 @@
                   </button>
                 </div>
                 <p class="hint">
-                  Les fichiers téléchargés contiennent vos réponses.
+                  Les fichiers téléchargés contiennent mes réponses.
                   Conservez-les en lieu sûr. Évitez les noms, adresses et autres
                   informations identifiantes.
                 </p>

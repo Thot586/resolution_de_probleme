@@ -42,7 +42,14 @@ const errors = [];
     assert(await page.locator(s).isVisible(), `${s} must be visible`);
   };
   const step = async (n) => {
-    await page.locator(`#steps [data-step="${n}"]`).click();
+    const desktopStep = page.locator(`#steps [data-step="${n}"]`);
+    if (await desktopStep.isVisible()) {
+      await desktopStep.click();
+    } else {
+      const picker = page.locator("#mobile-step-picker");
+      if (!(await picker.evaluate((el) => el.open))) await picker.locator("summary").click();
+      await page.locator(`#mobile-steps [data-step="${n}"]`).click();
+    }
   };
   const next = async () => page.locator("[data-action=next]").click();
   const visit = async (hash) => {
@@ -84,6 +91,9 @@ const errors = [];
     "Accueil",
   );
   assert.equal(await page.evaluate(() => localStorage.length), 0);
+  assert.match(await page.locator("#accueil .path-flow").innerText(), /décris.*cherche.*choisis.*essaie.*fais le point/);
+  assert.equal(await page.locator('#accueil a[href="#soutenir"]').count(), 1);
+  assert.equal(await page.locator('#accueil a[href="#groupe"]').count(), 1);
   await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
   await page.locator("#accueil .welcome-explain summary").click();
   await visible("#accueil svg[aria-labelledby='method-title method-desc']");
@@ -112,11 +122,31 @@ const errors = [];
   assert.match(await direct.locator("#selected-level").innerText(), /Collectif ou politique/);
   assert(!(await direct.locator("#change-level [data-scale]").first().isVisible()));
   await direct.close();
+  // Direct entry needs an explicit level; a blank recap guides the user back.
+  const starter = await context.newPage();
+  await starter.goto(url + "#outil");
+  assert(await starter.locator("#outil .scale-options").isVisible());
+  assert(!(await starter.locator("#recap-shortcut").isVisible()));
+  await starter.locator('[data-action="next"]').click();
+  assert.equal(await starter.locator('#steps [aria-current="step"]').getAttribute("data-step"), "0");
+  assert.match(await starter.locator("#toast").innerText(), /Choisissez d’abord le niveau/);
+  await starter.evaluate(() => { location.hash = "recap"; });
+  await starter.locator("#recap").waitFor({ state: "visible" });
+  assert.match(await starter.locator("#recap-content").innerText(), /Ma fiche est encore vide/);
+  assert(!(await starter.locator("#recap-actions").isVisible()));
+  await starter.locator('#recap-content [data-step="0"]').click();
+  assert(await starter.locator("#outil .scale-options").isVisible());
+  await starter.close();
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
+  assert(await page.locator("#soutenir .support-start").isVisible());
+  assert(await page.locator("#need-lab").isVisible());
+  assert(!(await page.locator("#soutenir .teaching-figure").isVisible()));
+  await page.locator("#soutenir .support-illustration summary").click();
   await visible("#soutenir svg[aria-labelledby='journey-title journey-desc']");
   assert.match(await page.locator("#soutenir svg").textContent(), /Seulement avec son accord/);
   await page.screenshot({ path: path.join(output, "desktop-support.png"), fullPage: true });
+  await page.locator("#soutenir .support-illustration summary").click();
   await page.locator("#support-relation").selectOption("learner");
   await page.locator("[data-need=advice]").click();
   assert.match(await page.locator("#need-guidance").innerText(), /accord/);
@@ -178,23 +208,29 @@ const errors = [];
     fullPage: true,
   });
   await axe("start");
-  await page.locator("[data-context=work]").click();
+  await page.locator("#context-select").selectOption("work");
   await page.locator("[data-safety=safe]").click();
   await next();
-  assert(!(await page.locator(".example").first().isVisible()));
-  const firstExample = page.locator(".example-help summary").first();
-  await firstExample.focus();
-  await page.keyboard.press("Enter");
-  assert(await page.locator(".example").first().isVisible());
+  assert.match(await page.locator(".question-progress").innerText(), /Question 1 sur 3/);
+  assert(await page.locator(".example-visible").isVisible());
   assert.match(
-    await page.locator(".example").first().innerText(),
+    await page.locator(".example-visible").innerText(),
     /responsables/,
   );
+  assert.equal(await page.locator("#field-goal").count(), 0);
   await page
     .locator("#field-situation")
     .fill("Deux dossiers à remettre le même jour.");
+  await next();
+  assert.match(await page.locator(".question-progress").innerText(), /Question 2 sur 3/);
+  assert(await page.locator("#field-goal").isVisible());
+  assert.equal(await page.locator("#field-obstacle").count(), 0);
   await page.locator("#field-goal").fill("Demander un ordre de priorité.");
+  await next();
+  assert.match(await page.locator(".question-progress").innerText(), /Question 3 sur 3/);
+  assert(await page.locator("#field-obstacle").isVisible());
   await page.locator("#field-obstacle").fill("Le temps manque.");
+  assert(!(await page.locator(".optional-fields .details-body").first().isVisible()));
   await next();
   await next(); // empty alternatives stay on the same step
   assert.equal(
@@ -260,16 +296,15 @@ const errors = [];
   // Context changes preserve original responses; examples change only.
   await visit("outil");
   await step(0);
-  await page.locator("[data-context=health]").click();
+  await page.locator("#context-select").selectOption("health");
   assert.match(await page.locator("#toast").innerText(), /Le texte déjà saisi ne change pas/);
   await step(1);
   assert.equal(
     await page.locator("#field-situation").inputValue(),
     "Deux dossiers à remettre le même jour.",
   );
-  await page.locator(".example-help summary").first().click();
   assert.match(
-    await page.locator(".example").first().innerText(),
+    await page.locator(".example-visible").innerText(),
     /rendez-vous/,
   );
   await step(4);
@@ -456,10 +491,14 @@ const errors = [];
   await page.locator("#securite [data-action=reset]").click();
   await page.locator("#dialog-confirm").click();
   await visit("outil");
+  assert(!(await page.locator("#recap-shortcut").isVisible()));
+  assert(await page.locator("#outil .scale-options").isVisible());
+  await page.locator('[data-scale="personal"]').click();
   await step(1);
   assert.equal(await page.locator("#field-situation").inputValue(), "");
   await page.locator("#field-situation").fill("TEMP");
   await page.reload();
+  await page.locator('[data-scale="personal"]').click();
   await step(1);
   assert.equal(await page.locator("#field-situation").inputValue(), "");
   // Responsive layouts, all pages, and all form steps.
@@ -493,6 +532,7 @@ const errors = [];
   await overflow("open method diagram mobile");
   await page.locator("#accueil .teaching-figure").screenshot({ path: path.join(output, "method-mobile.png") });
   await visit("soutenir");
+  await page.locator("#soutenir .support-illustration summary").click();
   await page.locator("#soutenir .teaching-figure").screenshot({ path: path.join(output, "support-figure-mobile.png") });
   await visit("groupe");
   await page.screenshot({ path: path.join(output, "mobile-group.png"), fullPage: true });
@@ -508,6 +548,15 @@ const errors = [];
   await guides.nth(0).locator(".teaching-figure").screenshot({ path: path.join(output, "organization-mobile.png") });
   await guides.nth(1).locator(".teaching-figure").screenshot({ path: path.join(output, "public-mobile.png") });
   await visit("outil");
+  await step(0);
+  assert(await page.locator("#mobile-step-picker").isVisible());
+  assert(!(await page.locator("#steps").isVisible()));
+  assert.match(await page.locator("#mobile-step-summary").innerText(), /Étape 1 sur 6/);
+  await page.locator("#mobile-step-picker summary").click();
+  assert(await page.locator('#mobile-steps [data-step="2"]').isVisible());
+  await page.locator('#mobile-steps [data-step="2"]').click();
+  assert.match(await page.locator("#mobile-step-summary").innerText(), /Étape 3 sur 6/);
+  assert(!(await page.locator("#mobile-step-picker").evaluate((el) => el.open)));
   await step(0);
   await page.evaluate(() => {
     document.activeElement?.blur();

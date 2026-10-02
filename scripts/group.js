@@ -10,6 +10,8 @@
             "Comment chacun peut-il participer librement, sans risque inutile ?",
           ],
           note: "Le périmètre, les personnes à associer et la décision possible",
+          prompt: "Je note ce qui peut changer, qui peut décider et qui consulter.",
+          example: "Dans une association, le bureau peut modifier les horaires de permanence après avoir écouté les bénévoles.",
           refs: [23, 25],
         },
         {
@@ -22,6 +24,18 @@
             "Avant de recueillir des données, j’explique leur usage et je demande l’accord des participants.",
           ],
           note: "La question à éclairer, la méthode choisie et les personnes à écouter",
+          prompt: {
+            conversation: "Je note une question à poser au groupe et qui inviter à la discussion.",
+            interviews: "Je note une question commune et quels points de vue rencontrer volontairement.",
+            survey: "Je note la décision à éclairer, qui inviter à répondre et qui lira les réponses.",
+            existing: "Je note les données à consulter et ce qu’elles ne racontent peut-être pas.",
+          },
+          example: {
+            conversation: "Je propose aux bénévoles : « Qu’est-ce qui rend un créneau difficile à assurer ? »",
+            interviews: "Je propose des entretiens courts à des bénévoles aux disponibilités différentes, avec leur accord.",
+            survey: "Je propose trois questions courtes aux 12 bénévoles et précise qui pourra lire leurs réponses.",
+            existing: "Je regarde les créneaux non pourvus du trimestre, puis je demande ce que ce tableau ne montre pas.",
+          },
           refs: [23, 26],
         },
         {
@@ -34,6 +48,18 @@
             "Une différence observée ne prouve pas à elle seule qu’une action en est la cause.",
           ],
           note: "Les constats solides, les désaccords et les limites des données",
+          prompt: {
+            conversation: "Je note les thèmes entendus, les avis divergents et qui n’a pas pu parler.",
+            interviews: "Je note les thèmes communs et différents, sans attribuer de propos à une personne.",
+            survey: "Je note le nombre d’invités et de répondants, puis ce que les réponses montrent ou non.",
+            existing: "Je note ce que les données décrivent, leur date et les informations manquantes.",
+          },
+          example: {
+            conversation: "Huit bénévoles ont parlé ; quatre étaient absents. Deux difficultés reviennent, mais leur avis manque.",
+            interviews: "Les entretiens évoquent les transports et les changements tardifs ; ils ne représentent pas tout le groupe.",
+            survey: "Huit réponses sur 12 invitations ; cinq citent le samedi. Cela décrit les répondants, pas tout le groupe.",
+            existing: "Le tableau montre trois créneaux non pourvus ; il ne dit pas pourquoi ils le sont.",
+          },
           refs: [23, 26],
         },
         {
@@ -46,6 +72,8 @@
             "J’explique ce qui sera décidé ensuite, par qui, et quand le groupe aura un retour.",
           ],
           note: "Le retour prévu au groupe, les corrections et les questions encore ouvertes",
+          prompt: "Je note ce que je rendrai au groupe, comment recueillir ses corrections et la date du prochain retour.",
+          example: "Je partage trois constats sans citation reconnaissable, puis demande : « Qu’avons-nous oublié ? »",
           refs: [23, 25, 27],
         },
         {
@@ -58,6 +86,8 @@
             "Quels moyens, autorisations, effets indésirables et désaccords faut-il examiner ?",
           ],
           note: "Une priorité, un signe de progrès et les pistes à comparer",
+          prompt: "Je note une priorité choisie avec le groupe, un signe observable et une contrainte importante.",
+          example: "Les bénévoles proposent de publier le planning un mois plus tôt. Signe de progrès : moins de créneaux non pourvus.",
           refs: [22, 23, 25],
         },
         {
@@ -70,6 +100,8 @@
             "Si l’essai ne convient pas, comment l’arrêter ou le modifier ?",
           ],
           note: "L’essai, les responsabilités, les mesures et les conditions d’arrêt",
+          prompt: "Je note qui valide l’essai, sa durée, ce que nous observerons et quand l’arrêter.",
+          example: "Le bureau autorise quatre semaines d’essai. Une personne note les créneaux non pourvus ; le groupe peut arrêter si la charge augmente.",
           refs: [22],
         },
         {
@@ -82,6 +114,8 @@
             "Quand et comment rendre la décision finale aux participants ?",
           ],
           note: "Le bilan, la décision prise et la date du prochain retour au groupe",
+          prompt: "Je note les observations, leurs limites et quand le groupe décidera de continuer, modifier ou arrêter.",
+          example: "Deux créneaux restent non pourvus, contre trois avant. Le groupe vérifie aussi si la charge s’est déplacée.",
           refs: [22, 23, 25],
         },
       ];
@@ -94,6 +128,13 @@
       let groupIndex = 0;
       let groupMethod = "conversation";
       const groupNotes = Array(groupStages.length).fill("");
+
+      function updateGroupNoteGuide() {
+        const stage = groupStages[groupIndex];
+        const forMethod = (text) => typeof text === "string" ? text : text[groupMethod];
+        document.querySelector("#group-note-prompt").textContent = forMethod(stage.prompt);
+        document.querySelector("#group-note-example").textContent = forMethod(stage.example);
+      }
 
       function renderGroupPlan() {
         const box = document.querySelector("#group-plan-content");
@@ -142,6 +183,7 @@
         document.querySelector("#group-method").value = groupMethod;
         document.querySelector("#group-method-hint").innerHTML = linkGlossary(groupMethods[groupMethod]);
         document.querySelector("#group-note-label").textContent = stage.note + " (facultatif)";
+        updateGroupNoteGuide();
         document.querySelector("#group-note").value = groupNotes[groupIndex];
         const source = document.querySelector("#group-step-source");
         source.replaceChildren(document.createTextNode("Repères : "));
@@ -172,6 +214,7 @@
         document.querySelector("#group-method").addEventListener("change", (event) => {
           groupMethod = event.target.value;
           document.querySelector("#group-method-hint").innerHTML = linkGlossary(groupMethods[groupMethod]);
+          updateGroupNoteGuide();
         });
         document.querySelector("#group-note").addEventListener("input", (event) => {
           groupNotes[groupIndex] = event.target.value;

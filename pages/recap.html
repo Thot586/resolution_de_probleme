@@ -1,10 +1,10 @@
       <section id="recap" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Votre repère pour la suite</div>
+            <div class="eyebrow">Ma fiche de travail</div>
             <h1>Mon prochain pas</h1>
             <p>
-              Un plan que vous pouvez ajuster. Seuls les éléments que vous avez
+              Je peux modifier mes réponses. Seuls les éléments que j’ai
               saisis apparaissent ici.
             </p>
             <p class="print-only">
@@ -13,23 +13,23 @@
             </p>
           </div>
           <div id="recap-content" class="recap-grid"></div>
-          <div class="button-row section-gap no-print">
+          <div class="button-row section-gap no-print" id="recap-actions">
             <button class="btn primary" data-action="print">
               Imprimer / enregistrer en PDF</button
             ><button class="btn" data-action="text">
               Télécharger le récapitulatif</button
-            ><button class="btn" data-step="5">
+            ><button class="btn" id="recap-review" data-step="5">
               Faire le point après l’essai →
             </button>
           </div>
-          <p class="hint no-print">
-            Le document contient vos réponses personnelles. Sur un appareil
-            partagé, évitez de le conserver ou de l’imprimer.
+          <p class="hint no-print" id="recap-privacy">
+            Le document contient mes réponses personnelles. Sur un appareil
+            partagé, je vérifie où je le conserve.
           </p>
-          <div class="notice section-gap">
+          <div class="notice section-gap" id="recap-note">
             Une action non réalisée ou un résultat décevant n’est pas un
-            jugement sur vous. Revenez à une étape, cherchez un appui ou
-            choisissez un pas plus petit.
+            jugement sur moi. Je peux revenir à une étape, chercher un appui ou
+            choisir un pas plus petit.
           </div>
         </div>
       </section>

@@ -52,9 +52,11 @@
         return {
           version: 1,
           step: 0,
+          clarifyPart: 0,
           context: "daily",
           scale: "personal",
           scaleChosen: false,
+          reviewScale: false,
           safety: "",
           energy: "",
           fields: {
@@ -90,6 +92,26 @@
         supportMode = "listen",
         selectedNeed = "listen",
         meterIndex = 0;
+      function hasWriting() {
+        return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
+      }
+      function hasPlan() {
+        return Boolean(state.fields.action.trim());
+      }
+      function updateRecapShortcut() {
+        const shortcut = $("#recap-shortcut");
+        shortcut.hidden = !hasWriting();
+        shortcut.textContent = hasPlan() ? "Voir mon plan ↗" : "Voir mes réponses ↗";
+      }
+      function selectScale(scale) {
+        if (state.scale !== scale && hasWriting()) state.reviewScale = true;
+        state.scale = scale;
+        state.scaleChosen = true;
+        state.step = 0;
+        state.clarifyPart = 0;
+        if (state.context === "daily" && scale === "organization") state.context = "work";
+        if (state.context === "daily" && scale === "public") state.context = "collective";
+      }
       function validateDraft(raw) {
         if (
           !raw ||
@@ -104,10 +126,12 @@
         clean.context = raw.context;
         clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
         clean.scaleChosen = raw.scaleChosen === true;
+        clean.reviewScale = raw.reviewScale === true;
         clean.step =
           Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
             ? raw.step
             : 0;
+        clean.clarifyPart = Number.isInteger(raw.clarifyPart) && raw.clarifyPart >= 0 && raw.clarifyPart <= 2 ? raw.clarifyPart : 0;
         clean.energy = ["", "ready", "pause"].includes(raw.energy)
           ? raw.energy
           : "";
@@ -202,26 +226,31 @@
         closeDialog();
         fn?.();
       });
-      function example(text, label = "") {
-        return `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary><div class="example"><small>Exemple fictif · ${esc(state.scale === "personal" ? contexts[state.context].label : scales[state.scale][0])}</small><p>${esc(text)}</p></div></details>`;
+      function example(text, label = "", visible = false) {
+        const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(state.scale === "personal" ? contexts[state.context].label : scales[state.scale][0])}</small><p>${esc(text)}</p></div>`;
+        return visible ? content : `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary>${content}</details>`;
       }
-      function field(key, label, hint = "", type = "textarea", ex = "") {
+      function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false) {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label) : ""}</div>`;
+        return `<div class="field"><label class="label" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
       }
       function renderSteps() {
         const workflow = workflows[state.scale];
-        $("#steps").innerHTML = stepNames
+        const links = stepNames
           .map(
             (s, i) =>
               `<li><button class="step-link" data-step="${i}"${i === state.step ? ' aria-current="step"' : ""}><span class="step-num">${i + 1}</span><span class="step-text"><b>${s[0]}</b><small>${workflow.steps[i]}</small></span></button></li>`,
           )
           .join("");
+        $("#steps").innerHTML = links;
+        $("#mobile-steps").innerHTML = links;
+        $("#mobile-step-summary").textContent = `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]} — ${workflow.steps[state.step]}`;
       }
       function renderStep(focus = false) {
         hideTooltip();
         renderSteps();
+        updateRecapShortcut();
         const c = contexts[state.context],
           i = state.step,
           workflow = workflows[state.scale];
@@ -233,16 +262,9 @@
           const scaleChoice = state.scaleChosen
             ? `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong><span>${scales[state.scale][1]}</span></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>`
             : `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
-          body = `${scaleChoice}<fieldset class="section-gap"><legend>Je choisis le domaine</legend><div class="contexts">${Object.entries(
-            contexts,
-          )
-            .map(
-              ([k, v]) =>
-                `<button type="button" class="context" data-context="${k}" aria-pressed="${state.context === k}"><span class="context-icon" aria-hidden="true">${contextIcon(k)}</span><span>${v.label}</span></button>`,
-            )
-            .join(
-              "",
-            )}</div><details class="section-gap"><summary>Ma situation n’est pas dans la liste</summary><div class="details-body"><p>Je peux choisir le domaine le plus proche. Logement, argent et démarches vont dans « Vie quotidienne ». Une question de quartier ou de service public va dans « Vie collective ».</p></div></details></fieldset><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+          const contextOptions = Object.entries(contexts).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${value.label}</option>`).join("");
+          const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
+          body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Dans quel domaine se passe la situation ?</label><select id="context-select">${contextOptions}</select><p class="hint">Je peux choisir le domaine le plus proche. Les exemples de l’exercice s’adaptent à ce choix.</p></div><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
             ["danger", "Je me sens en danger"],
@@ -256,50 +278,37 @@
             )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="#violences">Voir les repères de sécurité</a>.</p>`}`;
         }
         if (i === 1) {
-          body =
-            `${state.scale === "organization" || state.scale === "public" ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées, les décisions à prendre et les ressources disponibles. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : ""}` +
-            field(
-              "situation",
-              workflow.fields[0],
-              workflow.fields[1],
-              "textarea",
-              workflow.examples?.[0] || c.situation,
-            ) +
-            field(
-              "goal",
-              workflow.fields[2],
-              workflow.fields[3],
-              "textarea",
-              workflow.examples?.[1] || c.goal,
-            ) +
-            field(
-              "obstacle",
-              workflow.fields[4],
-              workflow.fields[5],
-              "textarea",
-              workflow.examples?.[2] || c.obstacle,
-            ) +
-            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
+          const prompts = [
+            ["situation", workflow.fields[0], workflow.fields[1], workflow.examples?.[0] || c.situation],
+            ["goal", workflow.fields[2], workflow.fields[3], workflow.examples?.[1] || c.goal],
+            ["obstacle", workflow.fields[4], workflow.fields[5], workflow.examples?.[2] || c.obstacle],
+          ];
+          const [key, label, hint, sample] = prompts[state.clarifyPart];
+          body = `<p class="question-progress">Question ${state.clarifyPart + 1} sur 3 · Je peux passer si je ne sais pas encore.</p>` +
+            (state.clarifyPart === 0 && state.reviewScale ? '<div class="notice amber section-gap"><strong>J’ai changé de niveau.</strong> Je relis mes réponses : elles sont restées dans le brouillon.</div>' : "") +
+            (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
+            field(key, label, hint, "textarea", sample, true) +
+            (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
         }
         if (i === 2) {
-          body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1)) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
+          body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
         }
         if (i === 3) {
           const options = state.options.filter((o) => o.text.trim());
           body = options.length
             ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc((workflow.ideas || c.ideas)[0])}</p><p><strong>Apport possible :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[0])}</p><p><strong>Limite :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[1])}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${workflow.compare}</p><p>Si les conséquences sont importantes, demandez un avis adapté avant d’agir.</p></div></details>`
-            : `<div class="notice amber"><strong>Vous n’avez pas encore noté de piste.</strong>Revenez à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
+            : `<div class="notice amber"><strong>Je n’ai pas encore noté de piste.</strong>Je reviens à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
         }
         if (i === 4) {
           const chosen = state.options.find((o) => o.id === state.chosen);
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Aucune piste choisie. Vous pouvez revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", workflow.actionExamples?.[0] || c.action)}${field("when", "Quand et où ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", workflow.action[2], workflow.action[3], "textarea", workflow.actionExamples?.[1] || c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Prévoyez une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand faire le point ?", "Une date pour votre fiche, sans rappel automatique.", "date")}</div></details></div>`;
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", workflow.actionExamples?.[0] || c.action, true)}${field("when", "Quand et où vais-je agir ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", workflow.action[2], workflow.action[3], "textarea", workflow.actionExamples?.[1] || c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
         }
         if (i === 5) {
-          body = `<fieldset><legend>Où en êtes-vous de l’action ?</legend><div class="choice-stack">${[
-            ["notyet", "Pas encore essayé"],
-            ["yes", "Essayé"],
-            ["partly", "En partie"],
-            ["no", "Je n’ai pas pu"],
+          body = `<fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[
+            ["notyet", "Je n’ai pas encore essayé"],
+            ["yes", "J’ai essayé"],
+            ["partly", "J’ai essayé en partie"],
+            ["no", "Je n’ai pas pu essayer"],
           ]
             .map(
               ([k, v]) =>
@@ -307,14 +316,14 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Vous pouvez garder votre plan pour plus tard.</strong>Le bilan se remplit après l’essai. Pas besoin d’inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si vous n’avez fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que vous espériez</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
         }
         if (workflow.tools[i]) {
           const [name, description, source] = workflow.tools[i];
           body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${i === 0 ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? "Question suivante" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         if (focus) {
           $("#step-title").focus({ preventScroll: true });
           $("#step-container").scrollIntoView({
@@ -326,14 +335,43 @@
         }
       }
       function changeStep(i) {
-        state.step = Math.max(0, Math.min(5, i));
+        if (i > 0 && !state.scaleChosen) {
+          state.step = 0;
+          renderStep(true);
+          toast("Choisissez d’abord le niveau du problème.");
+          $(".scale-option")?.focus();
+          return;
+        }
+        const destination = Math.max(0, Math.min(5, i));
+        if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
+        state.step = destination;
         persist();
-        if (location.hash !== "#outil") {
-          location.hash = "outil";
-          renderStep();
-        } else renderStep(true);
+        $("#mobile-step-picker").open = false;
+        const alreadyHere = !$("#outil").hidden;
+        history.replaceState(null, "", "#outil");
+        if (!alreadyHere) route();
+        renderStep(true);
       }
       function goNext() {
+        if (state.step === 0 && !state.scaleChosen) {
+          toast("Choisissez d’abord le niveau du problème.");
+          $(".scale-option")?.focus();
+          return;
+        }
+        if (state.step === 1) {
+          if (state.clarifyPart < 2) {
+            state.clarifyPart++;
+            persist();
+            renderStep(true);
+            return;
+          }
+          state.reviewScale = false;
+        }
+        if (state.step === 4 && !state.fields.action.trim()) {
+          toast("Je note un premier pas concret, même petit, pour préparer mon plan.");
+          $("#field-action")?.focus();
+          return;
+        }
         if (state.step === 4 || state.step === 5) {
           renderRecap();
           location.hash = "recap";
@@ -363,71 +401,44 @@
           organization: "Notre test d’amélioration",
           public: "Notre démarche collective",
         }[state.scale];
-        $("#recap .page-heading h1").textContent = planTitle;
+        $("#recap .page-heading h1").textContent = hasPlan() ? planTitle : "Mes réponses";
+        $("#recap-actions").hidden = !hasWriting();
+        $("#recap-review").hidden = !hasPlan();
+        $("#recap-privacy").hidden = !hasWriting();
+        $("#recap-note").hidden = !hasPlan();
+        if (!hasWriting()) {
+          $("#recap-content").innerHTML = '<article class="card padded empty-recap"><h2>Ma fiche est encore vide</h2><p>Je commence par choisir le niveau et le contexte de mon problème. Mes réponses apparaîtront ici au fur et à mesure.</p><button class="btn primary section-gap" data-step="0">Commencer l’exercice →</button></article>';
+          return;
+        }
         const f = state.fields,
           c = contexts[state.context],
           choice = state.options.find((o) => o.id === state.chosen);
-        const dd = (k, v) =>
-          `<dt>${k}</dt><dd${v ? "" : ' class="empty"'}>${v ? esc(v) : "Non renseigné"}</dd>`;
+        const dd = (k, v) => v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : "";
         const block = (title, idx, content) =>
           `<article class="card recap-section"><h3>${title}<button class="text-button no-print" data-step="${idx}">Modifier</button></h3><dl>${content}</dl></article>`;
-        $("#recap-content").innerHTML =
-          block(
-            "1. Ma situation",
-            1,
-            dd("Contexte", c.label) +
-              dd("Échelle", scales[state.scale][0]) +
-              dd("Les faits", f.situation) +
-              dd("Mon but", f.goal) +
-              dd("Mon obstacle", f.obstacle) +
-              (f.emotion ? dd("Mon ressenti", f.emotion) : "") +
-              (f.control ? dd("Ma marge de manœuvre", f.control) : "") +
-              (f.outside ? dd("Ce qui ne dépend pas de moi", f.outside) : ""),
-          ) +
-          block(
-            "2. Mes options",
-            2,
-            state.options
-              .filter((o) => o.text.trim())
-              .map(
-                (o, j) =>
-                  dd("Piste " + (j + 1), o.text) +
-                  (o.plus ? dd("Bénéfices envisagés", o.plus) : "") +
-                  (o.minus ? dd("Contraintes et risques", o.minus) : ""),
-              )
-              .join("") || dd("Pistes", ""),
-          ) +
-          block("3. Mon choix", 3, dd("Option retenue", choice?.text)) +
-          block(
-            "4. Mon premier pas",
-            4,
-            dd("Action", f.action) +
-              dd("Quand et où", f.when) +
-              (f.support ? dd("Appui", f.support) : "") +
-              (f.backup ? dd("Si ça bloque", f.backup) : "") +
-              dd("Signe de progrès", f.measure) +
-              (f.reviewDate
-                ? dd("Date du bilan", formatDate(f.reviewDate))
-                : ""),
-          ) +
-          block(
-            "5. Mon bilan",
-            5,
-            dd(
-              "Statut",
-              {
-                notyet: "Pas encore essayé",
-                yes: "Essayé",
-                partly: "Essayé en partie",
-                no: "Je n’ai pas pu",
-              }[f.trial],
-            ) +
-              (f.trial === "notyet"
-                ? ""
-                : dd("Résultat", f.result) +
-                  dd("Ce que j’en retiens", f.learning) +
-                  dd("Prochaine étape", f.next)),
-          );
+        const situation = dd("Contexte", c.label) + dd("Niveau", scales[state.scale][0]) +
+          dd("Les faits", f.situation) + dd("Mon but", f.goal) + dd("Mon obstacle", f.obstacle) +
+          dd("Mon ressenti", f.emotion) + dd("Ma marge de manœuvre", f.control) +
+          dd("Ce qui ne dépend pas de moi", f.outside);
+        const ideas = state.options.filter((o) => o.text.trim()).map((o, j) =>
+          dd("Piste " + (j + 1), o.text) + dd("Bénéfices envisagés", o.plus) +
+          dd("Contraintes et risques", o.minus)).join("");
+        const action = dd("Action", f.action) + dd("Quand et où", f.when) +
+          dd("Appui", f.support) + dd("Si ça bloque", f.backup) +
+          dd("Signe de progrès", f.measure) +
+          dd("Date du bilan", f.reviewDate ? formatDate(f.reviewDate) : "");
+        const trial = f.trial !== "notyet" ? {
+          yes: "Essayé", partly: "Essayé en partie", no: "Je n’ai pas pu",
+        }[f.trial] : "";
+        const review = dd("Statut", trial) + dd("Résultat", f.result) +
+          dd("Ce que j’en retiens", f.learning) + dd("Prochaine étape", f.next);
+        $("#recap-content").innerHTML = [
+          [f.situation || f.goal || f.obstacle || f.emotion || f.control || f.outside, "1. Ma situation", 1, situation],
+          [ideas, "2. Mes options", 2, ideas],
+          [choice?.text, "3. Mon choix", 3, dd("Option retenue", choice?.text)],
+          [action, "4. Mon premier pas", 4, action],
+          [review, "5. Mon bilan", 5, review],
+        ].filter(([show]) => show).map(([, title, idx, content]) => block(title, idx, content)).join("");
       }
 
       // Pack complete cards first, then complete label/answer pairs. Only answers
@@ -736,11 +747,7 @@
         const hash = location.hash.slice(1) || "accueil";
         const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
         if (scaleMatch) {
-          state.scale = scaleMatch[1];
-          state.scaleChosen = true;
-          state.step = 0;
-          if (state.context === "daily" && state.scale === "organization") state.context = "work";
-          if (state.context === "daily" && state.scale === "public") state.context = "collective";
+          selectScale(scaleMatch[1]);
           persist();
         }
         const page = hash.startsWith("ref-")
@@ -821,11 +828,8 @@
       );
       $$("[data-start-scale]").forEach((a) =>
         a.addEventListener("click", () => {
-          state.scale = a.dataset.startScale;
-          state.scaleChosen = true;
-          state.step = 0;
+          selectScale(a.dataset.startScale);
           persist();
-          renderStep();
         }),
       );
       document.addEventListener("click", (event) => {
@@ -851,24 +855,22 @@
             persist();
           }
         }
+        if (el.dataset.field || el.dataset.option) updateRecapShortcut();
+      });
+      document.addEventListener("change", (e) => {
+        if (e.target.id !== "context-select") return;
+        if (!Object.hasOwn(contexts, e.target.value)) return;
+        state.context = e.target.value;
+        persist();
+        renderStep();
+        $("#context-select").focus();
+        toast(`Exemples adaptés : ${contexts[state.context].label}. Le texte déjà saisi ne change pas.`);
       });
       document.addEventListener("click", (e) => {
         const b = e.target.closest("button");
         if (!b) return;
         if (b.dataset.step !== undefined) {
           changeStep(Number(b.dataset.step));
-          return;
-        }
-        if (b.dataset.context) {
-          state.context = b.dataset.context;
-          persist();
-          renderStep();
-          $(`[data-context="${state.context}"]`).focus();
-          toast(
-            "Exemples adaptés : " +
-              contexts[state.context].label +
-              ". Le texte déjà saisi ne change pas.",
-          );
           return;
         }
         if (b.dataset.safety) {
@@ -921,12 +923,12 @@
           return;
         }
         if (b.dataset.scale) {
-          state.scale = b.dataset.scale;
-          state.scaleChosen = true;
+          selectScale(b.dataset.scale);
           history.replaceState(null, "", "#outil-" + state.scale);
           persist();
           renderStep();
-          $("#change-level summary").focus();
+          $("#selected-level").setAttribute("tabindex", "-1");
+          $("#selected-level").focus();
           return;
         }
         if (b.dataset.need) {
@@ -949,7 +951,11 @@
             goNext();
             break;
           case "back":
-            changeStep(state.step - 1);
+            if (state.step === 1 && state.clarifyPart > 0) {
+              state.clarifyPart--;
+              persist();
+              renderStep(true);
+            } else changeStep(state.step - 1);
             break;
           case "pause":
             state.energy = "pause";
@@ -1062,7 +1068,7 @@
             "Le fichier remplacera les réponses actuellement affichées. Téléchargez-les d’abord si vous souhaitez les garder.",
             () => {
               state = imported;
-              nextId = state.options.length + 1;
+              nextId = Math.max(...state.options.map((option) => option.id)) + 1;
               persist();
               renderStep();
               if (location.hash !== "#outil") location.hash = "outil";

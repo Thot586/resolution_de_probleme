@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Un outil de résolution de problème pas à pas : clarifier, explorer, choisir, agir et faire le point. Exemples adaptés, soutien aux proches et repères face aux violences."
+      content="Un outil pédagogique pour résoudre un problème ou soutenir une personne ou un groupe : clarifier, choisir une action, l’essayer et faire le point."
     />
     <meta name="theme-color" content="#183e38" />
     <meta name="referrer" content="no-referrer" />
@@ -267,6 +267,9 @@
         list-style: none;
         margin: 0;
       }
+      .mobile-step-picker {
+        display: none;
+      }
       .steps li + li {
         margin-top: 7px;
       }
@@ -515,6 +518,21 @@
       }
       .example p {
         margin: 0;
+      }
+      .example-visible {
+        margin: 12px 0 14px;
+      }
+      .question-progress {
+        color: var(--brand);
+        font-size: 0.82rem;
+        font-weight: 700;
+        margin-bottom: 19px;
+      }
+      .context-pick {
+        max-width: 520px;
+      }
+      .field-hint {
+        margin: 4px 0 0;
       }
       .field {
         margin-bottom: 22px;
@@ -1291,6 +1309,36 @@
         }
       }
       @media (max-width: 600px) {
+        #steps {
+          display: none;
+        }
+        .mobile-step-picker {
+          display: block;
+        }
+        .mobile-step-picker > summary {
+          padding: 12px 14px;
+          font-size: 0.88rem;
+          color: var(--deep);
+        }
+        #mobile-steps {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 5px;
+          padding: 8px;
+        }
+        #mobile-steps .step-link {
+          flex-direction: row;
+          text-align: left;
+          gap: 8px;
+          padding: 9px;
+          min-height: 48px;
+        }
+        #mobile-steps .step-text b {
+          font-size: 0.82rem;
+        }
+        #mobile-steps .step-num {
+          flex-shrink: 0;
+        }
         .navbar {
           padding: 11px 16px;
         }
@@ -1688,24 +1736,28 @@
         padding: clamp(26px, 4vw, 44px);
         border-radius: 28px;
         color: #fff;
-        background: radial-gradient(circle at 88% 12%, #68a88c 0, transparent 31%), linear-gradient(135deg, #143c34, #1f6755);
+        background: radial-gradient(circle at 93% 8%, #47856f 0, transparent 34%), linear-gradient(135deg, #173f35, #24594d);
       }
       .welcome-hero .eyebrow { color: #c9edda; }
       .welcome-hero h1 { max-width: 780px; font-size: clamp(2.1rem, 4vw, 3.2rem); }
-      .scale-entry { margin-top: 28px; }
-      .scale-entry h2 { font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
+      .welcome-lead { max-width: 700px; margin-top: 14px; color: #e2f2e7; font-size: clamp(.98rem, 1.6vw, 1.08rem); line-height: 1.55; }
+      .scale-entry { margin-top: 34px; }
+      .path-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
+      .path-heading h2 { margin-top: 4px; font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
+      .path-heading p { max-width: 690px; margin-top: 8px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
+      .path-kicker { color: var(--brand); font-size: .7rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+      .path-flow { margin-top: 13px; color: var(--muted); font-size: .86rem; line-height: 1.5; }
+      .path-flow strong { color: var(--brand); }
       .scale-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
-      .scale-card { position: relative; display: flex; flex-direction: column; gap: 8px; min-height: 150px; padding: 20px 32px 20px 20px; border: 1px solid var(--line); border-radius: 18px; background: #fff; box-shadow: var(--shadow); text-decoration: none; color: var(--ink); transition: transform .18s ease, box-shadow .18s ease; }
-      .scale-card:hover { transform: translateY(-2px); box-shadow: 0 14px 30px #233e3520; }
+      .scale-card { position: relative; display: flex; flex-direction: column; gap: 8px; min-height: 148px; padding: 20px 32px 20px 20px; border: 1px solid var(--line); border-radius: 17px; background: #fff; box-shadow: 0 4px 18px #233e350a; text-decoration: none; color: var(--ink); transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+      .scale-card:hover { transform: translateY(-2px); border-color: #a9c5b3; box-shadow: 0 12px 26px #233e3516; }
       .scale-card:focus-visible, .support-entry:focus-visible { outline-offset: 4px; }
       .scale-card strong { font-size: 1.1rem; line-height: 1.35; }
-      .scale-card span:not(.scale-arrow) { color: var(--muted); font-size: .88rem; line-height: 1.4; }
+      .scale-card span:not(.scale-arrow) { color: var(--muted); font-size: .87rem; line-height: 1.45; }
       .scale-arrow { position: absolute; right: 16px; top: 18px; color: var(--brand); font-weight: 750; }
-      .scale-entry > .hint { margin-top: 10px; }
-      .help-others { margin-top: 30px; }
-      .help-others h2 { font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
+      .help-others { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); }
       .help-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
-      .support-entry { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 112px; padding: 20px 24px; border: 1px solid #bdd7c5; border-radius: 18px; background: #edf6ee; color: var(--ink); text-decoration: none; }
+      .support-entry { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 112px; padding: 20px 24px; border: 1px solid #c7d9cb; border-radius: 17px; background: #f1f7f1; color: var(--ink); text-decoration: none; }
       .support-entry:hover { border-color: var(--brand); }
       .support-entry > span:first-child { display: grid; gap: 2px; }
       .support-entry strong { font-size: 1.12rem; }
@@ -1716,6 +1768,7 @@
       .quick-paths a { font-size: .88rem; }
       .welcome-explain { margin: 20px 0 12px; }
       .welcome-explain .text-button { display: inline-block; margin-top: 10px; }
+      .journey-preface { color: var(--muted); }
       .scale-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
       .scale-option { display: grid; gap: 3px; min-height: 86px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; text-align: left; }
       .scale-option:hover { border-color: var(--brand); background: #f8faf6; }
@@ -1753,27 +1806,47 @@
       .visual-guides details + details { margin-top: 12px; }
       .visual-guides .teaching-figure { margin-bottom: 0; }
       .support-stage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .support-start { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 0 12px; padding: 0; list-style: none; }
+      .support-start li { display: grid; gap: 4px; padding: 17px 19px; border: 1px solid #d3e1d5; border-radius: 15px; background: #f2f7f1; }
+      .support-start strong { color: var(--brand); font-size: .9rem; }
+      .support-start span { line-height: 1.45; }
+      .support-foundations .details-body { padding: 16px; }
+      .support-foundations .stage-card { padding: 20px; box-shadow: none; }
+      .support-foundations .stage-card h2 { font-size: clamp(1.22rem, 1.8vw, 1.5rem); }
+      .support-illustration { margin-top: 16px; }
+      .support-illustration .teaching-figure { margin: 0 auto; }
       .stage-card, .need-lab { padding: 28px; }
       .stage-card h2, .need-lab h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); margin: 15px 0; }
       .stage-card p + p { margin-top: 14px; }
       .need-lab { margin-top: 18px; }
       .need-heading { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
       .need-heading p { font-size: .82rem; color: var(--muted); }
+      .need-start-hint { margin: 0 0 16px; color: var(--muted); font-size: .88rem; }
       .need-lab select { max-width: 390px; }
       .need-guidance { padding: 22px; margin-top: 20px; border-left: 4px solid var(--brand); border-radius: 0 14px 14px 0; background: #f2f8f2; }
       .need-guidance .say { margin: 14px 0; }
       .need-guidance .hint { margin-top: 12px; }
       .need-guidance .text-button { display: inline-block; margin-top: 12px; }
+      .support-related { margin-top: 15px; font-size: .88rem; color: var(--muted); }
 
       @media (max-width: 850px) {
         .scale-grid, .support-stage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .group-layout { grid-template-columns: 1fr; }
       }
       @media (max-width: 600px) {
+        .welcome-hero { padding: 27px 23px; border-radius: 20px; }
+        .path-heading p { font-size: .88rem; }
+        .scale-entry { margin-top: 26px; }
         .scale-grid, .scale-options, .help-grid { grid-template-columns: 1fr; }
-        .scale-card { min-height: 0; padding: 16px 36px 16px 18px; }
-        .support-entry { min-height: 0; }
-        .support-stage-grid { grid-template-columns: 1fr; }
+        .scale-card { min-height: 0; padding: 14px 36px 14px 17px; gap: 3px; }
+        .scale-card strong { font-size: 1rem; }
+        .help-others { margin-top: 27px; padding-top: 23px; }
+        .support-entry { min-height: 0; padding: 17px 18px; }
+        .support-start, .support-stage-grid { grid-template-columns: 1fr; }
+        .support-start li { padding: 14px 16px; }
+        .need-heading { flex-wrap: wrap; gap: 4px; }
+        .need-lab { padding: 21px; }
+        .support-foundations .details-body { padding: 12px; }
       }
     </style>
 
@@ -1809,7 +1882,7 @@
         <nav id="navigation" aria-label="Navigation principale">
           <a href="#accueil" data-page="accueil">Accueil</a
           ><a href="#outil" data-page="outil">Mon problème</a
-          ><a href="#soutenir" data-page="soutenir">Soutenir quelqu’un</a
+          ><a href="#soutenir" data-page="soutenir">Aider une personne</a
           ><a href="#groupe" data-page="groupe">Aider un groupe</a>
         </nav>
         <a
@@ -1846,57 +1919,71 @@
       >
             <section id="accueil" class="view" aria-labelledby="welcome-title">
         <div class="welcome-hero">
-          <div class="eyebrow">Outil pédagogique</div>
+          <div class="eyebrow">Outil pédagogique · Une démarche à adapter</div>
           <h1 id="welcome-title">Résoudre un problème</h1>
+          <p class="welcome-lead">Je choisis ce que je veux faire. L’outil m’aide à clarifier la situation, à préparer une action et à revoir ce qui s’est passé.</p>
         </div>
         <section class="scale-entry" aria-labelledby="scale-entry-title">
-          <h2 id="scale-entry-title">Je choisis le niveau de mon problème</h2>
+          <div class="path-heading">
+            <div>
+              <span class="path-kicker">Un problème à résoudre</span>
+              <h2 id="scale-entry-title">Je veux agir sur un problème</h2>
+              <p>Je choisis qui peut agir pour le résoudre. Je pourrai changer de niveau dans l’exercice.</p>
+            </div>
+          </div>
+          <p class="path-flow"><strong>Après ce choix :</strong> je précise le contexte, puis je décris → je cherche → je choisis → j’essaie → je fais le point.</p>
           <div class="scale-grid">
             <a class="scale-card" href="#outil-personal" data-start-scale="personal">
               <strong>Personnel</strong>
-              <span>Je peux agir moi-même.</span>
+              <span>Je peux commencer par une action qui dépend de moi.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
             <a class="scale-card" href="#outil-shared" data-start-scale="shared">
               <strong>Entre personnes</strong>
-              <span>Il faut en parler avec quelqu’un.</span>
+              <span>Un échange ou un accord avec une autre personne est nécessaire.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
             <a class="scale-card" href="#outil-organization" data-start-scale="organization">
               <strong>Équipe ou institution</strong>
-              <span>Des règles ou des moyens comptent.</span>
+              <span>Une équipe peut changer une règle, une pratique ou des moyens.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
             <a class="scale-card" href="#outil-public" data-start-scale="public">
               <strong>Collectif ou politique</strong>
-              <span>Une décision publique est en jeu.</span>
+              <span>Une décision collective ou publique doit évoluer.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
           </div>
-          <p class="hint">Je pourrai changer de niveau dans l’exercice.</p>
         </section>
         <section class="help-others" aria-labelledby="help-others-title">
-          <h2 id="help-others-title">Je veux aider d’autres personnes</h2>
+          <div class="path-heading">
+            <div>
+              <span class="path-kicker">Une aide à apporter</span>
+              <h2 id="help-others-title">Je veux soutenir d’autres personnes</h2>
+              <p>Je pars de leurs besoins et de ce qu’elles souhaitent faire.</p>
+            </div>
+          </div>
           <div class="help-grid">
             <a class="support-entry" href="#soutenir">
-              <span><strong>Une personne</strong><small>Écouter son besoin et proposer une aide avec son accord.</small></span>
+              <span><strong>Aider une personne</strong><small>Je l’écoute, je demande son besoin et je propose une aide avec son accord.</small></span>
               <span aria-hidden="true">↗</span>
             </a>
             <a class="support-entry" href="#groupe">
-              <span><strong>Un groupe</strong><small>Comprendre ensemble, choisir une action et suivre ses effets.</small></span>
+              <span><strong>Aider un groupe</strong><small>J’accompagne les personnes concernées pour choisir, essayer et suivre une action.</small></span>
               <span aria-hidden="true">↗</span>
             </a>
           </div>
         </section>
         <div class="quick-paths">
-          <span>Autres situations</span>
+          <span>Repères utiles</span>
           <a href="#proche">Comment aider un proche ? ↗</a>
           <a href="#violences">Reconnaître une violence ↗</a>
           <a href="#securite">Trouver une aide urgente ↗</a>
         </div>
         <details class="welcome-explain">
-          <summary>Voir les étapes de l’exercice</summary>
+          <summary>Comment se déroule « Mon problème » ?</summary>
           <div class="details-body">
+            <p class="journey-preface">Je choisis d’abord le niveau et le domaine du problème, puis je vérifie que je peux réfléchir en sécurité. L’exercice suit ensuite cinq étapes. Je peux revenir en arrière.</p>
             <figure class="teaching-figure">
               <svg viewBox="0 0 360 490" role="img" aria-labelledby="method-title method-desc" xmlns="http://www.w3.org/2000/svg">
                 <title id="method-title">Du problème au bilan en cinq étapes</title>
@@ -1926,18 +2013,23 @@
           <div>
             <div class="eyebrow">Exercice</div>
             <h1>Mon problème</h1>
+            <p>Je pars d’une situation concrète. Je peux passer une question si je ne sais pas encore y répondre.</p>
           </div>
         </div>
         <div class="workspace">
           <aside class="side" aria-label="Étapes du parcours">
-            <p class="side-label">Votre cheminement</p>
+            <p class="side-label">Mes étapes</p>
             <ol class="steps" id="steps"></ol>
+            <details class="mobile-step-picker" id="mobile-step-picker">
+              <summary id="mobile-step-summary">Choisir une étape</summary>
+              <ol class="steps" id="mobile-steps"></ol>
+            </details>
             <div class="side-note">
-              <strong>À votre rythme.</strong>Vous pouvez revenir en arrière ou
+              <strong>À mon rythme.</strong>Je peux revenir en arrière ou
               faire une pause.
             </div>
             <div class="side-actions">
-              <a class="text-button" href="#recap">Voir mon récapitulatif ↗</a>
+              <a class="text-button" id="recap-shortcut" href="#recap" hidden>Voir mes réponses ↗</a>
             </div>
           </aside>
           <div>
@@ -1973,7 +2065,7 @@
                   </button>
                 </div>
                 <p class="hint">
-                  Les fichiers téléchargés contiennent vos réponses.
+                  Les fichiers téléchargés contiennent mes réponses.
                   Conservez-les en lieu sûr. Évitez les noms, adresses et autres
                   informations identifiantes.
                 </p>
@@ -1987,8 +2079,57 @@
           <div class="page-heading">
             <div class="eyebrow">Écouter · Comprendre · Agir avec la personne</div>
             <h1>Soutenir quelqu’un, sans prendre sa place</h1>
-            <p>Une bonne aide commence par la situation et les souhaits de la personne. Le parcours ci-dessous prépare une conversation ; il ne juge pas la personne et ne décide pas pour elle.</p>
+            <p>Je prépare une conversation à partir de ce que la personne vit et souhaite. Elle reste libre d’accepter, de refuser ou de changer d’avis.</p>
           </div>
+          <ol class="support-start" aria-label="Avant de proposer une aide">
+            <li><strong>J’écoute.</strong><span>« Qu’est-ce qui est difficile pour toi en ce moment ? »</span></li>
+            <li><strong>Je demande son besoin.</strong><span>« De quoi aurais-tu besoin de ma part ? »</span></li>
+          </ol>
+          <details class="support-foundations">
+            <summary>Comment écouter et demander le besoin ?</summary>
+            <div class="details-body">
+              <div class="support-stage-grid">
+                <article class="card stage-card">
+                  <span class="tag">1 · Écouter avant de conseiller</span>
+                  <h2>« Qu’est-ce qui est difficile pour toi en ce moment ? »</h2>
+                  <p>Je laisse la personne raconter à sa manière. Je reformule : « Si je comprends bien, le plus difficile est… » Puis je vérifie si j’ai bien compris.</p>
+                  <p class="hint">J’évite de comparer tout de suite avec ma propre expérience.</p>
+                </article>
+                <article class="card stage-card">
+                  <span class="tag">2 · Relever le besoin</span>
+                  <h2>« De quoi aurais-tu besoin de ma part ? »</h2>
+                  <p>Je demande ce qui aiderait aujourd’hui : être écouté, comprendre la situation, recevoir une aide concrète, ou discuter d’une idée. La réponse peut être « je ne sais pas ».</p>
+                </article>
+              </div>
+            </div>
+          </details>
+          <div class="card need-lab" id="need-lab">
+            <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div><p>Aucun choix n’est enregistré.</p></div>
+            <p class="need-start-hint">Exemple affiché : un collègue qui souhaite être écouté. Je peux changer ces choix.</p>
+            <label class="label" for="support-relation">Dans quelle relation ?</label>
+            <select id="support-relation">
+              <option value="colleague">Collègue</option>
+              <option value="learner">Personne que j’encadre ou forme</option>
+              <option value="close">Proche</option>
+              <option value="other">Autre relation</option>
+            </select>
+            <fieldset class="section-gap"><legend>Quel besoin la personne exprime-t-elle ?</legend><div class="choice-stack" id="need-choices">
+              <button class="pill" type="button" data-need="listen" aria-pressed="true">Être écoutée</button>
+              <button class="pill" type="button" data-need="clarify" aria-pressed="false">Voir plus clair</button>
+              <button class="pill" type="button" data-need="practical" aria-pressed="false">Une aide concrète</button>
+              <button class="pill" type="button" data-need="advice" aria-pressed="false">Un avis ou un retour</button>
+            </div></fieldset>
+            <div id="need-guidance" class="need-guidance" aria-live="polite"></div>
+          </div>
+          <article class="card stage-card section-gap">
+            <span class="tag">4 · Faire le point</span>
+            <h2>Vérifier si l’aide a vraiment servi</h2>
+            <p>« Est-ce que ce que j’ai fait t’a aidé ? Qu’est-ce qui serait plus utile la prochaine fois ? » Je peux ajuster ou m’arrêter. Je respecte un refus.</p>
+          </article>
+          <p class="support-related">J’aide un proche ? <a href="#proche">Voir les conseils adaptés à cette relation ↗</a></p>
+          <details class="support-illustration">
+            <summary>Voir les quatre étapes en dessin</summary>
+            <div class="details-body">
           <figure class="teaching-figure">
             <svg viewBox="0 0 360 394" role="img" aria-labelledby="journey-title journey-desc" xmlns="http://www.w3.org/2000/svg">
               <title id="journey-title">Quatre étapes pour soutenir une personne</title>
@@ -2008,41 +2149,8 @@
             </svg>
             <figcaption>La personne aidée choisit la direction. Si son besoin change, on peut revenir à l’écoute. En cas de danger, on cherche d’abord une aide adaptée.</figcaption>
           </figure>
-          <div class="support-stage-grid">
-            <article class="card stage-card">
-              <span class="tag">1 · Écouter avant de conseiller</span>
-              <h2>« Qu’est-ce qui est difficile pour toi en ce moment ? »</h2>
-              <p>Laissez la personne raconter à sa manière. Reformulez : « Si je comprends bien, le plus difficile est… » Puis demandez si vous avez bien compris.</p>
-              <p class="hint">Évitez de comparer tout de suite avec votre propre expérience.</p>
-            </article>
-            <article class="card stage-card">
-              <span class="tag">2 · Relever le besoin</span>
-              <h2>« De quoi aurais-tu besoin de ma part ? »</h2>
-              <p>Demandez ce qui aiderait aujourd’hui : être écouté, comprendre la situation, recevoir une aide concrète, ou discuter d’une idée. La réponse peut être « je ne sais pas ».</p>
-            </article>
-          </div>
-          <div class="card need-lab" id="need-lab">
-            <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div><p>Aucun choix n’est enregistré.</p></div>
-            <label class="label" for="support-relation">Dans quelle relation ?</label>
-            <select id="support-relation">
-              <option value="colleague">Collègue</option>
-              <option value="learner">Personne que j’encadre ou forme</option>
-              <option value="close">Proche</option>
-              <option value="other">Autre relation</option>
-            </select>
-            <fieldset class="section-gap"><legend>Quel besoin la personne exprime-t-elle ?</legend><div class="choice-stack" id="need-choices">
-              <button class="pill" type="button" data-need="listen" aria-pressed="true">Être écoutée</button>
-              <button class="pill" type="button" data-need="clarify" aria-pressed="false">Voir plus clair</button>
-              <button class="pill" type="button" data-need="practical" aria-pressed="false">Une aide concrète</button>
-              <button class="pill" type="button" data-need="advice" aria-pressed="false">Un avis ou un retour</button>
-            </div></fieldset>
-            <div id="need-guidance" class="need-guidance" aria-live="polite"></div>
-          </div>
-          <article class="card stage-card section-gap">
-            <span class="tag">4 · Faire le point</span>
-            <h2>Vérifier si l’aide a vraiment servi</h2>
-            <p>« Est-ce que ce que j’ai fait t’a aidé ? Qu’est-ce qui serait plus utile la prochaine fois ? » On peut ajuster ou s’arrêter. On respecte un refus.</p>
-          </article>
+            </div>
+          </details>
           <details class="section-gap">
             <summary>Exemple : un médecin expérimenté et de jeunes collègues</summary>
             <div class="details-body">
@@ -2062,6 +2170,7 @@
             <div class="eyebrow">Parcours collectif · Faciliter sans décider à la place du groupe</div>
             <h1 id="group-title">Aider un groupe à résoudre un problème</h1>
             <p>Je prépare une démarche avec les personnes concernées. Je peux commencer à l’étape utile et revenir en arrière.</p>
+            <p class="hint">Ce guide ne crée pas de sondage et n’analyse pas les réponses : il m’aide à préparer les décisions avec le groupe.</p>
             <p class="hint glossary-instruction">Un terme souligné ? Je peux le toucher pour voir sa définition et un exemple.</p>
           </div>
           <div class="notice group-principle">
@@ -2121,8 +2230,10 @@
               </div>
               <div class="field section-gap">
                 <label class="label" for="group-note" id="group-note-label">Ma note pour cette étape</label>
-                <textarea id="group-note" maxlength="1200" placeholder="Une décision ou une question à clarifier…"></textarea>
-                <p class="hint">Je note le plan, pas les réponses individuelles ni les noms des participants.</p>
+                <p class="hint" id="group-note-prompt"></p>
+                <div class="example" style="margin-bottom:12px"><small>Exemple fictif</small><p id="group-note-example"></p></div>
+                <textarea id="group-note" maxlength="1200" aria-describedby="group-note-prompt group-note-privacy"></textarea>
+                <p class="hint" id="group-note-privacy">Je note le plan, pas les réponses individuelles ni les noms des participants.</p>
               </div>
               <p class="source-note" id="group-step-source"></p>
               <div class="footer-actions">
@@ -3328,10 +3439,10 @@
       <section id="recap" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Votre repère pour la suite</div>
+            <div class="eyebrow">Ma fiche de travail</div>
             <h1>Mon prochain pas</h1>
             <p>
-              Un plan que vous pouvez ajuster. Seuls les éléments que vous avez
+              Je peux modifier mes réponses. Seuls les éléments que j’ai
               saisis apparaissent ici.
             </p>
             <p class="print-only">
@@ -3340,23 +3451,23 @@
             </p>
           </div>
           <div id="recap-content" class="recap-grid"></div>
-          <div class="button-row section-gap no-print">
+          <div class="button-row section-gap no-print" id="recap-actions">
             <button class="btn primary" data-action="print">
               Imprimer / enregistrer en PDF</button
             ><button class="btn" data-action="text">
               Télécharger le récapitulatif</button
-            ><button class="btn" data-step="5">
+            ><button class="btn" id="recap-review" data-step="5">
               Faire le point après l’essai →
             </button>
           </div>
-          <p class="hint no-print">
-            Le document contient vos réponses personnelles. Sur un appareil
-            partagé, évitez de le conserver ou de l’imprimer.
+          <p class="hint no-print" id="recap-privacy">
+            Le document contient mes réponses personnelles. Sur un appareil
+            partagé, je vérifie où je le conserve.
           </p>
-          <div class="notice section-gap">
+          <div class="notice section-gap" id="recap-note">
             Une action non réalisée ou un résultat décevant n’est pas un
-            jugement sur vous. Revenez à une étape, cherchez un appui ou
-            choisissez un pas plus petit.
+            jugement sur moi. Je peux revenir à une étape, chercher un appui ou
+            choisir un pas plus petit.
           </div>
         </div>
       </section>
@@ -4045,6 +4156,8 @@
             "Comment chacun peut-il participer librement, sans risque inutile ?",
           ],
           note: "Le périmètre, les personnes à associer et la décision possible",
+          prompt: "Je note ce qui peut changer, qui peut décider et qui consulter.",
+          example: "Dans une association, le bureau peut modifier les horaires de permanence après avoir écouté les bénévoles.",
           refs: [23, 25],
         },
         {
@@ -4057,6 +4170,18 @@
             "Avant de recueillir des données, j’explique leur usage et je demande l’accord des participants.",
           ],
           note: "La question à éclairer, la méthode choisie et les personnes à écouter",
+          prompt: {
+            conversation: "Je note une question à poser au groupe et qui inviter à la discussion.",
+            interviews: "Je note une question commune et quels points de vue rencontrer volontairement.",
+            survey: "Je note la décision à éclairer, qui inviter à répondre et qui lira les réponses.",
+            existing: "Je note les données à consulter et ce qu’elles ne racontent peut-être pas.",
+          },
+          example: {
+            conversation: "Je propose aux bénévoles : « Qu’est-ce qui rend un créneau difficile à assurer ? »",
+            interviews: "Je propose des entretiens courts à des bénévoles aux disponibilités différentes, avec leur accord.",
+            survey: "Je propose trois questions courtes aux 12 bénévoles et précise qui pourra lire leurs réponses.",
+            existing: "Je regarde les créneaux non pourvus du trimestre, puis je demande ce que ce tableau ne montre pas.",
+          },
           refs: [23, 26],
         },
         {
@@ -4069,6 +4194,18 @@
             "Une différence observée ne prouve pas à elle seule qu’une action en est la cause.",
           ],
           note: "Les constats solides, les désaccords et les limites des données",
+          prompt: {
+            conversation: "Je note les thèmes entendus, les avis divergents et qui n’a pas pu parler.",
+            interviews: "Je note les thèmes communs et différents, sans attribuer de propos à une personne.",
+            survey: "Je note le nombre d’invités et de répondants, puis ce que les réponses montrent ou non.",
+            existing: "Je note ce que les données décrivent, leur date et les informations manquantes.",
+          },
+          example: {
+            conversation: "Huit bénévoles ont parlé ; quatre étaient absents. Deux difficultés reviennent, mais leur avis manque.",
+            interviews: "Les entretiens évoquent les transports et les changements tardifs ; ils ne représentent pas tout le groupe.",
+            survey: "Huit réponses sur 12 invitations ; cinq citent le samedi. Cela décrit les répondants, pas tout le groupe.",
+            existing: "Le tableau montre trois créneaux non pourvus ; il ne dit pas pourquoi ils le sont.",
+          },
           refs: [23, 26],
         },
         {
@@ -4081,6 +4218,8 @@
             "J’explique ce qui sera décidé ensuite, par qui, et quand le groupe aura un retour.",
           ],
           note: "Le retour prévu au groupe, les corrections et les questions encore ouvertes",
+          prompt: "Je note ce que je rendrai au groupe, comment recueillir ses corrections et la date du prochain retour.",
+          example: "Je partage trois constats sans citation reconnaissable, puis demande : « Qu’avons-nous oublié ? »",
           refs: [23, 25, 27],
         },
         {
@@ -4093,6 +4232,8 @@
             "Quels moyens, autorisations, effets indésirables et désaccords faut-il examiner ?",
           ],
           note: "Une priorité, un signe de progrès et les pistes à comparer",
+          prompt: "Je note une priorité choisie avec le groupe, un signe observable et une contrainte importante.",
+          example: "Les bénévoles proposent de publier le planning un mois plus tôt. Signe de progrès : moins de créneaux non pourvus.",
           refs: [22, 23, 25],
         },
         {
@@ -4105,6 +4246,8 @@
             "Si l’essai ne convient pas, comment l’arrêter ou le modifier ?",
           ],
           note: "L’essai, les responsabilités, les mesures et les conditions d’arrêt",
+          prompt: "Je note qui valide l’essai, sa durée, ce que nous observerons et quand l’arrêter.",
+          example: "Le bureau autorise quatre semaines d’essai. Une personne note les créneaux non pourvus ; le groupe peut arrêter si la charge augmente.",
           refs: [22],
         },
         {
@@ -4117,6 +4260,8 @@
             "Quand et comment rendre la décision finale aux participants ?",
           ],
           note: "Le bilan, la décision prise et la date du prochain retour au groupe",
+          prompt: "Je note les observations, leurs limites et quand le groupe décidera de continuer, modifier ou arrêter.",
+          example: "Deux créneaux restent non pourvus, contre trois avant. Le groupe vérifie aussi si la charge s’est déplacée.",
           refs: [22, 23, 25],
         },
       ];
@@ -4129,6 +4274,13 @@
       let groupIndex = 0;
       let groupMethod = "conversation";
       const groupNotes = Array(groupStages.length).fill("");
+
+      function updateGroupNoteGuide() {
+        const stage = groupStages[groupIndex];
+        const forMethod = (text) => typeof text === "string" ? text : text[groupMethod];
+        document.querySelector("#group-note-prompt").textContent = forMethod(stage.prompt);
+        document.querySelector("#group-note-example").textContent = forMethod(stage.example);
+      }
 
       function renderGroupPlan() {
         const box = document.querySelector("#group-plan-content");
@@ -4177,6 +4329,7 @@
         document.querySelector("#group-method").value = groupMethod;
         document.querySelector("#group-method-hint").innerHTML = linkGlossary(groupMethods[groupMethod]);
         document.querySelector("#group-note-label").textContent = stage.note + " (facultatif)";
+        updateGroupNoteGuide();
         document.querySelector("#group-note").value = groupNotes[groupIndex];
         const source = document.querySelector("#group-step-source");
         source.replaceChildren(document.createTextNode("Repères : "));
@@ -4207,6 +4360,7 @@
         document.querySelector("#group-method").addEventListener("change", (event) => {
           groupMethod = event.target.value;
           document.querySelector("#group-method-hint").innerHTML = linkGlossary(groupMethods[groupMethod]);
+          updateGroupNoteGuide();
         });
         document.querySelector("#group-note").addEventListener("input", (event) => {
           groupNotes[groupIndex] = event.target.value;
@@ -4291,9 +4445,11 @@
         return {
           version: 1,
           step: 0,
+          clarifyPart: 0,
           context: "daily",
           scale: "personal",
           scaleChosen: false,
+          reviewScale: false,
           safety: "",
           energy: "",
           fields: {
@@ -4329,6 +4485,26 @@
         supportMode = "listen",
         selectedNeed = "listen",
         meterIndex = 0;
+      function hasWriting() {
+        return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
+      }
+      function hasPlan() {
+        return Boolean(state.fields.action.trim());
+      }
+      function updateRecapShortcut() {
+        const shortcut = $("#recap-shortcut");
+        shortcut.hidden = !hasWriting();
+        shortcut.textContent = hasPlan() ? "Voir mon plan ↗" : "Voir mes réponses ↗";
+      }
+      function selectScale(scale) {
+        if (state.scale !== scale && hasWriting()) state.reviewScale = true;
+        state.scale = scale;
+        state.scaleChosen = true;
+        state.step = 0;
+        state.clarifyPart = 0;
+        if (state.context === "daily" && scale === "organization") state.context = "work";
+        if (state.context === "daily" && scale === "public") state.context = "collective";
+      }
       function validateDraft(raw) {
         if (
           !raw ||
@@ -4343,10 +4519,12 @@
         clean.context = raw.context;
         clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
         clean.scaleChosen = raw.scaleChosen === true;
+        clean.reviewScale = raw.reviewScale === true;
         clean.step =
           Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
             ? raw.step
             : 0;
+        clean.clarifyPart = Number.isInteger(raw.clarifyPart) && raw.clarifyPart >= 0 && raw.clarifyPart <= 2 ? raw.clarifyPart : 0;
         clean.energy = ["", "ready", "pause"].includes(raw.energy)
           ? raw.energy
           : "";
@@ -4441,26 +4619,31 @@
         closeDialog();
         fn?.();
       });
-      function example(text, label = "") {
-        return `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary><div class="example"><small>Exemple fictif · ${esc(state.scale === "personal" ? contexts[state.context].label : scales[state.scale][0])}</small><p>${esc(text)}</p></div></details>`;
+      function example(text, label = "", visible = false) {
+        const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(state.scale === "personal" ? contexts[state.context].label : scales[state.scale][0])}</small><p>${esc(text)}</p></div>`;
+        return visible ? content : `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary>${content}</details>`;
       }
-      function field(key, label, hint = "", type = "textarea", ex = "") {
+      function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false) {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label) : ""}</div>`;
+        return `<div class="field"><label class="label" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
       }
       function renderSteps() {
         const workflow = workflows[state.scale];
-        $("#steps").innerHTML = stepNames
+        const links = stepNames
           .map(
             (s, i) =>
               `<li><button class="step-link" data-step="${i}"${i === state.step ? ' aria-current="step"' : ""}><span class="step-num">${i + 1}</span><span class="step-text"><b>${s[0]}</b><small>${workflow.steps[i]}</small></span></button></li>`,
           )
           .join("");
+        $("#steps").innerHTML = links;
+        $("#mobile-steps").innerHTML = links;
+        $("#mobile-step-summary").textContent = `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]} — ${workflow.steps[state.step]}`;
       }
       function renderStep(focus = false) {
         hideTooltip();
         renderSteps();
+        updateRecapShortcut();
         const c = contexts[state.context],
           i = state.step,
           workflow = workflows[state.scale];
@@ -4472,16 +4655,9 @@
           const scaleChoice = state.scaleChosen
             ? `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong><span>${scales[state.scale][1]}</span></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>`
             : `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
-          body = `${scaleChoice}<fieldset class="section-gap"><legend>Je choisis le domaine</legend><div class="contexts">${Object.entries(
-            contexts,
-          )
-            .map(
-              ([k, v]) =>
-                `<button type="button" class="context" data-context="${k}" aria-pressed="${state.context === k}"><span class="context-icon" aria-hidden="true">${contextIcon(k)}</span><span>${v.label}</span></button>`,
-            )
-            .join(
-              "",
-            )}</div><details class="section-gap"><summary>Ma situation n’est pas dans la liste</summary><div class="details-body"><p>Je peux choisir le domaine le plus proche. Logement, argent et démarches vont dans « Vie quotidienne ». Une question de quartier ou de service public va dans « Vie collective ».</p></div></details></fieldset><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+          const contextOptions = Object.entries(contexts).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${value.label}</option>`).join("");
+          const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
+          body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Dans quel domaine se passe la situation ?</label><select id="context-select">${contextOptions}</select><p class="hint">Je peux choisir le domaine le plus proche. Les exemples de l’exercice s’adaptent à ce choix.</p></div><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
             ["danger", "Je me sens en danger"],
@@ -4495,50 +4671,37 @@
             )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="#violences">Voir les repères de sécurité</a>.</p>`}`;
         }
         if (i === 1) {
-          body =
-            `${state.scale === "organization" || state.scale === "public" ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées, les décisions à prendre et les ressources disponibles. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : ""}` +
-            field(
-              "situation",
-              workflow.fields[0],
-              workflow.fields[1],
-              "textarea",
-              workflow.examples?.[0] || c.situation,
-            ) +
-            field(
-              "goal",
-              workflow.fields[2],
-              workflow.fields[3],
-              "textarea",
-              workflow.examples?.[1] || c.goal,
-            ) +
-            field(
-              "obstacle",
-              workflow.fields[4],
-              workflow.fields[5],
-              "textarea",
-              workflow.examples?.[2] || c.obstacle,
-            ) +
-            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
+          const prompts = [
+            ["situation", workflow.fields[0], workflow.fields[1], workflow.examples?.[0] || c.situation],
+            ["goal", workflow.fields[2], workflow.fields[3], workflow.examples?.[1] || c.goal],
+            ["obstacle", workflow.fields[4], workflow.fields[5], workflow.examples?.[2] || c.obstacle],
+          ];
+          const [key, label, hint, sample] = prompts[state.clarifyPart];
+          body = `<p class="question-progress">Question ${state.clarifyPart + 1} sur 3 · Je peux passer si je ne sais pas encore.</p>` +
+            (state.clarifyPart === 0 && state.reviewScale ? '<div class="notice amber section-gap"><strong>J’ai changé de niveau.</strong> Je relis mes réponses : elles sont restées dans le brouillon.</div>' : "") +
+            (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
+            field(key, label, hint, "textarea", sample, true) +
+            (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
         }
         if (i === 2) {
-          body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1)) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
+          body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
         }
         if (i === 3) {
           const options = state.options.filter((o) => o.text.trim());
           body = options.length
             ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc((workflow.ideas || c.ideas)[0])}</p><p><strong>Apport possible :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[0])}</p><p><strong>Limite :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[1])}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${workflow.compare}</p><p>Si les conséquences sont importantes, demandez un avis adapté avant d’agir.</p></div></details>`
-            : `<div class="notice amber"><strong>Vous n’avez pas encore noté de piste.</strong>Revenez à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
+            : `<div class="notice amber"><strong>Je n’ai pas encore noté de piste.</strong>Je reviens à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
         }
         if (i === 4) {
           const chosen = state.options.find((o) => o.id === state.chosen);
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Aucune piste choisie. Vous pouvez revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", workflow.actionExamples?.[0] || c.action)}${field("when", "Quand et où ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", workflow.action[2], workflow.action[3], "textarea", workflow.actionExamples?.[1] || c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Prévoyez une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand faire le point ?", "Une date pour votre fiche, sans rappel automatique.", "date")}</div></details></div>`;
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", workflow.actionExamples?.[0] || c.action, true)}${field("when", "Quand et où vais-je agir ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", workflow.action[2], workflow.action[3], "textarea", workflow.actionExamples?.[1] || c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
         }
         if (i === 5) {
-          body = `<fieldset><legend>Où en êtes-vous de l’action ?</legend><div class="choice-stack">${[
-            ["notyet", "Pas encore essayé"],
-            ["yes", "Essayé"],
-            ["partly", "En partie"],
-            ["no", "Je n’ai pas pu"],
+          body = `<fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[
+            ["notyet", "Je n’ai pas encore essayé"],
+            ["yes", "J’ai essayé"],
+            ["partly", "J’ai essayé en partie"],
+            ["no", "Je n’ai pas pu essayer"],
           ]
             .map(
               ([k, v]) =>
@@ -4546,14 +4709,14 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Vous pouvez garder votre plan pour plus tard.</strong>Le bilan se remplit après l’essai. Pas besoin d’inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si vous n’avez fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que vous espériez</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
         }
         if (workflow.tools[i]) {
           const [name, description, source] = workflow.tools[i];
           body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${i === 0 ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? "Question suivante" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         if (focus) {
           $("#step-title").focus({ preventScroll: true });
           $("#step-container").scrollIntoView({
@@ -4565,14 +4728,43 @@
         }
       }
       function changeStep(i) {
-        state.step = Math.max(0, Math.min(5, i));
+        if (i > 0 && !state.scaleChosen) {
+          state.step = 0;
+          renderStep(true);
+          toast("Choisissez d’abord le niveau du problème.");
+          $(".scale-option")?.focus();
+          return;
+        }
+        const destination = Math.max(0, Math.min(5, i));
+        if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
+        state.step = destination;
         persist();
-        if (location.hash !== "#outil") {
-          location.hash = "outil";
-          renderStep();
-        } else renderStep(true);
+        $("#mobile-step-picker").open = false;
+        const alreadyHere = !$("#outil").hidden;
+        history.replaceState(null, "", "#outil");
+        if (!alreadyHere) route();
+        renderStep(true);
       }
       function goNext() {
+        if (state.step === 0 && !state.scaleChosen) {
+          toast("Choisissez d’abord le niveau du problème.");
+          $(".scale-option")?.focus();
+          return;
+        }
+        if (state.step === 1) {
+          if (state.clarifyPart < 2) {
+            state.clarifyPart++;
+            persist();
+            renderStep(true);
+            return;
+          }
+          state.reviewScale = false;
+        }
+        if (state.step === 4 && !state.fields.action.trim()) {
+          toast("Je note un premier pas concret, même petit, pour préparer mon plan.");
+          $("#field-action")?.focus();
+          return;
+        }
         if (state.step === 4 || state.step === 5) {
           renderRecap();
           location.hash = "recap";
@@ -4602,71 +4794,44 @@
           organization: "Notre test d’amélioration",
           public: "Notre démarche collective",
         }[state.scale];
-        $("#recap .page-heading h1").textContent = planTitle;
+        $("#recap .page-heading h1").textContent = hasPlan() ? planTitle : "Mes réponses";
+        $("#recap-actions").hidden = !hasWriting();
+        $("#recap-review").hidden = !hasPlan();
+        $("#recap-privacy").hidden = !hasWriting();
+        $("#recap-note").hidden = !hasPlan();
+        if (!hasWriting()) {
+          $("#recap-content").innerHTML = '<article class="card padded empty-recap"><h2>Ma fiche est encore vide</h2><p>Je commence par choisir le niveau et le contexte de mon problème. Mes réponses apparaîtront ici au fur et à mesure.</p><button class="btn primary section-gap" data-step="0">Commencer l’exercice →</button></article>';
+          return;
+        }
         const f = state.fields,
           c = contexts[state.context],
           choice = state.options.find((o) => o.id === state.chosen);
-        const dd = (k, v) =>
-          `<dt>${k}</dt><dd${v ? "" : ' class="empty"'}>${v ? esc(v) : "Non renseigné"}</dd>`;
+        const dd = (k, v) => v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : "";
         const block = (title, idx, content) =>
           `<article class="card recap-section"><h3>${title}<button class="text-button no-print" data-step="${idx}">Modifier</button></h3><dl>${content}</dl></article>`;
-        $("#recap-content").innerHTML =
-          block(
-            "1. Ma situation",
-            1,
-            dd("Contexte", c.label) +
-              dd("Échelle", scales[state.scale][0]) +
-              dd("Les faits", f.situation) +
-              dd("Mon but", f.goal) +
-              dd("Mon obstacle", f.obstacle) +
-              (f.emotion ? dd("Mon ressenti", f.emotion) : "") +
-              (f.control ? dd("Ma marge de manœuvre", f.control) : "") +
-              (f.outside ? dd("Ce qui ne dépend pas de moi", f.outside) : ""),
-          ) +
-          block(
-            "2. Mes options",
-            2,
-            state.options
-              .filter((o) => o.text.trim())
-              .map(
-                (o, j) =>
-                  dd("Piste " + (j + 1), o.text) +
-                  (o.plus ? dd("Bénéfices envisagés", o.plus) : "") +
-                  (o.minus ? dd("Contraintes et risques", o.minus) : ""),
-              )
-              .join("") || dd("Pistes", ""),
-          ) +
-          block("3. Mon choix", 3, dd("Option retenue", choice?.text)) +
-          block(
-            "4. Mon premier pas",
-            4,
-            dd("Action", f.action) +
-              dd("Quand et où", f.when) +
-              (f.support ? dd("Appui", f.support) : "") +
-              (f.backup ? dd("Si ça bloque", f.backup) : "") +
-              dd("Signe de progrès", f.measure) +
-              (f.reviewDate
-                ? dd("Date du bilan", formatDate(f.reviewDate))
-                : ""),
-          ) +
-          block(
-            "5. Mon bilan",
-            5,
-            dd(
-              "Statut",
-              {
-                notyet: "Pas encore essayé",
-                yes: "Essayé",
-                partly: "Essayé en partie",
-                no: "Je n’ai pas pu",
-              }[f.trial],
-            ) +
-              (f.trial === "notyet"
-                ? ""
-                : dd("Résultat", f.result) +
-                  dd("Ce que j’en retiens", f.learning) +
-                  dd("Prochaine étape", f.next)),
-          );
+        const situation = dd("Contexte", c.label) + dd("Niveau", scales[state.scale][0]) +
+          dd("Les faits", f.situation) + dd("Mon but", f.goal) + dd("Mon obstacle", f.obstacle) +
+          dd("Mon ressenti", f.emotion) + dd("Ma marge de manœuvre", f.control) +
+          dd("Ce qui ne dépend pas de moi", f.outside);
+        const ideas = state.options.filter((o) => o.text.trim()).map((o, j) =>
+          dd("Piste " + (j + 1), o.text) + dd("Bénéfices envisagés", o.plus) +
+          dd("Contraintes et risques", o.minus)).join("");
+        const action = dd("Action", f.action) + dd("Quand et où", f.when) +
+          dd("Appui", f.support) + dd("Si ça bloque", f.backup) +
+          dd("Signe de progrès", f.measure) +
+          dd("Date du bilan", f.reviewDate ? formatDate(f.reviewDate) : "");
+        const trial = f.trial !== "notyet" ? {
+          yes: "Essayé", partly: "Essayé en partie", no: "Je n’ai pas pu",
+        }[f.trial] : "";
+        const review = dd("Statut", trial) + dd("Résultat", f.result) +
+          dd("Ce que j’en retiens", f.learning) + dd("Prochaine étape", f.next);
+        $("#recap-content").innerHTML = [
+          [f.situation || f.goal || f.obstacle || f.emotion || f.control || f.outside, "1. Ma situation", 1, situation],
+          [ideas, "2. Mes options", 2, ideas],
+          [choice?.text, "3. Mon choix", 3, dd("Option retenue", choice?.text)],
+          [action, "4. Mon premier pas", 4, action],
+          [review, "5. Mon bilan", 5, review],
+        ].filter(([show]) => show).map(([, title, idx, content]) => block(title, idx, content)).join("");
       }
 
       // Pack complete cards first, then complete label/answer pairs. Only answers
@@ -4975,11 +5140,7 @@
         const hash = location.hash.slice(1) || "accueil";
         const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
         if (scaleMatch) {
-          state.scale = scaleMatch[1];
-          state.scaleChosen = true;
-          state.step = 0;
-          if (state.context === "daily" && state.scale === "organization") state.context = "work";
-          if (state.context === "daily" && state.scale === "public") state.context = "collective";
+          selectScale(scaleMatch[1]);
           persist();
         }
         const page = hash.startsWith("ref-")
@@ -5060,11 +5221,8 @@
       );
       $$("[data-start-scale]").forEach((a) =>
         a.addEventListener("click", () => {
-          state.scale = a.dataset.startScale;
-          state.scaleChosen = true;
-          state.step = 0;
+          selectScale(a.dataset.startScale);
           persist();
-          renderStep();
         }),
       );
       document.addEventListener("click", (event) => {
@@ -5090,24 +5248,22 @@
             persist();
           }
         }
+        if (el.dataset.field || el.dataset.option) updateRecapShortcut();
+      });
+      document.addEventListener("change", (e) => {
+        if (e.target.id !== "context-select") return;
+        if (!Object.hasOwn(contexts, e.target.value)) return;
+        state.context = e.target.value;
+        persist();
+        renderStep();
+        $("#context-select").focus();
+        toast(`Exemples adaptés : ${contexts[state.context].label}. Le texte déjà saisi ne change pas.`);
       });
       document.addEventListener("click", (e) => {
         const b = e.target.closest("button");
         if (!b) return;
         if (b.dataset.step !== undefined) {
           changeStep(Number(b.dataset.step));
-          return;
-        }
-        if (b.dataset.context) {
-          state.context = b.dataset.context;
-          persist();
-          renderStep();
-          $(`[data-context="${state.context}"]`).focus();
-          toast(
-            "Exemples adaptés : " +
-              contexts[state.context].label +
-              ". Le texte déjà saisi ne change pas.",
-          );
           return;
         }
         if (b.dataset.safety) {
@@ -5160,12 +5316,12 @@
           return;
         }
         if (b.dataset.scale) {
-          state.scale = b.dataset.scale;
-          state.scaleChosen = true;
+          selectScale(b.dataset.scale);
           history.replaceState(null, "", "#outil-" + state.scale);
           persist();
           renderStep();
-          $("#change-level summary").focus();
+          $("#selected-level").setAttribute("tabindex", "-1");
+          $("#selected-level").focus();
           return;
         }
         if (b.dataset.need) {
@@ -5188,7 +5344,11 @@
             goNext();
             break;
           case "back":
-            changeStep(state.step - 1);
+            if (state.step === 1 && state.clarifyPart > 0) {
+              state.clarifyPart--;
+              persist();
+              renderStep(true);
+            } else changeStep(state.step - 1);
             break;
           case "pause":
             state.energy = "pause";
@@ -5301,7 +5461,7 @@
             "Le fichier remplacera les réponses actuellement affichées. Téléchargez-les d’abord si vous souhaitez les garder.",
             () => {
               state = imported;
-              nextId = state.options.length + 1;
+              nextId = Math.max(...state.options.map((option) => option.id)) + 1;
               persist();
               renderStep();
               if (location.hash !== "#outil") location.hash = "outil";
