@@ -37,8 +37,16 @@
         ["Agir", "Un premier pas"],
         ["Faire le point", "Après l’essai"],
       ];
-      function term(k) {
-        return `<button type="button" class="glossary-button" data-term="${k}">${glossary[k][0].toLowerCase()}</button>`;
+      function term(k, label = glossary[k][0].toLowerCase()) {
+        return `<button type="button" class="glossary-button" data-term="${k}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button>`;
+      }
+      const glossaryWord = /(données personnelles|sondages?|restitution|indicateurs?|biais|consentement|efficacité)/giu;
+      const glossaryKeys = { "données personnelles": "personalData", sondage: "survey", sondages: "survey", restitution: "feedback", indicateur: "indicator", indicateurs: "indicator", biais: "bias", consentement: "consent", efficacité: "efficacy" };
+      function linkGlossary(text) {
+        return String(text).split(glossaryWord).map((part) => {
+          const key = glossaryKeys[part.toLocaleLowerCase("fr")];
+          return key ? term(key, part) : esc(part);
+        }).join("");
       }
       function fresh() {
         return {
@@ -200,7 +208,7 @@
       function field(key, label, hint = "", type = "textarea", ex = "") {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${hint}</p>` : ""}${ex ? example(ex, label) : ""}</div>`;
+        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label) : ""}</div>`;
       }
       function renderSteps() {
         const workflow = workflows[state.scale];
@@ -303,10 +311,10 @@
         }
         if (workflow.tools[i]) {
           const [name, description, source] = workflow.tools[i];
-          body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${description}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
+          body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${leads[i]}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         if (focus) {
           $("#step-title").focus({ preventScroll: true });
           $("#step-container").scrollIntoView({
@@ -1074,18 +1082,20 @@
         meterIndex = 0;
         renderMeter();
       });
-      // A single tooltip works with hover, keyboard focus and touch; Escape dismisses it.
+      // Brief hint on hover/focus; a deliberate activation opens the detailed definition.
       let tooltipOwner = null,
-        tipTimer = null;
+        tipTimer = null,
+        tooltipSuppressed = null,
+        termOpener = null;
       function showTooltip(b) {
         const k = b.dataset.term;
-        if (!glossary[k]) return;
+        if (!glossary[k] || tooltipSuppressed === b || $("#term-dialog").open) return;
         clearTimeout(tipTimer);
         if (tooltipOwner && tooltipOwner !== b)
           tooltipOwner.removeAttribute("aria-describedby");
         tooltipOwner = b;
         const tip = $("#tooltip");
-        tip.textContent = glossary[k][1];
+        tip.textContent = glossaryHelp[k][0];
         tip.hidden = false;
         b.setAttribute("aria-describedby", "tooltip");
         const r = b.getBoundingClientRect(),
@@ -1105,12 +1115,37 @@
         tooltipOwner?.removeAttribute("aria-describedby");
         tooltipOwner = null;
       }
+      function openTerm(b) {
+        const k = b.dataset.term;
+        if (!glossary[k]) return;
+        tooltipSuppressed = b;
+        hideTooltip();
+        termOpener = b;
+        const info = glossaryHelp[k];
+        $("#term-title").textContent = glossary[k][0];
+        $("#term-brief").textContent = info[0];
+        $("#term-detail").textContent = glossary[k][1];
+        $("#term-example").textContent = info[1];
+        $("#term-source").href = "#ref-" + info[2];
+        $("#term-dialog").showModal();
+        $("#term-close").focus();
+      }
+      $("#term-close").addEventListener("click", () => $("#term-dialog").close());
+      $("#term-dialog").addEventListener("click", (e) => {
+        if (e.target === $("#term-dialog")) $("#term-dialog").close();
+      });
+      $("#term-dialog").addEventListener("close", () => {
+        if (termOpener?.isConnected && !termOpener.closest("[hidden]")) termOpener.focus();
+        termOpener = null;
+      });
+      $("#term-source").addEventListener("click", () => $("#term-dialog").close());
       document.addEventListener("mouseover", (e) => {
         const b = e.target.closest("[data-term]");
         if (b) showTooltip(b);
         if (e.target.closest("#tooltip")) clearTimeout(tipTimer);
       });
       document.addEventListener("mouseout", (e) => {
+        if (!$("#term-dialog").open && e.target.closest("[data-term]") === tooltipSuppressed) tooltipSuppressed = null;
         if (e.target.closest("[data-term],#tooltip"))
           tipTimer = setTimeout(() => {
             if (
@@ -1126,11 +1161,15 @@
       });
       document.addEventListener("click", (e) => {
         const b = e.target.closest("[data-term]");
-        if (b) showTooltip(b);
+        if (b) openTerm(b);
         else if (!e.target.closest("#tooltip")) hideTooltip();
+      });
+      document.addEventListener("focusout", (e) => {
+        if (!$("#term-dialog").open && e.target === tooltipSuppressed) tooltipSuppressed = null;
       });
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
+          if (!$("#term-dialog").open) tooltipSuppressed = tooltipOwner;
           hideTooltip();
           if ($("nav").classList.contains("open")) {
             setMenuOpen(false);
@@ -1143,9 +1182,13 @@
         if (innerWidth > 850) setMenuOpen(false);
       });
       window.addEventListener("scroll", hideTooltip, { passive: true });
-      $("#glossary-list").innerHTML = Object.values(glossary)
-        .map(([k, v]) => `<p><strong>${esc(k)}.</strong> ${esc(v)}</p>`)
-        .join("");
+      $("#glossary-list").innerHTML = `<div class="glossary-index">${Object.entries(glossary)
+        .map(([key, [label]]) => `<p><button type="button" class="glossary-button" data-term="${key}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button> — ${esc(glossaryHelp[key][0])}</p>`)
+        .join("")}</div>`;
+      $$(".glossary-button").forEach((b) => {
+        b.setAttribute("aria-haspopup", "dialog");
+        b.setAttribute("aria-controls", "term-dialog");
+      });
       updatePrivacy();
       renderStep();
       renderSupport();

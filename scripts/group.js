@@ -45,7 +45,7 @@
             "Je demande : « Qu’avons-nous mal compris ? Qu’est-ce qui manque ? »",
             "J’explique ce qui sera décidé ensuite, par qui, et quand le groupe aura un retour.",
           ],
-          note: "La restitution prévue, les corrections et les questions encore ouvertes",
+          note: "Le retour prévu au groupe, les corrections et les questions encore ouvertes",
           refs: [23, 25, 27],
         },
         {
@@ -129,18 +129,18 @@
         progress.innerHTML = `<span style="width:${((groupIndex + 1) / groupStages.length) * 100}%"></span>`;
         const title = document.querySelector("#group-step-title");
         title.textContent = stage.title;
-        document.querySelector("#group-step-intro").textContent = stage.intro;
+        document.querySelector("#group-step-intro").innerHTML = linkGlossary(stage.intro);
         const guidance = document.querySelector("#group-guidance");
         const list = document.createElement("ul");
         for (const point of stage.points) {
           const item = document.createElement("li");
-          item.textContent = point;
+          item.innerHTML = linkGlossary(point);
           list.append(item);
         }
         guidance.replaceChildren(list);
         document.querySelector("#group-method-box").hidden = groupIndex !== 1;
         document.querySelector("#group-method").value = groupMethod;
-        document.querySelector("#group-method-hint").textContent = groupMethods[groupMethod];
+        document.querySelector("#group-method-hint").innerHTML = linkGlossary(groupMethods[groupMethod]);
         document.querySelector("#group-note-label").textContent = stage.note + " (facultatif)";
         document.querySelector("#group-note").value = groupNotes[groupIndex];
         const source = document.querySelector("#group-step-source");
@@ -171,7 +171,7 @@
         selector.addEventListener("change", () => { groupIndex = Number(selector.value); renderGroup(true); });
         document.querySelector("#group-method").addEventListener("change", (event) => {
           groupMethod = event.target.value;
-          document.querySelector("#group-method-hint").textContent = groupMethods[groupMethod];
+          document.querySelector("#group-method-hint").innerHTML = linkGlossary(groupMethods[groupMethod]);
         });
         document.querySelector("#group-note").addEventListener("input", (event) => {
           groupNotes[groupIndex] = event.target.value;

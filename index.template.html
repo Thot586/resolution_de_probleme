@@ -93,6 +93,14 @@
     </footer>
     <div id="print-document" aria-hidden="true"></div>
     <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+    <dialog id="term-dialog" class="term-dialog" aria-labelledby="term-title" aria-describedby="term-brief">
+      <div class="term-dialog-head"><span class="tag">Glossaire</span><button class="btn small" id="term-close" type="button">Fermer ×</button></div>
+      <h2 id="term-title"></h2>
+      <p id="term-brief" class="term-brief"></p>
+      <p id="term-detail"></p>
+      <div class="term-example"><strong>Exemple concret</strong><p id="term-example"></p></div>
+      <a id="term-source" class="text-button" href="#bibliographie">Voir une source utilisée dans ce document ↗</a>
+    </dialog>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <dialog id="confirm-dialog" aria-labelledby="dialog-title">
       <h2 id="dialog-title"></h2>

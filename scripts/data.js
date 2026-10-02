@@ -228,6 +228,44 @@
           "Efficacité",
           "Capacité d’une intervention à produire un effet dans les conditions où elle a été étudiée. Ce résultat ne se transfère pas automatiquement à d’autres situations.",
         ],
+        survey: [
+          "Sondage",
+          "Quelques questions posées à plusieurs personnes pour connaître leurs réponses. Les résultats décrivent les répondants ; ils ne représentent pas forcément tout le groupe.",
+        ],
+        indicator: [
+          "Indicateur",
+          "Signe concret choisi à l’avance pour voir si une situation évolue. Il doit éclairer la décision, sans réduire le vécu des personnes à un chiffre.",
+        ],
+        feedback: [
+          "Restitution",
+          "Retour des constats aux personnes concernées, avec leurs limites. Elles peuvent corriger une erreur et savoir ce qui sera fait ensuite.",
+        ],
+        personalData: [
+          "Données personnelles",
+          "Informations qui permettent d’identifier une personne directement ou indirectement, par exemple un nom ou une réponse très reconnaissable dans un petit groupe.",
+        ],
+      };
+      // The first sentence is the quick hint; the existing glossary entry gives the full definition.
+      const glossaryHelp = {
+        meta: ["Résultats de plusieurs études combinés.", "Plusieurs essais sur une même question sont regroupés. Si les études sont de mauvaise qualité ou trop différentes, le résultat combiné peut tromper.", 2],
+        random: ["Le hasard répartit les participants entre des groupes.", "Par exemple, une personne reçoit une intervention et une autre une comparaison selon un tirage au sort. Cette méthode réduit certaines différences initiales entre groupes.", 2],
+        cluster: ["Le hasard répartit des groupes entiers.", "Dans une étude portant sur des centres de soins, chaque centre peut être tiré au sort. Les personnes d’un même centre ne sont pas réparties séparément.", 13],
+        heterogeneity: ["Les études donnent des résultats différents.", "On examine si les différences viennent des publics, des méthodes ou des situations. Une moyenne peut masquer des résultats opposés.", 2],
+        interval: ["Une fourchette qui exprime une incertitude statistique.", "Un intervalle plus large indique moins de précision. Il ne corrige pas les erreurs de méthode ni les biais d’une étude.", 2],
+        effect: ["Une façon de comparer l’ampleur moyenne d’un effet.", "Un g de 0,34 compare des moyennes en unités d’écart-type. Cela ne veut pas dire que 34 % des personnes vont mieux.", 2],
+        power: ["Une personne a plus de pouvoir que l’autre.", "Un responsable peut décider d’un emploi ou d’une formation. Cette différence peut rendre un refus difficile à exprimer.", 18],
+        control: ["Ce sur quoi je peux agir.", "Je peux parfois demander un rendez-vous ou chercher un soutien, même si je ne peux pas changer seul une règle ou une décision.", 12],
+        rumination: ["Les mêmes pensées reviennent sans aider à avancer.", "Si je répète une inquiétude sans information nouvelle, je peux revenir à une question concrète ou demander un appui.", 1],
+        implementation: ["Un plan précis sous la forme « si… alors… ».", "Si j’ai dix minutes demain matin, alors je préparerai les deux premières lignes de mon courrier. Le plan indique quand agir.", 4],
+        coercion: ["Des actes répétés réduisent la liberté d’une personne.", "Surveiller ses messages, l’isoler ou la menacer peut l’empêcher de faire des choix libres. Dans ce cas, la sécurité passe avant une discussion commune.", 6],
+        consent: ["Un accord libre, compris et révocable.", "Avant de partager le récit d’une personne, je lui explique pourquoi et avec qui. Elle peut refuser ou changer d’avis.", 5],
+        validation: ["Reconnaître une émotion sans tout approuver.", "« Je vois que cela t’a blessé » reconnaît une peine. Cela ne signifie pas que je connais déjà toute la situation.", 18],
+        bias: ["Un facteur peut déformer un résultat.", "Si seules les personnes satisfaites répondent au sondage, le résultat risque de surestimer la satisfaction du groupe.", 23],
+        efficacy: ["Un effet observé dans des conditions étudiées.", "Une méthode utile dans un essai accompagné par des professionnels n’a pas forcément le même effet dans un outil utilisé seul.", 2],
+        survey: ["Des questions posées à plusieurs personnes.", "Avant d’interpréter les réponses, je regarde qui a été invité, qui a répondu et qui manque. Une discussion peut suffire si le groupe est petit.", 23],
+        indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
+        feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
+        personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
       };
       const comparisonExamples = {
         daily: [

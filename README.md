@@ -23,6 +23,8 @@ Les tests navigateur demandent Chromium pour Playwright : `npx playwright instal
 - **Comment aider un proche ?** : situations particulières, présence et limites de l'aide d'un proche.
 - **Sécurité et sources** : repères face aux violences, aides et limites scientifiques.
 
+Les termes soulignés donnent une explication brève au survol ou au focus clavier. Un clic, une activation clavier ou un toucher ouvre un panneau avec une définition, un exemple et, lorsque pertinent, une référence. Le panneau se ferme avec son bouton ou Échap ; le focus revient au terme. Le glossaire complet reste accessible dans « Comprendre ».
+
 L'accueil permet de choisir directement l'un des quatre niveaux. Le niveau choisi est affiché seul à l’arrivée dans l’exercice, avec un contrôle « Changer de niveau » replié. Chaque niveau a une URL partageable (`#outil-personal`, `#outil-shared`, `#outil-organization`, `#outil-public`). Le lien général `#outil` ouvre le choix des niveaux si aucun n’a encore été sélectionné. Les étapes sont visibles sur demande ; les détails méthodologiques restent accessibles depuis « Comprendre ». Les méthodes et sources sont identifiées dans la bibliographie ; leur présence ne valide pas l'efficacité de ce site lui-même.
 
 Cinq schémas SVG intégrés illustrent les étapes générales, l'aide à une personne, le test dans une équipe, la démarche collective et le parcours d’aide à un groupe. Chaque schéma porte ses libellés dans la figure, un titre et une description accessibles ; sa légende ajoute les limites et les exceptions utiles. Les cartes de choix des niveaux et le violentomètre sont déjà des supports visuels interactifs et ne sont pas redessinés en SVG.

@@ -41,7 +41,7 @@
           ideas: ["Cartographier une étape du travail avec les personnes concernées.", "Tester une nouvelle coordination sur une seule situation.", "Demander une ressource ou une décision au responsable compétent."],
           comparison: ["Un petit test permet d’observer si le changement aide.", "Un test local peut ne pas refléter tous les cas et demander du temps."],
           compare: "Le test est-il sûr, mesurable et acceptable pour les personnes concernées ?",
-          action: ["Le petit test à organiser", "Précisez qui doit valider, où et quand le test aura lieu.", "Quel indicateur observer ?", "Choisissez une mesure simple, utile et sans données personnelles inutiles."],
+          action: ["Le petit test à organiser", "Précisez qui doit valider, où et quand le test aura lieu.", "Quel signe concret observer ?", "Choisissez un indicateur simple, utile et sans données personnelles inutiles."],
           actionExamples: ["Proposer au responsable un test de priorisation pour la prochaine réunion d’équipe.", "Les trois demandes ont un ordre de priorité connu par l’équipe."],
           tools: [null, ["Définir un objectif", "Le modèle d’amélioration commence par ce que l’équipe cherche à accomplir.", "#ref-22"], ["Idées avec l’équipe", "Les personnes concernées par le processus peuvent révéler des contraintes invisibles de l’extérieur.", "#ref-22"], ["Choisir une mesure", "Préciser comment savoir si le changement améliore la situation et pour qui.", "#ref-22"], ["Cycle tester · observer · ajuster", "Un test à petite échelle permet d’apprendre avant une mise en œuvre plus large.", "#ref-22"]],
         },
