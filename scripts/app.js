@@ -13,7 +13,8 @@
               "'": "&#39;",
             })[c],
         );
-      const KEY = "pas-a-pas.brouillon.v1";
+      const KEY = "pas-a-pas.brouillon.v2";
+      const OLD_KEY = "pas-a-pas.brouillon.v1";
       const contextIcon = (k) => {
         const paths = {
           daily: "M3 10l9-7 9 7M5 9v12h14V9M9 21v-7h6v7",
@@ -40,8 +41,8 @@
       function term(k, label = glossary[k][0].toLowerCase()) {
         return `<button type="button" class="glossary-button" data-term="${k}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button>`;
       }
-      const glossaryWord = /(données personnelles|sondages?|restitution|indicateurs?|biais|consentement|efficacité)/giu;
-      const glossaryKeys = { "données personnelles": "personalData", sondage: "survey", sondages: "survey", restitution: "feedback", indicateur: "indicator", indicateurs: "indicator", biais: "bias", consentement: "consent", efficacité: "efficacy" };
+      const glossaryWord = /(indicateurs? d[’']équilibrage|données probantes|données personnelles|décision partagée|violentomètre|sondages?|restitution|indicateurs?|biais|consentement|efficacité)/giu;
+      const glossaryKeys = { "indicateur d’équilibrage": "balancingIndicator", "indicateurs d’équilibrage": "balancingIndicator", "indicateur d'équilibrage": "balancingIndicator", "indicateurs d'équilibrage": "balancingIndicator", "données probantes": "evidence", "données personnelles": "personalData", "décision partagée": "sharedDecision", violentomètre: "violentometer", sondage: "survey", sondages: "survey", restitution: "feedback", indicateur: "indicator", indicateurs: "indicator", biais: "bias", consentement: "consent", efficacité: "efficacy" };
       function linkGlossary(text) {
         return String(text).split(glossaryWord).map((part) => {
           const key = glossaryKeys[part.toLocaleLowerCase("fr")];
@@ -50,13 +51,14 @@
       }
       function fresh() {
         return {
-          version: 1,
+          version: 2,
           step: 0,
           clarifyPart: 0,
-          context: "daily",
+          context: "other",
           scale: "personal",
           scaleChosen: false,
           reviewScale: false,
+          reviewContext: false,
           safety: "",
           energy: "",
           fields: {
@@ -103,28 +105,50 @@
         shortcut.hidden = !hasWriting();
         shortcut.textContent = hasPlan() ? "Voir mon plan ↗" : "Voir mes réponses ↗";
       }
+      const legacyContextMap = {
+        personal: { daily: "daily", study: "study", work: "work", health: "health" },
+        shared: { couple: "couple", family: "family", work: "colleague" },
+        organization: { work: "coordination" },
+        public: { collective: "mobility" },
+      };
+      const currentContext = () => contextCatalog[state.scale][state.context];
       function selectScale(scale) {
-        if (state.scale !== scale && hasWriting()) state.reviewScale = true;
+        if (!Object.hasOwn(scales, scale)) return;
+        const changed = state.scale !== scale;
+        if (changed && hasWriting()) {
+          state.reviewScale = true;
+          state.reviewContext = true;
+        }
         state.scale = scale;
         state.scaleChosen = true;
         state.step = 0;
         state.clarifyPart = 0;
-        if (state.context === "daily" && scale === "organization") state.context = "work";
-        if (state.context === "daily" && scale === "public") state.context = "collective";
+        if (!Object.hasOwn(contextCatalog[scale], state.context)) {
+          state.context = "other";
+          if (hasWriting()) state.reviewContext = true;
+        }
       }
       function validateDraft(raw) {
         if (
           !raw ||
-          raw.version !== 1 ||
-          !Object.hasOwn(contexts, raw.context) ||
+          ![1, 2].includes(raw.version) ||
           !Array.isArray(raw.options) ||
           raw.options.length < 1 ||
           raw.options.length > 8
         )
           throw Error("invalid");
         const clean = fresh();
-        clean.context = raw.context;
+        if (raw.version === 2 && !Object.hasOwn(scales, raw.scale)) throw Error("invalid");
         clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
+        if (raw.version === 1) {
+          if (!Object.hasOwn(contexts, raw.context)) throw Error("invalid");
+          clean.context = legacyContextMap[clean.scale][raw.context] || "other";
+          clean.reviewContext = true;
+        } else {
+          if (!Object.hasOwn(contextCatalog[clean.scale], raw.context)) throw Error("invalid");
+          clean.context = raw.context;
+          clean.reviewContext = raw.reviewContext === true;
+        }
         clean.scaleChosen = raw.scaleChosen === true;
         clean.reviewScale = raw.reviewScale === true;
         clean.step =
@@ -149,11 +173,9 @@
         )
           ? clean.fields.trial
           : "notyet";
-        const ids = new Set();
         clean.options = raw.options.map((o, i) => {
           if (!o || typeof o.text !== "string") throw Error("invalid");
           const id = i + 1;
-          ids.add(id);
           return {
             id,
             text: o.text.slice(0, 6000),
@@ -164,14 +186,47 @@
         const choice = raw.options.findIndex((o) => o.id === raw.chosen);
         clean.chosen =
           choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
+        if (raw.version === 1) {
+          clean.reviewContext = Object.entries(clean.fields).some(([key, value]) => key !== "trial" && value.trim()) || clean.options.some((option) => option.text.trim());
+          if (clean.reviewContext) {
+            clean.step = 0;
+            clean.clarifyPart = 0;
+          }
+        }
         return clean;
       }
       try {
         const saved = localStorage.getItem(KEY);
+        let restored = false;
+        let restoredFromV2 = false;
         if (saved) {
-          state = validateDraft(JSON.parse(saved));
+          try {
+            state = validateDraft(JSON.parse(saved));
+            restored = true;
+            restoredFromV2 = true;
+          } catch (e) {
+            /* A damaged v2 draft must not hide a valid v1 draft. */
+          }
+        }
+        if (!restored) {
+          const old = localStorage.getItem(OLD_KEY);
+          if (old) {
+            state = validateDraft(JSON.parse(old));
+            restored = true;
+            try {
+              localStorage.setItem(KEY, JSON.stringify(state));
+              localStorage.removeItem(OLD_KEY);
+            } catch (e) {
+              /* Keep the readable v1 draft if writing the migrated copy fails. */
+            }
+          }
+        }
+        if (restored) {
           remember = true;
           nextId = state.options.length + 1;
+          if (restoredFromV2 && localStorage.getItem(OLD_KEY)) {
+            try { localStorage.removeItem(OLD_KEY); } catch (e) { /* Keep the readable draft. */ }
+          }
         }
       } catch (e) {
         /* Corrupt or unavailable storage does not block use. */
@@ -227,7 +282,7 @@
         fn?.();
       });
       function example(text, label = "", visible = false) {
-        const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(state.scale === "personal" ? contexts[state.context].label : scales[state.scale][0])}</small><p>${esc(text)}</p></div>`;
+        const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(currentContext().label)}</small><p>${esc(text)}</p></div>`;
         return visible ? content : `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary>${content}</details>`;
       }
       function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false) {
@@ -251,7 +306,7 @@
         hideTooltip();
         renderSteps();
         updateRecapShortcut();
-        const c = contexts[state.context],
+        const c = currentContext(),
           i = state.step,
           workflow = workflows[state.scale];
         const titles = workflow.titles;
@@ -262,9 +317,11 @@
           const scaleChoice = state.scaleChosen
             ? `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong><span>${scales[state.scale][1]}</span></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>`
             : `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
-          const contextOptions = Object.entries(contexts).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${value.label}</option>`).join("");
+          const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
           const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
-          body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Dans quel domaine se passe la situation ?</label><select id="context-select">${contextOptions}</select><p class="hint">Je peux choisir le domaine le plus proche. Les exemples de l’exercice s’adaptent à ce choix.</p></div><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+          const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
+          const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || (state.scale === "shared" && ["couple", "family", "colleague"].includes(state.context)) ? ' <a href="#violences">Repérer une violence →</a>' : "";
+          body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}<fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
             ["danger", "Je me sens en danger"],
@@ -279,29 +336,38 @@
         }
         if (i === 1) {
           const prompts = [
-            ["situation", workflow.fields[0], workflow.fields[1], workflow.examples?.[0] || c.situation],
-            ["goal", workflow.fields[2], workflow.fields[3], workflow.examples?.[1] || c.goal],
-            ["obstacle", workflow.fields[4], workflow.fields[5], workflow.examples?.[2] || c.obstacle],
+            ["situation", workflow.fields[0], c.prompts?.[0] || workflow.fields[1], c.examples?.situation || workflow.examples?.[0]],
+            ["goal", workflow.fields[2], c.prompts?.[1] || workflow.fields[3], c.examples?.goal || workflow.examples?.[1]],
+            ["obstacle", workflow.fields[4], c.prompts?.[2] || workflow.fields[5], c.examples?.obstacle || workflow.examples?.[2]],
           ];
           const [key, label, hint, sample] = prompts[state.clarifyPart];
           body = `<p class="question-progress">Question ${state.clarifyPart + 1} sur 3 · Je peux passer si je ne sais pas encore.</p>` +
-            (state.clarifyPart === 0 && state.reviewScale ? '<div class="notice amber section-gap"><strong>J’ai changé de niveau.</strong> Je relis mes réponses : elles sont restées dans le brouillon.</div>' : "") +
+            (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "") +
             (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
             field(key, label, hint, "textarea", sample, true) +
-            (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
+            (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
         }
         if (i === 2) {
-          body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
+          const ideaExamples = c.examples?.ideas || workflow.ideas || [];
+          body = `<p class="hint">${linkGlossary(workflow.idea)}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 && ideaExamples[j] ? example(ideaExamples[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
         }
         if (i === 3) {
           const options = state.options.filter((o) => o.text.trim());
+          const ideaExamples = c.examples?.ideas || workflow.ideas || [];
+          const comparison = c.examples?.comparison || workflow.comparison || [];
           body = options.length
-            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc((workflow.ideas || c.ideas)[0])}</p><p><strong>Apport possible :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[0])}</p><p><strong>Limite :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[1])}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${workflow.compare}</p><p>Si les conséquences sont importantes, demandez un avis adapté avant d’agir.</p></div></details>`
+            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(ideaExamples[0] || "Une piste à essayer.")}</p><p><strong>Apport possible :</strong> ${esc(comparison[0] || "Je note ce qu’elle pourrait apporter.")}</p><p><strong>Limite :</strong> ${esc(comparison[1] || "Je note ce qui pourrait bloquer.")}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${linkGlossary(workflow.compare)}</p><p>Si les conséquences sont importantes, je peux demander un avis adapté avant d’agir.</p></div></details>`
             : `<div class="notice amber"><strong>Je n’ai pas encore noté de piste.</strong>Je reviens à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
         }
         if (i === 4) {
           const chosen = state.options.find((o) => o.id === state.chosen);
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", workflow.actionExamples?.[0] || c.action, true)}${field("when", "Quand et où vais-je agir ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", workflow.action[2], workflow.action[3], "textarea", workflow.actionExamples?.[1] || c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
+          const when = {
+            personal: ["Quand et où vais-je agir ?", "Demain matin, chez moi, pendant dix minutes."],
+            shared: ["Quand puis-je proposer cet essai ?", "À notre prochain échange, si chacun souhaite en parler."],
+            organization: ["Quand et où le test aura-t-il lieu ?", "Lors de la prochaine réunion d’équipe, sur un seul dossier."],
+            public: ["Quand et auprès de qui faire cette démarche ?", "Lors de la prochaine permanence du service concerné."],
+          }[state.scale];
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
         }
         if (i === 5) {
           body = `<fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[
@@ -316,11 +382,12 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.examples?.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
         }
-        if (workflow.tools[i]) {
-          const [name, description, source] = workflow.tools[i];
-          body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
+        const selectedTool = i === 1 && c.tool ? c.tool : workflow.tools[i];
+        if (selectedTool) {
+          const [name, description, source] = selectedTool;
+          body += `<details class="section-gap"><summary>Outil utile ici : ${esc(name)}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${esc(source)}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
           `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${i === 0 ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? "Question suivante" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
@@ -366,6 +433,7 @@
             return;
           }
           state.reviewScale = false;
+          state.reviewContext = false;
         }
         if (state.step === 4 && !state.fields.action.trim()) {
           toast("Je note un premier pas concret, même petit, pour préparer mon plan.");
@@ -411,7 +479,7 @@
           return;
         }
         const f = state.fields,
-          c = contexts[state.context],
+          c = currentContext(),
           choice = state.options.find((o) => o.id === state.chosen);
         const dd = (k, v) => v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : "";
         const block = (title, idx, content) =>
@@ -859,12 +927,13 @@
       });
       document.addEventListener("change", (e) => {
         if (e.target.id !== "context-select") return;
-        if (!Object.hasOwn(contexts, e.target.value)) return;
+        if (!Object.hasOwn(contextCatalog[state.scale], e.target.value)) return;
+        if (state.context === e.target.value) return;
         state.context = e.target.value;
+        state.reviewContext = hasWriting();
         persist();
         renderStep();
         $("#context-select").focus();
-        toast(`Exemples adaptés : ${contexts[state.context].label}. Le texte déjà saisi ne change pas.`);
       });
       document.addEventListener("click", (e) => {
         const b = e.target.closest("button");
@@ -1000,6 +1069,7 @@
                 let removed = true;
                 try {
                   localStorage.removeItem(KEY);
+                  localStorage.removeItem(OLD_KEY);
                 } catch (e) {
                   removed = false;
                 }
@@ -1042,6 +1112,7 @@
         } else {
           try {
             localStorage.removeItem(KEY);
+            localStorage.removeItem(OLD_KEY);
             toast("Sauvegarde désactivée et retirée de ce navigateur.");
           } catch (e) {
             toast(
@@ -1068,7 +1139,7 @@
             "Le fichier remplacera les réponses actuellement affichées. Téléchargez-les d’abord si vous souhaitez les garder.",
             () => {
               state = imported;
-              nextId = Math.max(...state.options.map((option) => option.id)) + 1;
+              nextId = state.options.length + 1;
               persist();
               renderStep();
               if (location.hash !== "#outil") location.hash = "outil";

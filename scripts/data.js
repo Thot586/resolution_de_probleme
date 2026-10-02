@@ -163,7 +163,7 @@
       };
       const scales = {
         personal: ["Personnel", "Je peux agir, avec ou sans aide."],
-        shared: ["Entre personnes", "Une discussion ou un accord est nécessaire."],
+        shared: ["Entre personnes", "Une autre personne est concernée par la situation."],
         organization: ["Équipe ou institution", "Une équipe, ses règles ou ses moyens sont en jeu."],
         public: ["Collectif ou politique", "Une décision collective ou publique est en jeu."],
       };
@@ -244,6 +244,22 @@
           "Données personnelles",
           "Informations qui permettent d’identifier une personne directement ou indirectement, par exemple un nom ou une réponse très reconnaissable dans un petit groupe.",
         ],
+        violentometer: [
+          "Violentomètre",
+          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences dans une relation. Le Violentomètre français officiel porte sur les relations amoureuses ; les repères de cette page sont des créations pédagogiques distinctes, sans score de risque validé.",
+        ],
+        evidence: [
+          "Données probantes",
+          "Informations issues de recherches ou d’évaluations dont on examine la qualité, les limites et la pertinence pour la situation. Elles éclairent une décision avec l’expérience des personnes et le contexte ; elles ne garantissent pas un résultat individuel.",
+        ],
+        sharedDecision: [
+          "Décision partagée",
+          "Échange dans lequel les personnes concernées examinent les options, leurs effets possibles et leurs préférences avant de choisir ensemble, dans la mesure où chacune peut participer librement.",
+        ],
+        balancingIndicator: [
+          "Indicateur d’équilibrage",
+          "Signe suivi pour vérifier qu’une amélioration recherchée ne crée pas un autre problème important ailleurs. Il complète l’indicateur du résultat principal.",
+        ],
       };
       // The first sentence is the quick hint; the existing glossary entry gives the full definition.
       const glossaryHelp = {
@@ -266,6 +282,10 @@
         indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
         feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
         personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
+        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentomètre officiel concerne les relations amoureuses. Les cinq repères proposés ici pour différentes relations sont pédagogiques : ils ne calculent pas un niveau de danger.", 7],
+        evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
+        sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
+        balancingIndicator: ["Vérifier qu’un progrès ne crée pas un autre problème.", "Si l’équipe réduit le temps d’attente, elle vérifie aussi que les personnes ayant besoin de plus de temps reçoivent encore une aide adaptée.", 22],
       };
       const comparisonExamples = {
         daily: [

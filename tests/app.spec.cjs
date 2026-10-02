@@ -137,6 +137,152 @@ const errors = [];
   await starter.locator('#recap-content [data-step="0"]').click();
   assert(await starter.locator("#outil .scale-options").isVisible());
   await starter.close();
+  // Each level offers only its relevant contexts, with distinct facts to look
+  // for, worked examples, and a source-linked method for that situation.
+  const contextCases = [
+    {
+      scale: "personal",
+      options: ["daily", "study", "work", "health", "boundaries", "other"],
+      cases: [
+        ["work", /tâches se concurrencent/, /Deux responsables/, /Quelles demandes/, /Séparer faits et marge de manœuvre/, /Lister les tâches/, /Préparer la liste/],
+        ["health", /accéder au soin/, /manqué deux rendez-vous/, /Quel rendez-vous/, /Préparer mes questions pour le soin/],
+      ],
+    },
+    {
+      scale: "shared",
+      options: ["couple", "family", "colleague", "neighbors", "other"],
+      cases: [
+        ["colleague", /parler librement/, /médecin expérimenté/, /Qu'a dit ou fait/, /Écouter avant de conseiller/, /Demander au jeune collègue/, /s'il souhaite un échange/],
+        ["neighbors", /ressource partageons-nous/, /Deux associations/, /Quel usage partagé/, /Essai d'accord réversible/],
+      ],
+    },
+    {
+      scale: "organization",
+      options: ["coordination", "service", "conditions", "change", "other"],
+      cases: [
+        ["coordination", /travail se bloque/, /Trois demandes urgentes/, /Où, quand et pour qui/, /Petit test et mesure d'équilibrage/, /Dessiner le circuit/, /test de priorisation/],
+        ["service", /utiliser le service/, /rendez-vous ne se prennent qu'en ligne/, /À quelle étape du service/, /Observer les besoins réels/],
+      ],
+    },
+    {
+      scale: "public",
+      options: ["mobility", "rights", "environment", "decision", "other"],
+      cases: [
+        ["rights", /personnes renoncent/, /Une démarche locale se fait seulement en ligne/, /Quelle démarche bloque/, /Parcours réel des usagers/, /Demander aux usagers volontaires/, /Identifier le service responsable/],
+        ["mobility", /utiliser quel espace ou transport/, /L'arrêt de bus du quartier/, /Quel lieu précis/, /Demande publique vérifiable/],
+      ],
+    },
+  ];
+  const contextPage = await context.newPage();
+  contextPage.on("pageerror", (e) => errors.push(e.message));
+  for (const group of contextCases) {
+    await contextPage.goto(url + `#outil-${group.scale}`);
+    assert.deepEqual(
+      await contextPage.locator("#context-select option").evaluateAll((nodes) => nodes.map((n) => n.value)),
+      group.options,
+      `${group.scale}: choices must be scoped to this level`,
+    );
+    for (const [key, focus, situation, hint, method, idea, action] of group.cases) {
+      await contextPage.locator("#context-select").selectOption(key);
+      assert.match(await contextPage.locator("#context-focus").innerText(), focus);
+      if (key === group.cases[0][0])
+        await contextPage.screenshot({
+          path: path.join(output, `context-${group.scale}-${key}.png`),
+          fullPage: true,
+        });
+      await contextPage.locator('#steps [data-step="1"]').click();
+      assert.match(await contextPage.locator(".field-hint").innerText(), hint);
+      assert.match(await contextPage.locator(".example-visible").innerText(), situation);
+      assert.match(
+        await contextPage.locator("summary").filter({ hasText: "Outil utile ici :" }).innerText(),
+        method,
+      );
+      assert.match(
+        await contextPage.locator("summary").filter({ hasText: "Outil utile ici :" }).locator("xpath=..").locator('a[href^="#ref-"]').getAttribute("href"),
+        /^#ref-\d+$/,
+      );
+      if (idea) {
+        await contextPage.locator('#steps [data-step="2"]').click();
+        assert.match(await contextPage.locator(".example-visible").innerText(), idea);
+        await contextPage.locator('#steps [data-step="4"]').click();
+        assert.match(await contextPage.locator(".example-visible").innerText(), action);
+      }
+      await contextPage.locator('#steps [data-step="0"]').click();
+    }
+  }
+  await contextPage.close();
+
+  // A v1 file with an ambiguous old domain keeps its answers and asks for a
+  // context review. Its chosen option must follow the saved option, not its ID.
+  const legacy = {
+    version: 1,
+    step: 0,
+    clarifyPart: 0,
+    scale: "public",
+    scaleChosen: true,
+    context: "work",
+    safety: "safe",
+    fields: {
+      situation: "Texte ancien à conserver.",
+      action: "Action ancienne à conserver.",
+    },
+    options: [
+      { id: 7, text: "Première piste ancienne.", plus: "", minus: "" },
+      { id: 9, text: "Deuxième piste choisie.", plus: "", minus: "" },
+    ],
+    chosen: 9,
+  };
+  const importPage = await context.newPage();
+  importPage.on("pageerror", (e) => errors.push(e.message));
+  await importPage.goto(url + "#outil-public");
+  await importPage.locator("#import-file").setInputFiles({
+    name: "ancien-brouillon.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(legacy)),
+  });
+  await importPage.locator("#dialog-confirm").click();
+  assert.equal(await importPage.locator("#context-select").inputValue(), "other");
+  assert.match(await importPage.locator("#context-review").innerText(), /relis ce que j’ai écrit/);
+  await importPage.locator('#steps [data-step="1"]').click();
+  assert.equal(await importPage.locator("#field-situation").inputValue(), legacy.fields.situation);
+  await importPage.locator('#steps [data-step="3"]').click();
+  assert.equal(await importPage.locator('[data-choose="2"][aria-pressed="true"]').count(), 1);
+  await importPage.locator('#steps [data-step="4"]').click();
+  assert.equal(await importPage.locator("#field-action").inputValue(), legacy.fields.action);
+  await importPage.locator(".file-options summary").click();
+  const migratedDownload = importPage.waitForEvent("download");
+  await importPage.locator("[data-action=export]").click();
+  const migratedFile = await migratedDownload;
+  const migrated = JSON.parse(await fs.readFile(await migratedFile.path(), "utf8"));
+  assert.equal(migrated.version, 2);
+  assert.equal(migrated.context, "other");
+  assert.equal(migrated.reviewContext, true);
+  assert.equal(migrated.fields.situation, legacy.fields.situation);
+  assert.equal(migrated.chosen, 2);
+  await importPage.close();
+
+  // Existing browser storage is upgraded in place and the new context remains
+  // stable across reloads after a deliberate change.
+  const migrationContext = await browser.newContext({ acceptDownloads: true });
+  const storedPage = await migrationContext.newPage();
+  storedPage.on("pageerror", (e) => errors.push(e.message));
+  await storedPage.goto(url);
+  await storedPage.evaluate((draft) => {
+    localStorage.setItem("pas-a-pas.brouillon.v1", JSON.stringify(draft));
+  }, { ...legacy, scale: "shared", context: "work" });
+  await storedPage.reload();
+  await storedPage.evaluate(() => { location.hash = "outil"; });
+  assert.equal(await storedPage.locator("#context-select").inputValue(), "colleague");
+  assert.match(await storedPage.locator("#context-review").innerText(), /contexte/);
+  assert.deepEqual(await storedPage.evaluate(() => Object.keys(localStorage)), ["pas-a-pas.brouillon.v2"]);
+  await storedPage.locator('#steps [data-step="1"]').click();
+  assert.equal(await storedPage.locator("#field-situation").inputValue(), legacy.fields.situation);
+  await storedPage.locator('#steps [data-step="0"]').click();
+  await storedPage.locator("#context-select").selectOption("neighbors");
+  await storedPage.reload();
+  assert.equal(await storedPage.locator("#context-select").inputValue(), "neighbors");
+  assert.equal(await storedPage.locator('#steps [data-step="1"]').count(), 1);
+  await migrationContext.close();
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
   assert(await page.locator("#soutenir .support-start").isVisible());
@@ -297,7 +443,7 @@ const errors = [];
   await visit("outil");
   await step(0);
   await page.locator("#context-select").selectOption("health");
-  assert.match(await page.locator("#toast").innerText(), /Le texte déjà saisi ne change pas/);
+  assert.match(await page.locator("#context-review").innerText(), /mes réponses sont restées/i);
   await step(1);
   assert.equal(
     await page.locator("#field-situation").inputValue(),
@@ -341,6 +487,8 @@ const errors = [];
   const savedPath = path.join(output, "draft.json");
   await draft.saveAs(savedPath);
   const parsed = JSON.parse(await fs.readFile(savedPath, "utf8"));
+  assert.equal(parsed.version, 2);
+  assert.equal(parsed.context, "health");
   assert.equal(parsed.fields.situation, attack);
   await page.reload();
   await step(1);
@@ -453,8 +601,10 @@ const errors = [];
   await visible("#term-dialog");
   await page.locator("#term-close").click();
   await page.locator("#comprendre summary").filter({ hasText: "Glossaire :" }).click();
-  assert.equal(await page.locator("#glossary-list [data-term]").count(), 19);
+  assert.equal(await page.locator("#glossary-list [data-term]").count(), 23);
   assert(await page.evaluate(() => Object.keys(glossary).every((key) => glossaryHelp[key]?.length === 3)));
+  for (const key of ["violentometer", "evidence", "sharedDecision", "balancingIndicator"])
+    assert.equal(await page.locator(`#glossary-list [data-term=${key}]`).count(), 1);
   await page.locator("#glossary-list [data-term=indicator]").click();
   await visible("#term-dialog");
   assert.match(await page.locator("#term-title").innerText(), /Indicateur/);

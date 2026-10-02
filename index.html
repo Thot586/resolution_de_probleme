@@ -531,6 +531,31 @@
       .context-pick {
         max-width: 520px;
       }
+      #context-description {
+        margin-top: 9px;
+      }
+      #context-focus {
+        margin-top: 12px;
+        padding: 11px 14px;
+        border-left: 3px solid #9abca4;
+        border-radius: 0 8px 8px 0;
+        background: #f3f7f1;
+        color: var(--ink);
+        font-size: 0.86rem;
+        line-height: 1.55;
+      }
+      #context-focus strong {
+        color: var(--brand);
+      }
+      .context-caution {
+        margin-top: 12px;
+        padding: 12px 15px;
+        font-size: 0.84rem;
+      }
+      .context-caution a {
+        display: inline-block;
+        margin-top: 7px;
+      }
       .field-hint {
         margin: 4px 0 0;
       }
@@ -2386,24 +2411,38 @@
               comprendre les repères et les possibilités d’aide.
             </p>
           </div>
+          <p class="source-note">
+            Les cinq repères ci-dessous ont été rédigés pour cette page. Ils ne
+            sont pas des versions officielles du
+            <button type="button" class="glossary-button" data-term="violentometer">Violentomètre</button>
+            ni des tests permettant de calculer un risque.
+            <a href="#ref-7">[7]</a>
+          </p>
           <details>
             <summary>Qu’est-ce qu’un violentomètre ?</summary>
             <div class="details-body">
               <p>
                 C’est un support visuel de sensibilisation : des exemples aident
                 à repérer le respect, le contrôle ou les violences dans une
-                relation. Le modèle diffusé par le Centre Hubertine Auclert
-                concerne les relations amoureuses.
+                relation. Le Violentomètre français, consacré aux relations
+                amoureuses, a été conçu fin 2018 par les observatoires des
+                violences faites aux femmes de Seine-Saint-Denis et de Paris,
+                l’association En Avant Toute(s) et la Ville de Paris. Le Centre
+                Hubertine Auclert l’a ensuite adapté et diffusé.
                 <a class="citation" href="#ref-7">[7]</a>
               </p>
               <p>
-                <strong
-                  >Les cinq variantes ci-dessous sont une création pédagogique
-                  pour cette page.</strong
-                >
-                Elles ne sont ni des échelles cliniques validées, ni des outils
-                prédictifs, ni un avis juridique. Les couleurs servent à lire
-                les situations ; elles ne calculent aucun niveau de risque.
+                Le modèle français s’inspire de supports d’Amérique latine.
+                Au Mexique, une équipe de l’Institut polytechnique national,
+                dirigée par Martha Alicia Tronco Rosas, a conçu son propre
+                <em>Violentómetro</em> en 2009.
+                <a href="#ref-7">[7]</a>
+              </p>
+              <p>
+                <strong>Ces cinq repères sont propres à cette page.</strong>
+                Ils ne sont ni des échelles cliniques validées, ni des outils
+                prédictifs, ni un avis juridique. Les couleurs aident à lire les
+                situations ; elles ne calculent aucun niveau de risque.
               </p>
               <p>
                 Les violences ne suivent pas forcément une progression. Un seul
@@ -2968,7 +3007,7 @@
             <p>
               Les études, les recommandations et les choix de conception sont
               distingués. Sélection raisonnée, non exhaustive ; références
-              vérifiées le 2 octobre 2026.
+              vérifiées le 3 octobre 2026.
             </p>
           </div>
           <div class="notice">
@@ -3132,7 +3171,10 @@
                   >Outil de sensibilisation · Violences dans le couple</span
                 >
                 <p>
-                  Centre Hubertine Auclert. (s. d.). <em>Le Violentomètre.</em>
+                  Observatoires des violences faites aux femmes de
+                  Seine-Saint-Denis et de Paris, En Avant Toute(s) et Ville de
+                  Paris. (2018). <em>Le Violentomètre.</em> Adapté et diffusé par
+                  le Centre Hubertine Auclert.
                   <a
                     href="https://www.centre-hubertine-auclert.fr/egalitheque/publication/le-violentometre"
                     target="_blank"
@@ -3141,10 +3183,29 @@
                   >
                 </p>
                 <small
-                  >Outil issu du travail des observatoires de Paris et de
-                  Seine-Saint-Denis, de l’association En Avant Toute(s) et de la
-                  Mairie de Paris, adapté et diffusé par le Centre. Pas une
-                  échelle de prédiction clinique.</small
+                  >La
+                  <a
+                    href="https://www.paris.fr/pages/lutter-contre-les-violences-faites-aux-femmes-18035"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Ville de Paris ↗</a
+                  > indique que le modèle français s’inspire de supports
+                  d’Amérique latine. Au Mexique, une équipe de l’Institut polytechnique national
+                  dirigée par Martha Alicia Tronco Rosas a conçu le
+                  <em>Violentómetro</em> en 2009 :
+                  <a
+                    href="https://repositoriodigital.ipn.mx/bitstream/123456789/23490/1/G-seleccion95.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >source IPN ↗</a
+                  >. Les cinq repères de ce site sont des créations pédagogiques
+                  distinctes, sans validation comme échelles de risque.
+                  <a
+                    href="https://www.centre-hubertine-auclert.fr/foire-aux-questions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Conditions d’adaptation de l’outil officiel ↗</a
+                  >.</small
                 >
               </div>
             </li>
@@ -3427,12 +3488,57 @@
             <li class="reference" id="ref-19" data-ref="19"><div><span class="ref-label">Article conceptuel · Autonomie en supervision</span><p>Sawatsky, A. P. et al. (2022). <em>Autonomy and developing physicians: Reimagining supervision using self-determination theory.</em> <a href="https://pubmed.ncbi.nlm.nih.gov/34091940/" target="_blank" rel="noopener noreferrer">Notice PubMed ↗</a></p><small>Propose un cadre pour concilier supervision et autonomie ; ce n’est pas une évaluation de l’interface.</small></div></li>
             <li class="reference" id="ref-20" data-ref="20"><div><span class="ref-label">Revue · Charge cognitive en pédagogie médicale</span><p><em>Use of Cognitive Load Theory to Deploy Instructional Technology for Undergraduate Medical Education: a Scoping Review.</em> (2022). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9054949/" target="_blank" rel="noopener noreferrer">Article ↗</a></p><small>Appuie la segmentation, les exemples et la limitation des détails non essentiels. Effets variables selon l’expertise et la tâche.</small></div></li>
             <li class="reference" id="ref-21" data-ref="21"><div><span class="ref-label">Synthèse · Apprentissage des adultes</span><p>Palis, A. G., &amp; Quiros, P. A. (2014). <em>Adult Learning Principles and Presentation Pearls.</em> <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4005174/" target="_blank" rel="noopener noreferrer">Article ↗</a></p><small>Décrit la pertinence, les besoins de l’apprenant et l’interactivité ; principes à adapter, sans règle universelle.</small></div></li>
-            <li class="reference" id="ref-22" data-ref="22"><div><span class="ref-label">Cadre pratique · Amélioration en équipe</span><p>Institute for Healthcare Improvement. <em>Model for Improvement.</em> <a href="https://www.ihi.org/library/model-for-improvement" target="_blank" rel="noopener noreferrer">Cadre IHI ↗</a></p><small>Objectif, mesure, changement et cycles de test. Cadre de pratique, pas une preuve d’efficacité pour cet outil.</small></div></li>
+            <li class="reference" id="ref-22" data-ref="22"><div><span class="ref-label">Cadre pratique · Amélioration en équipe</span><p>Institute for Healthcare Improvement. <em>Model for Improvement.</em> <a href="https://www.ihi.org/library/model-for-improvement" target="_blank" rel="noopener noreferrer">Cadre IHI ↗</a> ; <a href="https://www.ihi.org/library/model-for-improvement/establishing-measures" target="_blank" rel="noopener noreferrer">Mesures de résultat, de processus et d’équilibrage ↗</a>.</p><small>Objectif, mesure, changement et cycles de test. Cadre de pratique, pas une preuve d’efficacité pour cet outil.</small></div></li>
             <li class="reference" id="ref-23" data-ref="23"><div><span class="ref-label">Cadre institutionnel · Évaluation collective</span><p>Centers for Disease Control and Prevention. (2024). <em>CDC Program Evaluation Framework.</em> <a href="https://www.cdc.gov/mmwr/volumes/73/rr/rr7306a1.htm" target="_blank" rel="noopener noreferrer">Cadre CDC ↗</a></p><small>Contexte, participation, preuve, équité et usage des résultats ; transposition prudente hors santé publique.</small></div></li>
             <li class="reference" id="ref-24" data-ref="24"><div><span class="ref-label">Guide institutionnel · Politique publique</span><p>World Health Organization Regional Office for Europe. (2022). <em>Systems thinking for noncommunicable disease prevention policy.</em> <a href="https://www.who.int/europe/publications/i/item/WHO-EURO-2022-4195-43954-61946" target="_blank" rel="noopener noreferrer">Guide OMS ↗</a></p><small>Repères de définition du problème, d’acteurs, de mise en œuvre et d’évaluation ; exemples de santé publique, sans validité universelle.</small></div></li>
             <li class="reference" id="ref-25" data-ref="25"><div><span class="ref-label">Guide institutionnel · Participation</span><p>Organisation for Economic Co-operation and Development. (2022). <em>OECD Guidelines for Citizen Participation Processes.</em> <a href="https://www.oecd.org/en/publications/oecd-guidelines-for-citizen-participation-processes_f765caf6-en.html" target="_blank" rel="noopener noreferrer">Guide OCDE ↗</a></p><small>Précise l’influence réelle sur la décision, l’inclusion et le retour aux personnes participantes. À adapter à la taille et au pouvoir du groupe.</small></div></li>
             <li class="reference" id="ref-26" data-ref="26"><div><span class="ref-label">Guides pratiques · Enquête et données</span><p>Government Digital Service. <em>Getting users’ consent for research</em> ; <em>Managing user research data and participant privacy.</em> <a href="https://www.gov.uk/service-manual/user-research/getting-users-consent-for-research" target="_blank" rel="noopener noreferrer">Consentement ↗</a> ; <a href="https://www.gov.uk/service-manual/user-research/managing-user-research-data-participant-privacy" target="_blank" rel="noopener noreferrer">Données et confidentialité ↗</a>.</p><small>Repères pratiques pour limiter les données collectées et expliquer leur usage. Les règles applicables dépendent du contexte local.</small></div></li>
             <li class="reference" id="ref-27" data-ref="27"><div><span class="ref-label">Guide pratique · Restitution</span><p>Government Digital Service. <em>Sharing user research findings.</em> <a href="https://www.gov.uk/service-manual/user-research/sharing-user-research-findings" target="_blank" rel="noopener noreferrer">Guide de restitution ↗</a>.</p><small>Conseils pour présenter des constats utiles aux personnes concernées et aux décideurs, avec leurs limites.</small></div></li>
+            <li class="reference" id="ref-28" data-ref="28">
+              <div>
+                <span class="ref-label">Guide pratique · Besoins des personnes</span>
+                <p>Government Digital Service. (2017). <em>Learning about users and their needs.</em>
+                  <a href="https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs" target="_blank" rel="noopener noreferrer">Guide GOV.UK ↗</a>
+                </p>
+                <small>Invite à écouter et observer les personnes concernées avant de définir leur besoin et à vérifier les hypothèses. Guide de conception de services publics, non évaluation de ce parcours.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-29" data-ref="29">
+              <div>
+                <span class="ref-label">Guide institutionnel · Travail</span>
+                <p>Organisation internationale du Travail. (2021). <em>Violence and harassment in the world of work: A guide on Convention No. 190 and Recommendation No. 206.</em>
+                  <a href="https://www.ilo.org/publications/violence-and-harassment-world-work-guide-convention-no-190-and" target="_blank" rel="noopener noreferrer">Guide OIT ↗</a>
+                </p>
+                <small>Clarifie les principes et les mesures de prévention concernant la violence et le harcèlement au travail. Les procédures et droits applicables dépendent du pays.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-30" data-ref="30">
+              <div>
+                <span class="ref-label">Charte institutionnelle · Sécurité des soins</span>
+                <p>Organisation mondiale de la Santé. (2024). <em>Patient safety rights charter.</em>
+                  <a href="https://www.who.int/publications/i/item/9789240093249" target="_blank" rel="noopener noreferrer">Charte OMS ↗</a>
+                </p>
+                <small>Expose des droits liés à la sécurité des patients. Cadre normatif international ; les modalités de recours et les droits opposables varient selon le pays.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-31" data-ref="31">
+              <div>
+                <span class="ref-label">Guide fondé sur la recherche · Apprentissage scolaire</span>
+                <p>Education Endowment Foundation. (2025). <em>Metacognition and Self-Regulated Learning</em> (2e éd.).
+                  <a href="https://educationendowmentfoundation.org.uk/education-evidence/guidance-reports/metacognition/" target="_blank" rel="noopener noreferrer">Guide EEF ↗</a>
+                </p>
+                <small>Recommandations pour des enseignants auprès d’élèves : planifier, suivre et évaluer l’apprentissage. Leur transfert à un adulte utilisant seul cet outil n’est pas démontré.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-32" data-ref="32">
+              <div>
+                <span class="ref-label">Guide technique · Risques environnementaux</span>
+                <p>Organisation mondiale de la Santé et Programme international sur la sécurité des substances chimiques. (2021). <em>WHO human health risk assessment toolkit: Chemical hazards</em> (2e éd.).
+                  <a href="https://www.who.int/publications/i/item/9789240035720" target="_blank" rel="noopener noreferrer">Guide OMS ↗</a>
+                </p>
+                <small>Évaluation des dangers, de l’exposition et des risques chimiques pour des professionnels formés. Sert ici à distinguer signalement et expertise ; une odeur seule ne permet pas de conclure à une cause ou à un risque sanitaire.</small>
+              </div>
+            </li>
           </ol>
         </div>
       </section>
@@ -3669,7 +3775,7 @@
       };
       const scales = {
         personal: ["Personnel", "Je peux agir, avec ou sans aide."],
-        shared: ["Entre personnes", "Une discussion ou un accord est nécessaire."],
+        shared: ["Entre personnes", "Une autre personne est concernée par la situation."],
         organization: ["Équipe ou institution", "Une équipe, ses règles ou ses moyens sont en jeu."],
         public: ["Collectif ou politique", "Une décision collective ou publique est en jeu."],
       };
@@ -3750,6 +3856,22 @@
           "Données personnelles",
           "Informations qui permettent d’identifier une personne directement ou indirectement, par exemple un nom ou une réponse très reconnaissable dans un petit groupe.",
         ],
+        violentometer: [
+          "Violentomètre",
+          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences dans une relation. Le Violentomètre français officiel porte sur les relations amoureuses ; les repères de cette page sont des créations pédagogiques distinctes, sans score de risque validé.",
+        ],
+        evidence: [
+          "Données probantes",
+          "Informations issues de recherches ou d’évaluations dont on examine la qualité, les limites et la pertinence pour la situation. Elles éclairent une décision avec l’expérience des personnes et le contexte ; elles ne garantissent pas un résultat individuel.",
+        ],
+        sharedDecision: [
+          "Décision partagée",
+          "Échange dans lequel les personnes concernées examinent les options, leurs effets possibles et leurs préférences avant de choisir ensemble, dans la mesure où chacune peut participer librement.",
+        ],
+        balancingIndicator: [
+          "Indicateur d’équilibrage",
+          "Signe suivi pour vérifier qu’une amélioration recherchée ne crée pas un autre problème important ailleurs. Il complète l’indicateur du résultat principal.",
+        ],
       };
       // The first sentence is the quick hint; the existing glossary entry gives the full definition.
       const glossaryHelp = {
@@ -3772,6 +3894,10 @@
         indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
         feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
         personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
+        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentomètre officiel concerne les relations amoureuses. Les cinq repères proposés ici pour différentes relations sont pédagogiques : ils ne calculent pas un niveau de danger.", 7],
+        evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
+        sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
+        balancingIndicator: ["Vérifier qu’un progrès ne crée pas un autre problème.", "Si l’équipe réduit le temps d’attente, elle vérifie aussi que les personnes ayant besoin de plus de temps reçoivent encore une aide adaptée.", 22],
       };
       const comparisonExamples = {
         daily: [
@@ -4101,9 +4227,9 @@
           ],
         },
         shared: {
-          steps: ["La relation", "Comprendre chacun", "Des pistes communes", "Un accord possible", "Essayer ensemble", "Revoir l’accord"],
-          titles: ["Mon contexte", "Qu’est-ce qui compte pour chacun ?", "Quelles pistes pouvons-nous envisager ?", "Quelle piste respecte nos limites ?", "Quel essai pouvons-nous proposer ?", "L’accord a-t-il été utile ?"],
-          leads: ["", "Je distingue les faits, mon besoin et ce que je sais réellement du besoin de l’autre.", "Je prépare des propositions, sans supposer l’accord de l’autre personne.", "Je compare les effets pour chacun et la liberté réelle de refuser.", "Je propose un échange ou un essai, avec un moment pour refaire le point.", "Je demande ce qui a fonctionné pour chacun et ce qui doit changer."],
+          steps: ["La relation", "Comprendre chacun", "Des pistes à proposer", "Un choix respectueux", "Proposer avec accord", "Ce qui a changé"],
+          titles: ["Mon contexte", "Qu’est-ce qui compte pour chacun ?", "Quelles pistes puis-je envisager ?", "Quelle piste respecte nos limites ?", "Quel pas puis-je proposer sans imposer ?", "Qu’est-ce qui a changé ?"],
+          leads: ["", "Je distingue les faits, mon besoin et ce que je sais réellement du besoin de l’autre.", "Je prépare des propositions, sans supposer l’accord de l’autre personne.", "Je compare les effets pour chacun et la liberté réelle de refuser.", "Je propose un échange ou un essai seulement si chacun peut refuser librement. Je peux aussi choisir un autre soutien.", "Je note ce qui s’est passé, les désaccords restants et ce qui doit changer."],
           fields: ["Ce qui s’est passé entre nous", "Décrivez des faits observables, sans attribuer d’intention à l’autre.", "Ce que je souhaite pour la relation", "Quel changement serait acceptable pour moi et à discuter avec l’autre ?", "Ce qui empêche l’accord", "Quelles informations, limites ou contraintes restent à clarifier ?"],
           examples: ["Nous avons discuté deux fois d’une tâche, mais nous n’avons pas clarifié qui ferait quoi.", "Nous voulons choisir une répartition que chacun peut accepter.", "Nous ne connaissons pas encore les contraintes de l’autre."],
           idea: "Préparer plusieurs propositions et garder de la place pour les idées de l’autre personne.",
@@ -4141,6 +4267,502 @@
           action: ["La première démarche collective", "Précisez qui participe volontairement et à quelle autorité s’adresser.", "Quel signe de progrès public ?", "Par exemple : un rendez-vous, une réponse écrite ou une décision documentée."],
           actionExamples: ["Demander aux personnes intéressées si elles souhaitent coécrire une question au service compétent.", "Le service a répondu par écrit ou indiqué une date de rendez-vous."],
           tools: [null, ["Problème et personnes concernées", "Identifier le contexte, les groupes touchés et les effets potentiellement inégaux.", "#ref-23"], ["Carte des acteurs", "Repérer qui décide, qui met en œuvre et qui subit les conséquences.", "#ref-24"], ["Effets attendus et effets indésirables", "Comparer les options avec leurs coûts, leurs effets et la possibilité d’un suivi public.", "#ref-24"], ["Demande vérifiable", "Relier la démarche, la décision attendue et un indicateur de réponse.", "#ref-23"]],
+        },
+      };
+
+      // Le niveau désigne qui peut agir ou décider ; le contexte précise les faits
+      // et contraintes à examiner. Cette taxonomie éditoriale reste à tester avec
+      // les personnes qui utilisent l'outil. Les scènes sont fictives.
+      const contextCatalog = {
+        personal: {
+          daily: {
+            label: "Quotidien et démarches",
+            description: "Une tâche, un papier ou une démarche à organiser.",
+            focus: "Quelle tâche concrète est bloquée, et pour quand ?",
+            caution: "Une petite action peut aider à commencer sans supprimer les contraintes autour de moi.",
+            prompts: [
+              "Quel fait précis montre que la tâche bloque ? Y a-t-il une échéance ?",
+              "Quel résultat limité me serait utile maintenant ?",
+              "Qu'est-ce qui manque pour faire le premier morceau ?",
+            ],
+            examples: {
+              situation: "Je ne retrouve pas deux factures à régler cette semaine parmi mes courriers.",
+              goal: "Retrouver les factures ou demander une copie avant vendredi.",
+              obstacle: "Les courriers sont mélangés et je ne sais pas lesquels ouvrir d'abord.",
+              ideas: ["Trier les courriers reçus ce mois-ci.", "Demander une copie à l'organisme concerné.", "Demander dix minutes d'aide à une personne de confiance."],
+              comparison: ["Je peux commencer par une petite pile de courriers.", "Le tri seul peut ne pas retrouver une facture ancienne."],
+              action: "Ouvrir les cinq courriers les plus récents demain matin pendant dix minutes.",
+              measure: "J'ai trouvé une facture ou identifié l'organisme à contacter.",
+              result: "J'ai retrouvé une facture et demandé une copie de la seconde.",
+              support: "Une personne de confiance peut m'aider à repérer les échéances.",
+              backup: "Si je me sens débordé, j'ouvre une seule enveloppe puis je fais une pause.",
+              control: "Choisir par quels courriers commencer et demander une copie.",
+              outside: "Le délai de réponse de l'organisme.",
+            },
+            tool: ["Découper un problème pratique", "Décrire la tâche, choisir une action faisable et vérifier ce qui s'est passé. L'approche PM+ est accompagnée par des personnes formées ; ce site n'est pas PM+.", "#ref-3"],
+          },
+          study: {
+            label: "Étudier ou apprendre",
+            description: "Une consigne, un travail ou une façon d'apprendre.",
+            focus: "Quelle consigne dois-je transformer en premier livrable ?",
+            caution: "Les résultats de la recherche scolaire ne garantissent pas le même effet pour chaque âge ou situation.",
+            prompts: [
+              "Quel travail est demandé, et quelle partie de la consigne est floue ?",
+              "Quel premier résultat vérifiable puis-je produire ?",
+              "Qu'est-ce qui m'empêche de commencer ou de vérifier mon travail ?",
+            ],
+            examples: {
+              situation: "Je dois rendre un dossier la semaine prochaine et je n'ai pas commencé son plan.",
+              goal: "Écrire un plan provisoire de trois titres aujourd'hui.",
+              obstacle: "Je veux tout lire avant d'écrire et une partie de la consigne reste floue.",
+              ideas: ["Faire un plan provisoire sans chercher la perfection.", "Noter une question précise à poser à l'enseignant.", "Expliquer mon idée à un camarade pour voir ce qui manque."],
+              comparison: ["Un brouillon rend visible ce que je comprends déjà.", "Je devrai peut-être le revoir après une précision sur la consigne."],
+              action: "Relire la consigne et écrire trois titres pendant quinze minutes.",
+              measure: "J'ai trois titres provisoires et une question claire si besoin.",
+              result: "J'ai rédigé deux titres et identifié une question à poser.",
+              support: "La consigne, un enseignant ou un camarade disponible.",
+              backup: "Si je bloque, je note une seule question puis je demande un retour.",
+              control: "Faire un brouillon et formuler une question.",
+              outside: "Le délai de réponse de l'enseignant.",
+            },
+            tool: ["Planifier, vérifier, ajuster", "Je prévois une façon d'aborder le travail, j'observe ce que j'ai compris, puis j'ajuste. Ces repères viennent surtout d'études en milieu scolaire.", "#ref-31"],
+          },
+          work: {
+            label: "Ma charge de travail",
+            description: "Des tâches ou délais qui se heurtent dans mon travail.",
+            focus: "Quelles tâches se concurrencent, et qui fixe leur priorité ?",
+            caution: "Je peux demander un arbitrage ; je ne suis pas seul responsable des moyens et des délais imposés.",
+            prompts: [
+              "Quelles demandes sont arrivées, par qui, et avec quelles échéances ?",
+              "Quelle priorité ou quel délai réaliste faudrait-il clarifier ?",
+              "Quelle décision dépasse ma marge de manœuvre ?",
+            ],
+            examples: {
+              situation: "Deux responsables m'ont confié trois dossiers urgents à finir le même jour.",
+              goal: "Obtenir un ordre de priorité et un délai réaliste pour chaque dossier.",
+              obstacle: "Les responsables n'ont pas arbitré ensemble et le temps disponible est limité.",
+              ideas: ["Lister les tâches et le temps estimé pour chacune.", "Demander un arbitrage écrit des priorités.", "Demander l'appui d'un collègue ou d'un représentant du personnel."],
+              comparison: ["Une liste factuelle peut rendre le conflit de délais visible.", "La décision finale dépend des responsables."],
+              action: "Préparer la liste des trois dossiers et demander quel travail traiter d'abord.",
+              measure: "Une priorité est confirmée ou un rendez-vous d'arbitrage est fixé.",
+              result: "Deux priorités ont été clarifiées ; le troisième délai reste à discuter.",
+              support: "Un collègue de confiance ou un représentant du personnel.",
+              backup: "Si le responsable est absent, j'envoie la liste et demande un moment de décision.",
+              control: "Décrire les tâches et demander une décision sur leur ordre.",
+              outside: "Les effectifs, les échéances imposées et l'arbitrage final.",
+            },
+            tool: ["Séparer faits et marge de manœuvre", "Je décris les demandes vérifiables puis cherche une action possible sans me rendre responsable de décisions qui dépendent de l'organisation.", "#ref-3"],
+          },
+          health: {
+            label: "Accéder à un soin ou à une aide",
+            description: "Un obstacle pour obtenir un rendez-vous ou une information.",
+            focus: "Qu'est-ce qui m'empêche d'accéder au soin ou à l'aide souhaitée ?",
+            caution: "Cet exercice aide à préparer une demande ; il ne choisit pas un traitement et ne remplace pas un professionnel.",
+            prompts: [
+              "Quel rendez-vous, soin ou soutien est difficile d'accès ?",
+              "Quelle information ou possibilité concrète voudrais-je obtenir ?",
+              "L'obstacle est-il le trajet, le coût, l'horaire, la compréhension ou autre chose ?",
+            ],
+            examples: {
+              situation: "J'ai manqué deux rendez-vous car le trajet jusqu'au cabinet est difficile à organiser.",
+              goal: "Préparer une solution de déplacement pour le prochain rendez-vous.",
+              obstacle: "Je ne connais pas les aides possibles et je ne peux pas compter sur un accompagnement régulier.",
+              ideas: ["Demander au secrétariat les horaires possibles.", "Demander si une autre modalité convient à ce soin.", "Chercher une aide au transport avec un intervenant social."],
+              comparison: ["Contacter l'équipe peut clarifier les possibilités réelles.", "Une autre modalité peut ne pas convenir au soin prévu."],
+              action: "Contacter le secrétariat pour expliquer l'obstacle de transport.",
+              measure: "J'ai une option de déplacement ou une proposition convenue avec l'équipe.",
+              result: "Un autre horaire a été proposé ; le transport reste à confirmer.",
+              support: "Un proche ou un intervenant social, si je souhaite son aide.",
+              backup: "Si téléphoner est difficile, je prépare un court message à envoyer.",
+              control: "Expliquer l'obstacle et poser mes questions.",
+              outside: "Les disponibilités et les options de soin réellement adaptées.",
+            },
+            tool: ["Préparer mes questions pour le soin", "J'identifie l'obstacle d'accès et les informations dont j'ai besoin pour participer à la décision avec l'équipe de soins.", "#ref-30"],
+          },
+          boundaries: {
+            label: "Mes limites dans une relation",
+            description: "Un choix personnel qui ne dépend pas d'un accord à deux.",
+            focus: "Quelle limite ai-je besoin de poser, et est-ce sûr de le faire ?",
+            caution: "En cas de peur, de menace ou de contrôle, je cherche un soutien sûr avant toute confrontation.",
+            prompts: [
+              "Quel comportement concret me gêne ou réduit ma liberté ?",
+              "Quelle limite ou quel soutien me serait utile à moi ?",
+              "Qu'est-ce qui rend cette limite difficile ou dangereuse à exprimer ?",
+            ],
+            examples: {
+              situation: "Mon partenaire me demande de lui montrer mes messages personnels chaque soir.",
+              goal: "Trouver un soutien sûr pour réfléchir à ma vie privée et à ma sécurité.",
+              obstacle: "Je crains sa réaction si je refuse directement.",
+              ideas: ["Parler à une personne de confiance hors de sa présence.", "Consulter les repères de sécurité et les possibilités d'aide.", "Préparer une manière sûre de conserver des informations utiles pour moi."],
+              comparison: ["Un échange confidentiel peut m'aider à clarifier mes choix.", "Une confrontation immédiate pourrait augmenter le risque si j'ai peur."],
+              action: "Choisir un moment sûr pour contacter une personne de confiance.",
+              measure: "J'ai identifié un soutien et une prochaine démarche qui ne m'expose pas davantage.",
+              result: "J'ai parlé à une personne sûre et décidé de chercher un avis spécialisé.",
+              support: "Une personne de confiance ou un service spécialisé.",
+              backup: "Si contacter quelqu'un n'est pas sûr maintenant, je cherche un autre moment ou canal sûr.",
+              control: "Choisir à qui parler et quelles informations partager, quand c'est sûr.",
+              outside: "Le comportement de l'autre personne et sa réaction.",
+            },
+            tool: ["Sécurité avant discussion", "La peur, le contrôle ou les menaces demandent un soutien adapté. Un accord obtenu sous pression n'est pas libre.", "#ref-6"],
+          },
+          other: {
+            label: "Autre situation personnelle",
+            description: "Mon problème ne ressemble pas aux exemples proposés.",
+            focus: "Quel fait précis aimerais-je comprendre ou changer ?",
+            caution: "Je peux demander un soutien adapté si la situation dépasse ce que je peux régler seul.",
+            prompts: ["Que s'est-il passé récemment, de façon observable ?", "Quel petit changement me serait utile ?", "Qu'est-ce qui manque pour avancer ?"],
+            examples: {
+              situation: "Une demande importante attend ma réponse depuis plusieurs jours.",
+              goal: "Comprendre ce qui est attendu et préparer une réponse avant vendredi.",
+              obstacle: "Je ne sais pas quelle information vérifier en premier.",
+              ideas: ["Relire la demande et surligner les questions.", "Demander une précision à son auteur.", "Demander un appui à une personne de confiance."],
+              comparison: ["Une question précise peut lever une incertitude.", "La réponse peut prendre du temps."],
+              action: "Relire la demande pendant dix minutes et noter une question.",
+              measure: "J'ai une question précise ou une première réponse écrite.",
+              result: "J'ai identifié l'information manquante et demandé une précision.",
+              support: "Une personne de confiance ou un service adapté au sujet.",
+              backup: "Si je bloque, je commence par une seule phrase.",
+              control: "Demander une précision et préparer ma réponse.",
+              outside: "Le délai et la réponse de l'autre partie.",
+            },
+            tool: ["Définir un problème concret", "Je distingue un fait, un résultat souhaité et un obstacle avant d'essayer une piste. Il s'agit d'un repère pratique, pas d'un diagnostic.", "#ref-3"],
+          },
+        },
+        shared: {
+          couple: {
+            label: "Couple ou relation proche",
+            description: "Une décision commune possible si chacun peut refuser librement.",
+            focus: "Quel sujet pouvons-nous discuter sans pression ni peur ?",
+            caution: "Si je crains une réaction, l'accord à deux n'est pas le bon point de départ : je cherche d'abord une aide sûre.",
+            prompts: ["Quel fait chacun peut-il décrire sans attribuer d'intention ?", "Quel changement puis-je proposer sans décider pour l'autre ?", "Que ne savons-nous pas encore des besoins ou limites de chacun ?"],
+            examples: {
+              situation: "Nous avons annulé deux moments ensemble car nos horaires n'étaient pas coordonnés.",
+              goal: "Trouver un créneau qui convient aux deux personnes, si nous le souhaitons.",
+              obstacle: "Nous n'avons pas comparé nos disponibilités ni demandé ce qui est important pour chacun.",
+              ideas: ["Proposer un échange calme de quinze minutes.", "Comparer deux créneaux possibles.", "Prévoir une activité plus courte si cela convient aux deux."],
+              comparison: ["Chacun peut dire ce qui lui convient.", "L'autre personne peut refuser le créneau proposé."],
+              action: "Demander si un moment pour parler des disponibilités conviendrait.",
+              measure: "Chacun a pu exprimer son choix, même si aucun créneau n'est encore fixé.",
+              result: "Nous avons retenu une promenade courte ; le calendrier partagé ne nous convient pas.",
+              support: "Un moment calme et, si besoin, un tiers choisi librement par chacun.",
+              backup: "Si la discussion ne convient pas, je la reporte sans insister.",
+              control: "Formuler mon besoin et écouter la réponse.",
+              outside: "La disponibilité et le consentement de l'autre personne.",
+            },
+            tool: ["Écouter et vérifier l'accord", "Je demande le point de vue de l'autre, le reformule et vérifie qu'un refus est possible. En présence de violence, la sécurité prime.", "#ref-5"],
+          },
+          family: {
+            label: "Dans la famille",
+            description: "Une organisation familiale qui touche plusieurs personnes.",
+            focus: "Qui est concerné, et que peut décider chaque personne selon son rôle et son âge ?",
+            caution: "Un enfant doit pouvoir être entendu, sans porter une décision qui relève des adultes.",
+            prompts: ["À quel moment la difficulté apparaît-elle et pour qui ?", "Quel changement serait utile à la famille, sans imposer un accord fictif ?", "Quelles contraintes ou besoins n'ont pas encore été entendus ?"],
+            examples: {
+              situation: "Le départ du matin est tendu et mon enfant et moi arrivons souvent en retard.",
+              goal: "Essayer deux matins plus calmes cette semaine.",
+              obstacle: "Les affaires ne sont pas prêtes et nous n'avons pas demandé ce qui est difficile pour chacun.",
+              ideas: ["Préparer les sacs ensemble la veille.", "Dessiner une routine courte avec l'enfant.", "Retirer une tâche non indispensable du matin."],
+              comparison: ["L'enfant peut montrer ce qui l'aide à se préparer.", "Une routine trop stricte ne tiendra pas face à la fatigue ou aux imprévus."],
+              action: "Demander à l'enfant ce qui bloque le matin et préparer le sac ensemble ce soir.",
+              measure: "Une étape du départ est plus simple pour chacun.",
+              result: "Le sac était prêt ; le petit-déjeuner demande encore du temps.",
+              support: "Un autre adulte sûr, si la famille le souhaite.",
+              backup: "Si l'enfant est fatigué, nous préparons seulement l'essentiel.",
+              control: "Proposer une routine adaptée et écouter l'enfant.",
+              outside: "Le sommeil, les imprévus et les contraintes des autres adultes.",
+            },
+            tool: ["Écouter chaque besoin sans juger", "Je demande ce que chacun vit, puis j'adapte l'essai aux possibilités réelles de la famille. Le guide OMS soutient l'écoute et les besoins pratiques, pas une méthode familiale validée ici.", "#ref-5"],
+          },
+          colleague: {
+            label: "Collègues ou formation",
+            description: "Une difficulté entre personnes au travail ou en apprentissage.",
+            focus: "Les personnes peuvent-elles parler librement malgré leurs rôles différents ?",
+            caution: "Une différence d'autorité ou la peur de représailles peut rendre une discussion directe inadaptée.",
+            prompts: ["Qu'a dit ou fait chaque personne, sans supposer son intention ?", "Quelle écoute ou clarification voudrais-je proposer ?", "Quel rôle, pouvoir ou risque rend la discussion difficile ?"],
+            examples: {
+              situation: "Un médecin expérimenté compare souvent la difficulté d'un jeune collègue à ce qu'il a vécu autrefois.",
+              goal: "Que le jeune collègue puisse expliquer son problème avant de recevoir un conseil.",
+              obstacle: "Le médecin expérimenté pense aider, mais les comparaisons interrompent le récit et fragilisent la confiance.",
+              ideas: ["Demander au jeune collègue ce dont il a besoin maintenant.", "Proposer au médecin expérimenté d'écouter puis de reformuler avant de conseiller.", "Prévoir un tiers sûr si la hiérarchie rend l'échange difficile."],
+              comparison: ["La reformulation peut vérifier que le problème est compris.", "Un échange direct peut être difficile si la personne senior évalue le jeune collègue."],
+              action: "Demander au jeune collègue s'il souhaite un échange avec le médecin ou un autre soutien.",
+              measure: "Le jeune collègue a pu exprimer sa difficulté sans être interrompu, ou a choisi un autre canal.",
+              result: "Le jeune collègue a décrit son besoin ; il préfère un prochain échange avec un autre référent.",
+              support: "Un référent pédagogique ou un tiers choisi librement.",
+              backup: "Si l'échange n'est pas sûr, demander un autre canal de soutien.",
+              control: "Écouter, reformuler et proposer un choix de soutien.",
+              outside: "L'avis du collègue et les décisions de la hiérarchie.",
+            },
+            tool: ["Écouter avant de conseiller", "Je demande quel retour serait utile, reformule la difficulté, puis vérifie si un conseil est souhaité. Les études de retours en formation clinique éclairent la confiance sans valider ce parcours ni effacer une asymétrie de pouvoir.", "#ref-18"],
+          },
+          neighbors: {
+            label: "Voisins ou association",
+            description: "Une règle ou une ressource partagée à discuter.",
+            focus: "Quelle ressource partageons-nous et quel essai chacun peut-il accepter ?",
+            caution: "Je ne parle pas au nom du groupe sans son accord et je vérifie les règles déjà applicables.",
+            prompts: ["Quel usage partagé pose problème, et à quels moments ?", "Quel accord limité pourrions-nous essayer ?", "Qui n'a pas encore été entendu ou pourrait être pénalisé ?"],
+            examples: {
+              situation: "Deux associations souhaitent utiliser la même salle le jeudi soir.",
+              goal: "Trouver un essai de calendrier acceptable pour les deux associations.",
+              obstacle: "Nous ne connaissons pas les contraintes de transport et d'horaire de chaque groupe.",
+              ideas: ["Demander les contraintes de chaque association.", "Tester une alternance pendant un mois.", "Chercher un autre créneau avec le gestionnaire de la salle."],
+              comparison: ["Un essai limité peut révéler les contraintes réelles.", "Une alternance peut exclure des membres indisponibles une semaine sur deux."],
+              action: "Inviter chaque association à nommer ses contraintes avant de proposer un calendrier.",
+              measure: "Chaque groupe a pu répondre et un essai est accepté ou modifié.",
+              result: "Les groupes ont trouvé un créneau d'essai ; le transport du second groupe reste à vérifier.",
+              support: "Le gestionnaire de la salle, si les groupes souhaitent son aide.",
+              backup: "Si aucune alternance ne convient, chercher un autre lieu ou horaire.",
+              control: "Demander les besoins et proposer un essai réversible.",
+              outside: "Les disponibilités du lieu et l'accord des autres membres.",
+            },
+            tool: ["Essai d'accord réversible", "Je propose une règle limitée dans le temps, puis je demande à chaque groupe si elle fonctionne. Cette pratique est une adaptation de principes d'écoute et de participation.", "#ref-25"],
+          },
+          other: {
+            label: "Autre situation entre personnes",
+            description: "Un sujet à discuter avec une autre personne, si c'est sûr.",
+            focus: "Qu'est-ce que chacun peut décider librement ?",
+            caution: "S'il y a peur ou contrôle, je privilégie un soutien sûr plutôt qu'une négociation.",
+            prompts: ["Quel fait concret est à discuter ?", "Quelle proposition respecte la liberté de chacun ?", "Quelle information ou limite manque encore ?"],
+            examples: {
+              situation: "Nous avons pris des décisions différentes sur une tâche commune.",
+              goal: "Clarifier ce que chacun souhaite faire et choisir un petit essai.",
+              obstacle: "Nous n'avons pas encore expliqué nos contraintes respectives.",
+              ideas: ["Demander le point de vue de chacun.", "Écrire deux propositions à discuter.", "Faire appel à un tiers choisi ensemble."],
+              comparison: ["Chacun peut préciser ses limites.", "Aucune proposition ne doit être présentée comme déjà acceptée."],
+              action: "Proposer un court échange pour écouter les contraintes de chacun.",
+              measure: "Les accords et les désaccords sont nommés clairement.",
+              result: "Nous avons identifié une étape commune et un point encore à discuter.",
+              support: "Un tiers sûr choisi librement.",
+              backup: "Si le moment ne convient pas, reporter ou choisir un autre canal.",
+              control: "Exprimer mon besoin et écouter une réponse.",
+              outside: "Le consentement et les choix de l'autre personne.",
+            },
+            tool: ["Reformuler avant de proposer", "Je vérifie que j'ai compris l'autre personne avant de suggérer une solution. L'écoute aide à clarifier, sans garantir un accord.", "#ref-5"],
+          },
+        },
+        organization: {
+          coordination: {
+            label: "Priorités et coordination",
+            description: "Le travail se bloque entre rôles, étapes ou équipes.",
+            focus: "À quelle étape le travail se bloque-t-il, et qui peut arbitrer ?",
+            caution: "Une amélioration doit être examinée avec les personnes qui font le travail et celles qu'elle touche.",
+            prompts: ["Où, quand et pour qui le blocage se répète-t-il ?", "Quel résultat l'équipe veut-elle obtenir ?", "Quelle règle, décision ou ressource manque selon les faits disponibles ?"],
+            examples: {
+              situation: "Trois demandes urgentes arrivent chaque lundi sans règle de priorité commune.",
+              goal: "Que l'équipe sache quelle demande traiter d'abord et qui arbitre.",
+              obstacle: "Plusieurs responsables donnent des consignes séparées et les priorités ne sont pas visibles.",
+              ideas: ["Dessiner le circuit actuel d'une demande avec l'équipe.", "Tester une règle de priorité lors d'une réunion.", "Nommer un responsable d'arbitrage pour un essai limité."],
+              comparison: ["Un test limité peut montrer si la règle clarifie le travail.", "Il peut déplacer le retard vers une autre tâche."],
+              action: "Proposer au responsable un test de priorisation sur une seule réunion.",
+              measure: "Les demandes reçoivent un ordre connu de l'équipe sans accroître un autre retard.",
+              result: "Les priorités ont été clarifiées ; un retard imprévu est apparu sur une autre tâche.",
+              support: "Les personnes qui reçoivent les demandes et un responsable habilité.",
+              backup: "Si le test crée un nouveau retard, l'équipe revoit la règle avant de l'étendre.",
+              control: "Décrire le circuit et proposer un test avec autorisation.",
+              outside: "L'arbitrage final, les effectifs et certaines échéances.",
+            },
+            tool: ["Petit test et mesure d'équilibrage", "L'équipe précise son but, teste un changement à petite échelle et regarde aussi les effets indésirables avant de l'étendre.", "#ref-22"],
+          },
+          service: {
+            label: "Accès et qualité d'un service",
+            description: "Des usagers rencontrent un obstacle dans un parcours.",
+            focus: "Qui n'arrive pas à utiliser le service, et à quelle étape ?",
+            caution: "Les hypothèses de l'équipe doivent être vérifiées avec des usagers divers, y compris ceux qui renoncent.",
+            prompts: ["À quelle étape du service des personnes échouent-elles ou abandonnent-elles ?", "Qu'est-ce qui devrait devenir plus accessible pour elles ?", "Que savons-nous par les usagers, et que supposons-nous encore ?"],
+            examples: {
+              situation: "Les rendez-vous ne se prennent qu'en ligne ; plusieurs usagers quittent le parcours avant confirmation.",
+              goal: "Permettre à davantage de personnes de confirmer un rendez-vous par un canal utilisable.",
+              obstacle: "L'équipe connaît peu les raisons des abandons et aucun autre canal n'est affiché.",
+              ideas: ["Observer le parcours avec des usagers volontaires.", "Tester une consigne plus claire sur la première page.", "Étudier un autre canal de réservation avec les équipes concernées."],
+              comparison: ["Observer les usages réels peut corriger une hypothèse de l'équipe.", "Une seule amélioration d'écran peut laisser l'obstacle d'accès intact."],
+              action: "Demander à quelques usagers volontaires où ils s'arrêtent dans la prise de rendez-vous.",
+              measure: "L'équipe identifie les obstacles et suit les rendez-vous effectivement confirmés selon le canal.",
+              result: "Les usagers ont signalé un code de confirmation difficile à recevoir ; le test doit être revu.",
+              support: "Des usagers volontaires et les personnes qui assurent l'accueil.",
+              backup: "Si l'observation est impossible, examiner les demandes d'aide déjà reçues puis vérifier les hypothèses.",
+              control: "Organiser une recherche consentie et proposer un changement limité.",
+              outside: "Le budget, les systèmes et la décision d'ouvrir un autre canal.",
+            },
+            tool: ["Observer les besoins réels", "Je cherche qui utilise ou quitte le service, ce que ces personnes veulent accomplir et ce qui les empêche d'y parvenir.", "#ref-28"],
+          },
+          conditions: {
+            label: "Conditions de travail et sécurité",
+            description: "Un risque, une violence ou une condition de travail à traiter.",
+            focus: "Quel risque est observé et quel canal de signalement est sûr ?",
+            caution: "Une violence ou un harcèlement ne se règle pas par une médiation imposée ; les droits et procédures dépendent du lieu.",
+            prompts: ["Quels faits, lieux et moments rendent le travail difficile ou dangereux ?", "Quel changement de condition ou de protection est recherché ?", "Qui peut agir sans exposer les personnes à des représailles ?"],
+            examples: {
+              situation: "Des incidents lors des fermetures tardives ne sont pas transmis à l'équipe suivante.",
+              goal: "Mettre en place une transmission sûre des incidents et décider d'une mesure de protection.",
+              obstacle: "Le canal actuel n'est pas clair et des salariés craignent d'être identifiés.",
+              ideas: ["Clarifier qui reçoit les signalements et comment les protéger.", "Examiner les faits avec les représentants du personnel.", "Tester une transmission minimale sans données personnelles inutiles."],
+              comparison: ["Un canal clair peut permettre d'agir sur un risque documenté.", "Un formulaire mal conçu peut exposer une personne ou réduire les signalements."],
+              action: "Demander à l'instance compétente comment signaler les incidents sans exposer les salariés.",
+              measure: "Un canal sûr est connu et une mesure de protection est discutée avec les personnes concernées.",
+              result: "Un canal a été précisé ; la protection lors des fermetures reste à décider.",
+              support: "Représentants du personnel et service compétent en prévention.",
+              backup: "Si le canal interne n'est pas sûr, chercher un conseil indépendant adapté au lieu.",
+              control: "Décrire le risque et vérifier les voies de signalement.",
+              outside: "Les décisions de l'employeur et les procédures applicables.",
+            },
+            tool: ["Prévenir sans exposer", "Les repères de l'OIT invitent à prévenir les violences et à prévoir des voies de recours adaptées. Le droit concret varie selon le pays et l'organisation.", "#ref-29"],
+          },
+          change: {
+            label: "Tester un changement",
+            description: "Une nouvelle façon de travailler a besoin d'être évaluée.",
+            focus: "Quel résultat attendons-nous, pour qui, et quel effet secondaire surveiller ?",
+            caution: "Un test local renseigne sur ce contexte ; il ne prouve pas à lui seul qu'un changement fonctionnera partout.",
+            prompts: ["Quel problème justifie le changement proposé ?", "Quel résultat observable veulent les personnes concernées ?", "Quelles hypothèses, contraintes ou conséquences involontaires faut-il vérifier ?"],
+            examples: {
+              situation: "Une nouvelle réunion de suivi a été ajoutée, mais les demandes prennent plus de temps à être traitées.",
+              goal: "Garder une coordination utile sans allonger le délai des demandes.",
+              obstacle: "La réunion répète des informations déjà saisies et son effet n'a pas été mesuré.",
+              ideas: ["Demander à l'équipe quelles décisions exigent réellement une réunion.", "Tester un ordre du jour limité pendant deux semaines.", "Supprimer les points doublons et comparer les délais."],
+              comparison: ["Un essai court permet d'observer une différence locale.", "Réduire la réunion peut faire manquer une information importante."],
+              action: "Faire valider un test de deux réunions avec un ordre du jour limité.",
+              measure: "Le temps de réunion baisse sans hausse des demandes oubliées.",
+              result: "La réunion a été plus courte ; une demande oubliée impose d'ajuster le suivi.",
+              support: "Les personnes qui utilisent les informations et un responsable du test.",
+              backup: "Si une demande passe inaperçue, réintroduire le point nécessaire.",
+              control: "Définir un test, ses mesures et les personnes à consulter.",
+              outside: "La décision de maintenir ou déployer le changement.",
+            },
+            tool: ["But, mesures, test, ajustement", "Je précise ce que l'équipe veut accomplir, comment elle le saura et quel petit changement elle peut tester. Je vérifie les effets non prévus.", "#ref-22"],
+          },
+          other: {
+            label: "Autre situation dans une organisation",
+            description: "Un problème lié à des règles, des ressources ou un processus.",
+            focus: "Quel résultat le système produit-il et qui peut décider d'un changement ?",
+            caution: "Je vérifie les faits avec les personnes concernées avant d'attribuer le problème à une personne.",
+            prompts: ["Où le problème apparaît-il et qui en subit les effets ?", "Quel résultat améliorerait la situation pour ces personnes ?", "Quelle règle, ressource ou coordination manque ?"],
+            examples: {
+              situation: "Plusieurs demandes reviennent à l'équipe faute d'une consigne commune.",
+              goal: "Réduire les retours inutiles sans compliquer la demande initiale.",
+              obstacle: "La consigne varie selon la personne qui répond.",
+              ideas: ["Comparer quelques cas de retour avec l'équipe.", "Écrire une consigne provisoire commune.", "Tester la consigne sur une semaine puis recueillir les retours."],
+              comparison: ["Une consigne commune peut réduire les hésitations.", "Elle peut être trop rigide pour certains cas."],
+              action: "Proposer un test d'une semaine avec une consigne provisoire validée.",
+              measure: "Moins de demandes reviennent, sans augmentation des erreurs.",
+              result: "Les retours ont diminué dans les cas simples ; les exceptions restent à préciser.",
+              support: "L'équipe et la personne habilitée à valider le test.",
+              backup: "Si des erreurs apparaissent, arrêter le test et ajuster la consigne.",
+              control: "Documenter les cas et proposer une vérification limitée.",
+              outside: "La validation et les moyens de l'organisation.",
+            },
+            tool: ["Tester avant de généraliser", "Un petit test documenté aide l'équipe à apprendre du contexte et des effets inattendus avant une mise en œuvre plus large.", "#ref-22"],
+          },
+        },
+        public: {
+          mobility: {
+            label: "Mobilité et espace public",
+            description: "Un lieu ou un transport collectif difficile d'accès.",
+            focus: "Qui ne peut utiliser quel espace ou transport, et qui décide des aménagements ?",
+            caution: "Je demande l'accord avant de rapporter l'expérience d'une autre personne et je n'affirme pas représenter tout le quartier.",
+            prompts: ["Quel lieu précis pose problème, pour qui et à quel moment ?", "Quelle décision ou réponse publique est recherchée ?", "Quelles observations et quel responsable manquent encore ?"],
+            examples: {
+              situation: "L'arrêt de bus du quartier est difficile d'accès pour plusieurs habitants ; aucun calendrier de travaux n'est publié.",
+              goal: "Obtenir une réponse du service compétent sur les aménagements possibles.",
+              obstacle: "Nous ne savons pas qui décide et quelles personnes souhaitent participer.",
+              ideas: ["Recueillir des observations avec l'accord des personnes concernées.", "Identifier l'autorité compétente et les informations publiques.", "Préparer une demande collective précise."],
+              comparison: ["Une demande documentée peut obtenir une réponse vérifiable.", "Une réponse ne garantit pas les travaux ni leur financement."],
+              action: "Identifier le service responsable et demander aux habitants intéressés ce qu'ils souhaitent partager.",
+              measure: "Le service répond ou indique un calendrier de décision.",
+              result: "Le service responsable a été identifié ; une rencontre reste à demander.",
+              support: "Des habitants volontaires et une association locale.",
+              backup: "Si l'interlocuteur est inconnu, demander une orientation à la collectivité.",
+              control: "Réunir des faits publics et formuler une demande avec les volontaires.",
+              outside: "Le budget, les travaux et la décision de l'autorité.",
+            },
+            tool: ["Demande publique vérifiable", "Je précise le lieu, les personnes touchées, l'autorité compétente et la réponse attendue. La participation doit pouvoir influencer une décision réelle.", "#ref-25"],
+          },
+          rights: {
+            label: "Service public et accès aux droits",
+            description: "Une démarche publique exclut ou décourage des personnes.",
+            focus: "À quelle étape des personnes renoncent-elles à une démarche publique ?",
+            caution: "Les règles d'éligibilité et les recours relèvent du droit applicable ; l'outil aide à formuler le problème, pas à trancher un droit.",
+            prompts: ["Quelle démarche bloque, et quelles personnes sont touchées ?", "Quel accès ou changement de service demander précisément ?", "Quelles règles et raisons d'abandon restent à vérifier ?"],
+            examples: {
+              situation: "Une démarche locale se fait seulement en ligne ; certaines personnes abandonnent avant d'obtenir une réponse.",
+              goal: "Demander qu'une voie utilisable soit proposée aux personnes qui ne peuvent terminer en ligne.",
+              obstacle: "Nous ne connaissons ni les causes précises d'abandon ni le service qui décide du canal d'accès.",
+              ideas: ["Demander aux usagers volontaires à quelle étape ils bloquent.", "Consulter les informations publiques sur les voies existantes.", "Adresser une demande documentée au service compétent."],
+              comparison: ["Les récits d'usagers peuvent révéler un obstacle concret.", "Quelques récits ne représentent pas automatiquement tous les usagers."],
+              action: "Identifier le service responsable et recueillir quelques expériences avec consentement.",
+              measure: "Une réponse écrite explique les voies d'accès ou annonce un examen du problème.",
+              result: "Le service a confirmé un accueil téléphonique, mais son accès reste peu visible.",
+              support: "Des usagers volontaires et une association d'accès aux droits.",
+              backup: "Si le canal public est flou, demander d'abord une orientation au service d'accueil.",
+              control: "Documenter l'obstacle et demander une réponse précise.",
+              outside: "La règle, les moyens et la décision du service public.",
+            },
+            tool: ["Parcours réel des usagers", "Je distingue les besoins des usagers de mes suppositions et j'observe l'ensemble de leur démarche, y compris les moments d'abandon.", "#ref-28"],
+          },
+          environment: {
+            label: "Environnement et santé collective",
+            description: "Une nuisance ou exposition qui touche un groupe.",
+            focus: "Quels faits sont connus, qu'est-ce qui reste incertain et qui est exposé ?",
+            caution: "Un témoignage de nuisance ne suffit pas à établir sa cause ou un risque sanitaire ; une expertise compétente peut être nécessaire.",
+            prompts: ["Quel phénomène est observé, où, quand et par qui ?", "Quelle vérification ou décision publique est demandée ?", "Quelles données et incertitudes faut-il signaler honnêtement ?"],
+            examples: {
+              situation: "Des riverains signalent régulièrement une odeur près d'une école, sans information publique sur sa source.",
+              goal: "Obtenir une vérification par l'autorité compétente et une information compréhensible aux riverains.",
+              obstacle: "La source de l'odeur et les mesures déjà réalisées sont inconnues.",
+              ideas: ["Consigner dates et lieux des observations sans données personnelles inutiles.", "Chercher les données publiques disponibles.", "Demander à l'autorité compétente quelle vérification est prévue."],
+              comparison: ["Des observations datées peuvent préciser la demande.", "Elles ne prouvent pas la cause ni l'effet sur la santé."],
+              action: "Identifier l'autorité compétente et lui demander les vérifications existantes.",
+              measure: "Une réponse précise les données disponibles et les suites envisagées.",
+              result: "Une mesure est annoncée ; sa date et la façon de communiquer le résultat restent à confirmer.",
+              support: "Des riverains volontaires et une association compétente.",
+              backup: "Si l'autorité est inconnue, demander une orientation à la collectivité.",
+              control: "Documenter les observations et formuler une demande prudente.",
+              outside: "L'expertise, le contrôle et la décision des autorités.",
+            },
+            tool: ["Faits, hypothèses et effets possibles", "Je distingue les observations des causes supposées, repère les personnes concernées et demande une vérification adaptée. L'évaluation d'une exposition relève de professionnels compétents.", "#ref-32"],
+          },
+          decision: {
+            label: "Règle, budget ou décision publique",
+            description: "Une décision collective peut encore être discutée.",
+            focus: "Quelle décision précise peut changer, et quelle influence les participants auront-ils ?",
+            caution: "Je n'invite pas des personnes à participer sans expliquer ce qui peut réellement être décidé et comment un retour leur sera fait.",
+            prompts: ["Quelle décision est en jeu et à quelle date ?", "Quel changement ou quelle réponse les personnes concernées souhaitent-elles ?", "Qui décide, qui manque au débat et quelles contraintes sont connues ?"],
+            examples: {
+              situation: "La commune prépare le budget d'un nouvel équipement, mais les usages souhaités par les habitants ne sont pas clairs.",
+              goal: "Faire connaître les besoins des habitants avant la décision budgétaire.",
+              obstacle: "Nous ne savons pas quelle part du projet peut encore changer ni comment les avis seront utilisés.",
+              ideas: ["Demander à la commune quelles décisions restent ouvertes.", "Consulter des habitants volontaires de profils variés.", "Présenter les besoins et les désaccords avant l'arbitrage."],
+              comparison: ["Une consultation peut éclairer des usages oubliés.", "Elle serait trompeuse si le budget et les choix sont déjà entièrement fixés."],
+              action: "Demander à l'autorité quelles options sont réellement ouvertes à la participation.",
+              measure: "La portée de la participation et la date du retour aux habitants sont annoncées.",
+              result: "La commune a précisé deux choix ouverts ; le retour aux participants reste à organiser.",
+              support: "Des habitants volontaires et l'instance responsable du projet.",
+              backup: "Si aucune décision n'est ouverte, demander plutôt une information publique honnête.",
+              control: "Poser une question précise et organiser une expression volontaire.",
+              outside: "Le vote budgétaire et l'arbitrage final.",
+            },
+            tool: ["Participation avec influence réelle", "Je vérifie la place possible des citoyens dans la décision, annonce les limites et prévois un retour sur l'usage de leurs contributions.", "#ref-25"],
+          },
+          other: {
+            label: "Autre problème collectif ou politique",
+            description: "Un enjeu public qui ne ressemble pas aux exemples proposés.",
+            focus: "Qui est concerné, quelle décision est recherchée et qui en a la compétence ?",
+            caution: "Je distingue ce que le groupe demande de ce que l'autorité peut réellement décider.",
+            prompts: ["Quels faits publics décrivent le problème et qui est touché ?", "Quelle réponse ou décision identifiable est demandée ?", "Quelles informations, personnes ou compétences manquent encore ?"],
+            examples: {
+              situation: "Un équipement collectif est peu utilisé et les habitants ne savent pas pourquoi ses horaires ont changé.",
+              goal: "Obtenir les raisons du changement d'horaires et discuter une adaptation possible.",
+              obstacle: "Le responsable de la décision et les contraintes de fonctionnement ne sont pas connus.",
+              ideas: ["Consulter les informations publiques disponibles.", "Demander aux usagers volontaires quels horaires leur sont utiles.", "Adresser une question précise à l'autorité compétente."],
+              comparison: ["Une question documentée peut clarifier la décision.", "Une modification peut dépendre de moyens non disponibles."],
+              action: "Identifier l'autorité compétente et demander les motifs des horaires actuels.",
+              measure: "Une réponse documentée explique la décision ou propose un échange.",
+              result: "La raison du changement a été communiquée ; une adaptation reste à discuter.",
+              support: "Des usagers volontaires et une association locale.",
+              backup: "Si le décideur est inconnu, demander une orientation à la collectivité.",
+              control: "Réunir les faits et formuler une demande avec les volontaires.",
+              outside: "Le pouvoir de décision et les ressources de l'autorité.",
+            },
+            tool: ["Problème, décision et retour", "Je formule une question publique précise, vérifie qui peut agir et prévois d'informer les personnes participantes de la réponse.", "#ref-25"],
+          },
         },
       };
 
@@ -4406,7 +5028,8 @@
               "'": "&#39;",
             })[c],
         );
-      const KEY = "pas-a-pas.brouillon.v1";
+      const KEY = "pas-a-pas.brouillon.v2";
+      const OLD_KEY = "pas-a-pas.brouillon.v1";
       const contextIcon = (k) => {
         const paths = {
           daily: "M3 10l9-7 9 7M5 9v12h14V9M9 21v-7h6v7",
@@ -4433,8 +5056,8 @@
       function term(k, label = glossary[k][0].toLowerCase()) {
         return `<button type="button" class="glossary-button" data-term="${k}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button>`;
       }
-      const glossaryWord = /(données personnelles|sondages?|restitution|indicateurs?|biais|consentement|efficacité)/giu;
-      const glossaryKeys = { "données personnelles": "personalData", sondage: "survey", sondages: "survey", restitution: "feedback", indicateur: "indicator", indicateurs: "indicator", biais: "bias", consentement: "consent", efficacité: "efficacy" };
+      const glossaryWord = /(indicateurs? d[’']équilibrage|données probantes|données personnelles|décision partagée|violentomètre|sondages?|restitution|indicateurs?|biais|consentement|efficacité)/giu;
+      const glossaryKeys = { "indicateur d’équilibrage": "balancingIndicator", "indicateurs d’équilibrage": "balancingIndicator", "indicateur d'équilibrage": "balancingIndicator", "indicateurs d'équilibrage": "balancingIndicator", "données probantes": "evidence", "données personnelles": "personalData", "décision partagée": "sharedDecision", violentomètre: "violentometer", sondage: "survey", sondages: "survey", restitution: "feedback", indicateur: "indicator", indicateurs: "indicator", biais: "bias", consentement: "consent", efficacité: "efficacy" };
       function linkGlossary(text) {
         return String(text).split(glossaryWord).map((part) => {
           const key = glossaryKeys[part.toLocaleLowerCase("fr")];
@@ -4443,13 +5066,14 @@
       }
       function fresh() {
         return {
-          version: 1,
+          version: 2,
           step: 0,
           clarifyPart: 0,
-          context: "daily",
+          context: "other",
           scale: "personal",
           scaleChosen: false,
           reviewScale: false,
+          reviewContext: false,
           safety: "",
           energy: "",
           fields: {
@@ -4496,28 +5120,50 @@
         shortcut.hidden = !hasWriting();
         shortcut.textContent = hasPlan() ? "Voir mon plan ↗" : "Voir mes réponses ↗";
       }
+      const legacyContextMap = {
+        personal: { daily: "daily", study: "study", work: "work", health: "health" },
+        shared: { couple: "couple", family: "family", work: "colleague" },
+        organization: { work: "coordination" },
+        public: { collective: "mobility" },
+      };
+      const currentContext = () => contextCatalog[state.scale][state.context];
       function selectScale(scale) {
-        if (state.scale !== scale && hasWriting()) state.reviewScale = true;
+        if (!Object.hasOwn(scales, scale)) return;
+        const changed = state.scale !== scale;
+        if (changed && hasWriting()) {
+          state.reviewScale = true;
+          state.reviewContext = true;
+        }
         state.scale = scale;
         state.scaleChosen = true;
         state.step = 0;
         state.clarifyPart = 0;
-        if (state.context === "daily" && scale === "organization") state.context = "work";
-        if (state.context === "daily" && scale === "public") state.context = "collective";
+        if (!Object.hasOwn(contextCatalog[scale], state.context)) {
+          state.context = "other";
+          if (hasWriting()) state.reviewContext = true;
+        }
       }
       function validateDraft(raw) {
         if (
           !raw ||
-          raw.version !== 1 ||
-          !Object.hasOwn(contexts, raw.context) ||
+          ![1, 2].includes(raw.version) ||
           !Array.isArray(raw.options) ||
           raw.options.length < 1 ||
           raw.options.length > 8
         )
           throw Error("invalid");
         const clean = fresh();
-        clean.context = raw.context;
+        if (raw.version === 2 && !Object.hasOwn(scales, raw.scale)) throw Error("invalid");
         clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
+        if (raw.version === 1) {
+          if (!Object.hasOwn(contexts, raw.context)) throw Error("invalid");
+          clean.context = legacyContextMap[clean.scale][raw.context] || "other";
+          clean.reviewContext = true;
+        } else {
+          if (!Object.hasOwn(contextCatalog[clean.scale], raw.context)) throw Error("invalid");
+          clean.context = raw.context;
+          clean.reviewContext = raw.reviewContext === true;
+        }
         clean.scaleChosen = raw.scaleChosen === true;
         clean.reviewScale = raw.reviewScale === true;
         clean.step =
@@ -4542,11 +5188,9 @@
         )
           ? clean.fields.trial
           : "notyet";
-        const ids = new Set();
         clean.options = raw.options.map((o, i) => {
           if (!o || typeof o.text !== "string") throw Error("invalid");
           const id = i + 1;
-          ids.add(id);
           return {
             id,
             text: o.text.slice(0, 6000),
@@ -4557,14 +5201,47 @@
         const choice = raw.options.findIndex((o) => o.id === raw.chosen);
         clean.chosen =
           choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
+        if (raw.version === 1) {
+          clean.reviewContext = Object.entries(clean.fields).some(([key, value]) => key !== "trial" && value.trim()) || clean.options.some((option) => option.text.trim());
+          if (clean.reviewContext) {
+            clean.step = 0;
+            clean.clarifyPart = 0;
+          }
+        }
         return clean;
       }
       try {
         const saved = localStorage.getItem(KEY);
+        let restored = false;
+        let restoredFromV2 = false;
         if (saved) {
-          state = validateDraft(JSON.parse(saved));
+          try {
+            state = validateDraft(JSON.parse(saved));
+            restored = true;
+            restoredFromV2 = true;
+          } catch (e) {
+            /* A damaged v2 draft must not hide a valid v1 draft. */
+          }
+        }
+        if (!restored) {
+          const old = localStorage.getItem(OLD_KEY);
+          if (old) {
+            state = validateDraft(JSON.parse(old));
+            restored = true;
+            try {
+              localStorage.setItem(KEY, JSON.stringify(state));
+              localStorage.removeItem(OLD_KEY);
+            } catch (e) {
+              /* Keep the readable v1 draft if writing the migrated copy fails. */
+            }
+          }
+        }
+        if (restored) {
           remember = true;
           nextId = state.options.length + 1;
+          if (restoredFromV2 && localStorage.getItem(OLD_KEY)) {
+            try { localStorage.removeItem(OLD_KEY); } catch (e) { /* Keep the readable draft. */ }
+          }
         }
       } catch (e) {
         /* Corrupt or unavailable storage does not block use. */
@@ -4620,7 +5297,7 @@
         fn?.();
       });
       function example(text, label = "", visible = false) {
-        const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(state.scale === "personal" ? contexts[state.context].label : scales[state.scale][0])}</small><p>${esc(text)}</p></div>`;
+        const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(currentContext().label)}</small><p>${esc(text)}</p></div>`;
         return visible ? content : `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary>${content}</details>`;
       }
       function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false) {
@@ -4644,7 +5321,7 @@
         hideTooltip();
         renderSteps();
         updateRecapShortcut();
-        const c = contexts[state.context],
+        const c = currentContext(),
           i = state.step,
           workflow = workflows[state.scale];
         const titles = workflow.titles;
@@ -4655,9 +5332,11 @@
           const scaleChoice = state.scaleChosen
             ? `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong><span>${scales[state.scale][1]}</span></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>`
             : `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
-          const contextOptions = Object.entries(contexts).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${value.label}</option>`).join("");
+          const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
           const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
-          body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Dans quel domaine se passe la situation ?</label><select id="context-select">${contextOptions}</select><p class="hint">Je peux choisir le domaine le plus proche. Les exemples de l’exercice s’adaptent à ce choix.</p></div><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+          const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
+          const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || (state.scale === "shared" && ["couple", "family", "colleague"].includes(state.context)) ? ' <a href="#violences">Repérer une violence →</a>' : "";
+          body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}<fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
             ["danger", "Je me sens en danger"],
@@ -4672,29 +5351,38 @@
         }
         if (i === 1) {
           const prompts = [
-            ["situation", workflow.fields[0], workflow.fields[1], workflow.examples?.[0] || c.situation],
-            ["goal", workflow.fields[2], workflow.fields[3], workflow.examples?.[1] || c.goal],
-            ["obstacle", workflow.fields[4], workflow.fields[5], workflow.examples?.[2] || c.obstacle],
+            ["situation", workflow.fields[0], c.prompts?.[0] || workflow.fields[1], c.examples?.situation || workflow.examples?.[0]],
+            ["goal", workflow.fields[2], c.prompts?.[1] || workflow.fields[3], c.examples?.goal || workflow.examples?.[1]],
+            ["obstacle", workflow.fields[4], c.prompts?.[2] || workflow.fields[5], c.examples?.obstacle || workflow.examples?.[2]],
           ];
           const [key, label, hint, sample] = prompts[state.clarifyPart];
           body = `<p class="question-progress">Question ${state.clarifyPart + 1} sur 3 · Je peux passer si je ne sais pas encore.</p>` +
-            (state.clarifyPart === 0 && state.reviewScale ? '<div class="notice amber section-gap"><strong>J’ai changé de niveau.</strong> Je relis mes réponses : elles sont restées dans le brouillon.</div>' : "") +
+            (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "") +
             (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
             field(key, label, hint, "textarea", sample, true) +
-            (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
+            (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
         }
         if (i === 2) {
-          body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
+          const ideaExamples = c.examples?.ideas || workflow.ideas || [];
+          body = `<p class="hint">${linkGlossary(workflow.idea)}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 && ideaExamples[j] ? example(ideaExamples[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
         }
         if (i === 3) {
           const options = state.options.filter((o) => o.text.trim());
+          const ideaExamples = c.examples?.ideas || workflow.ideas || [];
+          const comparison = c.examples?.comparison || workflow.comparison || [];
           body = options.length
-            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc((workflow.ideas || c.ideas)[0])}</p><p><strong>Apport possible :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[0])}</p><p><strong>Limite :</strong> ${esc((workflow.comparison || comparisonExamples[state.context])[1])}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${workflow.compare}</p><p>Si les conséquences sont importantes, demandez un avis adapté avant d’agir.</p></div></details>`
+            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(ideaExamples[0] || "Une piste à essayer.")}</p><p><strong>Apport possible :</strong> ${esc(comparison[0] || "Je note ce qu’elle pourrait apporter.")}</p><p><strong>Limite :</strong> ${esc(comparison[1] || "Je note ce qui pourrait bloquer.")}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${linkGlossary(workflow.compare)}</p><p>Si les conséquences sont importantes, je peux demander un avis adapté avant d’agir.</p></div></details>`
             : `<div class="notice amber"><strong>Je n’ai pas encore noté de piste.</strong>Je reviens à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
         }
         if (i === 4) {
           const chosen = state.options.find((o) => o.id === state.chosen);
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", workflow.actionExamples?.[0] || c.action, true)}${field("when", "Quand et où vais-je agir ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", workflow.action[2], workflow.action[3], "textarea", workflow.actionExamples?.[1] || c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
+          const when = {
+            personal: ["Quand et où vais-je agir ?", "Demain matin, chez moi, pendant dix minutes."],
+            shared: ["Quand puis-je proposer cet essai ?", "À notre prochain échange, si chacun souhaite en parler."],
+            organization: ["Quand et où le test aura-t-il lieu ?", "Lors de la prochaine réunion d’équipe, sur un seul dossier."],
+            public: ["Quand et auprès de qui faire cette démarche ?", "Lors de la prochaine permanence du service concerné."],
+          }[state.scale];
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
         }
         if (i === 5) {
           body = `<fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[
@@ -4709,11 +5397,12 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.examples?.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
         }
-        if (workflow.tools[i]) {
-          const [name, description, source] = workflow.tools[i];
-          body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
+        const selectedTool = i === 1 && c.tool ? c.tool : workflow.tools[i];
+        if (selectedTool) {
+          const [name, description, source] = selectedTool;
+          body += `<details class="section-gap"><summary>Outil utile ici : ${esc(name)}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${esc(source)}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
           `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${i === 0 ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? "Question suivante" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
@@ -4759,6 +5448,7 @@
             return;
           }
           state.reviewScale = false;
+          state.reviewContext = false;
         }
         if (state.step === 4 && !state.fields.action.trim()) {
           toast("Je note un premier pas concret, même petit, pour préparer mon plan.");
@@ -4804,7 +5494,7 @@
           return;
         }
         const f = state.fields,
-          c = contexts[state.context],
+          c = currentContext(),
           choice = state.options.find((o) => o.id === state.chosen);
         const dd = (k, v) => v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : "";
         const block = (title, idx, content) =>
@@ -5252,12 +5942,13 @@
       });
       document.addEventListener("change", (e) => {
         if (e.target.id !== "context-select") return;
-        if (!Object.hasOwn(contexts, e.target.value)) return;
+        if (!Object.hasOwn(contextCatalog[state.scale], e.target.value)) return;
+        if (state.context === e.target.value) return;
         state.context = e.target.value;
+        state.reviewContext = hasWriting();
         persist();
         renderStep();
         $("#context-select").focus();
-        toast(`Exemples adaptés : ${contexts[state.context].label}. Le texte déjà saisi ne change pas.`);
       });
       document.addEventListener("click", (e) => {
         const b = e.target.closest("button");
@@ -5393,6 +6084,7 @@
                 let removed = true;
                 try {
                   localStorage.removeItem(KEY);
+                  localStorage.removeItem(OLD_KEY);
                 } catch (e) {
                   removed = false;
                 }
@@ -5435,6 +6127,7 @@
         } else {
           try {
             localStorage.removeItem(KEY);
+            localStorage.removeItem(OLD_KEY);
             toast("Sauvegarde désactivée et retirée de ce navigateur.");
           } catch (e) {
             toast(
@@ -5461,7 +6154,7 @@
             "Le fichier remplacera les réponses actuellement affichées. Téléchargez-les d’abord si vous souhaitez les garder.",
             () => {
               state = imported;
-              nextId = Math.max(...state.options.map((option) => option.id)) + 1;
+              nextId = state.options.length + 1;
               persist();
               renderStep();
               if (location.hash !== "#outil") location.hash = "outil";

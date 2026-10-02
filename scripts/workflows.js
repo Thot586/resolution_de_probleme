@@ -18,9 +18,9 @@
           ],
         },
         shared: {
-          steps: ["La relation", "Comprendre chacun", "Des pistes communes", "Un accord possible", "Essayer ensemble", "Revoir l’accord"],
-          titles: ["Mon contexte", "Qu’est-ce qui compte pour chacun ?", "Quelles pistes pouvons-nous envisager ?", "Quelle piste respecte nos limites ?", "Quel essai pouvons-nous proposer ?", "L’accord a-t-il été utile ?"],
-          leads: ["", "Je distingue les faits, mon besoin et ce que je sais réellement du besoin de l’autre.", "Je prépare des propositions, sans supposer l’accord de l’autre personne.", "Je compare les effets pour chacun et la liberté réelle de refuser.", "Je propose un échange ou un essai, avec un moment pour refaire le point.", "Je demande ce qui a fonctionné pour chacun et ce qui doit changer."],
+          steps: ["La relation", "Comprendre chacun", "Des pistes à proposer", "Un choix respectueux", "Proposer avec accord", "Ce qui a changé"],
+          titles: ["Mon contexte", "Qu’est-ce qui compte pour chacun ?", "Quelles pistes puis-je envisager ?", "Quelle piste respecte nos limites ?", "Quel pas puis-je proposer sans imposer ?", "Qu’est-ce qui a changé ?"],
+          leads: ["", "Je distingue les faits, mon besoin et ce que je sais réellement du besoin de l’autre.", "Je prépare des propositions, sans supposer l’accord de l’autre personne.", "Je compare les effets pour chacun et la liberté réelle de refuser.", "Je propose un échange ou un essai seulement si chacun peut refuser librement. Je peux aussi choisir un autre soutien.", "Je note ce qui s’est passé, les désaccords restants et ce qui doit changer."],
           fields: ["Ce qui s’est passé entre nous", "Décrivez des faits observables, sans attribuer d’intention à l’autre.", "Ce que je souhaite pour la relation", "Quel changement serait acceptable pour moi et à discuter avec l’autre ?", "Ce qui empêche l’accord", "Quelles informations, limites ou contraintes restent à clarifier ?"],
           examples: ["Nous avons discuté deux fois d’une tâche, mais nous n’avons pas clarifié qui ferait quoi.", "Nous voulons choisir une répartition que chacun peut accepter.", "Nous ne connaissons pas encore les contraintes de l’autre."],
           idea: "Préparer plusieurs propositions et garder de la place pour les idées de l’autre personne.",
