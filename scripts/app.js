@@ -219,7 +219,7 @@
         const leads = workflow.leads;
         let body = "";
         if (i === 0) {
-          body = `<fieldset><legend>Je choisis le domaine de mon problème</legend><div class="contexts">${Object.entries(
+          body = `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("")}</div></fieldset><fieldset class="section-gap"><legend>Je choisis le domaine</legend><div class="contexts">${Object.entries(
             contexts,
           )
             .map(
@@ -228,7 +228,7 @@
             )
             .join(
               "",
-            )}</div><details class="section-gap"><summary>Ma situation n’est pas dans la liste</summary><div class="details-body"><p>Je peux choisir le domaine le plus proche. Par exemple, logement, argent, démarches ou numérique peuvent entrer dans « Vie quotidienne ». Une question de quartier, de transport ou de service public peut entrer dans « Vie collective ». Les questions suivantes s’adaptent surtout à l’échelle que je choisis.</p></div></details></fieldset><fieldset class="section-gap"><legend>À quelle échelle se situe mon problème ?</legend><p class="hint">Je peux choisir l’échelle la plus proche. Ce choix adapte les repères, sans changer mes réponses.</p><div class="choice-stack">${Object.entries(scales).map(([key, [label]]) => `<button class="pill" type="button" data-scale="${key}" aria-pressed="${state.scale === key}">${label}</button>`).join("")}</div><p class="hint section-gap">${scales[state.scale][1]}</p></fieldset><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+            )}</div><details class="section-gap"><summary>Ma situation n’est pas dans la liste</summary><div class="details-body"><p>Je peux choisir le domaine le plus proche. Logement, argent et démarches vont dans « Vie quotidienne ». Une question de quartier ou de service public va dans « Vie collective ».</p></div></details></fieldset><fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
             ["danger", "Je me sens en danger"],
@@ -265,7 +265,7 @@
               "textarea",
               workflow.examples?.[2] || c.obstacle,
             ) +
-            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
+            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Si nécessaire : ce que je ressens et ce que je peux changer</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
         }
         if (i === 2) {
           body = `<p class="hint">${workflow.idea}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example((workflow.ideas || c.ideas)[j], "Piste " + (j + 1)) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
@@ -300,7 +300,7 @@
           body += `<details class="section-gap"><summary>Outil utile ici : ${name}</summary><div class="details-body"><p>${description}</p><p class="source-note">Pourquoi ce repère ? <a href="${source}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2><p class="step-lead">${leads[i]}</p><div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${leads[i]}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         if (focus) {
           $("#step-title").focus({ preventScroll: true });
           $("#step-container").scrollIntoView({
@@ -790,6 +790,14 @@
         a.addEventListener("click", () => {
           if (a.hash === location.hash) route();
           setMenuOpen(false);
+        }),
+      );
+      $$("[data-start-scale]").forEach((a) =>
+        a.addEventListener("click", () => {
+          state.scale = a.dataset.startScale;
+          state.step = 0;
+          persist();
+          renderStep();
         }),
       );
       document.addEventListener("click", (event) => {

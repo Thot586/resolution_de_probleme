@@ -85,6 +85,20 @@ const errors = [];
   );
   assert.equal(await page.evaluate(() => localStorage.length), 0);
   await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
+  assert.equal(await page.locator("#accueil [data-start-scale]").count(), 4);
+  for (const [scale, expected] of [
+    ["personal", /Quel est mon problème/],
+    ["shared", /Qu’est-ce qui compte pour chacun/],
+    ["organization", /Quel problème le système produit/],
+    ["public", /Qui est touché et quelle décision manque/],
+  ]) {
+    await page.locator(`#accueil [data-start-scale="${scale}"]`).click();
+    await visible("#outil");
+    assert.equal(await page.locator(`#step-container [data-scale="${scale}"]`).getAttribute("aria-pressed"), "true");
+    await step(1);
+    assert.match(await page.locator("#step-title").innerText(), expected);
+    await visit("accueil");
+  }
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
   await page.screenshot({ path: path.join(output, "desktop-support.png"), fullPage: true });
@@ -98,6 +112,7 @@ const errors = [];
   await visible("#proche");
   await visit("outil");
   await visible("#step-title");
+  await step(0);
   assert.match(await page.locator("#privacy-status").innerText(), /Rien n’est envoyé/);
   assert.equal(await page.evaluate(() => localStorage.length), 0);
   for (const [scale, expected] of [
@@ -111,6 +126,10 @@ const errors = [];
     await step(0);
   }
   await page.locator("[data-scale=personal]").click();
+  await step(1);
+  assert.match(await page.locator(".step-lead").innerText(), /Une phrase suffit/);
+  assert(!(await page.locator(".optional-fields .details-body").first().isVisible()));
+  await step(0);
   await page.screenshot({
     path: path.join(output, "desktop-start.png"),
     fullPage: true,
@@ -388,6 +407,9 @@ const errors = [];
     }
   }
   await page.setViewportSize({ width: 390, height: 844 });
+  await visit("accueil");
+  await page.screenshot({ path: path.join(output, "mobile-home.png"), fullPage: true });
+  await visit("outil");
   await step(0);
   await page.evaluate(() => {
     document.activeElement?.blur();

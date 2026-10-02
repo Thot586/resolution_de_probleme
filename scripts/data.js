@@ -162,10 +162,10 @@
         },
       };
       const scales = {
-        personal: ["Personnel", "Ce que je peux essayer moi-même, avec de l’aide si besoin."],
-        shared: ["Entre personnes", "Ce qui demande un accord ou une discussion avec d’autres."],
-        organization: ["Équipe ou institution", "Ce qui dépend aussi de règles, de moyens ou d’une décision d’organisation."],
-        public: ["Collectif ou politique", "Ce qui concerne un groupe et une décision publique ; agir avec les personnes concernées."],
+        personal: ["Personnel", "Je peux agir, avec ou sans aide."],
+        shared: ["Entre personnes", "Une discussion ou un accord est nécessaire."],
+        organization: ["Équipe ou institution", "Une équipe, ses règles ou ses moyens sont en jeu."],
+        public: ["Collectif ou politique", "Une décision collective ou publique est en jeu."],
       };
       const glossary = {
         meta: [

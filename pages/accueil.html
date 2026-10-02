@@ -1,37 +1,49 @@
       <section id="accueil" class="view" aria-labelledby="welcome-title">
         <div class="welcome-hero">
-          <div class="eyebrow">Outil pédagogique · Résolution de problème</div>
-          <h1 id="welcome-title">Aujourd’hui, je veux…</h1>
-          <p>Choisissez votre situation. Vous pourrez changer de chemin à tout moment.</p>
+          <div class="eyebrow">Outil pédagogique</div>
+          <h1 id="welcome-title">Résoudre un problème</h1>
         </div>
-        <div class="path-grid" aria-label="Choisir un parcours">
-          <a class="path-card path-primary" href="#outil">
-            <span class="path-number">01 · Pour moi</span>
-            <h2>Je veux avancer sur mon problème</h2>
-            <p>Je décris ma situation, je cherche des pistes, puis je choisis un premier pas.</p>
-            <span class="path-action">Commencer mon parcours <span aria-hidden="true">↗</span></span>
-          </a>
-          <a class="path-card" href="#soutenir">
-            <span class="path-number">02 · Pour une autre personne</span>
-            <h2>Je veux soutenir quelqu’un</h2>
-            <p>J’écoute, je repère ce dont la personne a besoin, puis je propose une aide adaptée.</p>
-            <span class="path-action">Préparer une conversation <span aria-hidden="true">↗</span></span>
-          </a>
-        </div>
+        <section class="scale-entry" aria-labelledby="scale-entry-title">
+          <h2 id="scale-entry-title">Je choisis le niveau de mon problème</h2>
+          <div class="scale-grid">
+            <a class="scale-card" href="#outil" data-start-scale="personal">
+              <strong>Personnel</strong>
+              <span>Je peux agir moi-même.</span>
+              <span class="scale-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="scale-card" href="#outil" data-start-scale="shared">
+              <strong>Entre personnes</strong>
+              <span>Il faut en parler avec quelqu’un.</span>
+              <span class="scale-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="scale-card" href="#outil" data-start-scale="organization">
+              <strong>Équipe ou institution</strong>
+              <span>Des règles ou des moyens comptent.</span>
+              <span class="scale-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="scale-card" href="#outil" data-start-scale="public">
+              <strong>Collectif ou politique</strong>
+              <span>Une décision publique est en jeu.</span>
+              <span class="scale-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <p class="hint">Je pourrai changer de niveau dans l’exercice.</p>
+        </section>
+        <a class="support-entry" href="#soutenir">
+          <span><strong>Je veux soutenir quelqu’un</strong><small>Écouter, comprendre son besoin, proposer une aide.</small></span>
+          <span aria-hidden="true">↗</span>
+        </a>
         <div class="quick-paths">
           <span>Autres situations</span>
           <a href="#proche">Comment aider un proche ? ↗</a>
           <a href="#violences">Reconnaître une violence ↗</a>
           <a href="#securite">Trouver une aide urgente ↗</a>
         </div>
-        <div class="welcome-explain">
-          <h2>Comment ça se passe ?</h2>
-          <p>Une vue courte avant de commencer. Les explications détaillées restent disponibles si vous en avez besoin.</p>
-          <ol class="preview-steps">
-            <li><b>Comprendre</b><span>Ce qui se passe et ce qui compte.</span></li>
-            <li><b>Choisir</b><span>Une aide ou une piste adaptée.</span></li>
-            <li><b>Essayer</b><span>Un petit pas, puis un bilan.</span></li>
-          </ol>
-          <a class="text-button" href="#comprendre">Comprendre la méthode et ses limites ↗</a>
-        </div>
+        <details class="welcome-explain">
+          <summary>Voir les étapes de l’exercice</summary>
+          <div class="details-body">
+            <p>Décrire le problème. Chercher des pistes. Choisir une action. Faire le point.</p>
+            <a class="text-button" href="#comprendre">Comprendre la méthode ↗</a>
+          </div>
+        </details>
       </section>

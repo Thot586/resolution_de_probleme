@@ -22,7 +22,7 @@ Les tests navigateur demandent Chromium pour Playwright : `npx playwright instal
 - **Comment aider un proche ?** : situations particulières, présence et limites de l'aide d'un proche.
 - **Sécurité et sources** : repères face aux violences, aides et limites scientifiques.
 
-L'accueil donne une vue très courte des étapes avant l'exercice. Les détails méthodologiques restent accessibles depuis « Comprendre ». Les méthodes et sources sont identifiées dans la bibliographie ; leur présence ne valide pas l'efficacité de ce site lui-même.
+L'accueil permet de choisir directement l'un des quatre niveaux. Ce choix peut être changé pendant l'exercice. Les étapes sont visibles sur demande ; les détails méthodologiques restent accessibles depuis « Comprendre ». Les méthodes et sources sont identifiées dans la bibliographie ; leur présence ne valide pas l'efficacité de ce site lui-même.
 
 ## Choix technique
 
