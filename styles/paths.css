@@ -69,6 +69,11 @@
       .teaching-figure { max-width: 420px; margin: 22px auto; padding: 14px; border-radius: 20px; background: #eaf3eb; }
       .teaching-figure svg { display: block; width: 100%; height: auto; }
       .teaching-figure figcaption { margin: 12px 5px 2px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+      .decision-guide .teaching-figure { margin-top: 4px; }
+      .diagram-scroll-hint { display: none; }
+      .scrollable-diagram:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+      .diagram-reading { max-width: 620px; margin: 12px auto 0; }
+      .diagram-reading li { padding-left: 4px; }
       .visual-guides { margin-top: 32px; }
       .visual-guides .block-heading { margin-bottom: 14px; }
       .visual-guides details + details { margin-top: 12px; }
@@ -102,6 +107,8 @@
         .group-layout { grid-template-columns: 1fr; }
       }
       @media (max-width: 600px) {
+        .workspace { grid-template-columns: minmax(0, 1fr); }
+        .step-card { min-width: 0; }
         .welcome-hero { padding: 27px 23px; border-radius: 20px; }
         .path-heading p { font-size: .88rem; }
         .scale-entry { margin-top: 26px; }
@@ -115,4 +122,12 @@
         .need-heading { flex-wrap: wrap; gap: 4px; }
         .need-lab { padding: 21px; }
         .support-foundations .details-body { padding: 12px; }
+        .group-method-box { margin-inline: -20px; padding: 10px; }
+        #group-method-diagram .details-body, .decision-guide .details-body { padding: 8px 6px; }
+        #group-method-diagram .teaching-figure, .decision-guide .teaching-figure { max-width: none; padding: 4px; overflow-x: auto; }
+        .decision-guide { margin-inline: -20px; }
+      }
+      @media (max-width: 360px) {
+        #group-method-diagram svg, .decision-guide svg { min-width: 300px; }
+        .diagram-scroll-hint { display: block; }
       }

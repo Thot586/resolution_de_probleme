@@ -61,6 +61,74 @@
                   <option value="existing">Données déjà disponibles</option>
                 </select>
                 <p class="hint" id="group-method-hint"></p>
+                <details class="section-gap" id="group-method-diagram">
+                  <summary>Voir le logigramme : comment écouter le groupe ?</summary>
+                  <div class="details-body">
+                    <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits sous le dessin.</p>
+                    <figure class="teaching-figure scrollable-diagram" tabindex="0">
+                      <svg viewBox="0 0 360 778" role="img" aria-labelledby="group-listen-title group-listen-desc" xmlns="http://www.w3.org/2000/svg">
+                        <title id="group-listen-title">Choisir une manière d’écouter un groupe</title>
+                        <desc id="group-listen-desc">Si aucune décision réelle ne peut être influencée, clarifier qui décide avant d'enquêter. Si une décision est ouverte, regarder d'abord les informations disponibles : les examiner et les vérifier avec les personnes peut suffire. Sinon, choisir une discussion ou des entretiens volontaires selon la liberté de parole. Un sondage court peut compléter l'écoute si une même question concerne beaucoup de personnes. Les choix sont aussi décrits en texte après le dessin.</desc>
+                        <!-- Les branches sans flèche sortante sont des issues possibles ; seule la branche qui appelle une autre question continue. -->
+                        <g fill="#eaf3eb" stroke="#24594d" stroke-width="2">
+                          <rect x="12" y="12" width="336" height="60" rx="14"/>
+                          <rect x="12" y="190" width="336" height="60" rx="14"/>
+                          <rect x="12" y="370" width="336" height="60" rx="14"/>
+                          <rect x="12" y="550" width="336" height="60" rx="14"/>
+                        </g>
+                        <g fill="#ffffff" stroke="#24594d" stroke-width="2">
+                          <rect x="12" y="102" width="160" height="58" rx="12"/>
+                          <rect x="188" y="102" width="160" height="58" rx="12"/>
+                          <rect x="12" y="280" width="160" height="60" rx="12"/>
+                          <rect x="188" y="280" width="160" height="60" rx="12"/>
+                          <rect x="12" y="460" width="160" height="60" rx="12"/>
+                          <rect x="188" y="460" width="160" height="60" rx="12"/>
+                          <rect x="12" y="640" width="160" height="60" rx="12"/>
+                          <rect x="188" y="640" width="160" height="60" rx="12"/>
+                        </g>
+                        <g fill="none" stroke="#24594d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M180 72v12H92v12m-5-5 5 5 5-5M180 84h88v12m-5-5 5 5 5-5"/>
+                          <path d="M268 160v18h-88v6m-5-5 5 5 5-5"/>
+                          <path d="M180 250v12H92v12m-5-5 5 5 5-5M180 262h88v12m-5-5 5 5 5-5"/>
+                          <path d="M268 340v18h-88v6m-5-5 5 5 5-5"/>
+                          <path d="M180 430v12H92v12m-5-5 5 5 5-5M180 442h88v12m-5-5 5 5 5-5"/>
+                          <path d="M92 520v18h88v6m-5-5 5 5 5-5M268 520v18h-88"/>
+                          <path d="M180 610v12H92v12m-5-5 5 5 5-5M180 622h88v12m-5-5 5 5 5-5"/>
+                        </g>
+                        <g fill="#203b36" font-family="system-ui, sans-serif" text-anchor="middle">
+                          <g font-size="16" font-weight="700">
+                            <text x="180" y="38">Une décision réelle</text><text x="180" y="59">peut-elle être influencée ?</text>
+                            <text x="180" y="216">Des informations</text><text x="180" y="237">existent-elles déjà ?</text>
+                            <text x="180" y="396">La parole est-elle libre</text><text x="180" y="417">dans le groupe ?</text>
+                            <text x="180" y="576">Même question pour</text><text x="180" y="597">beaucoup de personnes ?</text>
+                          </g>
+                          <g font-size="14" font-weight="700">
+                            <text x="92" y="124">Non</text><text x="268" y="124">Oui</text>
+                            <text x="92" y="302">Oui</text><text x="268" y="302">Non</text>
+                            <text x="92" y="482">Oui</text><text x="268" y="482">Non</text>
+                            <text x="92" y="662">Oui</text><text x="268" y="662">Non</text>
+                          </g>
+                          <g font-size="13">
+                            <text x="92" y="145">Clarifier qui décide</text><text x="268" y="145">Poursuivre</text>
+                            <text x="92" y="317">Examiner les infos</text><text x="92" y="334">et vérifier ensemble</text><text x="268" y="322">Choisir une écoute</text>
+                            <text x="92" y="502">Discussion volontaire</text><text x="268" y="502">Entretiens volontaires</text>
+                            <text x="92" y="682">Sondage en complément</text><text x="268" y="682">Pas de sondage requis</text>
+                          </g>
+                        </g>
+                        <text x="180" y="743" fill="#203b36" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14">Puis restituer et suivre la décision.</text>
+                      </svg>
+                      <figcaption>Je reprends le choix si une décision devient possible ou si les informations existantes laissent des questions ouvertes. Un sondage ne garantit pas la représentativité. Si écouter le groupe risque d’exposer des personnes à des représailles, je cherche d’abord un soutien adapté. Je ne lance pas d’enquête qui les expose.</figcaption>
+                    </figure>
+                    <p><strong>Les choix en texte :</strong></p>
+                    <ol class="diagram-text">
+                      <li>Je clarifie qui décide, ce qui peut changer et l’objectif de l’écoute. Si aucune décision réelle ne peut être influencée, je précise cela avant d’enquêter.</li>
+                      <li>Si des informations existent déjà, je les examine et je vérifie leur interprétation avec des personnes concernées. S’il reste des questions, je choisis une autre manière d’écouter.</li>
+                      <li>Si les personnes peuvent parler librement ensemble, je peux proposer une discussion volontaire. Si la parole en groupe est difficile, je peux proposer des entretiens individuels volontaires.</li>
+                      <li>Si une même question concerne beaucoup de personnes, un sondage court peut compléter cette écoute. Ses résultats ne sont pas forcément représentatifs. Sinon, le sondage n’est pas nécessaire.</li>
+                    </ol>
+                    <p class="source-note">Ce logigramme est un aide-mémoire pour choisir une méthode, pas un algorithme validé. J’adapte la démarche avec les personnes concernées. <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-28">[28]</a> <a href="#ref-33">[33]</a></p>
+                  </div>
+                </details>
               </div>
               <div class="field section-gap">
                 <label class="label" for="group-note" id="group-note-label">Ma note pour cette étape</label>

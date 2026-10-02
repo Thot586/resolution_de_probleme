@@ -33,7 +33,7 @@ Les réponses de « Mon problème » ne sont pas envoyées par le site. Elles re
 
 Les anciens brouillons (version 1) sont lus lors de l’import et, s’ils étaient conservés dans le navigateur, au prochain chargement. Les réponses sont préservées. Quand l’ancien « domaine » ne correspond pas clairement à un nouveau contexte, « Autre situation » est retenu et une relecture est demandée. Les nouveaux brouillons utilisent la version 2.
 
-Cinq schémas SVG intégrés illustrent les étapes générales, l'aide à une personne, le test dans une équipe, la démarche collective et le parcours d’aide à un groupe. Chaque schéma porte ses libellés dans la figure, un titre et une description accessibles ; sa légende ajoute les limites et les exceptions utiles. Les cartes de choix des niveaux et le violentomètre sont déjà des supports visuels interactifs et ne sont pas redessinés en SVG.
+Cinq schémas SVG intégrés illustrent les étapes générales, l'aide à une personne, le test dans une équipe, la démarche collective et le parcours d’aide à un groupe. Deux logigrammes supplémentaires aident à choisir une façon d’écouter un groupe et à vérifier la sécurité et l’accord avant un premier pas. Ils restent facultatifs, dans des sections repliées. Chaque figure porte ses libellés, un titre et une description ; les embranchements sont également écrits en texte à côté du dessin. Les légendes donnent les limites et les exceptions utiles. Ces logigrammes sont des repères pédagogiques, pas des algorithmes validés ou des évaluations du risque.
 
 ## Choix technique
 

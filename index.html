@@ -1826,6 +1826,11 @@
       .teaching-figure { max-width: 420px; margin: 22px auto; padding: 14px; border-radius: 20px; background: #eaf3eb; }
       .teaching-figure svg { display: block; width: 100%; height: auto; }
       .teaching-figure figcaption { margin: 12px 5px 2px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+      .decision-guide .teaching-figure { margin-top: 4px; }
+      .diagram-scroll-hint { display: none; }
+      .scrollable-diagram:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+      .diagram-reading { max-width: 620px; margin: 12px auto 0; }
+      .diagram-reading li { padding-left: 4px; }
       .visual-guides { margin-top: 32px; }
       .visual-guides .block-heading { margin-bottom: 14px; }
       .visual-guides details + details { margin-top: 12px; }
@@ -1859,6 +1864,8 @@
         .group-layout { grid-template-columns: 1fr; }
       }
       @media (max-width: 600px) {
+        .workspace { grid-template-columns: minmax(0, 1fr); }
+        .step-card { min-width: 0; }
         .welcome-hero { padding: 27px 23px; border-radius: 20px; }
         .path-heading p { font-size: .88rem; }
         .scale-entry { margin-top: 26px; }
@@ -1872,6 +1879,14 @@
         .need-heading { flex-wrap: wrap; gap: 4px; }
         .need-lab { padding: 21px; }
         .support-foundations .details-body { padding: 12px; }
+        .group-method-box { margin-inline: -20px; padding: 10px; }
+        #group-method-diagram .details-body, .decision-guide .details-body { padding: 8px 6px; }
+        #group-method-diagram .teaching-figure, .decision-guide .teaching-figure { max-width: none; padding: 4px; overflow-x: auto; }
+        .decision-guide { margin-inline: -20px; }
+      }
+      @media (max-width: 360px) {
+        #group-method-diagram svg, .decision-guide svg { min-width: 300px; }
+        .diagram-scroll-hint { display: block; }
       }
     </style>
 
@@ -2252,6 +2267,74 @@
                   <option value="existing">Données déjà disponibles</option>
                 </select>
                 <p class="hint" id="group-method-hint"></p>
+                <details class="section-gap" id="group-method-diagram">
+                  <summary>Voir le logigramme : comment écouter le groupe ?</summary>
+                  <div class="details-body">
+                    <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits sous le dessin.</p>
+                    <figure class="teaching-figure scrollable-diagram" tabindex="0">
+                      <svg viewBox="0 0 360 778" role="img" aria-labelledby="group-listen-title group-listen-desc" xmlns="http://www.w3.org/2000/svg">
+                        <title id="group-listen-title">Choisir une manière d’écouter un groupe</title>
+                        <desc id="group-listen-desc">Si aucune décision réelle ne peut être influencée, clarifier qui décide avant d'enquêter. Si une décision est ouverte, regarder d'abord les informations disponibles : les examiner et les vérifier avec les personnes peut suffire. Sinon, choisir une discussion ou des entretiens volontaires selon la liberté de parole. Un sondage court peut compléter l'écoute si une même question concerne beaucoup de personnes. Les choix sont aussi décrits en texte après le dessin.</desc>
+                        <!-- Les branches sans flèche sortante sont des issues possibles ; seule la branche qui appelle une autre question continue. -->
+                        <g fill="#eaf3eb" stroke="#24594d" stroke-width="2">
+                          <rect x="12" y="12" width="336" height="60" rx="14"/>
+                          <rect x="12" y="190" width="336" height="60" rx="14"/>
+                          <rect x="12" y="370" width="336" height="60" rx="14"/>
+                          <rect x="12" y="550" width="336" height="60" rx="14"/>
+                        </g>
+                        <g fill="#ffffff" stroke="#24594d" stroke-width="2">
+                          <rect x="12" y="102" width="160" height="58" rx="12"/>
+                          <rect x="188" y="102" width="160" height="58" rx="12"/>
+                          <rect x="12" y="280" width="160" height="60" rx="12"/>
+                          <rect x="188" y="280" width="160" height="60" rx="12"/>
+                          <rect x="12" y="460" width="160" height="60" rx="12"/>
+                          <rect x="188" y="460" width="160" height="60" rx="12"/>
+                          <rect x="12" y="640" width="160" height="60" rx="12"/>
+                          <rect x="188" y="640" width="160" height="60" rx="12"/>
+                        </g>
+                        <g fill="none" stroke="#24594d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M180 72v12H92v12m-5-5 5 5 5-5M180 84h88v12m-5-5 5 5 5-5"/>
+                          <path d="M268 160v18h-88v6m-5-5 5 5 5-5"/>
+                          <path d="M180 250v12H92v12m-5-5 5 5 5-5M180 262h88v12m-5-5 5 5 5-5"/>
+                          <path d="M268 340v18h-88v6m-5-5 5 5 5-5"/>
+                          <path d="M180 430v12H92v12m-5-5 5 5 5-5M180 442h88v12m-5-5 5 5 5-5"/>
+                          <path d="M92 520v18h88v6m-5-5 5 5 5-5M268 520v18h-88"/>
+                          <path d="M180 610v12H92v12m-5-5 5 5 5-5M180 622h88v12m-5-5 5 5 5-5"/>
+                        </g>
+                        <g fill="#203b36" font-family="system-ui, sans-serif" text-anchor="middle">
+                          <g font-size="16" font-weight="700">
+                            <text x="180" y="38">Une décision réelle</text><text x="180" y="59">peut-elle être influencée ?</text>
+                            <text x="180" y="216">Des informations</text><text x="180" y="237">existent-elles déjà ?</text>
+                            <text x="180" y="396">La parole est-elle libre</text><text x="180" y="417">dans le groupe ?</text>
+                            <text x="180" y="576">Même question pour</text><text x="180" y="597">beaucoup de personnes ?</text>
+                          </g>
+                          <g font-size="14" font-weight="700">
+                            <text x="92" y="124">Non</text><text x="268" y="124">Oui</text>
+                            <text x="92" y="302">Oui</text><text x="268" y="302">Non</text>
+                            <text x="92" y="482">Oui</text><text x="268" y="482">Non</text>
+                            <text x="92" y="662">Oui</text><text x="268" y="662">Non</text>
+                          </g>
+                          <g font-size="13">
+                            <text x="92" y="145">Clarifier qui décide</text><text x="268" y="145">Poursuivre</text>
+                            <text x="92" y="317">Examiner les infos</text><text x="92" y="334">et vérifier ensemble</text><text x="268" y="322">Choisir une écoute</text>
+                            <text x="92" y="502">Discussion volontaire</text><text x="268" y="502">Entretiens volontaires</text>
+                            <text x="92" y="682">Sondage en complément</text><text x="268" y="682">Pas de sondage requis</text>
+                          </g>
+                        </g>
+                        <text x="180" y="743" fill="#203b36" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14">Puis restituer et suivre la décision.</text>
+                      </svg>
+                      <figcaption>Je reprends le choix si une décision devient possible ou si les informations existantes laissent des questions ouvertes. Un sondage ne garantit pas la représentativité. Si écouter le groupe risque d’exposer des personnes à des représailles, je cherche d’abord un soutien adapté. Je ne lance pas d’enquête qui les expose.</figcaption>
+                    </figure>
+                    <p><strong>Les choix en texte :</strong></p>
+                    <ol class="diagram-text">
+                      <li>Je clarifie qui décide, ce qui peut changer et l’objectif de l’écoute. Si aucune décision réelle ne peut être influencée, je précise cela avant d’enquêter.</li>
+                      <li>Si des informations existent déjà, je les examine et je vérifie leur interprétation avec des personnes concernées. S’il reste des questions, je choisis une autre manière d’écouter.</li>
+                      <li>Si les personnes peuvent parler librement ensemble, je peux proposer une discussion volontaire. Si la parole en groupe est difficile, je peux proposer des entretiens individuels volontaires.</li>
+                      <li>Si une même question concerne beaucoup de personnes, un sondage court peut compléter cette écoute. Ses résultats ne sont pas forcément représentatifs. Sinon, le sondage n’est pas nécessaire.</li>
+                    </ol>
+                    <p class="source-note">Ce logigramme est un aide-mémoire pour choisir une méthode, pas un algorithme validé. J’adapte la démarche avec les personnes concernées. <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-28">[28]</a> <a href="#ref-33">[33]</a></p>
+                  </div>
+                </details>
               </div>
               <div class="field section-gap">
                 <label class="label" for="group-note" id="group-note-label">Ma note pour cette étape</label>
@@ -3539,6 +3622,15 @@
                 <small>Évaluation des dangers, de l’exposition et des risques chimiques pour des professionnels formés. Sert ici à distinguer signalement et expertise ; une odeur seule ne permet pas de conclure à une cause ou à un risque sanitaire.</small>
               </div>
             </li>
+            <li class="reference" id="ref-33" data-ref="33">
+              <div>
+                <span class="ref-label">Guide pratique · Accessibilité des schémas</span>
+                <p>World Wide Web Consortium, Web Accessibility Initiative. (s. d.). <em>Complex Images.</em>
+                  <a href="https://www.w3.org/WAI/tutorials/images/complex/" target="_blank" rel="noopener noreferrer">Tutoriel WAI ↗</a>
+                </p>
+                <small>Pour un logigramme, associer une description brève du dessin à une description textuelle structurée des choix et issues. Recommandation d’accessibilité, pas une validation pédagogique de nos schémas.</small>
+              </div>
+            </li>
           </ol>
         </div>
       </section>
@@ -4766,6 +4858,78 @@
         },
       };
 
+      // Ce logigramme aide à préparer une action ; il ne juge pas le danger à la place de la personne.
+      const firstStepDecisionDiagram = (scale) => {
+        const decision = {
+          personal: {
+            inFigure: "Moi ou une autre personne",
+            inText: "Pour un pas personnel, je vérifie si quelqu’un d’autre est concerné et doit donner son accord.",
+          },
+          shared: {
+            inFigure: "L’autre personne",
+            inText: "Entre personnes, l’autre doit pouvoir accepter ou refuser librement, sans pression ni peur.",
+          },
+          organization: {
+            inFigure: "Responsable du test",
+            inText: "Dans une équipe, je vérifie qui peut autoriser le test et j’écoute les personnes qu’il touche.",
+          },
+          public: {
+            inFigure: "Personnes représentées",
+            inText: "Dans une démarche publique, je demande l’accord avant de parler au nom d’autres personnes ; l’autorité compétente décide de la mesure demandée.",
+          },
+        }[scale];
+        return `<details class="decision-guide section-gap" id="action-decision-diagram">
+          <summary>Avant d’agir : voir les choix en logigramme</summary>
+          <div class="details-body">
+            <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits sous le dessin.</p>
+            <figure class="teaching-figure decision-figure scrollable-diagram" tabindex="0">
+              <svg viewBox="0 0 360 565" role="img" aria-labelledby="first-step-flow-title first-step-flow-desc" xmlns="http://www.w3.org/2000/svg">
+                <title id="first-step-flow-title">Vérifier la sécurité et l’accord avant mon premier pas</title>
+                <desc id="first-step-flow-desc">Si le pas n’est pas sûr ou si j’ai un doute, je fais une pause et cherche un soutien adapté. S’il est sûr, je vérifie l’accord nécessaire. Sans accord, je le demande ; avec l’accord ou s’il n’est pas requis, j’essaie un petit pas et j’observe un signe de progrès.</desc>
+                <!-- Les sorties de gauche arrêtent l'essai ; les sorties de droite permettent de poursuivre. Les mots indiquent le sens sans dépendre des couleurs. -->
+                <g font-family="system-ui, sans-serif" text-anchor="middle">
+                  <rect x="27" y="12" width="306" height="62" rx="13" fill="#ffffff" stroke="#567d69" stroke-width="2"/>
+                  <text x="180" y="50" fill="#203b36" font-size="17" font-weight="700">Mon premier pas envisagé</text>
+                  <path d="M180 75v16m-5-6 5 6 5-6" fill="none" stroke="#24594d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M180 94 337 148 180 202 23 148Z" fill="#f1f7f1" stroke="#39705c" stroke-width="2"/>
+                  <text x="180" y="142" fill="#203b36" font-size="17" font-weight="700">Ce pas est-il sûr</text>
+                  <text x="180" y="164" fill="#203b36" font-size="15">pour moi et les autres ?</text>
+                  <path d="M23 148H12v67m-5-5 5 5 5-5M337 148h11v67m-5-5 5 5 5-5" fill="none" stroke="#24594d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="90" y="221" fill="#75490f" font-size="13" font-weight="700">Non ou doute</text>
+                  <text x="270" y="221" fill="#24594d" font-size="13" font-weight="700">Oui</text>
+                  <rect x="17" y="229" width="146" height="77" rx="12" fill="#fff4dc" stroke="#a56b23" stroke-width="2"/>
+                  <text x="90" y="259" fill="#51370f" font-size="14" font-weight="700">Je fais une pause</text>
+                  <text x="90" y="282" fill="#51370f" font-size="13">et cherche de l’aide</text>
+                  <rect x="197" y="229" width="146" height="77" rx="12" fill="#edf6ee" stroke="#39705c" stroke-width="2"/>
+                  <text x="270" y="256" fill="#203b36" font-size="14" font-weight="700">Je vérifie l’accord</text>
+                  <text x="270" y="280" fill="#4a5e55" font-size="12" data-decision-actor>${decision.inFigure}</text>
+                  <path d="M270 307v18h-90v9m-5-5 5 5 5-5" fill="none" stroke="#24594d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M180 338 337 390 180 442 23 390Z" fill="#f1f7f1" stroke="#39705c" stroke-width="2"/>
+                  <text x="180" y="385" fill="#203b36" font-size="17" font-weight="700">Ai-je l’accord</text>
+                  <text x="180" y="407" fill="#203b36" font-size="15">requis pour ce pas ?</text>
+                  <path d="M23 390H12v72m-5-5 5 5 5-5M337 390h11v72m-5-5 5 5 5-5" fill="none" stroke="#24594d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="90" y="467" fill="#75490f" font-size="13" font-weight="700">Non</text>
+                  <text x="270" y="467" fill="#24594d" font-size="12" font-weight="700">Oui ou pas requis</text>
+                  <rect x="17" y="475" width="146" height="77" rx="12" fill="#fff4dc" stroke="#a56b23" stroke-width="2"/>
+                  <text x="90" y="505" fill="#51370f" font-size="14" font-weight="700">Je demande l’accord</text>
+                  <text x="90" y="528" fill="#51370f" font-size="13">ou change de piste</text>
+                  <rect x="197" y="475" width="146" height="77" rx="12" fill="#edf6ee" stroke="#39705c" stroke-width="2"/>
+                  <text x="270" y="505" fill="#203b36" font-size="14" font-weight="700">J’essaie petit</text>
+                  <text x="270" y="528" fill="#203b36" font-size="13">et je fais le point</text>
+                </g>
+              </svg>
+              <figcaption>${decision.inText} Ce dessin aide à préparer une décision ; il ne détermine pas si une situation est sans danger.</figcaption>
+            </figure>
+            <ol class="diagram-reading diagram-text">
+              <li><strong>Si je ne suis pas sûr ou si j’ai un doute :</strong> je fais une pause et cherche une aide adaptée. <a href="#securite">Voir les repères de sécurité</a>.</li>
+              <li><strong>Si le pas est sûr :</strong> je vérifie qui doit décider ou donner son accord. ${decision.inText}</li>
+              <li><strong>Si l’accord manque :</strong> je le demande sans forcer. En cas de refus, je change de piste ou cherche un autre soutien. S’il est présent ou non requis, je peux essayer un petit pas, observer un signe de progrès et faire le point.</li>
+            </ol>
+            <p class="source-note">Repère pédagogique, pas un test de sécurité ou une règle valable dans toute situation. <a href="#ref-4">[4]</a> <a href="#ref-22">[22]</a> <a href="#ref-33">[33]</a></p>
+          </div>
+        </details>`;
+      };
+
       // A facilitator's planning notes stay in memory. The tool never collects survey responses.
       const groupStages = [
         {
@@ -5382,7 +5546,7 @@
             organization: ["Quand et où le test aura-t-il lieu ?", "Lors de la prochaine réunion d’équipe, sur un seul dossier."],
             public: ["Quand et auprès de qui faire cette démarche ?", "Lors de la prochaine permanence du service concerné."],
           }[state.scale];
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div>${chosen ? firstStepDecisionDiagram(state.scale) : ""}<div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
         }
         if (i === 5) {
           body = `<fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[

@@ -66,8 +66,8 @@ const errors = [];
       `Horizontal overflow: ${label}`,
     );
   const axeIssues = [];
-  const axe = async (label) => {
-    const results = await new AxeBuilder({ page })
+  const axe = async (label, targetPage = page) => {
+    const results = await new AxeBuilder({ page: targetPage })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
       .analyze();
     for (const v of results.violations)
@@ -84,6 +84,47 @@ const errors = [];
       path.join(output, "accessibility.json"),
       JSON.stringify(axeIssues, null, 2),
     );
+  };
+  const openFlowDiagram = async (targetPage, selector, svgBranches, textBranches) => {
+    const details = targetPage.locator(selector);
+    assert.equal(await details.count(), 1, `${selector}: one diagram`);
+    assert.equal(await details.evaluate((node) => node.open), false, `${selector}: closed by default`);
+    const svg = details.locator("figure svg[role=img]");
+    assert.equal(await svg.isVisible(), false, `${selector}: hidden until requested`);
+    await details.locator("summary").click();
+    assert(await svg.isVisible(), `${selector}: SVG visible after opening`);
+    const labelledBy = (await svg.getAttribute("aria-labelledby") || "").split(/\s+/).filter(Boolean);
+    assert.equal(labelledBy.length, 2, `${selector}: title and description linked to SVG`);
+    for (const id of labelledBy)
+      assert.equal(await svg.locator(`[id="${id}"]`).count(), 1, `${selector}: missing ${id}`);
+    assert((await svg.locator("title").textContent()).trim().length > 15, `${selector}: meaningful title`);
+    assert((await svg.locator("desc").textContent()).trim().length > 30, `${selector}: meaningful description`);
+    assert((await details.locator("figure figcaption").innerText()).trim().length > 25, `${selector}: meaningful caption`);
+    const equivalent = details.locator(".diagram-text");
+    assert(await equivalent.isVisible(), `${selector}: visible textual equivalent`);
+    const graphic = await svg.textContent();
+    const prose = await equivalent.innerText();
+    for (const branch of svgBranches)
+      assert.match(graphic, branch, `${selector}: missing graphical branch ${branch}`);
+    for (const branch of textBranches)
+      assert.match(prose, branch, `${selector}: missing textual branch ${branch}`);
+    return details;
+  };
+  const checkInternalDiagramScroll = async (targetPage, selector) => {
+    const sizes = await targetPage.locator(`${selector} .scrollable-diagram`).evaluate((node) => {
+      const before = node.scrollLeft;
+      node.scrollLeft = node.scrollWidth;
+      const after = node.scrollLeft;
+      node.scrollLeft = before;
+      return { client: node.clientWidth, content: node.scrollWidth, after };
+    });
+    assert(sizes.content > sizes.client, `${selector}: diagram should scroll inside its figure`);
+    assert(sizes.after > 0, `${selector}: diagram must actually scroll horizontally`);
+    const textFits = await targetPage.locator(`${selector} .diagram-text`).evaluate((node) => {
+      const box = node.getBoundingClientRect();
+      return box.left >= -1 && box.right <= innerWidth + 1;
+    });
+    assert(textFits, `${selector}: textual equivalent must fit the viewport`);
   };
   await visible("#accueil");
   assert.equal(
@@ -212,6 +253,53 @@ const errors = [];
   }
   await contextPage.close();
 
+  // The optional action flowchart adds a decision about safety and consent.
+  // Its decision-maker changes with the chosen level.
+  const flowPage = await context.newPage();
+  flowPage.on("pageerror", (e) => errors.push(e.message));
+  const actors = {
+    personal: "Moi ou une autre personne",
+    shared: "L’autre personne",
+    organization: "Responsable du test",
+    public: "Personnes représentées",
+  };
+  for (const [scale, actor] of Object.entries(actors)) {
+    await flowPage.goto(url + `#outil-${scale}`);
+    await flowPage.locator('#steps [data-step="2"]').click();
+    await flowPage.locator("#idea-1").fill("Un petit pas à examiner.");
+    await flowPage.locator('#steps [data-step="3"]').click();
+    await flowPage.locator('[data-choose="1"]').click();
+    await flowPage.locator('#steps [data-step="4"]').click();
+    const diagram = await openFlowDiagram(
+      flowPage,
+      "#action-decision-diagram",
+      [/Ce pas est-il sûr/, /Non ou doute/, /Je fais une pause/, /Ai-je l’accord/, /Oui ou pas requis/, /J’essaie petit/],
+      [/doute/, /pause/, /accord/, /petit pas/, /signe de progrès/],
+    );
+    assert.equal((await diagram.locator("[data-decision-actor]").textContent()).trim(), actor);
+    if (scale === "personal") {
+      await flowPage.locator("#toast").waitFor({ state: "hidden", timeout: 7000 });
+      await diagram.locator(".teaching-figure").screenshot({ path: path.join(output, "action-flow-personal-desktop.png") });
+      await axe("action-flow-personal", flowPage);
+    }
+  }
+  await flowPage.setViewportSize({ width: 390, height: 844 });
+  await flowPage.locator("#toast").waitFor({ state: "hidden", timeout: 7000 });
+  assert(
+    await flowPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    "Horizontal overflow: open action flowchart mobile",
+  );
+  await flowPage.locator("#action-decision-diagram .teaching-figure").screenshot({ path: path.join(output, "action-flow-public-mobile.png") });
+  await axe("action-flow-public-mobile", flowPage);
+  await flowPage.setViewportSize({ width: 320, height: 844 });
+  assert(
+    await flowPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    "Horizontal overflow: open action flowchart at 320px",
+  );
+  await flowPage.locator("#action-decision-diagram .teaching-figure").screenshot({ path: path.join(output, "action-flow-public-320.png") });
+  await checkInternalDiagramScroll(flowPage, "#action-decision-diagram");
+  await flowPage.close();
+
   // A v1 file with an ambiguous old domain keeps its answers and asks for a
   // context review. Its chosen option must follow the saved option, not its ID.
   const legacy = {
@@ -304,13 +392,22 @@ const errors = [];
   await visit("groupe");
   await page.locator("#groupe .group-overview summary").click();
   await visible("#groupe svg[aria-labelledby='group-map-title group-map-desc']");
-  assert.match(await page.locator("#groupe svg").textContent(), /Décider ensemble/);
+  assert.match(await page.locator("#groupe .group-overview svg").textContent(), /Décider ensemble/);
   await page.locator("#groupe .group-overview summary").click();
   assert.match(await page.locator("#group-step-title").innerText(), /Qui participe/);
   await page.locator("#group-note").fill("Décision : améliorer les horaires d’accueil.");
   await page.locator("#group-next").click();
   await page.locator("#group-method").selectOption("survey");
   assert.match(await page.locator("#group-method-hint").innerText(), /combien ont répondu/);
+  const groupFlow = await openFlowDiagram(
+    page,
+    "#group-method-diagram",
+    [/décision réelle/, /Clarifier qui décide/, /informations/, /Examiner les infos/, /parole est-elle libre/, /Discussion volontaire/, /Entretiens volontaires/, /Sondage en complément/, /Pas de sondage requis/],
+    [/décision réelle/, /informations/, /discussion volontaire/, /entretiens individuels volontaires/, /sondage court/, /représentatifs/],
+  );
+  assert.match(await groupFlow.locator("figcaption").innerText(), /représailles/);
+  await groupFlow.locator(".teaching-figure").screenshot({ path: path.join(output, "group-method-flow-desktop.png") });
+  await axe("group-method-flow");
   await page.locator("#group-stage-select").selectOption("2");
   assert(await page.locator("#group-guidance [data-term=survey]").isVisible());
   await page.locator("#group-stage-select").selectOption("3");
@@ -686,6 +783,18 @@ const errors = [];
   await page.locator("#soutenir .teaching-figure").screenshot({ path: path.join(output, "support-figure-mobile.png") });
   await visit("groupe");
   await page.screenshot({ path: path.join(output, "mobile-group.png"), fullPage: true });
+  await page.locator("#group-stage-select").selectOption("1");
+  if (!(await page.locator("#group-method-diagram").evaluate((node) => node.open)))
+    await page.locator("#group-method-diagram summary").click();
+  assert(await page.locator("#group-method-diagram svg").isVisible());
+  await overflow("open group method flowchart mobile");
+  await page.locator("#group-method-diagram .teaching-figure").screenshot({ path: path.join(output, "group-method-flow-mobile.png") });
+  await axe("group-method-flow-mobile");
+  await page.setViewportSize({ width: 320, height: 844 });
+  await overflow("open group method flowchart at 320px");
+  await page.locator("#group-method-diagram .teaching-figure").screenshot({ path: path.join(output, "group-method-flow-320.png") });
+  await checkInternalDiagramScroll(page, "#group-method-diagram");
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.locator("#groupe [data-term=survey]").first().click();
   await visible("#term-dialog");
   await page.screenshot({ path: path.join(output, "mobile-glossary.png") });
