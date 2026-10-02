@@ -35,9 +35,13 @@
       .scale-option[aria-pressed="true"] { border: 2px solid var(--brand); padding: 12px 15px; background: var(--mint); }
       .scale-option strong { font-size: .93rem; }
       .scale-option span { color: var(--muted); font-size: .8rem; line-height: 1.4; }
-      .journey-figure { margin: 28px 0; padding: 20px 24px; border-radius: 22px; background: #eaf3eb; }
-      .journey-figure svg { display: block; width: 100%; height: auto; }
-      .journey-figure figcaption { max-width: 700px; margin: 4px auto 0; color: var(--muted); font-size: .9rem; }
+      .teaching-figure { max-width: 420px; margin: 22px auto; padding: 14px; border-radius: 20px; background: #eaf3eb; }
+      .teaching-figure svg { display: block; width: 100%; height: auto; }
+      .teaching-figure figcaption { margin: 12px 5px 2px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+      .visual-guides { margin-top: 32px; }
+      .visual-guides .block-heading { margin-bottom: 14px; }
+      .visual-guides details + details { margin-top: 12px; }
+      .visual-guides .teaching-figure { margin-bottom: 0; }
       .support-stage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
       .stage-card, .need-lab { padding: 28px; }
       .stage-card h2, .need-lab h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); margin: 15px 0; }

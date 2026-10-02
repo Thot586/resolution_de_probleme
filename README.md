@@ -24,6 +24,8 @@ Les tests navigateur demandent Chromium pour Playwright : `npx playwright instal
 
 L'accueil permet de choisir directement l'un des quatre niveaux. Ce choix peut être changé pendant l'exercice. Les étapes sont visibles sur demande ; les détails méthodologiques restent accessibles depuis « Comprendre ». Les méthodes et sources sont identifiées dans la bibliographie ; leur présence ne valide pas l'efficacité de ce site lui-même.
 
+Quatre schémas SVG intégrés illustrent les étapes générales, l'aide à une personne, le test dans une équipe et la démarche collective. Chaque schéma porte ses libellés dans la figure, un titre et une description accessibles ; sa légende ajoute les limites et les exceptions utiles. Les cartes de choix des niveaux et le violentomètre sont déjà des supports visuels interactifs et ne sont pas redessinés en SVG.
+
 ## Choix technique
 
 Les pages et workflows sont modulaires dans les sources, puis assemblés sans framework. React et TypeScript pourraient devenir utiles si le nombre de composants, de contributeurs et d'intégrations continue de croître. Ils n'améliorent pas à eux seuls le rendu visuel, et une migration immédiate compliquerait le maintien du brouillon et de la fiche imprimable.

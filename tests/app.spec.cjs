@@ -85,6 +85,11 @@ const errors = [];
   );
   assert.equal(await page.evaluate(() => localStorage.length), 0);
   await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
+  await page.locator("#accueil .welcome-explain summary").click();
+  await visible("#accueil svg[aria-labelledby='method-title method-desc']");
+  assert.match(await page.locator("#accueil svg").textContent(), /Faire le point/);
+  await axe("method-diagram");
+  await page.locator("#accueil .welcome-explain summary").click();
   assert.equal(await page.locator("#accueil [data-start-scale]").count(), 4);
   for (const [scale, expected] of [
     ["personal", /Quel est mon problème/],
@@ -101,6 +106,8 @@ const errors = [];
   }
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
+  await visible("#soutenir svg[aria-labelledby='journey-title journey-desc']");
+  assert.match(await page.locator("#soutenir svg").textContent(), /Seulement avec son accord/);
   await page.screenshot({ path: path.join(output, "desktop-support.png"), fullPage: true });
   await page.locator("#support-relation").selectOption("learner");
   await page.locator("[data-need=advice]").click();
@@ -345,6 +352,7 @@ const errors = [];
     fullPage: true,
   });
   await visit("comprendre");
+  const guides = page.locator("#comprendre .visual-guides details");
   await page
     .locator("summary")
     .filter({ hasText: "Préparer une action" })
@@ -358,6 +366,14 @@ const errors = [];
   await visible("#tooltip");
   await page.keyboard.press("Escape");
   await axe("theory");
+  assert.equal(await guides.count(), 2);
+  await guides.nth(0).locator("summary").click();
+  await guides.nth(1).locator("summary").click();
+  await visible("#comprendre svg[aria-labelledby='organization-title organization-desc']");
+  await visible("#comprendre svg[aria-labelledby='public-title public-desc']");
+  await axe("scale-diagrams");
+  await guides.nth(0).locator("summary").click();
+  await guides.nth(1).locator("summary").click();
   await visit("bibliographie");
   await axe("references");
   await page.locator('footer a[href="#comprendre"]').click();
@@ -408,6 +424,17 @@ const errors = [];
   await page.setViewportSize({ width: 390, height: 844 });
   await visit("accueil");
   await page.screenshot({ path: path.join(output, "mobile-home.png"), fullPage: true });
+  await page.locator("#accueil .welcome-explain summary").click();
+  await overflow("open method diagram mobile");
+  await page.locator("#accueil .teaching-figure").screenshot({ path: path.join(output, "method-mobile.png") });
+  await visit("soutenir");
+  await page.locator("#soutenir .teaching-figure").screenshot({ path: path.join(output, "support-figure-mobile.png") });
+  await visit("comprendre");
+  await guides.nth(0).locator("summary").click();
+  await guides.nth(1).locator("summary").click();
+  await overflow("open scale diagrams mobile");
+  await guides.nth(0).locator(".teaching-figure").screenshot({ path: path.join(output, "organization-mobile.png") });
+  await guides.nth(1).locator(".teaching-figure").screenshot({ path: path.join(output, "public-mobile.png") });
   await visit("outil");
   await step(0);
   await page.evaluate(() => {

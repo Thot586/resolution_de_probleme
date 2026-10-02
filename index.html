@@ -1702,9 +1702,13 @@
       .scale-option[aria-pressed="true"] { border: 2px solid var(--brand); padding: 12px 15px; background: var(--mint); }
       .scale-option strong { font-size: .93rem; }
       .scale-option span { color: var(--muted); font-size: .8rem; line-height: 1.4; }
-      .journey-figure { margin: 28px 0; padding: 20px 24px; border-radius: 22px; background: #eaf3eb; }
-      .journey-figure svg { display: block; width: 100%; height: auto; }
-      .journey-figure figcaption { max-width: 700px; margin: 4px auto 0; color: var(--muted); font-size: .9rem; }
+      .teaching-figure { max-width: 420px; margin: 22px auto; padding: 14px; border-radius: 20px; background: #eaf3eb; }
+      .teaching-figure svg { display: block; width: 100%; height: auto; }
+      .teaching-figure figcaption { margin: 12px 5px 2px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+      .visual-guides { margin-top: 32px; }
+      .visual-guides .block-heading { margin-bottom: 14px; }
+      .visual-guides details + details { margin-top: 12px; }
+      .visual-guides .teaching-figure { margin-bottom: 0; }
       .support-stage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
       .stage-card, .need-lab { padding: 28px; }
       .stage-card h2, .need-lab h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); margin: 15px 0; }
@@ -1838,7 +1842,26 @@
         <details class="welcome-explain">
           <summary>Voir les étapes de l’exercice</summary>
           <div class="details-body">
-            <p>Décrire le problème. Chercher des pistes. Choisir une action. Faire le point.</p>
+            <figure class="teaching-figure">
+              <svg viewBox="0 0 360 490" role="img" aria-labelledby="method-title method-desc" xmlns="http://www.w3.org/2000/svg">
+                <title id="method-title">Du problème au bilan en cinq étapes</title>
+                <desc id="method-desc">Le parcours va de la description à la recherche de pistes, puis au choix, à l’essai et au bilan. Le bilan permet de revenir à une autre piste.</desc>
+                <!-- Les flèches donnent le sens de lecture ; chaque case garde son sens sans la légende. -->
+                <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
+                  <rect x="16" y="12" width="328" height="76" rx="15"/>
+                  <rect x="16" y="108" width="328" height="76" rx="15"/>
+                  <rect x="16" y="204" width="328" height="76" rx="15"/>
+                  <rect x="16" y="300" width="328" height="76" rx="15"/>
+                  <rect x="16" y="396" width="328" height="76" rx="15"/>
+                </g>
+                <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/><circle cx="48" cy="434" r="19"/></g>
+                <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text><text x="48" y="440">5</text></g>
+                <g fill="#203b36" font-family="system-ui, sans-serif" font-size="18" font-weight="700"><text x="80" y="44">Décrire</text><text x="80" y="140">Chercher</text><text x="80" y="236">Choisir</text><text x="80" y="332">Essayer</text><text x="80" y="428">Faire le point</text></g>
+                <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Faits · but · obstacle</text><text x="80" y="162">Plusieurs pistes possibles</text><text x="80" y="258">Une piste faisable et sûre</text><text x="80" y="354">Une action concrète</text><text x="80" y="450">Garder, changer ou arrêter</text></g>
+                <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/></g>
+              </svg>
+              <figcaption>Une piste peut aussi être de demander de l’aide ou une information. Après l’essai, je peux revenir à une étape précédente.</figcaption>
+            </figure>
             <a class="text-button" href="#comprendre">Comprendre la méthode ↗</a>
           </div>
         </details>
@@ -1911,16 +1934,24 @@
             <h1>Soutenir quelqu’un, sans prendre sa place</h1>
             <p>Une bonne aide commence par la situation et les souhaits de la personne. Le parcours ci-dessous prépare une conversation ; il ne juge pas la personne et ne décide pas pour elle.</p>
           </div>
-          <figure class="journey-figure">
-            <svg viewBox="0 0 720 170" role="img" aria-labelledby="journey-title journey-desc" xmlns="http://www.w3.org/2000/svg">
+          <figure class="teaching-figure">
+            <svg viewBox="0 0 360 394" role="img" aria-labelledby="journey-title journey-desc" xmlns="http://www.w3.org/2000/svg">
               <title id="journey-title">Quatre étapes pour soutenir une personne</title>
-              <desc id="journey-desc">Écouter les faits et le ressenti, vérifier ce que la personne souhaite, choisir une aide avec son accord, puis faire le point. Si la sécurité est menacée, chercher une aide adaptée avant l’exercice.</desc>
-              <path d="M120 75H600" stroke="#8eac9b" stroke-width="4" stroke-linecap="round"/>
-              <g fill="#173f35" stroke="#fff" stroke-width="5"><circle cx="92" cy="75" r="32"/><circle cx="270" cy="75" r="32"/><circle cx="450" cy="75" r="32"/><circle cx="628" cy="75" r="32"/></g>
-              <g fill="#fff" text-anchor="middle" font-size="21" font-weight="700"><text x="92" y="83">1</text><text x="270" y="83">2</text><text x="450" y="83">3</text><text x="628" y="83">4</text></g>
-              <g fill="#203b36" text-anchor="middle" font-size="17" font-weight="650"><text x="92" y="132">Écouter</text><text x="270" y="132">Vérifier</text><text x="450" y="132">Choisir</text><text x="628" y="132">Revoir</text></g>
+              <desc id="journey-desc">Écouter, demander le besoin, proposer une aide avec l’accord de la personne, puis vérifier si cette aide lui convient.</desc>
+              <!-- L’accord est écrit dans la figure ; la légende ajoute les exceptions de sécurité. -->
+              <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
+                <rect x="16" y="12" width="328" height="76" rx="15"/>
+                <rect x="16" y="108" width="328" height="76" rx="15"/>
+                <rect x="16" y="204" width="328" height="76" rx="15"/>
+                <rect x="16" y="300" width="328" height="76" rx="15"/>
+              </g>
+              <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/></g>
+              <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text></g>
+              <g fill="#203b36" font-family="system-ui, sans-serif" font-size="18" font-weight="700"><text x="80" y="44">Écouter</text><text x="80" y="140">Demander</text><text x="80" y="236">Proposer</text><text x="80" y="332">Vérifier</text></g>
+              <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Sans comparer</text><text x="80" y="162">« De quoi as-tu besoin ? »</text><text x="80" y="258">Seulement avec son accord</text><text x="80" y="354">« Est-ce que cela t’aide ? »</text></g>
+              <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/></g>
             </svg>
-            <figcaption>La personne aidée choisit la direction. On peut revenir à l’écoute si le besoin change. Si elle est en danger, on cherche d’abord un soutien adapté.</figcaption>
+            <figcaption>La personne aidée choisit la direction. Si son besoin change, on peut revenir à l’écoute. En cas de danger, on cherche d’abord une aide adaptée.</figcaption>
           </figure>
           <div class="support-stage-grid">
             <article class="card stage-card">
@@ -2209,6 +2240,59 @@
               </ul>
             </div>
           </div>
+          <section class="visual-guides" aria-labelledby="visual-guides-title">
+            <h2 id="visual-guides-title" class="block-heading">Quand la décision se prend à plusieurs</h2>
+            <details>
+              <summary>Voir le schéma : agir dans une équipe ou une institution</summary>
+              <div class="details-body">
+                <figure class="teaching-figure">
+                  <svg viewBox="0 0 360 490" role="img" aria-labelledby="organization-title organization-desc" xmlns="http://www.w3.org/2000/svg">
+                    <title id="organization-title">Tester un changement dans une équipe ou une institution</title>
+                    <desc id="organization-desc">Observer avec les personnes concernées, fixer un but, faire valider un petit test, mesurer ses effets, puis ajuster ou arrêter.</desc>
+                    <!-- La validation et les effets indésirables sont dans le schéma ; la légende précise la limite du test. -->
+                    <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
+                      <rect x="16" y="12" width="328" height="76" rx="15"/>
+                      <rect x="16" y="108" width="328" height="76" rx="15"/>
+                      <rect x="16" y="204" width="328" height="76" rx="15"/>
+                      <rect x="16" y="300" width="328" height="76" rx="15"/>
+                      <rect x="16" y="396" width="328" height="76" rx="15"/>
+                    </g>
+                    <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/><circle cx="48" cy="434" r="19"/></g>
+                    <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text><text x="48" y="440">5</text></g>
+                    <g fill="#203b36" font-family="system-ui, sans-serif" font-size="18" font-weight="700"><text x="80" y="44">Observer le travail</text><text x="80" y="140">Fixer un but</text><text x="80" y="236">Faire valider un test</text><text x="80" y="332">Mesurer les effets</text><text x="80" y="428">Ajuster ou arrêter</text></g>
+                    <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Avec l’équipe concernée</text><text x="80" y="162">Et une mesure simple</text><text x="80" y="258">Petit et réversible</text><text x="80" y="354">Y compris les effets gênants</text><text x="80" y="450">Avec les décideurs</text></g>
+                    <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/></g>
+                  </svg>
+                  <figcaption>Un test local aide à apprendre ; il ne suffit pas à généraliser un changement. Les règles, les ressources et la décision relèvent de l’organisation.</figcaption>
+                </figure>
+              </div>
+            </details>
+            <details>
+              <summary>Voir le schéma : agir sur un problème collectif ou politique</summary>
+              <div class="details-body">
+                <figure class="teaching-figure">
+                  <svg viewBox="0 0 360 490" role="img" aria-labelledby="public-title public-desc" xmlns="http://www.w3.org/2000/svg">
+                    <title id="public-title">Faire avancer une demande collective</title>
+                    <desc id="public-desc">Écouter les personnes concernées, réunir des faits, définir une demande, l’adresser au décideur compétent, puis suivre la réponse avec les participants.</desc>
+                    <!-- La figure distingue participation et décision ; la légende rappelle l’accord pour représenter un groupe. -->
+                    <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
+                      <rect x="16" y="12" width="328" height="76" rx="15"/>
+                      <rect x="16" y="108" width="328" height="76" rx="15"/>
+                      <rect x="16" y="204" width="328" height="76" rx="15"/>
+                      <rect x="16" y="300" width="328" height="76" rx="15"/>
+                      <rect x="16" y="396" width="328" height="76" rx="15"/>
+                    </g>
+                    <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/><circle cx="48" cy="434" r="19"/></g>
+                    <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text><text x="48" y="440">5</text></g>
+                    <g fill="#203b36" font-family="system-ui, sans-serif" font-size="18" font-weight="700"><text x="80" y="44">Écouter les personnes</text><text x="80" y="140">Réunir des faits</text><text x="80" y="236">Définir la demande</text><text x="80" y="332">Trouver qui décide</text><text x="80" y="428">Suivre la réponse</text></g>
+                    <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Qui souhaite participer ?</text><text x="80" y="162">Vérifiables et utiles</text><text x="80" y="258">Quelle décision est visée ?</text><text x="80" y="354">Adresser la demande</text><text x="80" y="450">Avec les participants</text></g>
+                    <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/></g>
+                  </svg>
+                  <figcaption>Je ne parle pas au nom d’un groupe sans son accord. Une réponse peut prendre du temps et ne garantit pas le changement demandé.</figcaption>
+                </figure>
+              </div>
+            </details>
+          </section>
           <details class="section-gap">
             <summary>Pourquoi montrer les étapes avant l’exercice ?</summary>
             <div class="details-body">
