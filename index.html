@@ -712,6 +712,28 @@
       .details-body ul {
         margin: 0.6rem 0;
       }
+      .example-help {
+        margin-top: 6px;
+        border: 0;
+        background: transparent;
+      }
+      .example-help > summary {
+        justify-content: flex-start;
+        gap: 10px;
+        min-height: 44px;
+        padding: 6px 0;
+        font-size: 0.8rem;
+        color: var(--brand);
+      }
+      .example-help[open] > summary {
+        border-bottom: 0;
+      }
+      .example-help .example {
+        margin: 0 0 8px;
+      }
+      .optional-fields {
+        margin-top: 22px;
+      }
       .error {
         color: var(--red);
         font-size: 0.86rem;
@@ -1729,8 +1751,8 @@
             <div class="eyebrow">Un problème · Un pas à la fois</div>
             <h1>Et si on y voyait plus clair ?</h1>
             <p>
-              Posez la situation, explorez vos options et choisissez un premier
-              pas réalisable.
+              Un peu de clarté, puis une petite action. Quelques mots suffisent
+              à chaque étape.
             </p>
           </div>
           <div class="attribution">
@@ -1746,8 +1768,8 @@
             <p class="side-label">Votre cheminement</p>
             <ol class="steps" id="steps"></ol>
             <div class="side-note">
-              <strong>Pas besoin de tout régler aujourd’hui.</strong>Vous pouvez
-              revenir sur chaque étape, ou faire une pause.
+              <strong>À votre rythme.</strong>Vous pouvez revenir en arrière ou
+              faire une pause.
             </div>
             <div class="side-actions">
               <a class="text-button" href="#recap">Voir mon récapitulatif ↗</a>
@@ -1766,12 +1788,12 @@
                 <rect x="5" y="10" width="14" height="11" rx="2" />
                 <path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg
               ><span id="privacy-status"
-                >Vos réponses restent dans cet onglet. Aucune transmission par
-                l’outil.</span
+                >Sans sauvegarde, fermer ou recharger efface vos réponses. Elles
+                ne sont pas envoyées.</span
               >
             </p>
             <details class="file-options">
-              <summary>Mon brouillon : garder, reprendre ou effacer</summary>
+              <summary>Garder ou reprendre mon brouillon</summary>
               <div class="details-body">
                 <label class="checkbox"
                   ><input type="checkbox" id="remember" />Garder automatiquement
@@ -1813,8 +1835,8 @@
             <div class="eyebrow">Être présent, sans prendre la place</div>
             <h1>Aider un proche</h1>
             <p>
-              Avant de chercher une solution, demandez ce qui serait utile
-              maintenant. Une présence attentive peut déjà être une aide.
+              Commencez par demander ce qui lui serait utile. Écouter peut déjà
+              aider.
               <a class="citation" href="#ref-5">[5]</a>
             </p>
           </div>
@@ -1851,40 +1873,54 @@
             </div>
             <div id="support-content"></div>
           </div>
-          <h2 class="block-heading">Adapter l’aide à la situation</h2>
-          <label class="label" for="support-context"
-            >Ce que traverse mon proche</label
-          ><select id="support-context">
-            <option value="mental">Détresse ou trouble psychique</option>
-            <option value="couple">Difficulté dans le couple</option>
-            <option value="work">Travail ou études</option>
-            <option value="grief">Deuil, perte ou maladie</option>
-            <option value="material">Précarité, démarches ou isolement</option>
-            <option value="young">Enfant ou adolescent</option>
-          </select>
-          <div id="support-context-content" class="section-gap"></div>
-          <div class="two-col section-gap">
-            <div class="procon">
-              <h3>✓ À faire</h3>
-              <ul>
-                <li>Demander l’accord avant de conseiller.</li>
-                <li>Écouter les mots et les priorités de la personne.</li>
-                <li>Proposer une aide précise et limitée.</li>
-                <li>Demander : « Est-ce que cela t’aide ? »</li>
-              </ul>
+          <p class="notice red section-gap">
+            <strong>Un danger immédiat ?</strong>La sécurité passe avant la
+            recherche de solution.
+            <a href="#securite">Trouver une aide adaptée</a>.
+          </p>
+          <details class="section-gap" id="support-adapt">
+            <summary>Adapter l’aide à sa situation</summary>
+            <div class="details-body">
+              <label class="label" for="support-context"
+                >Ce que traverse mon proche</label
+              ><select id="support-context">
+                <option value="">Choisir une situation</option>
+                <option value="mental">Détresse ou trouble psychique</option>
+                <option value="couple">Difficulté dans le couple</option>
+                <option value="work">Travail ou études</option>
+                <option value="grief">Deuil, perte ou maladie</option>
+                <option value="material">
+                  Précarité, démarches ou isolement
+                </option>
+                <option value="young">Enfant ou adolescent</option>
+              </select>
+              <div id="support-context-content" class="section-gap"></div>
             </div>
-            <div class="procon avoid">
-              <h3>× À éviter</h3>
-              <ul>
-                <li>« À ta place… », « Il suffit de… »</li>
-                <li>Minimiser, culpabiliser ou imposer un diagnostic.</li>
-                <li>Faire raconter les détails d’un traumatisme.</li>
-                <li>
-                  Promettre de tout régler ou d’être disponible sans limite.
-                </li>
-              </ul>
+          </details>
+          <details class="section-gap">
+            <summary>À faire / À éviter</summary>
+            <div class="details-body two-col">
+              <div class="procon">
+                <h3>✓ À faire</h3>
+                <ul>
+                  <li>Demander l’accord avant de conseiller.</li>
+                  <li>Écouter les mots et les priorités de la personne.</li>
+                  <li>Proposer une aide précise et limitée.</li>
+                </ul>
+              </div>
+              <div class="procon avoid">
+                <h3>× À éviter</h3>
+                <ul>
+                  <li>« À ta place… », « Il suffit de… »</li>
+                  <li>Minimiser, culpabiliser ou imposer un diagnostic.</li>
+                  <li>Insister pour faire raconter des détails douloureux.</li>
+                  <li>
+                    Promettre de tout régler ou d’être disponible sans limite.
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
+          </details>
           <details class="section-gap">
             <summary>Et si la personne refuse mon aide ?</summary>
             <div class="details-body">
@@ -1969,7 +2005,8 @@
                 aria-label="Comportements à explorer"
               ></div>
               <p class="source-note">
-                Repères sans score. Aucune sélection n’est enregistrée.
+                Exemples pédagogiques, pas un test : un seul acte peut être
+                grave. Aucune sélection n’est enregistrée.
               </p>
             </div>
             <article
@@ -2990,7 +3027,7 @@
           ideas: [
             "Trier seulement les courriers de ce mois.",
             "Demander à une personne de confiance de m’aider dix minutes.",
-            "Contacter l’organisme pour obtenir un duplicata.",
+            "Demander une copie de la facture à l’organisme.",
           ],
           action:
             "Ouvrir les cinq courriers les plus récents pendant dix minutes.",
@@ -2999,7 +3036,7 @@
             "Si je me sens débordé, je m’arrête après une enveloppe et je demande un appui.",
           measure: "J’ai identifié les deux factures et leur date limite.",
           result:
-            "J’ai retrouvé une facture. Il me manque un duplicata pour la seconde.",
+            "J’ai retrouvé une facture. Je dois demander une copie de la seconde.",
         },
         work: {
           label: "Travail",
@@ -3009,20 +3046,21 @@
           goal: "Obtenir un ordre de priorité et un délai réaliste pour ces dossiers.",
           obstacle:
             "Je n’ai pas assez de temps et les priorités ne sont pas partagées.",
-          control: "Rendre visibles les tâches et demander un arbitrage.",
+          control:
+            "Lister les tâches et demander lesquelles sont prioritaires.",
           outside: "La décision finale et les effectifs disponibles.",
           ideas: [
             "Lister les tâches et demander un ordre de priorité écrit.",
-            "Proposer un report argumenté pour un dossier.",
+            "Demander plus de temps pour un dossier en expliquant pourquoi.",
             "Demander l’appui d’un collègue ou d’un représentant du personnel.",
           ],
           action:
             "Préparer la liste des trois dossiers et le temps nécessaire pour chacun.",
           support: "Un collègue de confiance ou un représentant du personnel.",
           backup:
-            "Si mon responsable n’est pas disponible, j’envoie une demande factuelle de priorisation.",
+            "Si mon responsable est absent, j’envoie la liste des tâches pour demander les priorités.",
           measure:
-            "Un ordre de priorité ou un rendez-vous d’arbitrage est fixé.",
+            "Je sais quel dossier traiter en premier, ou un rendez-vous est fixé pour en décider.",
           result:
             "Deux priorités ont été clarifiées ; le délai du troisième dossier reste à négocier.",
         },
@@ -3124,12 +3162,12 @@
         },
       };
       const stepNames = [
-        ["Cadrer", "Mon contexte"],
+        ["Commencer", "Mon contexte"],
         ["Clarifier", "Un but précis"],
         ["Imaginer", "Plusieurs pistes"],
         ["Choisir", "Comparer les options"],
         ["Agir", "Un premier pas"],
-        ["Réévaluer", "Apprendre de l’essai"],
+        ["Faire le point", "Après l’essai"],
       ];
       const glossary = {
         meta: [
@@ -3224,7 +3262,6 @@
           options: [
             { id: 1, text: "", plus: "", minus: "" },
             { id: 2, text: "", plus: "", minus: "" },
-            { id: 3, text: "", plus: "", minus: "" },
           ],
           chosen: null,
         };
@@ -3312,7 +3349,7 @@
       function updatePrivacy() {
         $("#privacy-status").textContent = remember
           ? "Brouillon conservé sur cet appareil, sans chiffrement. Aucune transmission par l’outil."
-          : "Vos réponses restent dans cet onglet. Aucune transmission par l’outil.";
+          : "Sans sauvegarde, fermer ou recharger efface vos réponses. Elles ne sont pas envoyées.";
         $("#remember").checked = remember;
       }
       function toast(t) {
@@ -3346,13 +3383,13 @@
         closeDialog();
         fn?.();
       });
-      function example(text) {
-        return `<div class="example"><small>Exemple fictif · ${esc(contexts[state.context].label)}</small><p>${esc(text)}</p></div>`;
+      function example(text, label = "") {
+        return `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary><div class="example"><small>Exemple fictif · ${esc(contexts[state.context].label)}</small><p>${esc(text)}</p></div></details>`;
       }
       function field(key, label, hint = "", type = "textarea", ex = "") {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${hint}</p>` : ""}${ex ? example(ex) : ""}</div>`;
+        return `<div class="field"><label class="label" for="${id}">${label}</label>${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Écrivez avec vos mots…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Votre réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}${hint ? `<p class="hint" id="hint-${key}">${hint}</p>` : ""}${ex ? example(ex, label) : ""}</div>`;
       }
       const comparisonExamples = {
         daily: [
@@ -3361,7 +3398,7 @@
         ],
         work: [
           "Une liste factuelle rend la charge visible.",
-          "Cela demande une préparation et ne garantit pas un arbitrage.",
+          "Cela prend du temps et ne garantit pas une réponse.",
         ],
         couple: [
           "Un temps calme permet de comparer nos disponibilités.",
@@ -3399,14 +3436,14 @@
           "Quelles pistes pourriez-vous essayer ?",
           "Quelle option vous convient ?",
           "Quel sera votre premier pas ?",
-          "Qu’avez-vous appris de cet essai ?",
+          "Après l’essai, où en êtes-vous ?",
         ];
         const leads = [
-          "Les exemples s’adaptent à votre choix. Vos réponses restent les vôtres.",
+          "Choisissez le domaine pour adapter les exemples.",
           "Une situation, un but, un obstacle. Quelques phrases suffisent.",
-          "Notez vos idées avant de les juger. Deux ou trois pistes sont un bon départ.",
-          "Comparez les bénéfices et les contraintes, puis choisissez vous-même.",
-          "Préparez une action assez petite pour pouvoir la tenter.",
+          "Notez deux idées, même imparfaites. Une seule suffit pour commencer.",
+          "Choisissez une piste faisable et sûre pour vous. Vous pourrez la changer.",
+          "Une petite action, un moment et un signe de progrès.",
           "Faites le point après l’action. Vous pouvez ajuster sans repartir de zéro.",
         ];
         let body = "";
@@ -3420,7 +3457,7 @@
             )
             .join(
               "",
-            )}</div><p class="hint">Plusieurs domaines se croisent ? Choisissez celui qui vous aide le plus.</p></fieldset><fieldset class="section-gap"><legend>Êtes-vous en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+            )}</div></fieldset><fieldset class="section-gap"><legend>Êtes-vous en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
             ["danger", "Je me sens en danger"],
@@ -3431,45 +3468,45 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>La priorité est votre sécurité.</strong>Mettez l’exercice de côté si nécessaire. Vous pouvez chercher de l’aide sans devoir terminer le parcours.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>Un doute mérite d’être écouté.</strong>La peur, les menaces ou le contrôle ne sont pas de simples difficultés de communication. <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">S’il y a des menaces, du contrôle ou de la violence, <a href="#violences">consultez les repères de sécurité</a>.</p>`}<details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je me sens trop chargé pour commencer</summary><div class="details-body"><p>Vous pouvez vous arrêter. Si cela vous convient, posez les pieds au sol, regardez autour de vous et respirez naturellement. Choisissez une seule petite difficulté, ou demandez à une personne sûre de rester avec vous.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#proche">Comment être accompagné</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Pause choisie. Rien ne vous oblige à poursuivre maintenant. Vous pouvez reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
+            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Votre sécurité passe avant l’exercice.</strong>Vous pouvez chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="#violences">Voir les repères de sécurité</a>.</p>`}<details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Besoin d’une pause ?</summary><div class="details-body"><p>Vous pouvez vous arrêter ici, choisir une difficulté plus petite ou demander à une personne de confiance de rester avec vous.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#proche">Comment être accompagné</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Pause choisie. Rien ne vous oblige à poursuivre maintenant. Vous pouvez reprendre avec le bouton Continuer.</p>' : ""}</div></details>`;
         }
         if (i === 1) {
           body =
             field(
               "situation",
               "Ce qui se passe",
-              "Décrivez une scène observable : quand, où, avec qui ? Évitez les informations identifiantes.",
+              "Racontez un fait précis, sans nom ni adresse.",
               "textarea",
               c.situation,
             ) +
             field(
               "goal",
               "Le petit changement que je souhaite",
-              "Un résultat concret, réaliste et important pour vous.",
+              "Qu’aimeriez-vous voir changer concrètement ?",
               "textarea",
               c.goal,
             ) +
             field(
               "obstacle",
               "Ce qui me bloque",
-              "Un manque de temps, d’information, de ressources, une difficulté relationnelle…",
+              "Quel est le principal obstacle ?",
               "textarea",
               c.obstacle,
             ) +
-            `<details><summary>Mes émotions et ma marge de manœuvre (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Une émotion n’est pas une faute. Vous pouvez la nommer sans devoir la faire disparaître.", "text")}${field("control", "Ce sur quoi je peux agir", "Votre " + term("control") + " inclut la possibilité de demander un appui.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details>`;
+            `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.outside)}</div></details>`;
         }
         if (i === 2) {
-          body = `<div class="notice"><strong>Pour l’instant, ouvrez les possibilités.</strong>Faire autrement, demander un appui, obtenir une information… Pensez aussi aux ressources collectives.</div><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example(c.ideas[j]) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button><p class="hint">Vous pouvez avancer avec une seule piste si c’est tout ce qui est possible aujourd’hui.</p>`;
+          body = `<p class="hint">Faire autrement, demander de l’aide ou chercher une information : tout peut être une piste.</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div><textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Une possibilité serait de…">${esc(o.text)}</textarea>${j < 3 ? example(c.ideas[j], "Piste " + (j + 1)) : ""}</div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
         }
         if (i === 3) {
           const options = state.options.filter((o) => o.text.trim());
           body = options.length
-            ? `<p class="subtle" style="margin-bottom:17px">Une piste utile doit aussi être sûre et réalisable. Il n’y a pas de « meilleure solution » calculée automatiquement.</p>${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(c.ideas[0])}</p><p><strong>Apport possible :</strong> ${esc(comparisonExamples[state.context][0])}</p><p><strong>Limite :</strong> ${esc(comparisonExamples[state.context][1])}</p></div></details><details><summary>Quelques questions pour décider</summary><div class="details-body"><ul><li>Cette option respecte-t-elle mes besoins et ceux des autres ?</li><li>Est-elle faisable avec les ressources dont je dispose ?</li><li>Quels effets immédiats et à plus long terme ?</li><li>Puis-je essayer à petite échelle, avec un risque acceptable ?</li><li>Ai-je besoin d’un avis médical, social ou juridique ?</li></ul></div></details>`
+            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(c.ideas[0])}</p><p><strong>Apport possible :</strong> ${esc(comparisonExamples[state.context][0])}</p><p><strong>Limite :</strong> ${esc(comparisonExamples[state.context][1])}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>Laquelle respecte mes besoins, demande une énergie acceptable et peut être essayée sans me mettre en danger ?</p><p>Si les conséquences sont importantes, demandez un avis adapté avant d’agir.</p></div></details>`
             : `<div class="notice amber"><strong>Vous n’avez pas encore noté de piste.</strong>Revenez à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
         }
         if (i === 4) {
           const chosen = state.options.find((o) => o.id === state.chosen);
-          body = `<div class="notice"><strong>Mon option</strong>${chosen ? esc(chosen.text) : "Aucune option choisie. Vous pouvez en choisir une à l’étape précédente."}</div><div class="section-gap">${field("action", "La toute première action", "Une action observable et assez petite pour votre énergie du moment.", "textarea", c.action)}${field("when", "Quand et où ?", "Vous pouvez écrire une date, un moment ou une occasion précise.", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("support", "Avec quel appui ? (facultatif)", "Une personne, une information, du temps, un service ou un matériel.", "textarea", c.support)}<details><summary>Prévoir un obstacle et un plan de repli</summary><div class="details-body">${field("backup", "Si ça bloque… alors…", "C’est une " + term("implementation") + ". Évitez les options qui mettent en danger.", "textarea", c.backup)}</div></details><div class="section-gap">${field("measure", "Comment verrai-je un petit progrès ?", "Un signe simple, observable, sans exiger un résultat parfait.", "textarea", c.measure)}${field("reviewDate", "Quand faire le point ? (facultatif)", "Cette date figure sur votre fiche ; aucun rappel automatique n’est envoyé.", "date")}</div></div>`;
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Aucune piste choisie. Vous pouvez revenir à l’étape précédente."}</div><div class="section-gap">${field("action", "Ma première action", "Choisissez une action assez petite pour commencer.", "textarea", c.action)}${field("when", "Quand et où ?", "", "text", "Demain, après le petit-déjeuner, pendant dix minutes.")}${field("measure", "Comment saurai-je que j’ai avancé ?", "Un petit signe concret suffit.", "textarea", c.measure)}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Prévoyez une autre action simple et sûre.", "textarea", c.backup)}${field("reviewDate", "Quand faire le point ?", "Une date pour votre fiche, sans rappel automatique.", "date")}</div></details></div>`;
         }
         if (i === 5) {
           body = `<fieldset><legend>Où en êtes-vous de l’action ?</legend><div class="choice-stack">${[
@@ -3484,7 +3521,7 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Vous pouvez garder votre plan pour plus tard.</strong>Le bilan se remplit après l’essai. Pas besoin d’inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même une tentative partielle apporte une information.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que vous espériez</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, simplifier, changer de piste, chercher un appui ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Vous pouvez garder votre plan pour plus tard.</strong>Le bilan se remplit après l’essai. Pas besoin d’inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si vous n’avez fait qu’une partie.", "textarea", c.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que vous espériez</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
         }
         $("#step-container").innerHTML =
           `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2><p class="step-lead">${leads[i]}</p><div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← Retour</button>${i === 0 ? '<span class="step-meta">À votre rythme</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon récapitulatif" : i === 4 ? "Garder mon plan" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
@@ -3568,10 +3605,12 @@
             4,
             dd("Action", f.action) +
               dd("Quand et où", f.when) +
-              dd("Appui", f.support) +
-              dd("Si ça bloque", f.backup) +
+              (f.support ? dd("Appui", f.support) : "") +
+              (f.backup ? dd("Si ça bloque", f.backup) : "") +
               dd("Signe de progrès", f.measure) +
-              dd("Date du bilan", formatDate(f.reviewDate)),
+              (f.reviewDate
+                ? dd("Date du bilan", formatDate(f.reviewDate))
+                : ""),
           ) +
           block(
             "5. Mon bilan",
@@ -3834,22 +3873,22 @@
         );
       }
       const supportModes = {
-        listen: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Faites une place à son récit</strong><p>« Qu’est-ce qui est le plus difficile pour toi aujourd’hui ? » Laissez des silences ; ne cherchez pas les détails à tout prix.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Reformulez sans interpréter</strong><p>« Si je comprends bien, ce qui te pèse surtout, c’est… » Vérifiez que vous avez compris.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Reconnaissez l’émotion</strong><p>« Cela semble vraiment éprouvant. » Vous pouvez reconnaître son émotion (c’est ${term("validation")}) sans affirmer que toutes ses interprétations sont exactes.</p></div></div></div><div class="say">« Je n’ai pas forcément de réponse, mais je peux rester un moment avec toi. »</div><p class="subtle">Vous n’avez pas besoin de remplir le silence avec un conseil.</p>`,
-        solve: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Obtenez son accord</strong><p>« Est-ce que tu veux qu’on cherche ensemble un petit pas possible ? » Un non est une réponse valable.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Partez de sa priorité</strong><p>Demandez le changement qu’elle souhaite. Faites émerger ses idées avant de proposer les vôtres.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Laissez-lui le choix</strong><p>Comparez deux ou trois pistes. Aidez à préparer une action ; proposez de refaire le point à un moment convenu.</p></div></div></div><div class="say">« Parmi ces pistes, laquelle te paraît faisable et respectueuse de ce que tu souhaites ? »</div><a class="btn" href="#outil">Ouvrir le parcours ensemble →</a><p class="hint">Écrivez avec son accord, si possible sur son appareil. Le parcours en cours n’est pas effacé.</p>`,
-        practical: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Proposez quelque chose de précis</strong><p>Un repas, un trajet, vingt minutes pour un formulaire, ou une présence à un rendez-vous si elle le souhaite.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Convenez de vos limites</strong><p>Précisez ce que vous pouvez faire et quand. N’agissez pas à son insu, hors nécessité de protection urgente.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Vérifiez que l’aide convient</strong><p>« Tu préfères que je fasse avec toi ou que je m’occupe seulement de cette partie ? »</p></div></div></div><div class="say">« Je peux t’aider à préparer cet appel demain. Est-ce que cela te serait utile ? »</div><p class="subtle">Réduire une charge concrète peut être plus utile qu’ajouter des conseils.</p>`,
+        listen: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Faites une place à son récit</strong><p>« Qu’est-ce qui est le plus difficile pour toi aujourd’hui ? » Laissez des silences ; ne cherchez pas les détails à tout prix.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Reformulez sans interpréter</strong><p>« Si je comprends bien, ce qui te pèse surtout, c’est… » Vérifiez que vous avez compris.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Reconnaissez l’émotion</strong><p>« Cela semble vraiment éprouvant. » Reconnaître sa peine ne vous oblige pas à être d’accord sur tout.</p></div></div></div><div class="say">« Je n’ai pas forcément de réponse, mais je peux rester un moment avec toi. »</div>`,
+        solve: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Obtenez son accord</strong><p>« Est-ce que tu veux qu’on cherche ensemble un petit pas possible ? » Un non est une réponse valable.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Partez de sa priorité</strong><p>Demandez le changement qu’elle souhaite. Faites émerger ses idées avant de proposer les vôtres.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Laissez-lui le choix</strong><p>Comparez deux ou trois pistes. Aidez à préparer une action ; proposez de refaire le point à un moment convenu.</p></div></div></div><div class="say">« Laquelle de ces pistes te conviendrait le mieux ? »</div><a class="btn" href="#outil">Ouvrir le parcours ensemble →</a><p class="hint">Écrivez avec son accord, si possible sur son appareil. Le parcours en cours n’est pas effacé.</p>`,
+        practical: `<div class="mini-steps"><div class="mini-step"><span class="callout-number">1</span><div><strong>Proposez quelque chose de précis</strong><p>Un repas, un trajet, vingt minutes pour un formulaire, ou une présence à un rendez-vous si elle le souhaite.</p></div></div><div class="mini-step"><span class="callout-number">2</span><div><strong>Convenez de vos limites</strong><p>Précisez ce que vous pouvez faire et quand. N’agissez pas à son insu, hors nécessité de protection urgente.</p></div></div><div class="mini-step"><span class="callout-number">3</span><div><strong>Vérifiez que l’aide convient</strong><p>« Tu préfères que je fasse avec toi ou que je m’occupe seulement de cette partie ? »</p></div></div></div><div class="say">« Je peux t’aider à préparer cet appel demain. Est-ce que cela te serait utile ? »</div>`,
       };
       const supportContexts = {
         mental: [
           "Détresse ou trouble psychique",
           "Proposez une tâche simple et une présence calme. Évitez « secoue-toi » ou « pense autrement ». Demandez si la personne souhaite contacter un professionnel ou un proche sûr.",
           "Si elle rapporte une expérience que vous ne partagez pas : « Je vois que cela t’inquiète. Je ne le perçois pas de la même façon, mais je veux t’aider à te sentir en sécurité. »",
-          "Une désorganisation nouvelle, un danger immédiat ou des idées suicidaires nécessitent une évaluation adaptée. Ne modifiez pas son traitement et ne vous mettez pas en position de soignant.",
+          "Si la personne devient très confuse, ne peut plus gérer les gestes du quotidien ou évoque le suicide, cherchez une aide professionnelle. En cas de danger immédiat, une aide urgente est nécessaire. Ne modifiez pas son traitement.",
         ],
         couple: [
           "Difficulté dans le couple",
           "Écoutez sans décider à sa place de rester ou de partir. Demandez si elle peut exprimer un désaccord sans avoir peur.",
           "« Te sens-tu libre de dire non ? Qu’est-ce qui te ferait te sentir plus en sécurité ? »",
-          "S’il y a peur, emprise, menace ou représailles, privilégiez une aide individuelle spécialisée. N’organisez pas vous-même une confrontation ou une médiation de couple.",
+          "S’il y a peur, contrôle, menace ou crainte d’une punition, privilégiez une aide individuelle spécialisée. N’organisez pas vous-même une confrontation ou une médiation de couple.",
         ],
         work: [
           "Travail ou études",
@@ -3885,13 +3924,17 @@
           ),
         );
         const v = supportContexts[$("#support-context").value];
+        if (!v) {
+          $("#support-context-content").replaceChildren();
+          return;
+        }
         $("#support-context-content").innerHTML =
           `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young"].includes($("#support-context").value) ? '<a href="#violences" class="text-button">Explorer les repères de violence →</a>' : ""}</article>`;
       }
       // These are educational examples, not validated scales or risk scores.
       const violenceData = {
         couple: {
-          note: "Tous les genres et toutes les orientations sont concernés. Les comportements respectueux n’annulent pas les violences.",
+          note: "Tous les genres et toutes les orientations sont concernés. Des moments respectueux n’effacent pas les violences.",
           refs: "[6, 7]",
           items: [
             [
@@ -3933,7 +3976,7 @@
           ],
         },
         work: {
-          note: "La relation hiérarchique crée une asymétrie de pouvoir. Ces repères ne remplacent pas l’examen du contexte ni le droit local.",
+          note: "Un responsable dispose de moyens de pression sur le salarié. Les droits et recours dépendent du pays.",
           refs: "[8]",
           items: [
             [
@@ -3945,7 +3988,7 @@
             [
               "Désaccord professionnel",
               "Un retour critique porte sur le travail, sans vous dénigrer.",
-              "Une évaluation défavorable ou un désaccord ne constitue pas automatiquement un harcèlement. La forme, les faits et le contexte comptent.",
+              "Une critique sur le travail ou un désaccord ne constitue pas automatiquement un harcèlement. La forme, les faits et le contexte comptent.",
               "Demandez des critères et des attentes précis, si cette discussion est sûre.",
             ],
             [

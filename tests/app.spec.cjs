@@ -92,6 +92,11 @@ const errors = [];
   await page.locator("[data-context=work]").click();
   await page.locator("[data-safety=safe]").click();
   await next();
+  assert(!(await page.locator(".example").first().isVisible()));
+  const firstExample = page.locator(".example-help summary").first();
+  await firstExample.focus();
+  await page.keyboard.press("Enter");
+  assert(await page.locator(".example").first().isVisible());
   assert.match(
     await page.locator(".example").first().innerText(),
     /responsables/,
@@ -110,6 +115,8 @@ const errors = [];
   await page.locator("#idea-1").fill("Demander un arbitrage écrit.");
   await page.locator("#idea-2").fill("Proposer un nouveau délai.");
   await next();
+  assert(!(await page.locator("#plus-1").isVisible()));
+  await page.locator(".option-card summary").first().click();
   await page.locator("#plus-1").fill("Rendre la charge visible.");
   await page.locator("#minus-1").fill("La réponse peut prendre du temps.");
   await page.locator('[data-choose="1"]').click();
@@ -119,11 +126,9 @@ const errors = [];
     .locator("#field-action")
     .fill("Préparer la liste des tâches demain.");
   await page.locator("#field-when").fill("Demain à 9 h, au bureau.");
+  assert(!(await page.locator("#field-support").isVisible()));
+  await page.locator("#step-container .optional-fields > summary").click();
   await page.locator("#field-support").fill("Ma collègue.");
-  await page
-    .locator("summary")
-    .filter({ hasText: "Prévoir un obstacle" })
-    .click();
   await page
     .locator("#field-backup")
     .fill("Si mon responsable est absent, alors envoyer un message.");
@@ -172,10 +177,22 @@ const errors = [];
     await page.locator("#field-situation").inputValue(),
     "Deux dossiers à remettre le même jour.",
   );
+  await page.locator(".example-help summary").first().click();
   assert.match(
     await page.locator(".example").first().innerText(),
     /rendez-vous/,
   );
+  await step(4);
+  await visible("#field-support");
+  assert.equal(
+    await page.locator("#field-support").inputValue(),
+    "Ma collègue.",
+  );
+  await page.locator("#step-container .optional-fields > summary").click();
+  await visit("recap");
+  assert.match(await page.locator("#recap-content").innerText(), /Ma collègue/);
+  await visit("outil");
+  await step(1);
   // Formatted attacks must stay text in summaries and option headings.
   const attack =
     '<img src=x onerror="window.PWNED=true"><script>alert(1)</script>';
@@ -205,13 +222,11 @@ const errors = [];
   await page.locator(".file-options summary").click();
   await page.locator("#remember").uncheck();
   assert.equal(await page.evaluate(() => localStorage.length), 0);
-  await page
-    .locator("#import-file")
-    .setInputFiles({
-      name: "bad.json",
-      mimeType: "application/json",
-      buffer: Buffer.from('{"version":100}'),
-    });
+  await page.locator("#import-file").setInputFiles({
+    name: "bad.json",
+    mimeType: "application/json",
+    buffer: Buffer.from('{"version":100}'),
+  });
   await page.waitForFunction(() =>
     document.querySelector("#toast").textContent.includes("non reconnu"),
   );
@@ -244,6 +259,9 @@ const errors = [];
     await page.locator(`[data-support-mode=${mode}]`).click();
     assert((await page.locator("#support-content").innerText()).length > 100);
   }
+  assert.equal(await page.locator("#support-context").inputValue(), "");
+  assert.equal(await page.locator("#support-context-content").innerText(), "");
+  await page.locator("#support-adapt summary").click();
   for (const val of [
     "mental",
     "couple",
