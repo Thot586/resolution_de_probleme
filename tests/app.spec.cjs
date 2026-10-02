@@ -98,6 +98,8 @@ const errors = [];
   await visible("#proche");
   await visit("outil");
   await visible("#step-title");
+  assert.match(await page.locator("#privacy-status").innerText(), /Rien n’est envoyé/);
+  assert.equal(await page.evaluate(() => localStorage.length), 0);
   for (const [scale, expected] of [
     ["shared", /Qu’est-ce qui compte pour chacun/],
     ["organization", /Quel problème le système produit/],
@@ -197,6 +199,7 @@ const errors = [];
   await visit("outil");
   await step(0);
   await page.locator("[data-context=health]").click();
+  assert.match(await page.locator("#toast").innerText(), /Le texte déjà saisi ne change pas/);
   await step(1);
   assert.equal(
     await page.locator("#field-situation").inputValue(),
@@ -234,6 +237,7 @@ const errors = [];
   await page.locator(".file-options summary").click();
   await page.locator("#remember").check();
   assert.equal(await page.evaluate(() => localStorage.length), 1);
+  assert.match(await page.locator("#privacy-status").innerText(), /à ma demande/);
   const exportPromise = page.waitForEvent("download");
   await page.locator("[data-action=export]").click();
   const draft = await exportPromise;
@@ -395,6 +399,7 @@ const errors = [];
   });
   await page.locator(".menu-toggle").click();
   await visible("#navigation");
+  assert.equal(await page.locator(".menu-toggle").innerText(), "Fermer ×");
   await page.locator("nav a[data-page=soutenir]").click();
   await page.locator("#navigation").waitFor({ state: "hidden" });
   assert(!(await page.locator("#navigation").isVisible()));
@@ -416,6 +421,24 @@ const errors = [];
   await visit("recap");
   await overflow("long text mobile");
   await axe("mobile-summary");
+  const touch = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  const tp = await touch.newPage();
+  await tp.goto(url);
+  await tp.locator(".menu-toggle").tap();
+  assert.equal(await tp.locator(".menu-toggle").getAttribute("aria-expanded"), "true");
+  assert(await tp.locator("#navigation").isVisible());
+  await tp.screenshot({ path: path.join(output, "mobile-menu-open.png") });
+  await tp.locator(".menu-toggle").tap();
+  assert(!(await tp.locator("#navigation").isVisible()));
+  await tp.locator(".menu-toggle").tap();
+  await tp.locator("nav a[data-page=soutenir]").tap();
+  assert.equal(new URL(tp.url()).hash, "#soutenir");
+  assert(!(await tp.locator("#navigation").isVisible()));
+  await touch.close();
   // Storage failure remains usable, and source content has a no-JS fallback.
   const blocked = await browser.newContext();
   await blocked.addInitScript(() => {

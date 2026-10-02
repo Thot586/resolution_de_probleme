@@ -157,8 +157,8 @@
       }
       function updatePrivacy() {
         $("#privacy-status").textContent = remember
-          ? "Brouillon conservé sur cet appareil, sans chiffrement. Aucune transmission par l’outil."
-          : "Sans sauvegarde, fermer ou recharger efface vos réponses. Elles ne sont pas envoyées.";
+          ? "Brouillon gardé dans ce navigateur à ma demande. Rien n’est envoyé."
+          : "Ce que j’écris reste dans cette page. Rien n’est envoyé.";
         $("#remember").checked = remember;
       }
       function toast(t) {
@@ -744,8 +744,7 @@
             a.setAttribute("aria-current", "page");
           else a.removeAttribute("aria-current");
         });
-        $("nav").classList.remove("open");
-        $(".menu-toggle").setAttribute("aria-expanded", "false");
+        setMenuOpen(false);
         if (page === "recap") renderRecap();
         if (page === "outil") renderStep();
         const title = {
@@ -772,9 +771,15 @@
           window.scrollTo({ top: 0, behavior: "instant" });
         }
       }
+      function setMenuOpen(open) {
+        $("#navigation").classList.toggle("open", open);
+        const button = $(".menu-toggle");
+        button.setAttribute("aria-expanded", String(open));
+        button.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+        button.textContent = open ? "Fermer ×" : "Menu ☰";
+      }
       $(".menu-toggle").addEventListener("click", () => {
-        const open = $("nav").classList.toggle("open");
-        $(".menu-toggle").setAttribute("aria-expanded", String(open));
+        setMenuOpen(!$("#navigation").classList.contains("open"));
       });
       $(".skip").addEventListener("click", (e) => {
         e.preventDefault();
@@ -784,10 +789,13 @@
       $$("nav a").forEach((a) =>
         a.addEventListener("click", () => {
           if (a.hash === location.hash) route();
-          $("nav").classList.remove("open");
-          $(".menu-toggle").setAttribute("aria-expanded", "false");
+          setMenuOpen(false);
         }),
       );
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".navbar") && $("#navigation").classList.contains("open"))
+          setMenuOpen(false);
+      });
       window.addEventListener("hashchange", route);
       window.addEventListener("beforeprint", preparePrint);
       window.addEventListener("afterprint", finishPrint);
@@ -823,7 +831,7 @@
           toast(
             "Exemples adaptés : " +
               contexts[state.context].label +
-              ". Vos réponses sont conservées.",
+              ". Le texte déjà saisi ne change pas.",
           );
           return;
         }
@@ -1095,13 +1103,15 @@
         if (e.key === "Escape") {
           hideTooltip();
           if ($("nav").classList.contains("open")) {
-            $("nav").classList.remove("open");
-            $(".menu-toggle").setAttribute("aria-expanded", "false");
+            setMenuOpen(false);
             $(".menu-toggle").focus();
           }
         }
       });
-      window.addEventListener("resize", hideTooltip);
+      window.addEventListener("resize", () => {
+        hideTooltip();
+        if (innerWidth > 850) setMenuOpen(false);
+      });
       window.addEventListener("scroll", hideTooltip, { passive: true });
       $("#glossary-list").innerHTML = Object.values(glossary)
         .map(([k, v]) => `<p><strong>${esc(k)}.</strong> ${esc(v)}</p>`)
