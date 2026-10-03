@@ -764,11 +764,18 @@ const errors = [];
     [...violenceContexts].sort(),
     "Every authored guide is reachable from the relationship chooser",
   );
+  assert.equal(await page.locator("#violence-credit").isVisible(), false, "Credits appear with a selected relation");
   await axe("meter-no-relation");
   const guideContent = new Set();
+  const priorWork = {
+    couple: [], sibling: [], peers: [53], family: [], colleague: [51, 57],
+    work: [51, 55], education: [52, 58], care: [54], vulnerable: [], other: [],
+  };
   for (const val of violenceContexts) {
     await page.locator("#violence-context").selectOption(val);
     assert.equal(new URL(page.url()).hash, `#violences-${val}`, `${val}: relationship choice updates the URL`);
+    assert(await page.locator("#violence-credit").isVisible(), `${val}: prior creators are credited beside the guide`);
+    assert.deepEqual(await page.locator('#violence-credit a[href^="#ref-"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href"))), ["#ref-7", ...priorWork[val].map((n) => `#ref-${n}`)], `${val}: the relevant earlier variants are credited`);
     assert.equal(await page.locator("#meter [data-meter]").count(), 6, `${val}: six illustrative choices`);
     assert.equal(await page.locator('#meter [aria-pressed="true"]').count(), 0, `${val}: no behavior inferred from the relationship`);
     assert.match(await page.locator("#meter-detail").innerText(), /Quel comportement me questionne/);

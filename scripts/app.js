@@ -806,11 +806,16 @@
         $("#violence-return").hidden = !state.scaleChosen;
         if (!d) {
           $("#violence-context-note").textContent = "";
+          $("#violence-credit").hidden = true;
+          $("#violence-credit").textContent = "";
           $("#meter").replaceChildren();
           $("#meter-detail").replaceChildren();
           return;
         }
         $("#violence-context-note").textContent = d.note;
+        const priorWork = d.priorWork || [];
+        $("#violence-credit").innerHTML = `<strong>Crédits des outils antérieurs.</strong> Le <em>Violentómetro</em> mexicain et le Violentomètre français ont ouvert la voie <a href="#ref-7">[7]</a>.${priorWork.length ? ` D’autres équipes ont publié des outils dans des contextes proches : ${priorWork.map(([name, ref]) => `${esc(name)} <a href="#ref-${ref}">[${ref}]</a>`).join(" ; ")}.` : ""} Les exemples de ce guide sont distincts.`;
+        $("#violence-credit").hidden = false;
         $("#meter").innerHTML = d.items
           .map(
             (v, j) =>

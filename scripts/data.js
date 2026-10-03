@@ -250,7 +250,7 @@
         ],
         violentometer: [
           "Violentomètre",
-          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences dans une relation. Le Violentomètre français officiel porte sur les relations amoureuses ; les repères de cette page sont des créations pédagogiques distinctes, sans score de risque validé.",
+          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences. Parmi les travaux antérieurs figurent le Violentómetro de l’Institut polytechnique national du Mexique (2009), le Violentomètre français consacré aux relations amoureuses (2018) et des déclinaisons créées par d’autres équipes. Les guides de cette page sont distincts de ces outils et ne donnent pas de score de danger. Les crédits figurent dans « Origine et limites de ces repères ».",
         ],
         workHarassment: [
           "Harcèlement moral au travail",
@@ -295,7 +295,7 @@
         indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
         feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
         personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
-        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentomètre officiel concerne les relations amoureuses. Les repères de ce site pour différentes relations sont des créations distinctes : ils ne calculent pas un niveau de danger.", 7],
+        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentómetro mexicain, le Violentomètre français et d’autres déclinaisons ont précédé ce site. Leurs créateurs sont crédités dans la page « Repérer une violence selon la relation ». Les guides de ce site sont distincts et ne calculent pas un niveau de danger.", 7],
         workHarassment: ["Des agissements hostiles répétés au travail.", "Un conflit ou une critique professionnelle ne suffit pas à conclure à un harcèlement moral. Je peux toutefois demander de l'aide dès qu'un fait me préoccupe, sans attendre qu'il se répète.", 35],
         evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
         sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
@@ -461,6 +461,7 @@
         work: {
           note: "Un responsable dispose de moyens de pression sur le salarié. Les droits et recours dépendent du pays.",
           refs: "[8, 35]",
+          priorWork: [["Violentomètre de la Ville de Paris sur les violences au travail (2020)", 51], ["Violent’hospitomètre des collectifs de jeunes soignants", 55]],
           items: [
             [
               "Respect",
@@ -503,6 +504,7 @@
         care: {
           note: "Repères centrés sur les droits de la personne soignée. Une procédure contraignante exige une analyse clinique et juridique propre au pays ; l’outil ne tranche pas sa légalité.",
           refs: "[11, 43]",
+          priorWork: [["Déontomètre de la confiance thérapeutique de l’Ordre des masseurs-kinésithérapeutes et de l’association Du côté des femmes (2022)", 54]],
           items: [
             [
               "Respect",
@@ -545,6 +547,7 @@
         education: {
           note: "« Enseignant / élève ou étudiant » : le repère vaut pour l’école et l’enseignement supérieur, en tenant compte de l’âge et de la dépendance pédagogique.",
           refs: "[9, 10]",
+          priorWork: [["SafeProf de Nous Toutes UPEC et de ses partenaires (2021)", 52], ["Violentomètre de l’apprentissage d’Eléonore (2025)", 58]],
           items: [
             [
               "Respect",
@@ -671,6 +674,7 @@
         peers: {
           note: "Amitié, camarades ou colocation : le groupe, l'âge et la dépendance au logement peuvent changer la liberté de dire non. La source UNESCO porte sur l'école ; son extension aux autres liens entre pairs est un choix pédagogique. Pour un mineur, un adulte sûr peut devoir protéger.",
           refs: "[36]",
+          priorWork: [["Harcèlomètre du service de santé étudiant de l’Université de Toulouse", 53]],
           items: [
             [
               "Respect",
@@ -713,6 +717,7 @@
         colleague: {
           note: "Entre collègues, un désaccord professionnel n'est pas en soi un harcèlement. Des humiliations répétées, des représailles ou une agression justifient de chercher de l'aide. Si l'autre personne décide de votre emploi ou de votre formation, choisissez plutôt le guide lié à cette autorité.",
           refs: "[8, 35]",
+          priorWork: [["Violentomètre de la Ville de Paris sur les violences au travail (2020)", 51], ["Violentomètre du monde de la recherche de l’équipe G-RIRE et de la Fondation L’Oréal (2024)", 57]],
           items: [
             [
               "Respect professionnel",
