@@ -168,6 +168,10 @@
         public: ["Collectif ou politique", "Une décision collective ou publique est en jeu."],
       };
       const glossary = {
+        ipt: [
+          "IPT — traitement psychologique intégré",
+          "IPT signifie Integrated Psychological Treatment (« traitement psychologique intégré »). C’est un programme clinique de réadaptation cognitive et sociale pour des personnes vivant avec une schizophrénie. Le module 6 fourni porte sur la résolution de problèmes. Les étapes de ce site sont une adaptation pédagogique, pas le programme clinique complet.",
+        ],
         meta: [
           "Méta-analyse",
           "Méthode qui combine statistiquement les résultats de plusieurs études portant sur une question comparable. Sa fiabilité dépend de la qualité et de la compatibilité des études.",
@@ -271,6 +275,7 @@
       };
       // The first sentence is the quick hint; the existing glossary entry gives the full definition.
       const glossaryHelp = {
+        ipt: ["Un programme clinique de réadaptation psychosociale.", "Son module 6 propose un apprentissage de la résolution de problèmes. Ce site en reprend des repères généraux pour d’autres situations, sans reproduire le programme de soins.", 1],
         meta: ["Résultats de plusieurs études combinés.", "Plusieurs essais sur une même question sont regroupés. Si les études sont de mauvaise qualité ou trop différentes, le résultat combiné peut tromper.", 2],
         random: ["Le hasard répartit les participants entre des groupes.", "Par exemple, une personne reçoit une intervention et une autre une comparaison selon un tirage au sort. Cette méthode réduit certaines différences initiales entre groupes.", 2],
         cluster: ["Le hasard répartit des groupes entiers.", "Dans une étude portant sur des centres de soins, chaque centre peut être tiré au sort. Les personnes d’un même centre ne sont pas réparties séparément.", 13],

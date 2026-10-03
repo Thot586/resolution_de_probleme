@@ -1296,7 +1296,7 @@
         if (e.key === "Escape") {
           if (!$("#term-dialog").open) tooltipSuppressed = tooltipOwner;
           hideTooltip();
-          if ($("nav").classList.contains("open")) {
+          if ($("#navigation").classList.contains("open")) {
             setMenuOpen(false);
             $(".menu-toggle").focus();
           }

@@ -137,7 +137,32 @@ const errors = [];
   assert.match(await page.locator("#accueil .scale-intro").innerText(), /questions et les exemples seront adaptés/);
   assert.equal(await page.locator('#accueil a[href="#soutenir"]').count(), 1);
   assert.equal(await page.locator('#accueil a[href="#groupe"]').count(), 1);
+  assert.equal(await page.locator("#accueil .method-steps details").count(), 6);
+  assert(await page.locator("#accueil .early-help").evaluate((node) => node.nextElementSibling.matches(".scale-entry")), "Safety links precede the exercise choices");
+  assert.equal(await page.locator('#accueil .help-others a[href="#proche"]').count(), 1);
   await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
+  const firstMethod = page.locator("#accueil .method-steps details").first();
+  assert.equal(await firstMethod.evaluate((node) => node.open), false);
+  await firstMethod.locator("summary").click();
+  assert(await firstMethod.locator(".method-detail").isVisible());
+  assert.match(await firstMethod.locator(".method-detail").innerText(), /Deux factures/);
+  assert.equal(new URL(page.url()).hash, "");
+  await axe("open-method-step");
+  await firstMethod.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  assert.equal(await firstMethod.evaluate((node) => node.open), false);
+  const ipt = page.locator("#accueil [data-term=ipt]");
+  await ipt.click();
+  await visible("#term-dialog");
+  assert.match(await page.locator("#term-detail").innerText(), /Integrated Psychological Treatment/);
+  assert.equal(await page.locator("#term-source").getAttribute("href"), "#ref-1");
+  await page.locator("#term-close").click();
+  await page.locator('#accueil .early-help a[href="#violences"]').click();
+  await visible("#violences");
+  await visit("accueil");
+  await page.locator('#accueil .early-help a[href="#securite"]').click();
+  await visible("#securite");
+  await visit("accueil");
   await page.locator("#accueil .welcome-explain summary").click();
   await visible("#accueil svg[aria-labelledby='method-title method-desc']");
   assert.match(await page.locator("#accueil svg").textContent(), /Évaluer et ajuster/);
@@ -830,7 +855,7 @@ const errors = [];
   await visible("#term-dialog");
   await page.locator("#term-close").click();
   await page.locator("#comprendre summary").filter({ hasText: "Glossaire :" }).click();
-  assert.equal(await page.locator("#glossary-list [data-term]").count(), 25);
+  assert.equal(await page.locator("#glossary-list [data-term]").count(), 26);
   assert(await page.evaluate(() => Object.keys(glossary).every((key) => glossaryHelp[key]?.length === 3)));
   assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll("[data-term]")].map((element) => element.dataset.term).filter((key) => !Object.hasOwn(glossary, key))), [], "Every clickable term has a glossary entry");
   for (const key of ["violentometer", "evidence", "sharedDecision", "balancingIndicator"])
@@ -858,6 +883,9 @@ const errors = [];
   await guides.nth(0).locator("summary").click();
   await guides.nth(1).locator("summary").click();
   await visit("bibliographie");
+  assert.match(await page.locator("#bibliographie .page-heading").innerText(), /documents utilisés pour concevoir l’outil/);
+  assert.doesNotMatch(await page.locator("#bibliographie").innerText(), /La progression s’appuie/);
+  assert.match(await page.locator("#ref-1").innerText(), /Integrated Psychological Treatment/);
   assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('a[href^="#ref-"]')].map((a) => a.getAttribute("href")).filter((href) => !document.getElementById(href.slice(1)))), []);
   await axe("references");
   await page.locator('footer a[href="#comprendre"]').click();
@@ -912,6 +940,15 @@ const errors = [];
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await visit("accueil");
+  const earlyHelpLayout = await page.locator("#accueil .early-help").evaluate((node) => ({
+    position: getComputedStyle(node).position,
+    top: node.getBoundingClientRect().top,
+    bottom: node.getBoundingClientRect().bottom,
+    heroBottom: node.previousElementSibling.getBoundingClientRect().bottom,
+    choicesTop: node.nextElementSibling.getBoundingClientRect().top,
+  }));
+  assert.equal(earlyHelpLayout.position, "static", "The home safety links stay in the page flow on mobile");
+  assert(earlyHelpLayout.top >= earlyHelpLayout.heroBottom - 1 && earlyHelpLayout.bottom <= earlyHelpLayout.choicesTop + 1, "Safety links sit between the introduction and the exercise");
   await page.screenshot({ path: path.join(output, "mobile-home.png"), fullPage: true });
   await page.locator("#accueil .welcome-explain summary").click();
   await overflow("open method diagram mobile");

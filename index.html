@@ -184,13 +184,13 @@
         width: 24px;
         height: 24px;
       }
-      nav {
+      #navigation {
         display: flex;
         align-items: center;
         gap: 5px;
         margin-left: auto;
       }
-      nav a {
+      #navigation a {
         font-size: 0.87rem;
         text-decoration: none;
         color: var(--muted);
@@ -198,10 +198,10 @@
         border-radius: 8px;
         font-weight: 560;
       }
-      nav a:hover {
+      #navigation a:hover {
         background: var(--mint);
       }
-      nav a[aria-current="page"] {
+      #navigation a[aria-current="page"] {
         background: var(--mint);
         color: var(--deep);
       }
@@ -1210,7 +1210,7 @@
           gap: 14px;
           padding: 13px 22px;
         }
-        nav a {
+        #navigation a {
           padding: 9px 9px;
           font-size: 0.79rem;
         }
@@ -1255,7 +1255,7 @@
           flex-wrap: wrap;
           gap: 10px;
         }
-        nav {
+        #navigation {
           display: none;
           position: absolute;
           top: calc(100% - 1px);
@@ -1273,10 +1273,10 @@
           background: var(--white);
           box-shadow: 0 20px 35px #183e382d;
         }
-        nav.open {
+        #navigation.open {
           display: flex;
         }
-        nav a {
+        #navigation a {
           display: block;
           padding: 13px 15px;
           font-size: 1rem;
@@ -1766,17 +1766,32 @@
       }
       .welcome-hero h1 { max-width: 780px; font-size: clamp(2.1rem, 4vw, 3.2rem); }
       .welcome-lead { max-width: 700px; margin-top: 14px; color: #e2f2e7; font-size: clamp(.98rem, 1.6vw, 1.08rem); line-height: 1.55; }
+      .early-help { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 15px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 14px; background: #f7faf7; }
+      .early-help a { font-size: .87rem; line-height: 1.45; }
       .scale-entry { margin-top: 34px; }
       .path-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
       .path-heading h2 { margin-top: 4px; font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
       .path-heading p { max-width: 690px; margin-top: 8px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
       .method-overview { margin-top: 20px; padding: 20px; border: 1px solid #d3e1d5; border-radius: 18px; background: #f5f9f4; }
-      .method-overview h3 { margin: 0 0 14px; font-size: 1.08rem; }
+      .method-overview h3 { margin: 0 0 5px; font-size: 1.08rem; }
+      .method-instruction { margin: 0 0 14px; color: var(--muted); font-size: .85rem; line-height: 1.45; }
       .method-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: method-step; }
-      .method-steps li { position: relative; display: grid; align-content: start; gap: 4px; min-width: 0; min-height: 110px; padding: 15px 15px 15px 48px; border: 1px solid var(--line); border-radius: 13px; background: #fff; counter-increment: method-step; }
-      .method-steps li::before { content: counter(method-step); position: absolute; top: 14px; left: 14px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: var(--brand); color: #fff; font-size: .8rem; font-weight: 750; }
+      .method-steps li { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 13px; background: #fff; counter-increment: method-step; overflow: hidden; }
+      .method-steps li:hover, .method-steps li:focus-within { border-color: #8db6a0; }
+      .method-steps li::before { content: counter(method-step); position: absolute; z-index: 1; top: 14px; left: 14px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: var(--brand); color: #fff; font-size: .8rem; font-weight: 750; pointer-events: none; }
+      .method-steps details { border: 0; border-radius: inherit; background: transparent; }
+      .method-steps summary { display: grid; align-content: start; gap: 4px; min-height: 110px; padding: 15px 30px 15px 48px; list-style: none; cursor: pointer; }
+      .method-steps summary::-webkit-details-marker { display: none; }
+      .method-steps summary:focus-visible { outline: 3px solid var(--brand); outline-offset: -3px; border-radius: 12px; }
+      .method-steps summary::after { content: "⌄"; position: absolute; top: 13px; right: 14px; color: var(--brand); font-size: 1.15rem; line-height: 1; transition: transform .18s ease; }
+      .method-steps details[open] summary::after { transform: rotate(180deg); }
+      .method-steps details[open] > summary { border-bottom: 0; }
       .method-steps strong { font-size: .9rem; line-height: 1.35; }
       .method-steps span { color: var(--muted); font-size: .82rem; line-height: 1.45; }
+      .method-steps .method-more { margin-top: 4px; color: var(--brand); font-weight: 650; }
+      .method-steps details[open] .method-more { display: none; }
+      .method-detail { padding: 12px 16px 15px; border-top: 1px solid var(--line); font-size: .85rem; line-height: 1.55; }
+      .method-detail p + p { margin-top: 9px; }
       .method-source { margin: 12px 1px 0; color: var(--muted); font-size: .78rem; }
       .scale-intro { margin-top: 20px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
       .scale-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
@@ -1794,8 +1809,7 @@
       .support-entry strong { font-size: 1.12rem; }
       .support-entry small { color: var(--muted); font-size: .88rem; }
       .support-entry > span:last-child { color: var(--brand); font-weight: 750; }
-      .quick-paths { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 20px 4px; border-bottom: 1px solid var(--line); }
-      .quick-paths a { font-size: .88rem; }
+      .help-related { margin: 12px 2px 0; color: var(--muted); font-size: .88rem; }
       .welcome-explain { margin: 20px 0 12px; }
       .welcome-explain .text-button { display: inline-block; margin-top: 10px; }
       .journey-preface { color: var(--muted); }
@@ -1875,11 +1889,12 @@
         .workspace { grid-template-columns: minmax(0, 1fr); }
         .step-card { min-width: 0; }
         .welcome-hero { padding: 27px 23px; border-radius: 20px; }
+        .early-help { display: grid; gap: 8px; padding: 12px 15px; }
         .path-heading p { font-size: .88rem; }
         .scale-entry { margin-top: 26px; }
         .method-overview { padding: 15px; }
         .method-steps { grid-template-columns: 1fr; gap: 8px; }
-        .method-steps li { min-height: 0; padding: 12px 12px 12px 47px; }
+        .method-steps summary { min-height: 0; padding: 12px 30px 12px 47px; }
         .method-steps li::before { top: 12px; left: 12px; }
         .scale-grid, .scale-options, .help-grid { grid-template-columns: 1fr; }
         .scale-card { min-height: 0; padding: 14px 36px 14px 17px; gap: 3px; }
@@ -1974,6 +1989,10 @@
           <h1 id="welcome-title">Résoudre un problème</h1>
           <p class="welcome-lead">Je peux chercher une solution à mon problème ou apprendre à soutenir une personne ou un groupe. Je choisis mon point de départ ci-dessous.</p>
         </div>
+        <nav class="early-help" aria-label="Aide et sécurité">
+          <a href="#securite">Trouver une aide urgente ↗</a>
+          <a href="#violences">Repérer une violence selon la relation ↗</a>
+        </nav>
         <section class="scale-entry" aria-labelledby="scale-entry-title">
           <div class="path-heading">
             <div>
@@ -1983,15 +2002,16 @@
           </div>
           <div class="method-overview" aria-labelledby="method-overview-title">
             <h3 id="method-overview-title">Les six étapes</h3>
+            <p class="method-instruction">J’ouvre une étape pour voir ce que je peux y faire, avec un exemple.</p>
             <ol class="method-steps">
-              <li><strong>Définir le problème</strong><span>Quels sont les faits, mon objectif et l’obstacle ?</span></li>
-              <li><strong>Imaginer des solutions</strong><span>Quelles actions pourraient aider ? J’en note plusieurs.</span></li>
-              <li><strong>Comparer les solutions</strong><span>Quels sont les avantages, les limites et les risques de chacune ?</span></li>
-              <li><strong>Choisir et préparer</strong><span>Quelle solution est faisable ? Quel sera mon premier pas ?</span></li>
-              <li><strong>Essayer dans la réalité</strong><span>Je mets ce premier pas en pratique dans la situation concernée.</span></li>
-              <li><strong>Évaluer et ajuster</strong><span>Qu’est-ce qui a changé ? Je poursuis, j’adapte ou j’essaie une autre solution.</span></li>
+              <li><details><summary><strong>Définir le problème</strong><span>Quels sont les faits, mon objectif et l’obstacle ?</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je décris une situation précise sans supposer les intentions des autres.</p><p><b>Exemple :</b> « Deux factures à payer sont mélangées à mes courriers. Je veux les retrouver avant vendredi. »</p></div></details></li>
+              <li><details><summary><strong>Imaginer des solutions</strong><span>Quelles actions pourraient aider ? J’en note plusieurs.</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je note plusieurs pistes avant de décider, y compris demander une information ou de l’aide.</p><p><b>Exemple :</b> trier les courriers dix minutes, demander une copie des factures ou me faire aider pour le tri.</p></div></details></li>
+              <li><details><summary><strong>Comparer les solutions</strong><span>Quels sont les avantages, les limites et les risques de chacune ?</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je regarde ce que chaque piste demande et ce qu’elle peut changer. La sécurité compte avant la facilité.</p><p><b>Exemple :</b> le tri est gratuit mais peut prendre du temps ; demander une copie peut être plus rapide si je connais l’organisme.</p></div></details></li>
+              <li><details><summary><strong>Choisir et préparer</strong><span>Quelle solution est faisable ? Quel sera mon premier pas ?</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je choisis une piste adaptée à mes moyens et je précise quand et comment commencer.</p><p><b>Exemple :</b> mardi à 18 h, je trie les courriers récents pendant dix minutes ; si la facture manque, j’appelle l’organisme.</p></div></details></li>
+              <li><details><summary><strong>Essayer dans la réalité</strong><span>Je mets ce premier pas en pratique dans la situation concernée.</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>J’essaie l’action prévue hors du site, seul ou avec l’appui choisi. Je peux m’arrêter si la situation change.</p><p><b>Exemple :</b> je trie les courriers mardi pendant dix minutes, puis je note quelles factures j’ai retrouvées.</p></div></details></li>
+              <li><details><summary><strong>Évaluer et ajuster</strong><span>Qu’est-ce qui a changé ? Je poursuis, j’adapte ou j’essaie une autre solution.</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je compare le résultat à mon objectif, sans me juger. Si besoin, je change de piste.</p><p><b>Exemple :</b> j’ai retrouvé une facture sur deux ; je demande une copie de la seconde.</p></div></details></li>
             </ol>
-            <p class="method-source">Étapes inspirées du module de résolution de problèmes du Projet IPT <a class="citation" href="#ref-1">[1]</a>.</p>
+            <p class="method-source">Ces étapes s’inspirent d’un module du programme clinique <button type="button" class="glossary-button" data-term="ipt" aria-haspopup="dialog" aria-controls="term-dialog">IPT</button>. <a href="#ref-1">Voir la source</a>.</p>
           </div>
           <p class="scale-intro">Pour commencer, je choisis la situation qui ressemble le plus à la mienne. Les questions et les exemples seront adaptés à ce choix.</p>
           <div class="scale-grid">
@@ -2034,12 +2054,8 @@
               <span aria-hidden="true">↗</span>
             </a>
           </div>
+          <p class="help-related">J’aide un proche ? <a href="#proche">Voir les conseils pour cette relation ↗</a></p>
         </section>
-        <nav class="quick-paths" aria-label="Autres repères utiles">
-          <a href="#proche">Comment aider un proche ? ↗</a>
-          <a href="#violences">Repérer une violence selon la relation ↗</a>
-          <a href="#securite">Trouver une aide urgente ↗</a>
-        </nav>
         <details class="welcome-explain">
           <summary>Voir les étapes en schéma</summary>
           <div class="details-body">
@@ -2591,8 +2607,9 @@
             </div>
           </details>
           <p class="source-note">
-            Situations formulées pour cette page à partir de sources OMS, OIT,
-            UNESCO, SAARA et INRS. Chaque guide cite ses sources et leurs limites.
+            Situations formulées pour cette page à partir de publications sur
+            la santé, le travail, l’éducation et la prévention. Chaque guide cite
+            ses sources et leurs limites.
             Le contexte de pouvoir compte ; les droits et recours précis
             dépendent du pays. <a href="#ref-6">[6]</a>
             <a href="#ref-8">[8]</a> <a href="#ref-34">[34]</a>
@@ -2694,10 +2711,10 @@
             </div>
           </details>
           <details>
-            <summary>Le module IPT donne-t-il la meilleure méthode ?</summary>
+            <summary>D’où viennent les six étapes ?</summary>
             <div class="details-body">
-              <p>Le module IPT a inspiré la présentation des étapes. Il vient d’un programme clinique plus large ; son seul module de résolution de problèmes ne démontre pas que cette suite d’étapes est la meilleure pour tous les problèmes. Une synthèse de thérapies de résolution de problèmes montre un bénéfice modeste contre la dépression dans les essais les plus rigoureux, sans supériorité établie sur les autres psychothérapies. Ces résultats ne prouvent pas l’efficacité de ce site. <a class="citation" href="#ref-1">[1]</a> <a class="citation" href="#ref-2">[2]</a></p>
-              <p>La transposition sur écran demande aussi de la prudence : lors de la conception d’un outil numérique de l’OMS pour la dépression, les auteurs ont retiré la partie « gestion des problèmes », jugée difficile à transmettre ainsi. Il s’agit d’un choix de conception dans ce contexte, pas d’une preuve qu’un autre parcours est toujours supérieur. Ici, les étapes restent des repères facultatifs ; l’aide d’une personne et les ressources adaptées peuvent être nécessaires. <a class="citation" href="#ref-50">[50]</a></p>
+              <p>Le module de résolution de problèmes du programme clinique <button type="button" class="glossary-button" data-term="ipt" aria-haspopup="dialog" aria-controls="term-dialog">IPT</button> a inspiré la présentation des étapes. Ce module ne démontre pas que cette suite d’étapes est la meilleure pour tous les problèmes. Une synthèse de thérapies de résolution de problèmes montre un bénéfice modeste contre la dépression dans les essais les plus rigoureux, sans supériorité établie sur les autres psychothérapies. Ces résultats ne prouvent pas l’efficacité de ce site. <a class="citation" href="#ref-1">[1]</a> <a class="citation" href="#ref-2">[2]</a></p>
+              <p>La transposition sur écran demande aussi de la prudence : lors de la conception d’un outil numérique de l’Organisation mondiale de la santé (OMS) pour la dépression, les auteurs ont retiré la partie « gestion des problèmes », jugée difficile à transmettre ainsi. Il s’agit d’un choix de conception dans ce contexte, pas d’une preuve qu’un autre parcours est toujours supérieur. Dans cet outil, les étapes restent des repères facultatifs ; l’aide d’une personne et les ressources adaptées peuvent être nécessaires. <a class="citation" href="#ref-50">[50]</a></p>
             </div>
           </details>
           <h2 class="block-heading">Les étapes en pratique</h2>
@@ -2711,9 +2728,9 @@
                 sur soi ou sur autrui.
               </p>
               <p>
-                Cette structure s’appuie sur le module 6 du Projet IPT, conçu
-                dans un programme de réadaptation pour des personnes vivant avec
-                un trouble schizophrénique. Ici, le vocabulaire et les exemples
+                Cette structure s’appuie sur le module 6 d’<button type="button" class="glossary-button" data-term="ipt" aria-haspopup="dialog" aria-controls="term-dialog">IPT</button>,
+                un programme clinique de réadaptation pour des personnes vivant
+                avec une schizophrénie. Dans cet outil, le vocabulaire et les exemples
                 sont réécrits pour un usage quotidien. Ce n’est pas la
                 reproduction du protocole clinique.
                 <a class="citation" href="#ref-1">[1]</a>
@@ -2889,7 +2906,7 @@
             </summary>
             <div class="details-body">
               <p>
-                PM+ de l’OMS associe plusieurs stratégies psychologiques et
+                Le programme « Gestion des problèmes Plus » (PM+) de l’OMS associe plusieurs stratégies psychologiques et
                 prévoit formation et supervision. Les premiers secours
                 psychologiques et les recommandations sur les violences
                 soutiennent l’écoute, le respect des choix, la sécurité et
@@ -2903,7 +2920,7 @@
                 Les étapes visibles, les exemples et les détails repliables
                 suivent des recommandations d’ergonomie. La navigation au
                 clavier, les intitulés explicites et les contrastes visent les
-                critères WCAG 2.2. Ces choix ne remplacent pas des tests
+                règles internationales d’accessibilité des contenus Web (WCAG 2.2). Ces choix ne remplacent pas des tests
                 d’utilisabilité avec le public cible ni un audit complet
                 d’accessibilité. <a class="citation" href="#ref-14">[14]</a>
                 <a class="citation" href="#ref-15">[15]</a>
@@ -3144,17 +3161,13 @@
           <div class="page-heading">
             <h1>Bibliographie</h1>
             <p>
-              Les études, les recommandations et les choix de conception sont
-              distingués. Sélection raisonnée, non exhaustive ; références
+              Cette page rassemble les documents utilisés pour concevoir l’outil
+              « Résoudre un problème » : supports de formation, études et
+              recommandations. Les numéros entre crochets dans les autres pages
+              renvoient aux références ci-dessous. Ces sources ne prouvent pas
+              l’efficacité de cet outil. Sélection non exhaustive ; références
               vérifiées le 3 octobre 2026.
             </p>
-          </div>
-          <div class="notice">
-            <strong>Ce qui a été adapté</strong>La progression s’appuie sur le
-            module fourni du Projet IPT. Les formulations, exemples et
-            interfaces sont originaux. Les fiches annexes portant une
-            restriction de modification ne sont pas reproduites. Les résultats
-            des études ne valent pas validation de cette application.
           </div>
           <ol class="bibliography" id="references">
             <li class="reference" id="ref-1" data-ref="1">
@@ -3165,12 +3178,15 @@
                 <p>
                   Briand, C., Bélanger, R., Hamel, V., Villeneuve, K., & Hébert,
                   L. (2003). <em>Module 6 : Résolution de problèmes.</em> Projet
-                  IPT.
+                  IPT (Integrated Psychological Treatment, « traitement
+                  psychologique intégré »).
                 </p>
                 <small
-                  >Document fourni par l’utilisateur, mars 2003, notamment p. 3,
-                  8 et 25–39. Pas de lien public vérifié. Une adaptation de la
-                  démarche ne constitue pas le programme IPT complet.</small
+                  >Support de formation d’un programme clinique de réadaptation
+                  psychosociale, fourni pour la conception de cet outil ; mars
+                  2003, notamment p. 3, 8 et 25–39. Pas de lien public vérifié.
+                  Les étapes présentées ici sont une adaptation pédagogique,
+                  sans reproduction du programme clinique complet.</small
                 >
               </div>
             </li>
@@ -3219,7 +3235,7 @@
                 </p>
                 <small
                   >Programme à plusieurs composantes, avec accompagnement formé
-                  ; cette page ne délivre pas PM+.</small
+                  ; l’outil « Résoudre un problème » n’est pas une version de PM+.</small
                 >
               </div>
             </li>
@@ -4035,6 +4051,10 @@
         public: ["Collectif ou politique", "Une décision collective ou publique est en jeu."],
       };
       const glossary = {
+        ipt: [
+          "IPT — traitement psychologique intégré",
+          "IPT signifie Integrated Psychological Treatment (« traitement psychologique intégré »). C’est un programme clinique de réadaptation cognitive et sociale pour des personnes vivant avec une schizophrénie. Le module 6 fourni porte sur la résolution de problèmes. Les étapes de ce site sont une adaptation pédagogique, pas le programme clinique complet.",
+        ],
         meta: [
           "Méta-analyse",
           "Méthode qui combine statistiquement les résultats de plusieurs études portant sur une question comparable. Sa fiabilité dépend de la qualité et de la compatibilité des études.",
@@ -4138,6 +4158,7 @@
       };
       // The first sentence is the quick hint; the existing glossary entry gives the full definition.
       const glossaryHelp = {
+        ipt: ["Un programme clinique de réadaptation psychosociale.", "Son module 6 propose un apprentissage de la résolution de problèmes. Ce site en reprend des repères généraux pour d’autres situations, sans reproduire le programme de soins.", 1],
         meta: ["Résultats de plusieurs études combinés.", "Plusieurs essais sur une même question sont regroupés. Si les études sont de mauvaise qualité ou trop différentes, le résultat combiné peut tromper.", 2],
         random: ["Le hasard répartit les participants entre des groupes.", "Par exemple, une personne reçoit une intervention et une autre une comparaison selon un tirage au sort. Cette méthode réduit certaines différences initiales entre groupes.", 2],
         cluster: ["Le hasard répartit des groupes entiers.", "Dans une étude portant sur des centres de soins, chaque centre peut être tiré au sort. Les personnes d’un même centre ne sont pas réparties séparément.", 13],
@@ -6920,7 +6941,7 @@
         if (e.key === "Escape") {
           if (!$("#term-dialog").open) tooltipSuppressed = tooltipOwner;
           hideTooltip();
-          if ($("nav").classList.contains("open")) {
+          if ($("#navigation").classList.contains("open")) {
             setMenuOpen(false);
             $(".menu-toggle").focus();
           }
