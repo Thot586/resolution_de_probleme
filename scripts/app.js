@@ -93,7 +93,7 @@
         previousFocus = null,
         pendingConfirm = null,
         supportMode = "listen",
-        selectedNeed = "listen",
+        selectedNeed = null,
         meterIndex = null;
       function hasWriting() {
         return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
@@ -779,6 +779,11 @@
           `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young", "work"].includes($("#support-context").value) ? `<a href="${$("#support-context").value === "couple" ? "#violences-couple" : "#violences"}" class="text-button">Explorer les repères de violence →</a>` : ""}</article>`;
       }
       function renderNeedGuidance() {
+        if (!selectedNeed) {
+          $("#need-guidance").innerHTML = '<h3>Je pars de ce qu’elle me dit</h3><p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
+          $$("[data-need]").forEach((button) => button.setAttribute("aria-pressed", "false"));
+          return;
+        }
         const [title, phrase, action] = needGuidance[selectedNeed];
         const relation = $("#support-relation").value;
         const relationNote = {

@@ -1863,10 +1863,13 @@
       .visual-guides .teaching-figure { margin-bottom: 0; }
       .support-stage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
       .support-start { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 0 12px; padding: 0; list-style: none; }
+      .support-safety { margin: 0 0 16px; }
       .support-start li { display: grid; gap: 4px; padding: 17px 19px; border: 1px solid #d3e1d5; border-radius: 15px; background: #f2f7f1; }
       .support-start strong { color: var(--brand); font-size: .9rem; }
       .support-start span { line-height: 1.45; }
       .support-foundations .details-body { padding: 16px; }
+      .support-options ol { display: grid; gap: 8px; margin: 0 0 12px; padding-left: 22px; }
+      .support-options li { padding-left: 3px; }
       .support-foundations .stage-card { padding: 20px; box-shadow: none; }
       .support-foundations .stage-card h2 { font-size: clamp(1.22rem, 1.8vw, 1.5rem); }
       .support-illustration { margin-top: 16px; }
@@ -1876,7 +1879,6 @@
       .stage-card p + p { margin-top: 14px; }
       .need-lab { margin-top: 18px; }
       .need-heading { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
-      .need-heading p { font-size: .82rem; color: var(--muted); }
       .need-start-hint { margin: 0 0 16px; color: var(--muted); font-size: .88rem; }
       .need-lab select { max-width: 390px; }
       .need-guidance { padding: 22px; margin-top: 20px; border-left: 4px solid var(--brand); border-radius: 0 14px 14px 0; background: #f2f8f2; }
@@ -2162,10 +2164,11 @@
           <div class="page-heading">
             <div class="eyebrow">Écouter · Comprendre · Agir avec la personne</div>
             <h1>Soutenir quelqu’un, sans prendre sa place</h1>
-            <p>Je prépare une conversation à partir de ce que la personne vit et souhaite. Elle reste libre d’accepter, de refuser ou de changer d’avis.</p>
+            <p>Je propose mon aide sans présumer ce dont la personne a besoin. Je l’écoute si elle veut parler, puis nous choisissons une aide qui lui convient. Elle peut refuser ou changer d’avis.</p>
           </div>
+          <div class="notice amber support-safety"><strong>Avant de commencer</strong>Si la personne est en danger ou a un besoin urgent, je l’aide d’abord à trouver un appui sûr. <a href="#securite">Voir les repères de sécurité</a>. Sinon, je lui demande si elle souhaite parler ; je ne la pousse pas à raconter.</div>
           <ol class="support-start" aria-label="Avant de proposer une aide">
-            <li><strong>J’écoute.</strong><span>« Qu’est-ce qui est difficile pour toi en ce moment ? »</span></li>
+            <li><strong>Je demande si elle veut parler.</strong><span>« Est-ce que tu veux m’en parler ? » Je respecte aussi un non.</span></li>
             <li><strong>Je demande son besoin.</strong><span>« De quoi aurais-tu besoin de ma part ? »</span></li>
           </ol>
           <details class="support-foundations">
@@ -2173,9 +2176,9 @@
             <div class="details-body">
               <div class="support-stage-grid">
                 <article class="card stage-card">
-                  <span class="tag">1 · Écouter avant de conseiller</span>
+                  <span class="tag">1 · Écouter avec son accord</span>
                   <h2>« Qu’est-ce qui est difficile pour toi en ce moment ? »</h2>
-                  <p>Je laisse la personne raconter à sa manière. Je reformule : « Si je comprends bien, le plus difficile est… » Puis je vérifie si j’ai bien compris.</p>
+                  <p>Si elle souhaite parler, je la laisse raconter à sa manière, sans demander de détails inutiles. Je reformule : « Si je comprends bien, le plus difficile est… » Puis je vérifie si j’ai bien compris.</p>
                   <p>Je peux demander : « Qu’est-ce qui compte le plus pour toi ici ? » Je vérifie quelle langue ou façon d’échanger lui convient, sans présumer sa réponse.</p>
                   <p class="hint">J’évite de comparer tout de suite avec ma propre expérience.</p>
                 </article>
@@ -2188,8 +2191,8 @@
             </div>
           </details>
           <div class="card need-lab" id="need-lab">
-            <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div><p>Aucun choix n’est enregistré.</p></div>
-            <p class="need-start-hint">Exemple affiché : un collègue qui souhaite être écouté. Je peux changer ces choix.</p>
+            <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div></div>
+            <p class="need-start-hint">Exemple de relation : un collègue. Je choisis ci-dessous le besoin qu’il exprime ; aucun besoin n’est supposé à sa place.</p>
             <label class="label" for="support-relation">Dans quelle relation ?</label>
             <select id="support-relation">
               <option value="colleague">Collègue</option>
@@ -2198,13 +2201,25 @@
               <option value="other">Autre relation</option>
             </select>
             <fieldset class="section-gap"><legend>Quel besoin la personne exprime-t-elle ?</legend><div class="choice-stack" id="need-choices">
-              <button class="pill" type="button" data-need="listen" aria-pressed="true">Être écoutée</button>
+              <button class="pill" type="button" data-need="listen" aria-pressed="false">Être écoutée</button>
               <button class="pill" type="button" data-need="clarify" aria-pressed="false">Voir plus clair</button>
               <button class="pill" type="button" data-need="practical" aria-pressed="false">Une aide concrète</button>
               <button class="pill" type="button" data-need="advice" aria-pressed="false">Un avis ou un retour</button>
             </div></fieldset>
             <div id="need-guidance" class="need-guidance" aria-live="polite"></div>
           </div>
+          <details class="section-gap support-options">
+            <summary>Si elle veut chercher une solution avec moi</summary>
+            <div class="details-body">
+              <ol>
+                <li>Je lui demande ce qu’elle voudrait changer et ce qui compte pour elle.</li>
+                <li>Nous notons plusieurs options, y compris demander une information, attendre ou solliciter une aide adaptée.</li>
+                <li>Nous comparons les bénéfices, les limites et les risques dans sa situation. Elle choisit ; je ne décide pas à sa place.</li>
+                <li>Si elle le souhaite, nous convenons d’un premier pas précis et du moment où refaire le point.</li>
+              </ol>
+              <p>Une écoute ou une aide pratique peut suffire : je ne transforme pas chaque conversation en exercice de résolution de problème. <a href="#ref-45">[45]</a> <a href="#ref-47">[47]</a></p>
+            </div>
+          </details>
           <article class="card stage-card section-gap">
             <span class="tag">4 · Faire le point</span>
             <h2>Vérifier si l’aide a vraiment servi</h2>
@@ -2217,7 +2232,7 @@
           <figure class="teaching-figure">
             <svg viewBox="0 0 360 394" role="img" aria-labelledby="journey-title journey-desc" xmlns="http://www.w3.org/2000/svg">
               <title id="journey-title">Quatre étapes pour soutenir une personne</title>
-              <desc id="journey-desc">Écouter, demander le besoin, proposer une aide avec l’accord de la personne, puis vérifier si cette aide lui convient.</desc>
+              <desc id="journey-desc">Après avoir vérifié qu’il n’y a pas de besoin urgent, demander si la personne souhaite parler, l’écouter, demander son besoin, proposer une aide avec son accord, puis vérifier si cette aide lui convient.</desc>
               <!-- L’accord est écrit dans la figure ; la légende ajoute les exceptions de sécurité. -->
               <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
                 <rect x="16" y="12" width="328" height="76" rx="15"/>
@@ -2228,7 +2243,7 @@
               <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/></g>
               <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text></g>
               <g fill="#203b36" font-family="system-ui, sans-serif" font-size="18" font-weight="700"><text x="80" y="44">Écouter</text><text x="80" y="140">Demander</text><text x="80" y="236">Proposer</text><text x="80" y="332">Vérifier</text></g>
-              <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Sans comparer</text><text x="80" y="162">« De quoi as-tu besoin ? »</text><text x="80" y="258">Seulement avec son accord</text><text x="80" y="354">« Est-ce que cela t’aide ? »</text></g>
+              <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Si elle veut parler · sans forcer</text><text x="80" y="162">« De quoi as-tu besoin ? »</text><text x="80" y="258">Seulement avec son accord</text><text x="80" y="354">« Est-ce que cela t’aide ? »</text></g>
               <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/></g>
             </svg>
             <figcaption>La personne aidée choisit la direction. Si son besoin change, on peut revenir à l’écoute. En cas de danger, on cherche d’abord une aide adaptée.</figcaption>
@@ -2245,7 +2260,7 @@
             </div>
           </details>
           <div class="notice amber section-gap"><strong>Quand l’exercice ne suffit pas.</strong>En cas de menace, de violence, de harcèlement, de risque pour une personne ou de difficulté relevant d’une décision clinique, cherchez un appui compétent et sûr. <a href="#securite">Voir les aides et repères de sécurité</a>.</div>
-          <p class="source-note">Cette méthode assemble des repères de premiers secours psychologiques, d’écoute et d’autonomie dans l’apprentissage. La question sur le point de vue de l’autre s’inspire de l’<button class="glossary-button" type="button" data-term="culturalFormulation" aria-haspopup="dialog" aria-controls="term-dialog">entretien de formulation culturelle</button>, sans le reproduire. Ce parcours n’a pas été évalué comme intervention propre à ce site. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a> <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a></p>
+          <p class="source-note">Les repères de l’OMS concernent d’abord les situations de crise ; les études ne démontrent pas qu’ils améliorent à eux seuls la santé mentale dans tous les contextes. Les travaux sur les choix partagés portent surtout sur les soins. Cette adaptation à l’aide quotidienne n’a pas été évaluée. La question sur le point de vue de l’autre s’inspire de l’<button class="glossary-button" type="button" data-term="culturalFormulation" aria-haspopup="dialog" aria-controls="term-dialog">entretien de formulation culturelle</button>, sans le reproduire. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a> <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a> <a href="#ref-45">[45]</a> <a href="#ref-46">[46]</a> <a href="#ref-47">[47]</a></p>
         </div>
       </section>
       <section id="groupe" class="view" aria-labelledby="group-title" hidden>
@@ -2258,7 +2273,7 @@
             <p class="hint glossary-instruction">Un terme souligné ? Je peux le toucher pour voir sa définition et un exemple.</p>
           </div>
           <div class="notice group-principle">
-            <strong>Avant d’enquêter :</strong> le groupe doit pouvoir influencer une décision réelle. Je clarifie qui décide, ce qui peut changer et comment les résultats lui seront rendus.
+            <strong>Avant d’enquêter :</strong> le groupe doit pouvoir influencer une décision réelle. Je clarifie qui décide, ce qui peut changer et quand les personnes sauront ce qui a été retenu ou écarté, avec les raisons.
           </div>
           <details class="group-overview">
             <summary>Voir la démarche en un dessin</summary>
@@ -2408,7 +2423,7 @@
           <div class="notice amber section-gap">
             <strong>Si le groupe subit des violences ou des représailles :</strong> je ne lance pas une confrontation collective. Je cherche une aide adaptée et sûre. <a href="#securite">Voir les repères de sécurité</a>.
           </div>
-          <p class="source-note">Ce parcours assemble des cadres d’évaluation et d’amélioration, et des guides de participation. Il n’a pas été évalué comme intervention propre à ce site. <a href="#ref-22">[22]</a> <a href="#ref-23">[23]</a> <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a></p>
+          <p class="source-note">Ce parcours assemble des cadres d’évaluation et d’amélioration et des guides de participation. Des études sur certaines interventions participatives en santé publique trouvent des bénéfices, sans établir qu’une séquence unique serait la meilleure pour tous les groupes. Ce parcours n’a pas été évalué comme intervention propre à ce site. <a href="#ref-22">[22]</a> <a href="#ref-23">[23]</a> <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-48">[48]</a> <a href="#ref-49">[49]</a></p>
         </div>
       </section>
       <section id="proche" class="view" hidden>
@@ -2417,8 +2432,8 @@
             <div class="eyebrow">Être présent, sans prendre la place</div>
             <h1>Comment aider un proche ?</h1>
             <p>
-              Commencez par demander ce qui lui serait utile. Écouter peut déjà
-              aider.
+              Commencez par demander si votre proche souhaite parler ou recevoir
+              de l’aide. Il peut ne pas savoir encore ce qui serait utile.
               <a class="citation" href="#ref-5">[5]</a>
             </p>
             <p><a href="#soutenir">Voir d’abord la démarche pour soutenir quelqu’un ↗</a></p>
@@ -2426,8 +2441,8 @@
           <div class="support-card card">
             <span class="tag">La question de départ</span>
             <p class="support-question">
-              « Tu préfères que je t’écoute, qu’on cherche des pistes, ou que je
-              t’aide concrètement ? »
+              « Tu préfères que je t’écoute, qu’on cherche des pistes, que je
+              t’aide concrètement, ou qu’on en reparle plus tard ? »
             </p>
             <div
               class="support-tabs"
@@ -2708,6 +2723,13 @@
             <div class="details-body">
               <p>Une vue courte aide à savoir où l’on va. Les détails restent facultatifs pour ne pas charger la première page. Des exemples peuvent aider à commencer ; ils ne remplacent pas l’adaptation à sa propre situation. Ces choix s’appuient sur les principes de charge cognitive et d’apprentissage des adultes, sans preuve que cette interface précise soit supérieure à une autre. <a class="citation" href="#ref-20">[20]</a> <a class="citation" href="#ref-21">[21]</a></p>
               <p>Dans l’aide à autrui, nous demandons d’abord ce que la personne souhaite. En formation, l’autonomie et la sécurité dans la conversation favorisent un retour utilisable ; le rapport hiérarchique exige une attention particulière. <a class="citation" href="#ref-18">[18]</a> <a class="citation" href="#ref-19">[19]</a></p>
+            </div>
+          </details>
+          <details>
+            <summary>Le module IPT donne-t-il la meilleure méthode ?</summary>
+            <div class="details-body">
+              <p>Le module IPT a inspiré la présentation des étapes. Il vient d’un programme clinique plus large ; son seul module de résolution de problèmes ne démontre pas que cette suite d’étapes est la meilleure pour tous les problèmes. Une synthèse de thérapies de résolution de problèmes montre un bénéfice modeste contre la dépression dans les essais les plus rigoureux, sans supériorité établie sur les autres psychothérapies. Ces résultats ne prouvent pas l’efficacité de ce site. <a class="citation" href="#ref-1">[1]</a> <a class="citation" href="#ref-2">[2]</a></p>
+              <p>La transposition sur écran demande aussi de la prudence : lors de la conception d’un outil numérique de l’OMS pour la dépression, les auteurs ont retiré la partie « gestion des problèmes », jugée difficile à transmettre ainsi. Il s’agit d’un choix de conception dans ce contexte, pas d’une preuve qu’un autre parcours est toujours supérieur. Ici, les étapes restent des repères facultatifs ; l’aide d’une personne et les ressources adaptées peuvent être nécessaires. <a class="citation" href="#ref-50">[50]</a></p>
             </div>
           </details>
           <h2 class="block-heading">Les principes</h2>
@@ -3277,9 +3299,10 @@
                   >
                 </p>
                 <small
-                  >Écoute, besoins pratiques, dignité et adaptation culturelle.
-                  Extrapolation au soutien quotidien ; pas une preuve directe
-                  sur cette interface.</small
+                  >Guide de consensus pour les suites d’une crise grave : écoute,
+                  besoins pratiques et dignité. Son usage pour le soutien
+                  quotidien est une adaptation ; ce n’est pas une preuve
+                  d’efficacité de cette interface.</small
                 >
               </div>
             </li>
@@ -3800,6 +3823,12 @@
                 <small>55 articles sur des interventions de santé mentale numériques adaptées ; aucune comparaison directe dans cette revue ne permet d’isoler l’effet de l’adaptation. Ces résultats ne valident pas les changements de ce site.</small>
               </div>
             </li>
+            <li class="reference" id="ref-45" data-ref="45"><div><span class="ref-label">Revue Cochrane · Décisions en santé</span><p>Stacey, D. et al. (2024). <em>Decision aids for people facing health treatment or screening decisions.</em> Cochrane Database of Systematic Reviews, 1, CD001431. <a href="https://www.cochrane.org/evidence/CD001431_patient-decision-aids-help-people-who-are-facing-decisions-about-health-treatment-or-screening" target="_blank" rel="noopener noreferrer">Résumé Cochrane ↗</a></p><small>209 essais randomisés : meilleure connaissance des options et participation aux décisions de soin ; choix plus cohérents avec les valeurs personnelles. Ne valide pas un guide généraliste pour aider autrui.</small></div></li>
+            <li class="reference" id="ref-46" data-ref="46"><div><span class="ref-label">Revue systématique · Premiers secours psychologiques</span><p>Hermosilla, S. et al. (2023). <em>We need to build the evidence: A systematic review of psychological first aid on mental health and well-being.</em> Journal of Traumatic Stress, 36, 5–16. <a href="https://pubmed.ncbi.nlm.nih.gov/36300605/" target="_blank" rel="noopener noreferrer">Notice PubMed ↗</a></p><small>12 études, dont un seul essai randomisé ; le risque de biais élevé empêche de conclure solidement à l’efficacité clinique de l’intervention.</small></div></li>
+            <li class="reference" id="ref-47" data-ref="47"><div><span class="ref-label">Recommandations cliniques · Choix partagés</span><p>National Institute for Health and Care Excellence. (2021). <em>Shared decision making</em> (NG197). <a href="https://www.nice.org.uk/guidance/ng197/chapter/recommendations" target="_blank" rel="noopener noreferrer">Recommandations NICE ↗</a></p><small>Demander ce qui compte pour la personne, présenter les options et leurs conséquences, convenir d’un plan et revoir la décision. Concerne les soins ; transposition prudente au soutien quotidien.</small></div></li>
+            <li class="reference" id="ref-48" data-ref="48"><div><span class="ref-label">Recommandations · Participation collective</span><p>National Institute for Health and Care Excellence. (2016). <em>Community engagement: Improving health and wellbeing and reducing health inequalities</em> (NG44). <a href="https://www.nice.org.uk/guidance/ng44/chapter/recommendations" target="_blank" rel="noopener noreferrer">Recommandations NICE ↗</a></p><small>Prévoir une influence réelle des personnes concernées, réduire les obstacles à leur participation et rendre compte des décisions. Cadre de santé publique, sans ordre d’étapes universellement optimal.</small></div></li>
+            <li class="reference" id="ref-49" data-ref="49"><div><span class="ref-label">Méta-analyse · Participation et santé publique</span><p>O’Mara-Eves, A. et al. (2015). <em>The effectiveness of community engagement in public health interventions for disadvantaged groups: A meta-analysis.</em> BMC Public Health, 15, 129. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4374501/" target="_blank" rel="noopener noreferrer">Article ↗</a></p><small>131 études contrôlées ; bénéfices moyens dans certaines interventions de santé publique. L’effet propre de la participation et le meilleur modèle restent incertains.</small></div></li>
+            <li class="reference" id="ref-50" data-ref="50"><div><span class="ref-label">Retour de conception · Intervention numérique OMS</span><p>Carswell, K. et al. (2018). <em>Step-by-Step: A new WHO digital mental health intervention for depression.</em> mHealth, 4, 34. <a href="https://mhealth.amegroups.org/article/view/20772/html" target="_blank" rel="noopener noreferrer">Article ↗</a></p><small>La gestion de problèmes a été retirée de cette intervention numérique en raison de difficultés anticipées de transmission par écran. Retour de conception dans un contexte précis, pas comparaison expérimentale du composant.</small></div></li>
           </ol>
         </div>
       </section>
@@ -5452,7 +5481,7 @@
           points: [
             "Je présente quelques constats clairs, avec leurs limites, dans une langue et un format compréhensibles, sans dévoiler de réponse identifiable.",
             "Je demande : « Qu’avons-nous mal compris ? Qu’est-ce qui manque ? »",
-            "J’explique ce qui sera décidé ensuite, par qui, et quand le groupe aura un retour.",
+            "J’explique ce qui sera décidé ensuite, par qui, et quand le groupe saura ce qui a été retenu ou écarté, avec les raisons.",
           ],
           note: "Le retour prévu au groupe, les corrections et les questions encore ouvertes",
           prompt: "Je note ce que je rendrai au groupe, sous quelle forme, comment recueillir ses corrections et la date du prochain retour.",
@@ -5462,44 +5491,44 @@
         {
           short: "Choisir",
           title: "Quel changement voulons-nous essayer ?",
-          intro: "Le groupe choisit une priorité. Je relie un objectif observable aux pistes proposées et aux contraintes réelles.",
+          intro: "Le groupe choisit une priorité et compare plusieurs réponses possibles avant de retenir un essai.",
           points: [
             "Quel changement serait utile pour qui, et à quelle échéance ?",
-            "Quelles pistes viennent des personnes concernées, et quelles autres options existent ?",
-            "Quels moyens, autorisations, effets indésirables et désaccords faut-il examiner ?",
+            "Quelles pistes viennent des personnes concernées ? Pour chacune, quels bénéfices espérés, moyens nécessaires et limites ?",
+            "Qui profiterait ou supporterait le coût de chaque piste ? Quels désaccords et effets indésirables faut-il examiner ?",
           ],
-          note: "Une priorité, un signe de progrès et les pistes à comparer",
-          prompt: "Je note une priorité choisie avec le groupe, un signe observable et une contrainte importante.",
-          example: "Les bénévoles proposent de publier le planning un mois plus tôt. Signe de progrès : moins de créneaux non pourvus.",
-          refs: [22, 23, 25],
+          note: "La priorité, les pistes comparées, les raisons du choix et un signe de progrès",
+          prompt: "Je note les pistes possibles, leurs bénéfices et contraintes, puis le choix motivé du groupe.",
+          example: "Les bénévoles comparent un planning plus précoce et une rotation des samedis. Ils choisissent le planning ; signe de progrès : moins de créneaux non pourvus.",
+          refs: [22, 23, 25, 48],
         },
         {
           short: "Tester",
           title: "Quel petit essai pouvons-nous faire ?",
-          intro: "Je prépare avec les personnes concernées un essai limité, autorisé et réversible avant une mise en œuvre plus large.",
+          intro: "Je prépare avec les personnes concernées un essai limité, autorisé et réversible. Nous décidons à l’avance ce que nous observerons.",
           points: [
             "Qui fait quoi, quand et avec quels moyens ? Qui donne son accord ?",
-            "Qu’espérons-nous observer, et quels effets gênants surveiller ?",
+            "Quel signe montrera un progrès, et quelle charge ou quel effet gênant surveillerons-nous ?",
             "Si l’essai ne convient pas, comment l’arrêter ou le modifier ?",
           ],
           note: "L’essai, les responsabilités, les mesures et les conditions d’arrêt",
-          prompt: "Je note qui valide l’essai, sa durée, ce que nous observerons et quand l’arrêter.",
+          prompt: "Je note qui valide l’essai, sa durée, un signe de progrès, un effet gênant à surveiller et une condition d’arrêt.",
           example: "Le bureau autorise quatre semaines d’essai. Une personne note les créneaux non pourvus ; le groupe peut arrêter si la charge augmente.",
           refs: [22],
         },
         {
           short: "Suivre",
           title: "Qu’avons-nous appris ?",
-          intro: "Je compare ce qui était attendu à ce qui s’est passé, puis le groupe décide de continuer, modifier ou arrêter.",
+          intro: "Nous comparons ce qui était attendu à ce qui s’est passé, y compris la charge créée, puis décidons de continuer, modifier ou arrêter.",
           points: [
-            "Qu’a-t-on observé avant et après l’essai ? Pour quelles personnes ?",
+            "Qu’a-t-on observé avant et après l’essai ? Pour quelles personnes, et avec quelles limites d’interprétation ?",
             "Qu’est-ce qui a aidé, manqué ou causé un effet inattendu ?",
-            "Quand et comment rendre la décision finale aux participants ?",
+            "Quand et comment expliquer aux participants la décision finale et les raisons du choix ?",
           ],
           note: "Le bilan, la décision prise et la date du prochain retour au groupe",
           prompt: "Je note les observations, leurs limites et quand le groupe décidera de continuer, modifier ou arrêter.",
           example: "Deux créneaux restent non pourvus, contre trois avant. Le groupe vérifie aussi si la charge s’est déplacée.",
-          refs: [22, 23, 25],
+          refs: [22, 23, 25, 48],
         },
       ];
       const groupMethods = {
@@ -5723,7 +5752,7 @@
         previousFocus = null,
         pendingConfirm = null,
         supportMode = "listen",
-        selectedNeed = "listen",
+        selectedNeed = null,
         meterIndex = null;
       function hasWriting() {
         return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
@@ -6409,6 +6438,11 @@
           `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young", "work"].includes($("#support-context").value) ? `<a href="${$("#support-context").value === "couple" ? "#violences-couple" : "#violences"}" class="text-button">Explorer les repères de violence →</a>` : ""}</article>`;
       }
       function renderNeedGuidance() {
+        if (!selectedNeed) {
+          $("#need-guidance").innerHTML = '<h3>Je pars de ce qu’elle me dit</h3><p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
+          $$("[data-need]").forEach((button) => button.setAttribute("aria-pressed", "false"));
+          return;
+        }
         const [title, phrase, action] = needGuidance[selectedNeed];
         const relation = $("#support-relation").value;
         const relationNote = {

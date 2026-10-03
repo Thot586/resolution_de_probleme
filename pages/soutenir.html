@@ -3,10 +3,11 @@
           <div class="page-heading">
             <div class="eyebrow">Écouter · Comprendre · Agir avec la personne</div>
             <h1>Soutenir quelqu’un, sans prendre sa place</h1>
-            <p>Je prépare une conversation à partir de ce que la personne vit et souhaite. Elle reste libre d’accepter, de refuser ou de changer d’avis.</p>
+            <p>Je propose mon aide sans présumer ce dont la personne a besoin. Je l’écoute si elle veut parler, puis nous choisissons une aide qui lui convient. Elle peut refuser ou changer d’avis.</p>
           </div>
+          <div class="notice amber support-safety"><strong>Avant de commencer</strong>Si la personne est en danger ou a un besoin urgent, je l’aide d’abord à trouver un appui sûr. <a href="#securite">Voir les repères de sécurité</a>. Sinon, je lui demande si elle souhaite parler ; je ne la pousse pas à raconter.</div>
           <ol class="support-start" aria-label="Avant de proposer une aide">
-            <li><strong>J’écoute.</strong><span>« Qu’est-ce qui est difficile pour toi en ce moment ? »</span></li>
+            <li><strong>Je demande si elle veut parler.</strong><span>« Est-ce que tu veux m’en parler ? » Je respecte aussi un non.</span></li>
             <li><strong>Je demande son besoin.</strong><span>« De quoi aurais-tu besoin de ma part ? »</span></li>
           </ol>
           <details class="support-foundations">
@@ -14,9 +15,9 @@
             <div class="details-body">
               <div class="support-stage-grid">
                 <article class="card stage-card">
-                  <span class="tag">1 · Écouter avant de conseiller</span>
+                  <span class="tag">1 · Écouter avec son accord</span>
                   <h2>« Qu’est-ce qui est difficile pour toi en ce moment ? »</h2>
-                  <p>Je laisse la personne raconter à sa manière. Je reformule : « Si je comprends bien, le plus difficile est… » Puis je vérifie si j’ai bien compris.</p>
+                  <p>Si elle souhaite parler, je la laisse raconter à sa manière, sans demander de détails inutiles. Je reformule : « Si je comprends bien, le plus difficile est… » Puis je vérifie si j’ai bien compris.</p>
                   <p>Je peux demander : « Qu’est-ce qui compte le plus pour toi ici ? » Je vérifie quelle langue ou façon d’échanger lui convient, sans présumer sa réponse.</p>
                   <p class="hint">J’évite de comparer tout de suite avec ma propre expérience.</p>
                 </article>
@@ -29,8 +30,8 @@
             </div>
           </details>
           <div class="card need-lab" id="need-lab">
-            <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div><p>Aucun choix n’est enregistré.</p></div>
-            <p class="need-start-hint">Exemple affiché : un collègue qui souhaite être écouté. Je peux changer ces choix.</p>
+            <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div></div>
+            <p class="need-start-hint">Exemple de relation : un collègue. Je choisis ci-dessous le besoin qu’il exprime ; aucun besoin n’est supposé à sa place.</p>
             <label class="label" for="support-relation">Dans quelle relation ?</label>
             <select id="support-relation">
               <option value="colleague">Collègue</option>
@@ -39,13 +40,25 @@
               <option value="other">Autre relation</option>
             </select>
             <fieldset class="section-gap"><legend>Quel besoin la personne exprime-t-elle ?</legend><div class="choice-stack" id="need-choices">
-              <button class="pill" type="button" data-need="listen" aria-pressed="true">Être écoutée</button>
+              <button class="pill" type="button" data-need="listen" aria-pressed="false">Être écoutée</button>
               <button class="pill" type="button" data-need="clarify" aria-pressed="false">Voir plus clair</button>
               <button class="pill" type="button" data-need="practical" aria-pressed="false">Une aide concrète</button>
               <button class="pill" type="button" data-need="advice" aria-pressed="false">Un avis ou un retour</button>
             </div></fieldset>
             <div id="need-guidance" class="need-guidance" aria-live="polite"></div>
           </div>
+          <details class="section-gap support-options">
+            <summary>Si elle veut chercher une solution avec moi</summary>
+            <div class="details-body">
+              <ol>
+                <li>Je lui demande ce qu’elle voudrait changer et ce qui compte pour elle.</li>
+                <li>Nous notons plusieurs options, y compris demander une information, attendre ou solliciter une aide adaptée.</li>
+                <li>Nous comparons les bénéfices, les limites et les risques dans sa situation. Elle choisit ; je ne décide pas à sa place.</li>
+                <li>Si elle le souhaite, nous convenons d’un premier pas précis et du moment où refaire le point.</li>
+              </ol>
+              <p>Une écoute ou une aide pratique peut suffire : je ne transforme pas chaque conversation en exercice de résolution de problème. <a href="#ref-45">[45]</a> <a href="#ref-47">[47]</a></p>
+            </div>
+          </details>
           <article class="card stage-card section-gap">
             <span class="tag">4 · Faire le point</span>
             <h2>Vérifier si l’aide a vraiment servi</h2>
@@ -58,7 +71,7 @@
           <figure class="teaching-figure">
             <svg viewBox="0 0 360 394" role="img" aria-labelledby="journey-title journey-desc" xmlns="http://www.w3.org/2000/svg">
               <title id="journey-title">Quatre étapes pour soutenir une personne</title>
-              <desc id="journey-desc">Écouter, demander le besoin, proposer une aide avec l’accord de la personne, puis vérifier si cette aide lui convient.</desc>
+              <desc id="journey-desc">Après avoir vérifié qu’il n’y a pas de besoin urgent, demander si la personne souhaite parler, l’écouter, demander son besoin, proposer une aide avec son accord, puis vérifier si cette aide lui convient.</desc>
               <!-- L’accord est écrit dans la figure ; la légende ajoute les exceptions de sécurité. -->
               <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
                 <rect x="16" y="12" width="328" height="76" rx="15"/>
@@ -69,7 +82,7 @@
               <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/></g>
               <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text></g>
               <g fill="#203b36" font-family="system-ui, sans-serif" font-size="18" font-weight="700"><text x="80" y="44">Écouter</text><text x="80" y="140">Demander</text><text x="80" y="236">Proposer</text><text x="80" y="332">Vérifier</text></g>
-              <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Sans comparer</text><text x="80" y="162">« De quoi as-tu besoin ? »</text><text x="80" y="258">Seulement avec son accord</text><text x="80" y="354">« Est-ce que cela t’aide ? »</text></g>
+              <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Si elle veut parler · sans forcer</text><text x="80" y="162">« De quoi as-tu besoin ? »</text><text x="80" y="258">Seulement avec son accord</text><text x="80" y="354">« Est-ce que cela t’aide ? »</text></g>
               <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/></g>
             </svg>
             <figcaption>La personne aidée choisit la direction. Si son besoin change, on peut revenir à l’écoute. En cas de danger, on cherche d’abord une aide adaptée.</figcaption>
@@ -86,6 +99,6 @@
             </div>
           </details>
           <div class="notice amber section-gap"><strong>Quand l’exercice ne suffit pas.</strong>En cas de menace, de violence, de harcèlement, de risque pour une personne ou de difficulté relevant d’une décision clinique, cherchez un appui compétent et sûr. <a href="#securite">Voir les aides et repères de sécurité</a>.</div>
-          <p class="source-note">Cette méthode assemble des repères de premiers secours psychologiques, d’écoute et d’autonomie dans l’apprentissage. La question sur le point de vue de l’autre s’inspire de l’<button class="glossary-button" type="button" data-term="culturalFormulation" aria-haspopup="dialog" aria-controls="term-dialog">entretien de formulation culturelle</button>, sans le reproduire. Ce parcours n’a pas été évalué comme intervention propre à ce site. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a> <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a></p>
+          <p class="source-note">Les repères de l’OMS concernent d’abord les situations de crise ; les études ne démontrent pas qu’ils améliorent à eux seuls la santé mentale dans tous les contextes. Les travaux sur les choix partagés portent surtout sur les soins. Cette adaptation à l’aide quotidienne n’a pas été évaluée. La question sur le point de vue de l’autre s’inspire de l’<button class="glossary-button" type="button" data-term="culturalFormulation" aria-haspopup="dialog" aria-controls="term-dialog">entretien de formulation culturelle</button>, sans le reproduire. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a> <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a> <a href="#ref-45">[45]</a> <a href="#ref-46">[46]</a> <a href="#ref-47">[47]</a></p>
         </div>
       </section>
