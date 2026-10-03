@@ -912,6 +912,18 @@
         gap: 22px;
         align-items: start;
       }
+      .violence-urgent {
+        margin: 0 0 16px;
+        padding: 12px 16px;
+        border-left: 4px solid #9c463d;
+        border-radius: 0 10px 10px 0;
+        background: #fff3ee;
+        line-height: 1.5;
+      }
+      .violence-urgent strong { color: #6d302b; }
+      .violence-empty { margin-top: 20px; color: var(--muted); }
+      #violence-context { max-width: 490px; }
+      #violence-return { display: inline-block; }
       .meter {
         display: grid;
         gap: 7px;

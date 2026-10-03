@@ -52,6 +52,7 @@
       function fresh() {
         return {
           version: 2,
+          catalogRevision: 3,
           step: 0,
           clarifyPart: 0,
           context: "other",
@@ -93,7 +94,7 @@
         pendingConfirm = null,
         supportMode = "listen",
         selectedNeed = "listen",
-        meterIndex = 0;
+        meterIndex = null;
       function hasWriting() {
         return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
       }
@@ -107,11 +108,20 @@
       }
       const legacyContextMap = {
         personal: { daily: "daily", study: "study", work: "work", health: "health" },
-        shared: { couple: "couple", family: "family", work: "colleague" },
+        shared: { couple: "couple", family: "family", work: "other" },
         organization: { work: "coordination" },
         public: { collective: "mobility" },
       };
       const currentContext = () => contextCatalog[state.scale][state.context];
+      const violenceRouteForContext = () => {
+        const related = state.scale === "shared" ? {
+          couple: "couple",
+          sibling: "sibling",
+          peers: "peers",
+          colleague: "colleague",
+        }[state.context] : null;
+        return related ? `#violences-${related}` : "#violences";
+      };
       function selectScale(scale) {
         if (!Object.hasOwn(scales, scale)) return;
         const changed = state.scale !== scale;
@@ -147,7 +157,7 @@
         } else {
           if (!Object.hasOwn(contextCatalog[clean.scale], raw.context)) throw Error("invalid");
           clean.context = raw.context;
-          clean.reviewContext = raw.reviewContext === true;
+          clean.reviewContext = raw.reviewContext === true || (raw.catalogRevision !== 3 && clean.scale === "shared" && clean.context === "colleague");
         }
         clean.scaleChosen = raw.scaleChosen === true;
         clean.reviewScale = raw.reviewScale === true;
@@ -320,7 +330,7 @@
           const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
           const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
           const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
-          const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || (state.scale === "shared" && ["couple", "family", "colleague"].includes(state.context)) ? ' <a href="#violences">Repérer une violence →</a>' : "";
+          const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
           body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}<fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
@@ -332,7 +342,7 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="#violences">Voir les repères de sécurité</a>.</p>`}`;
+            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="${violenceRouteForContext()}">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="${violenceRouteForContext()}">Voir les repères de violence</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="${violenceRouteForContext()}">Voir les repères de sécurité</a>.</p>`}`;
         }
         if (i === 1) {
           const prompts = [
@@ -763,7 +773,7 @@
           return;
         }
         $("#support-context-content").innerHTML =
-          `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young"].includes($("#support-context").value) ? '<a href="#violences" class="text-button">Explorer les repères de violence →</a>' : ""}</article>`;
+          `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young", "work"].includes($("#support-context").value) ? `<a href="${$("#support-context").value === "couple" ? "#violences-couple" : "#violences"}" class="text-button">Explorer les repères de violence →</a>` : ""}</article>`;
       }
       function renderNeedGuidance() {
         const [title, phrase, action] = needGuidance[selectedNeed];
@@ -783,6 +793,15 @@
       function renderMeter() {
         const key = $("#violence-context").value,
           d = violenceData[key];
+        $("#violence-empty").hidden = Boolean(d);
+        $("#violence-meter-layout").hidden = !d;
+        $("#violence-return").hidden = !state.scaleChosen;
+        if (!d) {
+          $("#violence-context-note").textContent = "";
+          $("#meter").replaceChildren();
+          $("#meter-detail").replaceChildren();
+          return;
+        }
         $("#violence-context-note").textContent = d.note;
         $("#meter").innerHTML = d.items
           .map(
@@ -794,13 +813,20 @@
       }
       function glossarize(text) {
         return esc(text)
+          .replace(/harcèlement moral au travail/g, term("workHarassment"))
           .replace(/contrôle coercitif/g, term("coercion"))
           .replace(/consentement/g, term("consent"))
           .replace(/asymétrie pédagogique/g, term("power"));
       }
       function renderMeterDetail() {
-        const d = violenceData[$("#violence-context").value],
-          v = d.items[meterIndex];
+        const d = violenceData[$("#violence-context").value];
+        if (!d) return;
+        if (meterIndex === null) {
+          $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je peux choisir un exemple dans la liste. Rien n’est déduit de ma relation avant ce choix.</p><p class="source-note">Ces exemples ne classent pas une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
+          $$('[data-meter]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+          return;
+        }
+        const v = d.items[meterIndex];
         $("#meter-detail").innerHTML =
           `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
         $$("[data-meter]").forEach((b) =>
@@ -814,13 +840,21 @@
         hideTooltip();
         const hash = location.hash.slice(1) || "accueil";
         const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
+        const violenceMatch = /^violences-([a-z]+)$/.exec(hash);
+        const violenceKey = violenceMatch && Object.hasOwn(violenceData, violenceMatch[1]) ? violenceMatch[1] : null;
         if (scaleMatch) {
           selectScale(scaleMatch[1]);
           persist();
         }
+        if (hash === "violences" || violenceKey) {
+          $("#violence-context").value = violenceKey || "";
+          meterIndex = null;
+          renderMeter();
+        }
         const page = hash.startsWith("ref-")
           ? "bibliographie"
           : scaleMatch ? "outil"
+          : violenceKey ? "violences"
           : [
                 "accueil",
                 "outil",
@@ -835,6 +869,7 @@
               ].includes(hash)
             ? hash
             : "accueil";
+        const keepViolenceChoiceFocus = page === "violences" && document.activeElement === $("#violence-context");
         $$(".view").forEach((el) => (el.hidden = el.id !== page));
         $$("nav a").forEach((a) => {
           if (
@@ -854,7 +889,7 @@
           soutenir: "Soutenir quelqu’un",
           groupe: "Aider un groupe",
           proche: "Comment aider un proche ?",
-          violences: "Violentomètre",
+          violences: "Repérer les violences",
           comprendre: "Comprendre",
           bibliographie: "Bibliographie",
           securite: "Sécurité & aide",
@@ -868,7 +903,7 @@
             ref.focus({ preventScroll: true });
             ref.scrollIntoView({ block: "start" });
           }
-        } else {
+        } else if (!keepViolenceChoiceFocus) {
           $("#main").focus({ preventScroll: true });
           window.scrollTo({ top: 0, behavior: "instant" });
         }
@@ -1156,8 +1191,13 @@
       });
       $("#support-context").addEventListener("change", renderSupport);
       $("#violence-context").addEventListener("change", () => {
-        meterIndex = 0;
-        renderMeter();
+        const key = $("#violence-context").value;
+        if (key && !Object.hasOwn(violenceData, key)) return;
+        const target = key ? `#violences-${key}` : "#violences";
+        if (location.hash === target) {
+          meterIndex = null;
+          renderMeter();
+        } else location.hash = target;
       });
       // Brief hint on hover/focus; a deliberate activation opens the detailed definition.
       let tooltipOwner = null,
@@ -1271,6 +1311,9 @@
       renderSupport();
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
+      $("#violence-context").innerHTML = '<option value="">Choisir une relation</option>' + violenceGroups
+        .map(([group, options]) => `<optgroup label="${esc(group)}">${options.map(([key, label]) => `<option value="${esc(key)}">${esc(label)}</option>`).join("")}</optgroup>`)
+        .join("");
       renderMeter();
       initGroup();
       route();

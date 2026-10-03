@@ -191,9 +191,12 @@ const errors = [];
     },
     {
       scale: "shared",
-      options: ["couple", "family", "colleague", "neighbors", "other"],
+      options: ["couple", "family", "sibling", "colleague", "mentoring", "peers", "neighbors", "other"],
       cases: [
-        ["colleague", /parler librement/, /médecin expérimenté/, /Qu'a dit ou fait/, /Écouter avant de conseiller/, /Demander au jeune collègue/, /s'il souhaite un échange/],
+        ["sibling", /compte tenu de son âge/, /Ma sœur et moi vivons ensemble/, /Quel fait précis pose problème/, /Âge, sécurité et accord libre/, /Lister les tâches/, /Demander à ma sœur/],
+        ["colleague", /gêne notre travail commun/, /Un collègue et moi transmettons/, /fait vérifiable gêne notre coopération/, /Faits, coopération et organisation/, /Comparer les deux consignes/, /Demander à mon collègue/],
+        ["mentoring", /exprimer un refus sans risque/, /médecin expérimenté/, /Qu'a dit ou fait/, /Écouter avant de conseiller/, /Demander au jeune collègue/, /s'il souhaite un échange/],
+        ["peers", /usage, besoin ou accord concret/, /Un ami et moi partageons un logement/, /Que s'est-il passé concrètement/, /Écouter puis proposer/, /Demander à mon ami/, /Demander à mon ami/],
         ["neighbors", /ressource partageons-nous/, /Deux associations/, /Quel usage partagé/, /Essai d'accord réversible/],
       ],
     },
@@ -360,7 +363,7 @@ const errors = [];
   }, { ...legacy, scale: "shared", context: "work" });
   await storedPage.reload();
   await storedPage.evaluate(() => { location.hash = "outil"; });
-  assert.equal(await storedPage.locator("#context-select").inputValue(), "colleague");
+  assert.equal(await storedPage.locator("#context-select").inputValue(), "other");
   assert.match(await storedPage.locator("#context-review").innerText(), /contexte/);
   assert.deepEqual(await storedPage.evaluate(() => Object.keys(localStorage)), ["pas-a-pas.brouillon.v2"]);
   await storedPage.locator('#steps [data-step="1"]').click();
@@ -371,6 +374,37 @@ const errors = [];
   assert.equal(await storedPage.locator("#context-select").inputValue(), "neighbors");
   assert.equal(await storedPage.locator('#steps [data-step="1"]').count(), 1);
   await migrationContext.close();
+  // The former v2 colleague context covered both peers and supervisors.
+  // Keep its answers, request a review, then avoid that warning for revision 3.
+  const v2Context = await browser.newContext();
+  const v2Page = await v2Context.newPage();
+  v2Page.on("pageerror", (e) => errors.push(e.message));
+  await v2Page.goto(url);
+  const previousColleague = {
+    ...legacy,
+    version: 2,
+    scale: "shared",
+    context: "colleague",
+    fields: { ...legacy.fields, situation: "Ancienne situation entre collègues à conserver." },
+  };
+  await v2Page.evaluate((draft) => {
+    localStorage.setItem("pas-a-pas.brouillon.v2", JSON.stringify(draft));
+  }, previousColleague);
+  await v2Page.reload();
+  await v2Page.evaluate(() => { location.hash = "outil"; });
+  assert.equal(await v2Page.locator("#context-select").inputValue(), "colleague");
+  assert.match(await v2Page.locator("#context-review").innerText(), /contexte/);
+  await v2Page.locator('#steps [data-step="1"]').click();
+  assert.equal(await v2Page.locator("#field-situation").inputValue(), previousColleague.fields.situation);
+  await v2Page.evaluate((draft) => {
+    localStorage.setItem("pas-a-pas.brouillon.v2", JSON.stringify(draft));
+  }, { ...previousColleague, catalogRevision: 3 });
+  await v2Page.reload();
+  assert.equal(await v2Page.locator("#context-select").inputValue(), "colleague");
+  assert.equal(await v2Page.locator("#context-review").count(), 0, "Current catalog needs no migration warning");
+  await v2Page.locator('#steps [data-step="1"]').click();
+  assert.equal(await v2Page.locator("#field-situation").inputValue(), previousColleague.fields.situation);
+  await v2Context.close();
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
   assert(await page.locator("#soutenir .support-start").isVisible());
@@ -624,7 +658,7 @@ const errors = [];
     await page.locator("#steps [aria-current=step]").getAttribute("data-step"),
     "3",
   );
-  // All supporting sections and all 30 meter items are interactive.
+  // Supporting sections and relationship-specific violence guides are interactive.
   await visit("proche");
   for (const mode of ["listen", "solve", "practical"]) {
     await page.locator(`[data-support-mode=${mode}]`).click();
@@ -648,8 +682,27 @@ const errors = [];
   }
   await axe("support");
   await visit("violences");
-  for (const val of ["couple", "work", "care", "education", "family"]) {
-    await page.selectOption("#violence-context", val);
+  const violenceContexts = [
+    "couple", "sibling", "peers", "family", "colleague",
+    "work", "education", "care", "vulnerable", "other",
+  ];
+  assert.equal(await page.locator("#violence-context").inputValue(), "", "Generic entry asks for a relation");
+  assert.equal(await page.locator("#meter [data-meter]").count(), 0, "Generic entry has no preselected guide");
+  assert.match(await page.locator("#violences").innerText(), /choisir|choisissez|relation/i);
+  assert.deepEqual(
+    (await page.locator("#violence-context option").evaluateAll((nodes) => nodes.map((node) => node.value).filter(Boolean))).sort(),
+    [...violenceContexts].sort(),
+    "Every authored guide is reachable from the relationship chooser",
+  );
+  await axe("meter-no-relation");
+  const guideContent = new Set();
+  for (const val of violenceContexts) {
+    await page.locator("#violence-context").selectOption(val);
+    assert.equal(new URL(page.url()).hash, `#violences-${val}`, `${val}: relationship choice updates the URL`);
+    assert.equal(await page.locator("#meter [data-meter]").count(), 6, `${val}: six illustrative choices`);
+    assert.equal(await page.locator('#meter [aria-pressed="true"]').count(), 0, `${val}: no behavior inferred from the relationship`);
+    assert.match(await page.locator("#meter-detail").innerText(), /Quel comportement me questionne/);
+    guideContent.add(await page.locator("#meter").innerText());
     for (let i = 0; i < 6; i++) {
       await page.locator(`[data-meter="${i}"]`).click();
       assert.equal(
@@ -657,9 +710,21 @@ const errors = [];
         1,
       );
       assert((await page.locator("#meter-detail").innerText()).length > 100);
+      assert(
+        await page.locator('#meter-detail a[href^="#ref-"]').count() > 0,
+        `${val}: the guide cites a source`,
+      );
     }
   }
-  await axe("meter");
+  assert.equal(guideContent.size, violenceContexts.length, "Each relationship has distinct examples");
+  await page.locator("#violence-context").selectOption("sibling");
+  await page.locator('[data-meter="2"]').focus();
+  await page.keyboard.press("Enter");
+  assert.equal(await page.locator('[data-meter="2"]').getAttribute("aria-pressed"), "true", "Guide choices work from the keyboard");
+  await page.locator("#violence-context").selectOption("colleague");
+  assert.equal(await page.locator('#meter [aria-pressed="true"]').count(), 0, "Changing relationship clears the example");
+  assert.match(await page.locator("#meter-detail").innerText(), /Quel comportement me questionne/);
+  await axe("meter-colleague");
   await page.evaluate(() => {
     document.activeElement?.blur();
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -668,6 +733,50 @@ const errors = [];
     path: path.join(output, "desktop-meter.png"),
     fullPage: true,
   });
+  const guidePage = await context.newPage();
+  guidePage.on("pageerror", (e) => errors.push(e.message));
+  guidePage.on("request", (r) => {
+    if (!r.url().startsWith(url) && !r.url().startsWith("blob:")) external.push(r.url());
+  });
+  for (const val of violenceContexts) {
+    await guidePage.goto(url + `#violences-${val}`);
+    assert(await guidePage.locator("#violences").isVisible(), `${val}: direct link opens the guide`);
+    assert.equal(await guidePage.locator("#violence-context").inputValue(), val, `${val}: direct link preselects the relation`);
+    assert.equal(await guidePage.locator("#meter [data-meter]").count(), 6, `${val}: direct link shows six choices`);
+    assert.equal(await guidePage.locator('#meter [aria-pressed="true"]').count(), 0, `${val}: direct link does not select a behavior`);
+  }
+  await guidePage.goto(url + "#violences");
+  assert.equal(await guidePage.locator("#violence-context").inputValue(), "", "Generic deep link returns to the chooser");
+  assert.equal(await guidePage.locator("#meter [data-meter]").count(), 0);
+  await guidePage.close();
+  const relationPage = await context.newPage();
+  relationPage.on("pageerror", (e) => errors.push(e.message));
+  relationPage.on("request", (r) => {
+    if (!r.url().startsWith(url) && !r.url().startsWith("blob:")) external.push(r.url());
+  });
+  await relationPage.goto(url + "#outil-shared");
+  for (const relation of ["colleague", "sibling", "peers", "couple"]) {
+    await relationPage.evaluate(() => { location.hash = "outil-shared"; });
+    await relationPage.locator("#outil").waitFor({ state: "visible" });
+    await relationPage.locator("#context-select").selectOption(relation);
+    await relationPage.locator('#steps [data-step="1"]').click();
+    const sentence = `Situation conservée : ${relation}`;
+    await relationPage.locator("#field-situation").fill(sentence);
+    await relationPage.locator('#steps [data-step="0"]').click();
+    const destination = `#violences-${relation}`;
+    const link = relationPage.locator(`#outil a[href="${destination}"]`).first();
+    assert(await link.isVisible(), `${relation}: the context offers its matching violence guide`);
+    await link.click();
+    await relationPage.locator("#violences").waitFor({ state: "visible" });
+    assert.equal(new URL(relationPage.url()).hash, destination);
+    assert.equal(await relationPage.locator("#violence-context").inputValue(), relation);
+    await relationPage.evaluate(() => { location.hash = "outil"; });
+    await relationPage.locator("#outil").waitFor({ state: "visible" });
+    assert.equal(await relationPage.locator("#context-select").inputValue(), relation);
+    await relationPage.locator('#steps [data-step="1"]').click();
+    assert.equal(await relationPage.locator("#field-situation").inputValue(), sentence, `${relation}: returning preserves the draft`);
+  }
+  await relationPage.close();
   await visit("comprendre");
   const guides = page.locator("#comprendre .visual-guides details");
   await page
@@ -698,7 +807,7 @@ const errors = [];
   await visible("#term-dialog");
   await page.locator("#term-close").click();
   await page.locator("#comprendre summary").filter({ hasText: "Glossaire :" }).click();
-  assert.equal(await page.locator("#glossary-list [data-term]").count(), 23);
+  assert.equal(await page.locator("#glossary-list [data-term]").count(), 24);
   assert(await page.evaluate(() => Object.keys(glossary).every((key) => glossaryHelp[key]?.length === 3)));
   for (const key of ["violentometer", "evidence", "sharedDecision", "balancingIndicator"])
     assert.equal(await page.locator(`#glossary-list [data-term=${key}]`).count(), 1);
@@ -832,6 +941,12 @@ const errors = [];
   await page.locator("#navigation").waitFor({ state: "hidden" });
   assert(!(await page.locator("#navigation").isVisible()));
   await visit("violences");
+  assert.equal(await page.locator("#violence-context").inputValue(), "");
+  assert(await page.locator('#violences .violence-urgent a[href="#securite"]').isVisible());
+  await page.screenshot({
+    path: path.join(output, "mobile-meter-chooser-390.png"),
+    fullPage: true,
+  });
   await page.selectOption("#violence-context", "couple");
   await page.locator('[data-meter="3"]').click();
   await page.evaluate(() => {
@@ -843,6 +958,26 @@ const errors = [];
     fullPage: true,
   });
   await axe("mobile-meter");
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    for (const relation of violenceContexts) {
+      await page.evaluate((key) => { location.hash = `violences-${key}`; }, relation);
+      await page.waitForFunction(
+        (key) => document.querySelector("#violence-context")?.value === key,
+        relation,
+      );
+      assert.equal(await page.locator("#meter [data-meter]").count(), 6);
+      await overflow(`${width}px violence guide ${relation}`);
+      if ((width === 320 && ["sibling", "colleague"].includes(relation)) || (width === 390 && relation === "sibling")) {
+        await page.screenshot({
+          path: path.join(output, `mobile-meter-${relation}-${width}.png`),
+          fullPage: true,
+        });
+        await axe(`mobile-meter-${relation}-${width}`);
+      }
+    }
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
   await visit("outil");
   await step(1);
   await page.locator("#field-situation").fill("X".repeat(6000));

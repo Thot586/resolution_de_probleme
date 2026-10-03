@@ -2,69 +2,25 @@
         <div class="page-narrow">
           <div class="page-heading">
             <div class="eyebrow">Reconnaître · Se protéger · Être soutenu</div>
-            <h1>Un désaccord… ou de la violence ?</h1>
+            <h1>Repérer une violence selon la relation</h1>
             <p>
-              Choisissez une relation, puis cliquez sur un comportement pour
-              comprendre les repères et les possibilités d’aide.
+              Je choisis une relation pour voir des situations concrètes, ce
+              qu’elles peuvent signifier et où demander de l’aide.
             </p>
           </div>
-          <p class="source-note">
-            Les cinq repères ci-dessous ont été rédigés pour cette page. Ils ne
-            sont pas des versions officielles du
-            <button type="button" class="glossary-button" data-term="violentometer">Violentomètre</button>
-            ni des tests permettant de calculer un risque.
-            <a href="#ref-7">[7]</a>
-          </p>
-          <details>
-            <summary>Qu’est-ce qu’un violentomètre ?</summary>
-            <div class="details-body">
-              <p>
-                C’est un support visuel de sensibilisation : des exemples aident
-                à repérer le respect, le contrôle ou les violences dans une
-                relation. Le Violentomètre français, consacré aux relations
-                amoureuses, a été conçu fin 2018 par les observatoires des
-                violences faites aux femmes de Seine-Saint-Denis et de Paris,
-                l’association En Avant Toute(s) et la Ville de Paris. Le Centre
-                Hubertine Auclert l’a ensuite adapté et diffusé.
-                <a class="citation" href="#ref-7">[7]</a>
-              </p>
-              <p>
-                Le modèle français s’inspire de supports d’Amérique latine.
-                Au Mexique, une équipe de l’Institut polytechnique national,
-                dirigée par Martha Alicia Tronco Rosas, a conçu son propre
-                <em>Violentómetro</em> en 2009.
-                <a href="#ref-7">[7]</a>
-              </p>
-              <p>
-                <strong>Ces cinq repères sont propres à cette page.</strong>
-                Ils ne sont ni des échelles cliniques validées, ni des outils
-                prédictifs, ni un avis juridique. Les couleurs aident à lire les
-                situations ; elles ne calculent aucun niveau de risque.
-              </p>
-              <p>
-                Les violences ne suivent pas forcément une progression. Un seul
-                acte peut être grave. Des moments respectueux n’annulent jamais
-                une violence.
-              </p>
-            </div>
-          </details>
-          <div class="section-gap">
+          <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a></p>
+          <div class="section-gap violence-choice">
             <label class="label" for="violence-context"
-              >Dans quelle relation ?</label
-            ><select id="violence-context">
-              <option value="couple">Couple / partenaires</option>
-              <option value="work">Employeur ou responsable / salarié</option>
-              <option value="care">
-                Professionnel de santé / personne soignée
-              </option>
-              <option value="education">Enseignant / élève ou étudiant</option>
-              <option value="family">
-                Parent ou adulte responsable / enfant
-              </option>
+              >Avec qui se passe la situation ?</label
+            ><select id="violence-context" aria-describedby="violence-choice-help violence-context-note">
+              <option value="">Choisir une relation</option>
             </select>
+            <p class="hint" id="violence-choice-help">Je peux choisir « Une autre relation » si aucun exemple ne convient. Le choix apparaît dans l’adresse.</p>
           </div>
           <p class="hint" id="violence-context-note"></p>
-          <div class="meter-layout section-gap">
+          <p class="hint violence-threshold">Dès qu’un fait m’inquiète, je peux chercher conseil. Je n’ai pas à attendre une répétition ou une « case rouge » pour demander de l’aide.</p>
+          <div id="violence-empty" class="card padded violence-empty" role="status">Je choisis une relation ci-dessus pour voir les repères qui lui correspondent.</div>
+          <div class="meter-layout section-gap" id="violence-meter-layout" hidden>
             <div>
               <div
                 class="meter"
@@ -73,7 +29,7 @@
               ></div>
               <p class="source-note">
                 Exemples pédagogiques, pas un test : un seul acte peut être
-                grave. Aucune sélection n’est enregistrée.
+                grave. Aucun choix de comportement n’est enregistré.
               </p>
             </div>
             <article
@@ -82,6 +38,7 @@
               aria-live="polite"
             ></article>
           </div>
+          <a id="violence-return" href="#outil" class="text-button section-gap" hidden>← Revenir à mon problème</a>
           <div class="notice red section-gap">
             <strong
               >La violence n’est pas un problème à résoudre à deux à tout
@@ -92,12 +49,40 @@
             <a href="#securite">Trouver du soutien en sécurité →</a>
             <a class="citation" href="#ref-6">[6]</a>
           </div>
+          <details class="section-gap">
+            <summary>Origine et limites de ces repères</summary>
+            <div class="details-body">
+              <p>
+                Le <button type="button" class="glossary-button" data-term="violentometer">Violentomètre</button>
+                français, consacré aux relations amoureuses, a été conçu fin
+                2018 par les observatoires des violences faites aux femmes de
+                Seine-Saint-Denis et de Paris, l’association En Avant Toute(s)
+                et la Ville de Paris. Le Centre Hubertine Auclert l’a ensuite
+                adapté et diffusé. <a href="#ref-7">[7]</a>
+              </p>
+              <p>
+                Le modèle français s’inspire de supports d’Amérique latine.
+                Au Mexique, une équipe de l’Institut polytechnique national,
+                dirigée par Martha Alicia Tronco Rosas, a conçu son propre
+                <em>Violentómetro</em> en 2009. <a href="#ref-7">[7]</a>
+              </p>
+              <p>
+                <strong>Les guides de cette page sont des créations distinctes, pas des adaptations officielles.</strong>
+                Ils ne sont ni des échelles cliniques validées, ni des outils
+                prédictifs, ni un avis juridique. Les couleurs ne calculent
+                aucun niveau de risque. Les violences ne suivent pas forcément
+                une progression ; un seul acte peut être grave et des moments
+                respectueux n’effacent pas une violence.
+              </p>
+            </div>
+          </details>
           <p class="source-note">
-            Situations formulées pour cette page à partir des repères OMS, OIT
-            et UNESCO. Le contexte de pouvoir compte ; les droits et recours
-            précis dépendent du pays. <a href="#ref-6">[6]</a>
-            <a href="#ref-8">[8]</a> <a href="#ref-9">[9]</a>
-            <a href="#ref-10">[10]</a> <a href="#ref-11">[11]</a>
+            Situations formulées pour cette page à partir de sources OMS, OIT,
+            UNESCO, SAARA et INRS. Chaque guide cite ses sources et leurs limites.
+            Le contexte de pouvoir compte ; les droits et recours précis
+            dépendent du pays. <a href="#ref-6">[6]</a>
+            <a href="#ref-8">[8]</a> <a href="#ref-34">[34]</a>
+            <a href="#ref-35">[35]</a>
           </p>
         </div>
       </section>

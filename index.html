@@ -925,6 +925,18 @@
         gap: 22px;
         align-items: start;
       }
+      .violence-urgent {
+        margin: 0 0 16px;
+        padding: 12px 16px;
+        border-left: 4px solid #9c463d;
+        border-radius: 0 10px 10px 0;
+        background: #fff3ee;
+        line-height: 1.5;
+      }
+      .violence-urgent strong { color: #6d302b; }
+      .violence-empty { margin-top: 20px; color: var(--muted); }
+      #violence-context { max-width: 490px; }
+      #violence-return { display: inline-block; }
       .meter {
         display: grid;
         gap: 7px;
@@ -1980,7 +1992,7 @@
             </a>
             <a class="scale-card" href="#outil-shared" data-start-scale="shared">
               <strong>Entre personnes</strong>
-              <span>Un échange ou un accord avec une autre personne est nécessaire.</span>
+              <span>Une autre personne est concernée. Je vérifie d’abord si un échange est sûr.</span>
               <span class="scale-arrow" aria-hidden="true">↗</span>
             </a>
             <a class="scale-card" href="#outil-organization" data-start-scale="organization">
@@ -2017,7 +2029,7 @@
         <div class="quick-paths">
           <span>Repères utiles</span>
           <a href="#proche">Comment aider un proche ? ↗</a>
-          <a href="#violences">Reconnaître une violence ↗</a>
+          <a href="#violences">Repérer une violence selon la relation ↗</a>
           <a href="#securite">Trouver une aide urgente ↗</a>
         </div>
         <details class="welcome-explain">
@@ -2488,69 +2500,25 @@
         <div class="page-narrow">
           <div class="page-heading">
             <div class="eyebrow">Reconnaître · Se protéger · Être soutenu</div>
-            <h1>Un désaccord… ou de la violence ?</h1>
+            <h1>Repérer une violence selon la relation</h1>
             <p>
-              Choisissez une relation, puis cliquez sur un comportement pour
-              comprendre les repères et les possibilités d’aide.
+              Je choisis une relation pour voir des situations concrètes, ce
+              qu’elles peuvent signifier et où demander de l’aide.
             </p>
           </div>
-          <p class="source-note">
-            Les cinq repères ci-dessous ont été rédigés pour cette page. Ils ne
-            sont pas des versions officielles du
-            <button type="button" class="glossary-button" data-term="violentometer">Violentomètre</button>
-            ni des tests permettant de calculer un risque.
-            <a href="#ref-7">[7]</a>
-          </p>
-          <details>
-            <summary>Qu’est-ce qu’un violentomètre ?</summary>
-            <div class="details-body">
-              <p>
-                C’est un support visuel de sensibilisation : des exemples aident
-                à repérer le respect, le contrôle ou les violences dans une
-                relation. Le Violentomètre français, consacré aux relations
-                amoureuses, a été conçu fin 2018 par les observatoires des
-                violences faites aux femmes de Seine-Saint-Denis et de Paris,
-                l’association En Avant Toute(s) et la Ville de Paris. Le Centre
-                Hubertine Auclert l’a ensuite adapté et diffusé.
-                <a class="citation" href="#ref-7">[7]</a>
-              </p>
-              <p>
-                Le modèle français s’inspire de supports d’Amérique latine.
-                Au Mexique, une équipe de l’Institut polytechnique national,
-                dirigée par Martha Alicia Tronco Rosas, a conçu son propre
-                <em>Violentómetro</em> en 2009.
-                <a href="#ref-7">[7]</a>
-              </p>
-              <p>
-                <strong>Ces cinq repères sont propres à cette page.</strong>
-                Ils ne sont ni des échelles cliniques validées, ni des outils
-                prédictifs, ni un avis juridique. Les couleurs aident à lire les
-                situations ; elles ne calculent aucun niveau de risque.
-              </p>
-              <p>
-                Les violences ne suivent pas forcément une progression. Un seul
-                acte peut être grave. Des moments respectueux n’annulent jamais
-                une violence.
-              </p>
-            </div>
-          </details>
-          <div class="section-gap">
+          <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a></p>
+          <div class="section-gap violence-choice">
             <label class="label" for="violence-context"
-              >Dans quelle relation ?</label
-            ><select id="violence-context">
-              <option value="couple">Couple / partenaires</option>
-              <option value="work">Employeur ou responsable / salarié</option>
-              <option value="care">
-                Professionnel de santé / personne soignée
-              </option>
-              <option value="education">Enseignant / élève ou étudiant</option>
-              <option value="family">
-                Parent ou adulte responsable / enfant
-              </option>
+              >Avec qui se passe la situation ?</label
+            ><select id="violence-context" aria-describedby="violence-choice-help violence-context-note">
+              <option value="">Choisir une relation</option>
             </select>
+            <p class="hint" id="violence-choice-help">Je peux choisir « Une autre relation » si aucun exemple ne convient. Le choix apparaît dans l’adresse.</p>
           </div>
           <p class="hint" id="violence-context-note"></p>
-          <div class="meter-layout section-gap">
+          <p class="hint violence-threshold">Dès qu’un fait m’inquiète, je peux chercher conseil. Je n’ai pas à attendre une répétition ou une « case rouge » pour demander de l’aide.</p>
+          <div id="violence-empty" class="card padded violence-empty" role="status">Je choisis une relation ci-dessus pour voir les repères qui lui correspondent.</div>
+          <div class="meter-layout section-gap" id="violence-meter-layout" hidden>
             <div>
               <div
                 class="meter"
@@ -2559,7 +2527,7 @@
               ></div>
               <p class="source-note">
                 Exemples pédagogiques, pas un test : un seul acte peut être
-                grave. Aucune sélection n’est enregistrée.
+                grave. Aucun choix de comportement n’est enregistré.
               </p>
             </div>
             <article
@@ -2568,6 +2536,7 @@
               aria-live="polite"
             ></article>
           </div>
+          <a id="violence-return" href="#outil" class="text-button section-gap" hidden>← Revenir à mon problème</a>
           <div class="notice red section-gap">
             <strong
               >La violence n’est pas un problème à résoudre à deux à tout
@@ -2578,12 +2547,40 @@
             <a href="#securite">Trouver du soutien en sécurité →</a>
             <a class="citation" href="#ref-6">[6]</a>
           </div>
+          <details class="section-gap">
+            <summary>Origine et limites de ces repères</summary>
+            <div class="details-body">
+              <p>
+                Le <button type="button" class="glossary-button" data-term="violentometer">Violentomètre</button>
+                français, consacré aux relations amoureuses, a été conçu fin
+                2018 par les observatoires des violences faites aux femmes de
+                Seine-Saint-Denis et de Paris, l’association En Avant Toute(s)
+                et la Ville de Paris. Le Centre Hubertine Auclert l’a ensuite
+                adapté et diffusé. <a href="#ref-7">[7]</a>
+              </p>
+              <p>
+                Le modèle français s’inspire de supports d’Amérique latine.
+                Au Mexique, une équipe de l’Institut polytechnique national,
+                dirigée par Martha Alicia Tronco Rosas, a conçu son propre
+                <em>Violentómetro</em> en 2009. <a href="#ref-7">[7]</a>
+              </p>
+              <p>
+                <strong>Les guides de cette page sont des créations distinctes, pas des adaptations officielles.</strong>
+                Ils ne sont ni des échelles cliniques validées, ni des outils
+                prédictifs, ni un avis juridique. Les couleurs ne calculent
+                aucun niveau de risque. Les violences ne suivent pas forcément
+                une progression ; un seul acte peut être grave et des moments
+                respectueux n’effacent pas une violence.
+              </p>
+            </div>
+          </details>
           <p class="source-note">
-            Situations formulées pour cette page à partir des repères OMS, OIT
-            et UNESCO. Le contexte de pouvoir compte ; les droits et recours
-            précis dépendent du pays. <a href="#ref-6">[6]</a>
-            <a href="#ref-8">[8]</a> <a href="#ref-9">[9]</a>
-            <a href="#ref-10">[10]</a> <a href="#ref-11">[11]</a>
+            Situations formulées pour cette page à partir de sources OMS, OIT,
+            UNESCO, SAARA et INRS. Chaque guide cite ses sources et leurs limites.
+            Le contexte de pouvoir compte ; les droits et recours précis
+            dépendent du pays. <a href="#ref-6">[6]</a>
+            <a href="#ref-8">[8]</a> <a href="#ref-34">[34]</a>
+            <a href="#ref-35">[35]</a>
           </p>
         </div>
       </section>
@@ -2984,6 +2981,39 @@
               </p>
             </div>
           </div>
+          <details class="section-gap">
+            <summary>Si je suis en France</summary>
+            <div class="details-body">
+              <p>Ces numéros s’adressent aux personnes qui se trouvent en France.</p>
+              <ul>
+                <li>
+                  <strong><a href="tel:119">119</a> · Enfance en danger.</strong>
+                  Pour un mineur en danger ou une personne préoccupée par sa
+                  situation, y compris un témoin.
+                  <a href="https://www.service-public.fr/particuliers/vosdroits/F781" target="_blank" rel="noopener noreferrer">Source officielle ↗</a>
+                  <a class="citation" href="#ref-38">[38]</a>
+                </li>
+                <li>
+                  <strong><a href="tel:3133">3133</a> · Maltraitance d’un adulte vulnérable.</strong>
+                  Pour une personne concernée ou un témoin : adulte âgé, en
+                  situation de handicap ou de précarité. Si une maltraitance est
+                  retenue, le service peut transmettre le signalement aux
+                  autorités compétentes.
+                  <a href="https://solidarites.gouv.fr/3133-maltraitances" target="_blank" rel="noopener noreferrer">Source officielle ↗</a>
+                  <a class="citation" href="#ref-39">[39]</a>
+                </li>
+                <li>
+                  <strong><a href="tel:116006">116 006</a> · Aide aux victimes.</strong>
+                  Pour une personne victime d’une infraction ou un proche :
+                  écoute, informations sur les démarches et orientation vers
+                  une association ou un service adapté.
+                  <a href="https://www.justice.gouv.fr/grands-dossiers/prise-charge-victimes-dinfractions-penales" target="_blank" rel="noopener noreferrer">Source officielle ↗</a>
+                  <a class="citation" href="#ref-40">[40]</a>
+                </li>
+              </ul>
+              <p class="hint">En cas de danger immédiat, contactez les secours locaux. Ces lignes d’écoute ne remplacent pas une intervention d’urgence.</p>
+            </div>
+          </details>
           <details class="section-gap" open>
             <summary>En cas de violences ou de contrôle</summary>
             <div class="details-body">
@@ -3281,8 +3311,10 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     >source IPN ↗</a
-                  >. Les cinq repères de ce site sont des créations pédagogiques
-                  distinctes, sans validation comme échelles de risque.
+                  >. Les repères proposés sur ce site sont des créations
+                  pédagogiques distinctes, sans validation comme échelles de
+                  risque. Les partenaires du Violentomètre français encadrent
+                  strictement toute adaptation de ses textes et de sa forme :
                   <a
                     href="https://www.centre-hubertine-auclert.fr/foire-aux-questions"
                     target="_blank"
@@ -3631,6 +3663,69 @@
                 <small>Pour un logigramme, associer une description brève du dessin à une description textuelle structurée des choix et issues. Recommandation d’accessibilité, pas une validation pédagogique de nos schémas.</small>
               </div>
             </li>
+            <li class="reference" id="ref-34" data-ref="34">
+              <div>
+                <span class="ref-label">Synthèse de recherche · Relations entre frères et sœurs</span>
+                <p>Tucker, C. J., Whitworth, T. R. et Finkelhor, D. (2023). <em>Disentangling Sibling Rivalry from Aggression and Abuse.</em> SAARA Bulletin, 1, University of New Hampshire.
+                  <a href="https://www.unh.edu/saara/sites/default/files/media/2025-11/SAARA_Bulletin1_Disentangling_sibling_rivalry_aggression_abuse.pdf" target="_blank" rel="noopener noreferrer">Bulletin SAARA ↗</a>
+                </p>
+                <small>Distingue rivalité, agression et abus entre frères et sœurs ; un acte grave peut suffire. Synthèse centrée surtout sur les enfants, sans validation d’une échelle de danger pour adultes ou mineurs.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-35" data-ref="35">
+              <div>
+                <span class="ref-label">Repères de prévention · Relations de travail</span>
+                <p>Institut national de recherche et de sécurité. (2022). <em>Harcèlement moral et violence interne : ce qu’il faut retenir.</em>
+                  <a href="https://www.inrs.fr/risques/harcelements-violences-internes/ce-qu-il-faut-retenir.html" target="_blank" rel="noopener noreferrer">Dossier INRS ↗</a>
+                </p>
+                <small>En France, distingue un désaccord professionnel du harcèlement moral caractérisé par des agissements répétés. D’autres violences au travail peuvent être graves dès un seul acte ; les droits et voies de recours varient selon le pays.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-36" data-ref="36">
+              <div>
+                <span class="ref-label">Rapport international · Violences entre élèves</span>
+                <p>UNESCO. (2019). <em>Behind the numbers: Ending school violence and bullying.</em>
+                  <a href="https://www.unesco.org/en/articles/behind-numbers-ending-school-violence-and-bullying" target="_blank" rel="noopener noreferrer">Rapport UNESCO ↗</a>
+                </p>
+                <small>Synthétise des enquêtes internationales sur la violence et le harcèlement en milieu scolaire. Ces données ne décrivent pas à elles seules les relations entre adultes ou entre frères et sœurs.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-37" data-ref="37">
+              <div>
+                <span class="ref-label">Repères de santé publique · Personnes âgées</span>
+                <p>Organisation mondiale de la Santé. (2024). <em>Abuse of older people.</em>
+                  <a href="https://www.who.int/news-room/fact-sheets/detail/abuse-of-older-people" target="_blank" rel="noopener noreferrer">Fiche OMS ↗</a>
+                </p>
+                <small>Présente les violences, abus financiers et négligences envers les personnes âgées dans une relation de confiance. L’extension aux autres adultes vulnérables est une adaptation ; ce texte ne valide aucun score de risque.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-38" data-ref="38">
+              <div>
+                <span class="ref-label">Service public français · Protection des mineurs</span>
+                <p>Service-Public.fr. (2024). <em>Enfant en danger : comment le signaler ?</em>
+                  <a href="https://www.service-public.fr/particuliers/vosdroits/F781" target="_blank" rel="noopener noreferrer">Aide et 119 ↗</a>
+                </p>
+                <small>Le 119 est destiné aux enfants et adolescents victimes, ainsi qu’aux personnes préoccupées par leur sécurité en France. Cette orientation ne remplace pas les secours en cas de danger immédiat.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-39" data-ref="39">
+              <div>
+                <span class="ref-label">Service public français · Adultes vulnérables</span>
+                <p>Ministère du Travail et des Solidarités. (2026). <em>Victime ou témoin de maltraitance envers un adulte vulnérable, j’appelle le 3133.</em>
+                  <a href="https://solidarites.gouv.fr/3133-maltraitances" target="_blank" rel="noopener noreferrer">Dispositif 3133 ↗</a>
+                </p>
+                <small>En France, le 3133 remplace le 3977 depuis mars 2026 pour les maltraitances envers les adultes vulnérables, notamment âgés, handicapés ou précaires. Ce service n’est pas un numéro de secours immédiat.</small>
+              </div>
+            </li>
+            <li class="reference" id="ref-40" data-ref="40">
+              <div>
+                <span class="ref-label">Service public français · Aide aux victimes</span>
+                <p>Service-Public.fr. (2025). <em>116 006 : numéro d’aide aux victimes.</em>
+                  <a href="https://lannuaire.service-public.gouv.fr/centres-contact/R167" target="_blank" rel="noopener noreferrer">Fiche du 116 006 ↗</a>
+                </p>
+                <small>Écoute et orientation des victimes d’infractions en France, y compris des adultes touchés par des violences familiales. Disponible chaque jour de 9 h à 20 h ; ne remplace pas les secours en urgence.</small>
+              </div>
+            </li>
           </ol>
         </div>
       </section>
@@ -3952,6 +4047,10 @@
           "Violentomètre",
           "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences dans une relation. Le Violentomètre français officiel porte sur les relations amoureuses ; les repères de cette page sont des créations pédagogiques distinctes, sans score de risque validé.",
         ],
+        workHarassment: [
+          "Harcèlement moral au travail",
+          "En France, des agissements hostiles répétés qui dégradent les conditions de travail et peuvent atteindre la dignité, la santé ou l'avenir professionnel. Un désaccord ne suffit pas à établir ce harcèlement ; une agression ou une menace unique peut cependant demander une aide immédiate.",
+        ],
         evidence: [
           "Données probantes",
           "Informations issues de recherches ou d’évaluations dont on examine la qualité, les limites et la pertinence pour la situation. Elles éclairent une décision avec l’expérience des personnes et le contexte ; elles ne garantissent pas un résultat individuel.",
@@ -3986,7 +4085,8 @@
         indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
         feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
         personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
-        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentomètre officiel concerne les relations amoureuses. Les cinq repères proposés ici pour différentes relations sont pédagogiques : ils ne calculent pas un niveau de danger.", 7],
+        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentomètre officiel concerne les relations amoureuses. Les repères de ce site pour différentes relations sont des créations distinctes : ils ne calculent pas un niveau de danger.", 7],
+        workHarassment: ["Des agissements hostiles répétés au travail.", "Un conflit ou une critique professionnelle ne suffit pas à conclure à un harcèlement moral. Je peux toutefois demander de l'aide dès qu'un fait me préoccupe, sans attendre qu'il se répète.", 35],
         evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
         sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
         balancingIndicator: ["Vérifier qu’un progrès ne crée pas un autre problème.", "Si l’équipe réduit le temps d’attente, elle vérifie aussi que les personnes ayant besoin de plus de temps reçoivent encore une aide adaptée.", 22],
@@ -4086,6 +4186,24 @@
           "Donner une idée brève, puis demander ce qu’elle en pense. Son contexte peut rendre votre expérience peu applicable.",
         ],
       };
+      // Les groupes organisent le choix sans afficher toutes les relations à l'accueil.
+      // Les clés servent aussi de liens directs : #violences-colleague, etc.
+      const violenceGroups = [
+        ["Vie personnelle", [
+          ["couple", "Couple ou ex-partenaire"],
+          ["sibling", "Frères et sœurs"],
+          ["peers", "Amis, camarades ou colocataires"],
+          ["family", "Parent ou adulte responsable / enfant"],
+          ["vulnerable", "Proche adulte aidé ou vulnérable"],
+        ]],
+        ["Travail et études", [
+          ["colleague", "Entre collègues"],
+          ["work", "Responsable / salarié"],
+          ["education", "Enseignant / élève ou étudiant"],
+        ]],
+        ["Soins", [["care", "Professionnel de santé / personne soignée"]]],
+        ["Autre situation", [["other", "Une autre relation"]]],
+      ];
       const violenceData = {
         couple: {
           note: "Tous les genres et toutes les orientations sont concernés. Des moments respectueux n’effacent pas les violences.",
@@ -4131,7 +4249,7 @@
         },
         work: {
           note: "Un responsable dispose de moyens de pression sur le salarié. Les droits et recours dépendent du pays.",
-          refs: "[8]",
+          refs: "[8, 35]",
           items: [
             [
               "Respect",
@@ -4295,6 +4413,186 @@
               "La protection immédiate passe avant toute explication ou exercice de résolution de problème.",
               "Rejoignez si possible un adulte sûr et demandez une aide urgente locale.",
             ],
+          ],
+        },
+        sibling: {
+          note: "Fratrie mineure ou adulte : une dispute n'autorise ni coups ni intimidation. Si un enfant est concerné, un adulte sûr reste responsable de sa protection. Une agression grave n'a pas besoin de se répéter pour être prise au sérieux.",
+          refs: "[34, 38, 40]",
+          items: [
+            [
+              "Respect",
+              "Nos affaires, nos limites et nos refus sont respectés.",
+              "Nous pouvons partager un espace ou des tâches sans que l'un impose sa volonté par la peur. Une différence d'âge ou de force demande une attention particulière.",
+              "Nous pouvons convenir de règles concrètes si chacun peut participer librement ; les adultes gardent leur rôle de protection auprès des mineurs.",
+            ],
+            [
+              "Désaccord sans peur",
+              "Nous nous disputons, mais pouvons nous arrêter et demander de l'aide.",
+              "Rivaliser pour une attention ou discuter d'une règle n'est pas en soi une violence. Ce qui compte aussi est la possibilité de refuser, de se retirer et d'être entendu.",
+              "Si nous sommes mineurs, un adulte sûr peut aider à poser des limites sans nous demander de régler seuls une situation dangereuse.",
+            ],
+            [
+              "Signal préoccupant",
+              "On me rabaisse souvent ou on abîme exprès mes affaires.",
+              "L'intimidation répétée, les humiliations et la destruction volontaire d'objets dépassent une simple rivalité. Je peux demander de l'aide sans établir moi-même une qualification.",
+              "J'en parle à une personne sûre, hors de l'entourage impliqué si nécessaire. Je ne suis pas obligé de minimiser parce que nous sommes de la même famille.",
+            ],
+            [
+              "Agression ou intimidation",
+              "On me frappe, me bloque ou me menace pour me faire céder.",
+              "Des coups ou menaces ne deviennent pas acceptables parce qu'ils ont lieu entre frères et sœurs. La peur et le déséquilibre de force comptent, même après un seul fait grave.",
+              "Je cherche une protection et un soutien adaptés ; si je suis mineur, je contacte un adulte sûr ou un service de protection de l'enfance.",
+            ],
+            [
+              "Violence sexuelle ou grave",
+              "On m'impose un contact sexuel, un secret ou un acte humiliant.",
+              "Un lien de fratrie ne donne aucun droit sur le corps de l'autre. Une exploitation sexuelle ou une agression grave exige une aide de protection, sans médiation imposée.",
+              "Je peux parler à un adulte ou à un professionnel sûr, et chercher une aide spécialisée sans confronter la personne qui a agi.",
+            ],
+            [
+              "Urgence possible",
+              "Je suis blessé, menacé avec une arme ou empêché de partir.",
+              "Une agression en cours, une blessure ou une menace grave demande une réponse immédiate. Le lien familial ne réduit pas le danger.",
+              "Je rejoins si possible un lieu sûr et je contacte les secours locaux ou une personne sûre à proximité.",
+            ],
+          ],
+        },
+        peers: {
+          note: "Amitié, camarades ou colocation : le groupe, l'âge et la dépendance au logement peuvent changer la liberté de dire non. La source UNESCO porte sur l'école ; son extension aux autres liens entre pairs est un choix pédagogique. Pour un mineur, un adulte sûr peut devoir protéger.",
+          refs: "[36]",
+          items: [
+            [
+              "Respect",
+              "Mes limites et mes informations privées sont respectées.",
+              "Je peux garder d'autres liens, refuser une invitation et demander une règle commune sans être puni ou exclu pour cela.",
+              "Nous pouvons définir ce qui est partagé et ce qui reste personnel.",
+            ],
+            [
+              "Désaccord ordinaire",
+              "Nous ne sommes pas d'accord sur une activité ou un espace commun.",
+              "Un désaccord ou une déception n'est pas en soi une violence si chacun peut s'exprimer, partir et refuser sans craindre de représailles.",
+              "Nous pouvons chercher une règle pratique seulement si chacun se sent libre de participer.",
+            ],
+            [
+              "Signal préoccupant",
+              "Des moqueries, rumeurs ou exclusions se répètent.",
+              "La répétition, l'effet de groupe et les messages en ligne peuvent rendre l'intimidation difficile à arrêter. Un acte isolé grave mérite aussi une aide.",
+              "J'en parle à une personne fiable ; si cela se passe à l'école, je cherche un adulte sûr ou une voie de signalement adaptée.",
+            ],
+            [
+              "Pression ou atteinte à la vie privée",
+              "On diffuse mes messages ou mes images, ou on me menace si je refuse.",
+              "Partager des informations intimes sans accord, exercer un chantage ou profiter d'une dépendance au groupe ou au logement peut causer un préjudice sérieux.",
+              "Je cherche une aide sûre et indépendante du groupe. Je ne dois pas négocier seul sous la menace.",
+            ],
+            [
+              "Violence",
+              "On m'agresse ou m'impose un contact sexuel.",
+              "Une agression physique ou sexuelle n'est pas une simple dispute entre amis ou camarades. Elle peut être grave dès le premier acte.",
+              "Je privilégie ma sécurité et une aide spécialisée ; pour un mineur, je cherche aussi un adulte protecteur.",
+            ],
+            [
+              "Urgence possible",
+              "Je suis menacé maintenant, blessé ou empêché de partir.",
+              "La priorité est de sortir du danger et d'obtenir une aide immédiate, quel que soit le lien avec les autres personnes.",
+              "Je rejoins si possible un lieu sûr et j'appelle les secours locaux ou demande une aide sûre à proximité.",
+            ],
+          ],
+        },
+        colleague: {
+          note: "Entre collègues, un désaccord professionnel n'est pas en soi un harcèlement. Des humiliations répétées, des représailles ou une agression justifient de chercher de l'aide. Si l'autre personne décide de votre emploi ou de votre formation, choisissez plutôt le guide lié à cette autorité.",
+          refs: "[8, 35]",
+          items: [
+            [
+              "Respect professionnel",
+              "Nos questions et désaccords portent sur le travail, sans humiliation.",
+              "Une répartition des tâches peut être discutée et chacun peut demander des critères clairs. Le respect n'exige pas d'être toujours d'accord.",
+              "Je peux clarifier les attentes et les moyens disponibles, si l'échange est sûr.",
+            ],
+            [
+              "Critique du travail",
+              "Un collègue critique une tâche ou une décision de façon précise.",
+              "Une critique professionnelle ou un conflit ponctuel ne suffit pas à conclure à un harcèlement moral au travail. La forme, la répétition et les effets comptent.",
+              "Je peux demander un exemple concret et une manière de corriger le travail, si cela ne m'expose pas.",
+            ],
+            [
+              "Signal préoccupant",
+              "Les moqueries, rumeurs ou mises à l'écart se répètent.",
+              "Des agissements hostiles répétés peuvent dégrader les conditions de travail. Je n'ai pas à prouver une qualification juridique avant de demander conseil.",
+              "Je cherche un interlocuteur fiable, par exemple un représentant du personnel ou le service de santé au travail selon mon pays.",
+            ],
+            [
+              "Intimidation ou représailles",
+              "On m'humilie, sabote mon travail ou me menace si je parle.",
+              "Un collègue peut exercer une pression sans être mon supérieur. Les faits, les témoins éventuels et les risques de représailles orientent la suite.",
+              "Je privilégie un canal sûr et indépendant de la personne concernée ; je note les faits uniquement si cela ne m'expose pas davantage.",
+            ],
+            [
+              "Violence ou coercition sexuelle",
+              "On m'agresse ou me fait subir des gestes sexuels non voulus.",
+              "Une agression ou un acte sexuel imposé est grave même s'il ne s'est produit qu'une fois et même entre personnes de même niveau.",
+              "Je cherche un soutien spécialisé et une protection au travail, sans confrontation imposée.",
+            ],
+            [
+              "Urgence possible",
+              "Je suis menacé physiquement, blessé ou retenu de force.",
+              "Une violence en cours nécessite une protection immédiate ; la procédure interne peut attendre que je sois en sécurité.",
+              "Je m'éloigne si possible et sollicite les secours locaux ou une aide sûre à proximité.",
+            ],
+          ],
+        },
+        vulnerable: {
+          note: "Ce guide vise une relation d'aide avec un adulte âgé, malade ou dépendant. Une difficulté de soin ou une erreur ne prouve pas à elle seule une maltraitance ; la sécurité et les besoins de la personne doivent être examinés. Le guide OMS cité porte surtout sur les personnes âgées.",
+          refs: "[37, 39]",
+          items: [
+            [
+              "Respect et autonomie",
+              "La personne aidée reçoit des explications et garde une voix dans les choix.",
+              "Son intimité, ses ressources et ses préférences sont respectées selon ses capacités et les décisions qui lui appartiennent.",
+              "Je demande ce qu'elle souhaite et ce dont elle a besoin, sans supposer qu'un proche peut décider à sa place.",
+            ],
+            [
+              "Difficulté à résoudre",
+              "Une aide prévue ne convient pas et la personne peut le signaler.",
+              "Un désaccord sur l'organisation de l'aide ne suffit pas à caractériser une maltraitance. Il faut écouter la personne et vérifier ce qui lui est effectivement accessible.",
+              "Je cherche une autre organisation ou un avis compétent avec elle, si elle peut participer librement.",
+            ],
+            [
+              "Signal préoccupant",
+              "Ses demandes sont écartées ou ses besoins sont négligés à répétition.",
+              "Une négligence peut être liée à des moyens insuffisants ou à des actes de maltraitance ; dans les deux cas, les besoins de la personne méritent une réponse.",
+              "Je cherche un interlocuteur sûr, extérieur à la personne mise en cause si nécessaire, et je vérifie les besoins essentiels.",
+            ],
+            [
+              "Emprise ou exploitation",
+              "On l'isole, l'intimide ou utilise son argent sans son accord.",
+              "Une relation de confiance peut être utilisée pour contrôler les contacts, les décisions ou les ressources d'une personne dépendante.",
+              "Je cherche un service ou professionnel compétent et j'évite une confrontation qui pourrait accroître la dépendance ou les représailles.",
+            ],
+            [
+              "Maltraitance grave",
+              "On la frappe, lui impose un geste sexuel ou la prive de besoins essentiels.",
+              "Une agression, une exploitation sexuelle ou une privation grave demande une protection, même après un seul événement.",
+              "Je contacte une aide spécialisée ou un service de protection adapté au pays ; les soins nécessaires ne doivent pas être retardés.",
+            ],
+            [
+              "Urgence possible",
+              "Elle est blessée, menacée ou sans accès à un soin vital.",
+              "Une violence en cours, une blessure grave ou l'absence de soin urgent nécessite une réponse immédiate.",
+              "Je sollicite les secours locaux ou un professionnel sûr et cherche à mettre la personne à l'abri si c'est possible.",
+            ],
+          ],
+        },
+        other: {
+          note: "Si la relation n'est pas dans la liste, ces exemples généraux peuvent aider à poser une question. Ils n'établissent pas la sécurité d'une situation et ne remplacent pas un appui adapté à votre contexte.",
+          refs: "[6, 8]",
+          items: [
+            ["Respect", "Je peux exprimer une limite sans craindre une punition.", "Mes choix, mon intimité et mes liens sont respectés. Cela ne garantit pas que toute la relation soit sans risque.", "Je peux préciser ce que je souhaite changer si chacun peut participer librement."],
+            ["Désaccord sans peur", "Nous ne sommes pas d'accord, mais pouvons nous arrêter.", "Un conflit n'est pas en soi une violence. La peur, la pression, les menaces et les conséquences d'un refus changent la situation.", "Je peux chercher une clarification seulement si elle est sûre et souhaitée."],
+            ["Signal préoccupant", "On me rabaisse ou ignore mes refus de manière répétée.", "Des humiliations, une mise à l'écart ou des pressions méritent d'être prises au sérieux, même si je ne sais pas les nommer.", "J'en parle à une personne sûre et cherche quel soutien existe dans ce contexte."],
+            ["Contrôle ou intimidation", "On surveille mes contacts ou me menace pour obtenir quelque chose.", "La peur ou la dépendance peut empêcher un accord libre. Je n'ai pas à régler cela seul par une discussion avec l'auteur.", "Je cherche un soutien indépendant et prépare une suite qui ne m'expose pas davantage."],
+            ["Violence", "On m'agresse ou m'impose un acte sexuel.", "Une seule agression peut être grave. Je n'ai pas besoin d'attendre d'autres faits pour demander une aide adaptée.", "Je donne priorité à ma sécurité et à un soutien spécialisé."],
+            ["Urgence possible", "Je suis blessé, enfermé ou menacé maintenant.", "La priorité est une protection immédiate, avant cet exercice ou toute tentative de médiation.", "Je rejoins si possible un lieu sûr et contacte les secours locaux ou une personne sûre à proximité."],
           ],
         },
       };
@@ -4565,11 +4863,55 @@
             },
             tool: ["Écouter chaque besoin sans juger", "Je demande ce que chacun vit, puis j'adapte l'essai aux possibilités réelles de la famille. Le guide OMS soutient l'écoute et les besoins pratiques, pas une méthode familiale validée ici.", "#ref-5"],
           },
+          sibling: {
+            label: "Entre frères et sœurs",
+            description: "Un désaccord entre membres de la fratrie qui peuvent parler sans peur.",
+            focus: "Quel point concret chacun peut-il discuter librement, compte tenu de son âge et de sa place dans la famille ?",
+            caution: "Si l'âge ou la dépendance crée une forte différence de pouvoir, je ne suppose pas que l'accord est libre. En cas de peur, de menace ou de violence, je cherche un adulte sûr ou une aide adaptée, sans imposer de face-à-face.",
+            prompts: ["Quel fait précis pose problème entre nous, sans supposer l'intention de l'autre ?", "Quel changement limité pourrait convenir à chacun, s'il est libre de refuser ?", "Nos âges, nos besoins ou nos contraintes rendent-ils une discussion difficile ?"],
+            examples: {
+              situation: "Ma sœur et moi vivons ensemble ; le rangement de la cuisine est resté à faire plusieurs soirs cette semaine.",
+              goal: "Essayer pendant une semaine une répartition des tâches qui tienne compte de nos horaires, si nous le souhaitons toutes les deux.",
+              obstacle: "Nous n'avons pas comparé nos horaires ni nommé les tâches que chacune peut prendre en charge.",
+              ideas: ["Lister les tâches et les moments où chacune est disponible.", "Demander à ma sœur si elle souhaite proposer une répartition.", "Essayer une répartition pendant une semaine, puis en reparler si cela convient aux deux."],
+              comparison: ["Un essai court laisse une place aux contraintes de chacune.", "Aucune répartition ne doit être imposée sous pression ou présentée comme déjà acceptée."],
+              action: "Demander à ma sœur si elle souhaite comparer nos horaires pendant dix minutes, sans insister si elle refuse.",
+              measure: "Chacune a pu nommer ses contraintes ; nous savons si un essai librement choisi est possible.",
+              result: "Nous avons choisi un essai pour une semaine ; une tâche reste à répartir.",
+              support: "Un tiers sûr, si chacune souhaite son aide ; un adulte protecteur si une personne est mineure et en difficulté.",
+              backup: "Si parler ensemble n'est pas sûr, je cherche un soutien extérieur plutôt que d'insister.",
+              control: "Exprimer ma demande et choisir un soutien sûr.",
+              outside: "L'accord de ma sœur et les décisions qui relèvent des adultes si une personne est mineure.",
+            },
+            tool: ["Âge, sécurité et accord libre", "Je vérifie si chacun peut réellement refuser. Quand une personne est mineure, la protection reste une responsabilité des adultes ; cet exercice ne sert pas à régler une violence entre frères et sœurs.", "#ref-34"],
+          },
           colleague: {
-            label: "Collègues ou formation",
-            description: "Une difficulté entre personnes au travail ou en apprentissage.",
-            focus: "Les personnes peuvent-elles parler librement malgré leurs rôles différents ?",
-            caution: "Une différence d'autorité ou la peur de représailles peut rendre une discussion directe inadaptée.",
+            label: "Entre collègues",
+            description: "Une difficulté avec un collègue qui ne décide pas de mon emploi ou de ma formation.",
+            focus: "Quel fait précis gêne notre travail commun, et que pouvons-nous clarifier librement ?",
+            caution: "Si l'autre personne m'évalue ou peut me sanctionner, le contexte « Encadrement ou formation » convient mieux. En cas de peur, d'humiliation ou de représailles, je cherche un appui sûr avant de proposer un échange.",
+            prompts: ["Quel fait vérifiable gêne notre coopération ?", "Quel changement de pratique puis-je proposer sans l'imposer ?", "Quelles contraintes de travail ou règles communes devons-nous vérifier ?"],
+            examples: {
+              situation: "Un collègue et moi transmettons les mêmes dossiers ; deux informations se sont contredites cette semaine.",
+              goal: "Clarifier ensemble qui transmet quelle information avant la prochaine relève, si nous pouvons en parler librement.",
+              obstacle: "Nos consignes ne sont pas au même endroit et nous n'avons pas comparé nos façons de faire.",
+              ideas: ["Comparer les deux consignes écrites.", "Demander à mon collègue quel moment convient pour vérifier le circuit de transmission.", "Proposer une courte règle commune à tester avec l'équipe."],
+              comparison: ["Comparer les consignes peut rendre le désaccord concret.", "La règle finale peut relever d'une décision d'équipe ou de la hiérarchie."],
+              action: "Demander à mon collègue s'il accepte de comparer les deux consignes pendant dix minutes.",
+              measure: "Nous avons identifié la consigne à vérifier et la personne qui peut trancher si besoin.",
+              result: "Une consigne contradictoire a été repérée ; nous avons demandé une clarification à l'équipe.",
+              support: "Une personne de l'équipe qui connaît le circuit des dossiers, si elle accepte d'aider.",
+              backup: "Si l'échange devient tendu, je demande un avis neutre sur la procédure plutôt que d'insister.",
+              control: "Décrire les deux consignes et proposer de les comparer.",
+              outside: "La décision finale sur la procédure et la disponibilité de l'autre personne.",
+            },
+            tool: ["Faits, coopération et organisation", "Je distingue un désaccord de travail d'un comportement hostile et je vérifie si la solution dépend aussi de l'organisation. Ce repère ne qualifie pas juridiquement une relation.", "#ref-35"],
+          },
+          mentoring: {
+            label: "Encadrement ou formation",
+            description: "Une aide ou un retour venant d'une personne qui peut m'évaluer ou m'encadrer.",
+            focus: "La personne accompagnée peut-elle choisir le soutien et exprimer un refus sans risque ?",
+            caution: "Une différence d'autorité ou la peur de représailles peut rendre une discussion directe inadaptée. Je peux chercher un autre référent ou un tiers sûr.",
             prompts: ["Qu'a dit ou fait chaque personne, sans supposer son intention ?", "Quelle écoute ou clarification voudrais-je proposer ?", "Quel rôle, pouvoir ou risque rend la discussion difficile ?"],
             examples: {
               situation: "Un médecin expérimenté compare souvent la difficulté d'un jeune collègue à ce qu'il a vécu autrefois.",
@@ -4586,6 +4928,28 @@
               outside: "L'avis du collègue et les décisions de la hiérarchie.",
             },
             tool: ["Écouter avant de conseiller", "Je demande quel retour serait utile, reformule la difficulté, puis vérifie si un conseil est souhaité. Les études de retours en formation clinique éclairent la confiance sans valider ce parcours ni effacer une asymétrie de pouvoir.", "#ref-18"],
+          },
+          peers: {
+            label: "Amis, camarades ou colocataires",
+            description: "Un désaccord avec une personne de mon entourage, hors couple ou autorité directe.",
+            focus: "Quel usage, besoin ou accord concret pouvons-nous clarifier sans pression ?",
+            caution: "Même entre pairs, la peur, l'exclusion ou la dépendance peuvent empêcher un refus libre. Si c'est le cas, je cherche un soutien sûr avant de proposer un échange.",
+            prompts: ["Que s'est-il passé concrètement entre nous, et à quel moment ?", "Quel petit accord ou quelle limite voudrais-je proposer sans l'imposer ?", "Quelles contraintes de chacun ou règles du lieu restent à vérifier ?"],
+            examples: {
+              situation: "Un ami et moi partageons un logement ; nous avons prévu deux activités différentes dans le salon vendredi soir.",
+              goal: "Trouver un usage du salon acceptable pour chacun ce vendredi, si nous souhaitons en parler.",
+              obstacle: "Nous n'avons pas précisé les horaires ni regardé les autres possibilités dans le logement.",
+              ideas: ["Demander à mon ami à quels moments il a besoin du salon.", "Proposer deux créneaux à comparer ensemble.", "Vérifier si l'une des activités peut se tenir ailleurs, sans l'imposer."],
+              comparison: ["Chacun peut expliquer ses contraintes et refuser une proposition.", "Un créneau séparé peut ne pas convenir à l'activité prévue."],
+              action: "Demander à mon ami s'il souhaite prendre dix minutes pour comparer nos horaires.",
+              measure: "Nous savons si un créneau accepté par chacun est possible, ou quel point reste en désaccord.",
+              result: "Nous avons choisi deux créneaux pour vendredi ; nous vérifierons ensuite si cela nous convient.",
+              support: "Les règles du logement ou un tiers choisi librement, si cela aide.",
+              backup: "Si la discussion ne convient pas ou ne semble pas sûre, je choisis un autre moment ou cherche un soutien.",
+              control: "Exprimer mon besoin et proposer des possibilités.",
+              outside: "Les choix et contraintes de l'autre personne.",
+            },
+            tool: ["Écouter puis proposer", "Je vérifie ce que l'autre personne souhaite avant de suggérer un accord. L'écoute aide à préciser les besoins, sans garantir une entente ni rendre une discussion obligatoire.", "#ref-5"],
           },
           neighbors: {
             label: "Voisins ou association",
@@ -5231,6 +5595,7 @@
       function fresh() {
         return {
           version: 2,
+          catalogRevision: 3,
           step: 0,
           clarifyPart: 0,
           context: "other",
@@ -5272,7 +5637,7 @@
         pendingConfirm = null,
         supportMode = "listen",
         selectedNeed = "listen",
-        meterIndex = 0;
+        meterIndex = null;
       function hasWriting() {
         return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
       }
@@ -5286,11 +5651,20 @@
       }
       const legacyContextMap = {
         personal: { daily: "daily", study: "study", work: "work", health: "health" },
-        shared: { couple: "couple", family: "family", work: "colleague" },
+        shared: { couple: "couple", family: "family", work: "other" },
         organization: { work: "coordination" },
         public: { collective: "mobility" },
       };
       const currentContext = () => contextCatalog[state.scale][state.context];
+      const violenceRouteForContext = () => {
+        const related = state.scale === "shared" ? {
+          couple: "couple",
+          sibling: "sibling",
+          peers: "peers",
+          colleague: "colleague",
+        }[state.context] : null;
+        return related ? `#violences-${related}` : "#violences";
+      };
       function selectScale(scale) {
         if (!Object.hasOwn(scales, scale)) return;
         const changed = state.scale !== scale;
@@ -5326,7 +5700,7 @@
         } else {
           if (!Object.hasOwn(contextCatalog[clean.scale], raw.context)) throw Error("invalid");
           clean.context = raw.context;
-          clean.reviewContext = raw.reviewContext === true;
+          clean.reviewContext = raw.reviewContext === true || (raw.catalogRevision !== 3 && clean.scale === "shared" && clean.context === "colleague");
         }
         clean.scaleChosen = raw.scaleChosen === true;
         clean.reviewScale = raw.reviewScale === true;
@@ -5499,7 +5873,7 @@
           const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
           const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
           const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
-          const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || (state.scale === "shared" && ["couple", "family", "colleague"].includes(state.context)) ? ' <a href="#violences">Repérer une violence →</a>' : "";
+          const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
           body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}<fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
             ["safe", "Oui, je peux réfléchir"],
             ["unsure", "J’ai un doute"],
@@ -5511,7 +5885,7 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="#violences">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="#violences">Explorer le violentomètre</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="#violences">Voir les repères de sécurité</a>.</p>`}`;
+            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="${violenceRouteForContext()}">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="${violenceRouteForContext()}">Voir les repères de violence</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="${violenceRouteForContext()}">Voir les repères de sécurité</a>.</p>`}`;
         }
         if (i === 1) {
           const prompts = [
@@ -5942,7 +6316,7 @@
           return;
         }
         $("#support-context-content").innerHTML =
-          `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young"].includes($("#support-context").value) ? '<a href="#violences" class="text-button">Explorer les repères de violence →</a>' : ""}</article>`;
+          `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young", "work"].includes($("#support-context").value) ? `<a href="${$("#support-context").value === "couple" ? "#violences-couple" : "#violences"}" class="text-button">Explorer les repères de violence →</a>` : ""}</article>`;
       }
       function renderNeedGuidance() {
         const [title, phrase, action] = needGuidance[selectedNeed];
@@ -5962,6 +6336,15 @@
       function renderMeter() {
         const key = $("#violence-context").value,
           d = violenceData[key];
+        $("#violence-empty").hidden = Boolean(d);
+        $("#violence-meter-layout").hidden = !d;
+        $("#violence-return").hidden = !state.scaleChosen;
+        if (!d) {
+          $("#violence-context-note").textContent = "";
+          $("#meter").replaceChildren();
+          $("#meter-detail").replaceChildren();
+          return;
+        }
         $("#violence-context-note").textContent = d.note;
         $("#meter").innerHTML = d.items
           .map(
@@ -5973,13 +6356,20 @@
       }
       function glossarize(text) {
         return esc(text)
+          .replace(/harcèlement moral au travail/g, term("workHarassment"))
           .replace(/contrôle coercitif/g, term("coercion"))
           .replace(/consentement/g, term("consent"))
           .replace(/asymétrie pédagogique/g, term("power"));
       }
       function renderMeterDetail() {
-        const d = violenceData[$("#violence-context").value],
-          v = d.items[meterIndex];
+        const d = violenceData[$("#violence-context").value];
+        if (!d) return;
+        if (meterIndex === null) {
+          $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je peux choisir un exemple dans la liste. Rien n’est déduit de ma relation avant ce choix.</p><p class="source-note">Ces exemples ne classent pas une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
+          $$('[data-meter]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+          return;
+        }
+        const v = d.items[meterIndex];
         $("#meter-detail").innerHTML =
           `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
         $$("[data-meter]").forEach((b) =>
@@ -5993,13 +6383,21 @@
         hideTooltip();
         const hash = location.hash.slice(1) || "accueil";
         const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
+        const violenceMatch = /^violences-([a-z]+)$/.exec(hash);
+        const violenceKey = violenceMatch && Object.hasOwn(violenceData, violenceMatch[1]) ? violenceMatch[1] : null;
         if (scaleMatch) {
           selectScale(scaleMatch[1]);
           persist();
         }
+        if (hash === "violences" || violenceKey) {
+          $("#violence-context").value = violenceKey || "";
+          meterIndex = null;
+          renderMeter();
+        }
         const page = hash.startsWith("ref-")
           ? "bibliographie"
           : scaleMatch ? "outil"
+          : violenceKey ? "violences"
           : [
                 "accueil",
                 "outil",
@@ -6014,6 +6412,7 @@
               ].includes(hash)
             ? hash
             : "accueil";
+        const keepViolenceChoiceFocus = page === "violences" && document.activeElement === $("#violence-context");
         $$(".view").forEach((el) => (el.hidden = el.id !== page));
         $$("nav a").forEach((a) => {
           if (
@@ -6033,7 +6432,7 @@
           soutenir: "Soutenir quelqu’un",
           groupe: "Aider un groupe",
           proche: "Comment aider un proche ?",
-          violences: "Violentomètre",
+          violences: "Repérer les violences",
           comprendre: "Comprendre",
           bibliographie: "Bibliographie",
           securite: "Sécurité & aide",
@@ -6047,7 +6446,7 @@
             ref.focus({ preventScroll: true });
             ref.scrollIntoView({ block: "start" });
           }
-        } else {
+        } else if (!keepViolenceChoiceFocus) {
           $("#main").focus({ preventScroll: true });
           window.scrollTo({ top: 0, behavior: "instant" });
         }
@@ -6335,8 +6734,13 @@
       });
       $("#support-context").addEventListener("change", renderSupport);
       $("#violence-context").addEventListener("change", () => {
-        meterIndex = 0;
-        renderMeter();
+        const key = $("#violence-context").value;
+        if (key && !Object.hasOwn(violenceData, key)) return;
+        const target = key ? `#violences-${key}` : "#violences";
+        if (location.hash === target) {
+          meterIndex = null;
+          renderMeter();
+        } else location.hash = target;
       });
       // Brief hint on hover/focus; a deliberate activation opens the detailed definition.
       let tooltipOwner = null,
@@ -6450,6 +6854,9 @@
       renderSupport();
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
+      $("#violence-context").innerHTML = '<option value="">Choisir une relation</option>' + violenceGroups
+        .map(([group, options]) => `<optgroup label="${esc(group)}">${options.map(([key, label]) => `<option value="${esc(key)}">${esc(label)}</option>`).join("")}</optgroup>`)
+        .join("");
       renderMeter();
       initGroup();
       route();

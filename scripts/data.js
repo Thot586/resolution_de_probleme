@@ -248,6 +248,10 @@
           "Violentomètre",
           "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences dans une relation. Le Violentomètre français officiel porte sur les relations amoureuses ; les repères de cette page sont des créations pédagogiques distinctes, sans score de risque validé.",
         ],
+        workHarassment: [
+          "Harcèlement moral au travail",
+          "En France, des agissements hostiles répétés qui dégradent les conditions de travail et peuvent atteindre la dignité, la santé ou l'avenir professionnel. Un désaccord ne suffit pas à établir ce harcèlement ; une agression ou une menace unique peut cependant demander une aide immédiate.",
+        ],
         evidence: [
           "Données probantes",
           "Informations issues de recherches ou d’évaluations dont on examine la qualité, les limites et la pertinence pour la situation. Elles éclairent une décision avec l’expérience des personnes et le contexte ; elles ne garantissent pas un résultat individuel.",
@@ -282,7 +286,8 @@
         indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
         feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
         personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
-        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentomètre officiel concerne les relations amoureuses. Les cinq repères proposés ici pour différentes relations sont pédagogiques : ils ne calculent pas un niveau de danger.", 7],
+        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentomètre officiel concerne les relations amoureuses. Les repères de ce site pour différentes relations sont des créations distinctes : ils ne calculent pas un niveau de danger.", 7],
+        workHarassment: ["Des agissements hostiles répétés au travail.", "Un conflit ou une critique professionnelle ne suffit pas à conclure à un harcèlement moral. Je peux toutefois demander de l'aide dès qu'un fait me préoccupe, sans attendre qu'il se répète.", 35],
         evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
         sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
         balancingIndicator: ["Vérifier qu’un progrès ne crée pas un autre problème.", "Si l’équipe réduit le temps d’attente, elle vérifie aussi que les personnes ayant besoin de plus de temps reçoivent encore une aide adaptée.", 22],
@@ -382,6 +387,24 @@
           "Donner une idée brève, puis demander ce qu’elle en pense. Son contexte peut rendre votre expérience peu applicable.",
         ],
       };
+      // Les groupes organisent le choix sans afficher toutes les relations à l'accueil.
+      // Les clés servent aussi de liens directs : #violences-colleague, etc.
+      const violenceGroups = [
+        ["Vie personnelle", [
+          ["couple", "Couple ou ex-partenaire"],
+          ["sibling", "Frères et sœurs"],
+          ["peers", "Amis, camarades ou colocataires"],
+          ["family", "Parent ou adulte responsable / enfant"],
+          ["vulnerable", "Proche adulte aidé ou vulnérable"],
+        ]],
+        ["Travail et études", [
+          ["colleague", "Entre collègues"],
+          ["work", "Responsable / salarié"],
+          ["education", "Enseignant / élève ou étudiant"],
+        ]],
+        ["Soins", [["care", "Professionnel de santé / personne soignée"]]],
+        ["Autre situation", [["other", "Une autre relation"]]],
+      ];
       const violenceData = {
         couple: {
           note: "Tous les genres et toutes les orientations sont concernés. Des moments respectueux n’effacent pas les violences.",
@@ -427,7 +450,7 @@
         },
         work: {
           note: "Un responsable dispose de moyens de pression sur le salarié. Les droits et recours dépendent du pays.",
-          refs: "[8]",
+          refs: "[8, 35]",
           items: [
             [
               "Respect",
@@ -591,6 +614,186 @@
               "La protection immédiate passe avant toute explication ou exercice de résolution de problème.",
               "Rejoignez si possible un adulte sûr et demandez une aide urgente locale.",
             ],
+          ],
+        },
+        sibling: {
+          note: "Fratrie mineure ou adulte : une dispute n'autorise ni coups ni intimidation. Si un enfant est concerné, un adulte sûr reste responsable de sa protection. Une agression grave n'a pas besoin de se répéter pour être prise au sérieux.",
+          refs: "[34, 38, 40]",
+          items: [
+            [
+              "Respect",
+              "Nos affaires, nos limites et nos refus sont respectés.",
+              "Nous pouvons partager un espace ou des tâches sans que l'un impose sa volonté par la peur. Une différence d'âge ou de force demande une attention particulière.",
+              "Nous pouvons convenir de règles concrètes si chacun peut participer librement ; les adultes gardent leur rôle de protection auprès des mineurs.",
+            ],
+            [
+              "Désaccord sans peur",
+              "Nous nous disputons, mais pouvons nous arrêter et demander de l'aide.",
+              "Rivaliser pour une attention ou discuter d'une règle n'est pas en soi une violence. Ce qui compte aussi est la possibilité de refuser, de se retirer et d'être entendu.",
+              "Si nous sommes mineurs, un adulte sûr peut aider à poser des limites sans nous demander de régler seuls une situation dangereuse.",
+            ],
+            [
+              "Signal préoccupant",
+              "On me rabaisse souvent ou on abîme exprès mes affaires.",
+              "L'intimidation répétée, les humiliations et la destruction volontaire d'objets dépassent une simple rivalité. Je peux demander de l'aide sans établir moi-même une qualification.",
+              "J'en parle à une personne sûre, hors de l'entourage impliqué si nécessaire. Je ne suis pas obligé de minimiser parce que nous sommes de la même famille.",
+            ],
+            [
+              "Agression ou intimidation",
+              "On me frappe, me bloque ou me menace pour me faire céder.",
+              "Des coups ou menaces ne deviennent pas acceptables parce qu'ils ont lieu entre frères et sœurs. La peur et le déséquilibre de force comptent, même après un seul fait grave.",
+              "Je cherche une protection et un soutien adaptés ; si je suis mineur, je contacte un adulte sûr ou un service de protection de l'enfance.",
+            ],
+            [
+              "Violence sexuelle ou grave",
+              "On m'impose un contact sexuel, un secret ou un acte humiliant.",
+              "Un lien de fratrie ne donne aucun droit sur le corps de l'autre. Une exploitation sexuelle ou une agression grave exige une aide de protection, sans médiation imposée.",
+              "Je peux parler à un adulte ou à un professionnel sûr, et chercher une aide spécialisée sans confronter la personne qui a agi.",
+            ],
+            [
+              "Urgence possible",
+              "Je suis blessé, menacé avec une arme ou empêché de partir.",
+              "Une agression en cours, une blessure ou une menace grave demande une réponse immédiate. Le lien familial ne réduit pas le danger.",
+              "Je rejoins si possible un lieu sûr et je contacte les secours locaux ou une personne sûre à proximité.",
+            ],
+          ],
+        },
+        peers: {
+          note: "Amitié, camarades ou colocation : le groupe, l'âge et la dépendance au logement peuvent changer la liberté de dire non. La source UNESCO porte sur l'école ; son extension aux autres liens entre pairs est un choix pédagogique. Pour un mineur, un adulte sûr peut devoir protéger.",
+          refs: "[36]",
+          items: [
+            [
+              "Respect",
+              "Mes limites et mes informations privées sont respectées.",
+              "Je peux garder d'autres liens, refuser une invitation et demander une règle commune sans être puni ou exclu pour cela.",
+              "Nous pouvons définir ce qui est partagé et ce qui reste personnel.",
+            ],
+            [
+              "Désaccord ordinaire",
+              "Nous ne sommes pas d'accord sur une activité ou un espace commun.",
+              "Un désaccord ou une déception n'est pas en soi une violence si chacun peut s'exprimer, partir et refuser sans craindre de représailles.",
+              "Nous pouvons chercher une règle pratique seulement si chacun se sent libre de participer.",
+            ],
+            [
+              "Signal préoccupant",
+              "Des moqueries, rumeurs ou exclusions se répètent.",
+              "La répétition, l'effet de groupe et les messages en ligne peuvent rendre l'intimidation difficile à arrêter. Un acte isolé grave mérite aussi une aide.",
+              "J'en parle à une personne fiable ; si cela se passe à l'école, je cherche un adulte sûr ou une voie de signalement adaptée.",
+            ],
+            [
+              "Pression ou atteinte à la vie privée",
+              "On diffuse mes messages ou mes images, ou on me menace si je refuse.",
+              "Partager des informations intimes sans accord, exercer un chantage ou profiter d'une dépendance au groupe ou au logement peut causer un préjudice sérieux.",
+              "Je cherche une aide sûre et indépendante du groupe. Je ne dois pas négocier seul sous la menace.",
+            ],
+            [
+              "Violence",
+              "On m'agresse ou m'impose un contact sexuel.",
+              "Une agression physique ou sexuelle n'est pas une simple dispute entre amis ou camarades. Elle peut être grave dès le premier acte.",
+              "Je privilégie ma sécurité et une aide spécialisée ; pour un mineur, je cherche aussi un adulte protecteur.",
+            ],
+            [
+              "Urgence possible",
+              "Je suis menacé maintenant, blessé ou empêché de partir.",
+              "La priorité est de sortir du danger et d'obtenir une aide immédiate, quel que soit le lien avec les autres personnes.",
+              "Je rejoins si possible un lieu sûr et j'appelle les secours locaux ou demande une aide sûre à proximité.",
+            ],
+          ],
+        },
+        colleague: {
+          note: "Entre collègues, un désaccord professionnel n'est pas en soi un harcèlement. Des humiliations répétées, des représailles ou une agression justifient de chercher de l'aide. Si l'autre personne décide de votre emploi ou de votre formation, choisissez plutôt le guide lié à cette autorité.",
+          refs: "[8, 35]",
+          items: [
+            [
+              "Respect professionnel",
+              "Nos questions et désaccords portent sur le travail, sans humiliation.",
+              "Une répartition des tâches peut être discutée et chacun peut demander des critères clairs. Le respect n'exige pas d'être toujours d'accord.",
+              "Je peux clarifier les attentes et les moyens disponibles, si l'échange est sûr.",
+            ],
+            [
+              "Critique du travail",
+              "Un collègue critique une tâche ou une décision de façon précise.",
+              "Une critique professionnelle ou un conflit ponctuel ne suffit pas à conclure à un harcèlement moral au travail. La forme, la répétition et les effets comptent.",
+              "Je peux demander un exemple concret et une manière de corriger le travail, si cela ne m'expose pas.",
+            ],
+            [
+              "Signal préoccupant",
+              "Les moqueries, rumeurs ou mises à l'écart se répètent.",
+              "Des agissements hostiles répétés peuvent dégrader les conditions de travail. Je n'ai pas à prouver une qualification juridique avant de demander conseil.",
+              "Je cherche un interlocuteur fiable, par exemple un représentant du personnel ou le service de santé au travail selon mon pays.",
+            ],
+            [
+              "Intimidation ou représailles",
+              "On m'humilie, sabote mon travail ou me menace si je parle.",
+              "Un collègue peut exercer une pression sans être mon supérieur. Les faits, les témoins éventuels et les risques de représailles orientent la suite.",
+              "Je privilégie un canal sûr et indépendant de la personne concernée ; je note les faits uniquement si cela ne m'expose pas davantage.",
+            ],
+            [
+              "Violence ou coercition sexuelle",
+              "On m'agresse ou me fait subir des gestes sexuels non voulus.",
+              "Une agression ou un acte sexuel imposé est grave même s'il ne s'est produit qu'une fois et même entre personnes de même niveau.",
+              "Je cherche un soutien spécialisé et une protection au travail, sans confrontation imposée.",
+            ],
+            [
+              "Urgence possible",
+              "Je suis menacé physiquement, blessé ou retenu de force.",
+              "Une violence en cours nécessite une protection immédiate ; la procédure interne peut attendre que je sois en sécurité.",
+              "Je m'éloigne si possible et sollicite les secours locaux ou une aide sûre à proximité.",
+            ],
+          ],
+        },
+        vulnerable: {
+          note: "Ce guide vise une relation d'aide avec un adulte âgé, malade ou dépendant. Une difficulté de soin ou une erreur ne prouve pas à elle seule une maltraitance ; la sécurité et les besoins de la personne doivent être examinés. Le guide OMS cité porte surtout sur les personnes âgées.",
+          refs: "[37, 39]",
+          items: [
+            [
+              "Respect et autonomie",
+              "La personne aidée reçoit des explications et garde une voix dans les choix.",
+              "Son intimité, ses ressources et ses préférences sont respectées selon ses capacités et les décisions qui lui appartiennent.",
+              "Je demande ce qu'elle souhaite et ce dont elle a besoin, sans supposer qu'un proche peut décider à sa place.",
+            ],
+            [
+              "Difficulté à résoudre",
+              "Une aide prévue ne convient pas et la personne peut le signaler.",
+              "Un désaccord sur l'organisation de l'aide ne suffit pas à caractériser une maltraitance. Il faut écouter la personne et vérifier ce qui lui est effectivement accessible.",
+              "Je cherche une autre organisation ou un avis compétent avec elle, si elle peut participer librement.",
+            ],
+            [
+              "Signal préoccupant",
+              "Ses demandes sont écartées ou ses besoins sont négligés à répétition.",
+              "Une négligence peut être liée à des moyens insuffisants ou à des actes de maltraitance ; dans les deux cas, les besoins de la personne méritent une réponse.",
+              "Je cherche un interlocuteur sûr, extérieur à la personne mise en cause si nécessaire, et je vérifie les besoins essentiels.",
+            ],
+            [
+              "Emprise ou exploitation",
+              "On l'isole, l'intimide ou utilise son argent sans son accord.",
+              "Une relation de confiance peut être utilisée pour contrôler les contacts, les décisions ou les ressources d'une personne dépendante.",
+              "Je cherche un service ou professionnel compétent et j'évite une confrontation qui pourrait accroître la dépendance ou les représailles.",
+            ],
+            [
+              "Maltraitance grave",
+              "On la frappe, lui impose un geste sexuel ou la prive de besoins essentiels.",
+              "Une agression, une exploitation sexuelle ou une privation grave demande une protection, même après un seul événement.",
+              "Je contacte une aide spécialisée ou un service de protection adapté au pays ; les soins nécessaires ne doivent pas être retardés.",
+            ],
+            [
+              "Urgence possible",
+              "Elle est blessée, menacée ou sans accès à un soin vital.",
+              "Une violence en cours, une blessure grave ou l'absence de soin urgent nécessite une réponse immédiate.",
+              "Je sollicite les secours locaux ou un professionnel sûr et cherche à mettre la personne à l'abri si c'est possible.",
+            ],
+          ],
+        },
+        other: {
+          note: "Si la relation n'est pas dans la liste, ces exemples généraux peuvent aider à poser une question. Ils n'établissent pas la sécurité d'une situation et ne remplacent pas un appui adapté à votre contexte.",
+          refs: "[6, 8]",
+          items: [
+            ["Respect", "Je peux exprimer une limite sans craindre une punition.", "Mes choix, mon intimité et mes liens sont respectés. Cela ne garantit pas que toute la relation soit sans risque.", "Je peux préciser ce que je souhaite changer si chacun peut participer librement."],
+            ["Désaccord sans peur", "Nous ne sommes pas d'accord, mais pouvons nous arrêter.", "Un conflit n'est pas en soi une violence. La peur, la pression, les menaces et les conséquences d'un refus changent la situation.", "Je peux chercher une clarification seulement si elle est sûre et souhaitée."],
+            ["Signal préoccupant", "On me rabaisse ou ignore mes refus de manière répétée.", "Des humiliations, une mise à l'écart ou des pressions méritent d'être prises au sérieux, même si je ne sais pas les nommer.", "J'en parle à une personne sûre et cherche quel soutien existe dans ce contexte."],
+            ["Contrôle ou intimidation", "On surveille mes contacts ou me menace pour obtenir quelque chose.", "La peur ou la dépendance peut empêcher un accord libre. Je n'ai pas à régler cela seul par une discussion avec l'auteur.", "Je cherche un soutien indépendant et prépare une suite qui ne m'expose pas davantage."],
+            ["Violence", "On m'agresse ou m'impose un acte sexuel.", "Une seule agression peut être grave. Je n'ai pas besoin d'attendre d'autres faits pour demander une aide adaptée.", "Je donne priorité à ma sécurité et à un soutien spécialisé."],
+            ["Urgence possible", "Je suis blessé, enfermé ou menacé maintenant.", "La priorité est une protection immédiate, avant cet exercice ou toute tentative de médiation.", "Je rejoins si possible un lieu sûr et contacte les secours locaux ou une personne sûre à proximité."],
           ],
         },
       };
