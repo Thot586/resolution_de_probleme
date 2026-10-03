@@ -1776,8 +1776,15 @@
       .method-overview h3 { margin: 0 0 5px; font-size: 1.08rem; }
       .method-instruction { margin: 0 0 14px; color: var(--muted); font-size: .85rem; line-height: 1.45; }
       .method-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: method-step; }
+      .method-steps:has(> li > details[open]) { grid-template-columns: minmax(0, 1fr); }
       .method-steps li { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 13px; background: #fff; counter-increment: method-step; overflow: hidden; }
       .method-steps li:hover, .method-steps li:focus-within { border-color: #8db6a0; }
+      .method-steps > li:has(> details[open]) { grid-column: 1 / -1; }
+      .method-steps:has(> li > details[open]) > li:not(:has(> details[open])) summary { min-height: 0; padding-block: 10px; }
+      @media (min-width: 601px) {
+        .method-steps:has(> li > details[open]) > li:not(:has(> details[open])) summary { grid-template-columns: minmax(150px, .65fr) minmax(0, 1.35fr) auto; align-items: center; gap: 16px; min-height: 64px; }
+        .method-steps:has(> li > details[open]) > li:not(:has(> details[open])) .method-more { margin-top: 0; white-space: nowrap; }
+      }
       .method-steps li::before { content: counter(method-step); position: absolute; z-index: 1; top: 14px; left: 14px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: var(--brand); color: #fff; font-size: .8rem; font-weight: 750; pointer-events: none; }
       .method-steps details { border: 0; border-radius: inherit; background: transparent; }
       .method-steps summary { display: grid; align-content: start; gap: 4px; min-height: 110px; padding: 15px 30px 15px 48px; list-style: none; cursor: pointer; }
@@ -1785,13 +1792,17 @@
       .method-steps summary:focus-visible { outline: 3px solid var(--brand); outline-offset: -3px; border-radius: 12px; }
       .method-steps summary::after { content: "⌄"; position: absolute; top: 13px; right: 14px; color: var(--brand); font-size: 1.15rem; line-height: 1; transition: transform .18s ease; }
       .method-steps details[open] summary::after { transform: rotate(180deg); }
-      .method-steps details[open] > summary { border-bottom: 0; }
+      .method-steps details[open] > summary { border-bottom: 0; min-height: 0; }
       .method-steps strong { font-size: .9rem; line-height: 1.35; }
       .method-steps span { color: var(--muted); font-size: .82rem; line-height: 1.45; }
       .method-steps .method-more { margin-top: 4px; color: var(--brand); font-weight: 650; }
       .method-steps details[open] .method-more { display: none; }
       .method-detail { padding: 12px 16px 15px; border-top: 1px solid var(--line); font-size: .85rem; line-height: 1.55; }
       .method-detail p + p { margin-top: 9px; }
+      .method-examples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+      .method-example { min-width: 0; padding: 13px 15px; border: 1px solid #d9e4da; border-radius: 11px; background: #f8fbf8; }
+      .method-example b { display: block; margin-bottom: 4px; color: var(--brand); font-size: .83rem; }
+      .method-example p { margin: 0; }
       .method-source { margin: 12px 1px 0; color: var(--muted); font-size: .78rem; }
       .scale-intro { margin-top: 20px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
       .scale-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
@@ -1896,6 +1907,7 @@
         .method-steps { grid-template-columns: 1fr; gap: 8px; }
         .method-steps summary { min-height: 0; padding: 12px 30px 12px 47px; }
         .method-steps li::before { top: 12px; left: 12px; }
+        .method-examples { grid-template-columns: 1fr; }
         .scale-grid, .scale-options, .help-grid { grid-template-columns: 1fr; }
         .scale-card { min-height: 0; padding: 14px 36px 14px 17px; gap: 3px; }
         .scale-card strong { font-size: 1rem; }
@@ -2002,14 +2014,68 @@
           </div>
           <div class="method-overview" aria-labelledby="method-overview-title">
             <h3 id="method-overview-title">Les six étapes</h3>
-            <p class="method-instruction">J’ouvre une étape pour voir ce que je peux y faire, avec un exemple.</p>
+            <p class="method-instruction">J’ouvre une étape pour voir quatre exemples fictifs. Je retrouve les mêmes situations à chaque étape.</p>
             <ol class="method-steps">
-              <li><details><summary><strong>Définir le problème</strong><span>Quels sont les faits, mon objectif et l’obstacle ?</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je décris une situation précise sans supposer les intentions des autres.</p><p><b>Exemple :</b> « Deux factures à payer sont mélangées à mes courriers. Je veux les retrouver avant vendredi. »</p></div></details></li>
-              <li><details><summary><strong>Imaginer des solutions</strong><span>Quelles actions pourraient aider ? J’en note plusieurs.</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je note plusieurs pistes avant de décider, y compris demander une information ou de l’aide.</p><p><b>Exemple :</b> trier les courriers dix minutes, demander une copie des factures ou me faire aider pour le tri.</p></div></details></li>
-              <li><details><summary><strong>Comparer les solutions</strong><span>Quels sont les avantages, les limites et les risques de chacune ?</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je regarde ce que chaque piste demande et ce qu’elle peut changer. La sécurité compte avant la facilité.</p><p><b>Exemple :</b> le tri est gratuit mais peut prendre du temps ; demander une copie peut être plus rapide si je connais l’organisme.</p></div></details></li>
-              <li><details><summary><strong>Choisir et préparer</strong><span>Quelle solution est faisable ? Quel sera mon premier pas ?</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je choisis une piste adaptée à mes moyens et je précise quand et comment commencer.</p><p><b>Exemple :</b> mardi à 18 h, je trie les courriers récents pendant dix minutes ; si la facture manque, j’appelle l’organisme.</p></div></details></li>
-              <li><details><summary><strong>Essayer dans la réalité</strong><span>Je mets ce premier pas en pratique dans la situation concernée.</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>J’essaie l’action prévue hors du site, seul ou avec l’appui choisi. Je peux m’arrêter si la situation change.</p><p><b>Exemple :</b> je trie les courriers mardi pendant dix minutes, puis je note quelles factures j’ai retrouvées.</p></div></details></li>
-              <li><details><summary><strong>Évaluer et ajuster</strong><span>Qu’est-ce qui a changé ? Je poursuis, j’adapte ou j’essaie une autre solution.</span><span class="method-more" aria-hidden="true">Voir un exemple</span></summary><div class="method-detail"><p>Je compare le résultat à mon objectif, sans me juger. Si besoin, je change de piste.</p><p><b>Exemple :</b> j’ai retrouvé une facture sur deux ; je demande une copie de la seconde.</p></div></details></li>
+              <li><details><summary><strong>Définir le problème</strong><span>Quels sont les faits, mon objectif et l’obstacle ?</span><span class="method-more" aria-hidden="true">Voir des exemples</span></summary>
+                <div class="method-detail"><p>Je distingue ce qui se passe, ce que je voudrais changer et ce qui bloque. Si un fait manque, je note ce qu’il faut vérifier.</p>
+                  <div class="method-examples">
+                    <div class="method-example" data-level="personal"><b>Personnel</b><p>Un courrier me demande plusieurs documents sous quinze jours. Je veux envoyer un dossier complet, mais la liste des pièces n’est pas claire.</p></div>
+                    <div class="method-example" data-level="shared"><b>Entre personnes</b><p>Ma sœur et moi aidons notre père. Depuis un mois, j’organise seul ses rendez-vous. Je voudrais partager cette tâche, tout en respectant ses choix.</p></div>
+                    <div class="method-example" data-level="organization"><b>Équipe ou institution</b><p>Deux services donnent des consignes différentes pour traiter les mêmes demandes. L’équipe reprend des dossiers et a besoin d’une règle commune validée.</p></div>
+                    <div class="method-example" data-level="public"><b>Collectif ou politique</b><p>Depuis la suppression d’un bus, des habitants disent avoir du mal à rejoindre la maison de santé. Ils veulent un trajet praticable ; la décision dépend du réseau de transport.</p></div>
+                  </div>
+                </div>
+              </details></li>
+              <li><details><summary><strong>Imaginer des solutions</strong><span>Quelles actions pourraient aider ? J’en note plusieurs.</span><span class="method-more" aria-hidden="true">Voir des exemples</span></summary>
+                <div class="method-detail"><p>Je note plusieurs pistes sans choisir tout de suite. Une piste peut être de demander une information, un accord ou une aide.</p>
+                  <div class="method-examples">
+                    <div class="method-example" data-level="personal"><b>Personnel</b><p>Je peux consulter la notice officielle, appeler le service concerné ou demander un rendez-vous dans un point d’accueil.</p></div>
+                    <div class="method-example" data-level="shared"><b>Entre personnes</b><p>Je peux demander à notre père ce qu’il souhaite gérer, proposer à ma sœur de partager les appels ou chercher avec eux une aide extérieure.</p></div>
+                    <div class="method-example" data-level="organization"><b>Équipe ou institution</b><p>L’équipe peut réunir les deux consignes, demander qui doit trancher ou proposer le test limité d’une fiche commune validée.</p></div>
+                    <div class="method-example" data-level="public"><b>Collectif ou politique</b><p>Avec les habitants, nous pouvons envisager un autre horaire, une correspondance adaptée ou un bus de remplacement.</p></div>
+                  </div>
+                </div>
+              </details></li>
+              <li><details><summary><strong>Comparer les solutions</strong><span>Quels sont les avantages, les limites et les risques de chacune ?</span><span class="method-more" aria-hidden="true">Voir des exemples</span></summary>
+                <div class="method-detail"><p>Je compare ce que chaque piste peut apporter, ce qu’elle demande et ses effets pour les autres. Si une option expose quelqu’un à un risque, je cherche d’abord une aide sûre.</p>
+                  <div class="method-examples">
+                    <div class="method-example" data-level="personal"><b>Personnel</b><p>La notice est disponible tout de suite mais reste ambiguë. Un appel peut clarifier les pièces à fournir ; un rendez-vous peut prendre plus de temps.</p></div>
+                    <div class="method-example" data-level="shared"><b>Entre personnes</b><p>Un calendrier partagé peut aider, mais seulement si notre père et ma sœur le souhaitent. Une aide extérieure dépend de sa disponibilité et de son coût.</p></div>
+                    <div class="method-example" data-level="organization"><b>Équipe ou institution</b><p>Une fiche sans validation risque de créer une troisième consigne. Une décision commune prend du temps, mais évite de déplacer le problème vers un autre service.</p></div>
+                    <div class="method-example" data-level="public"><b>Collectif ou politique</b><p>Changer l’horaire du bus peut aider certains habitants et gêner d’autres usagers. Nous comparons l’accès, le coût et les personnes laissées de côté.</p></div>
+                  </div>
+                </div>
+              </details></li>
+              <li><details><summary><strong>Choisir et préparer</strong><span>Quelle solution est faisable ? Quel sera mon premier pas ?</span><span class="method-more" aria-hidden="true">Voir des exemples</span></summary>
+                <div class="method-detail"><p>Je précise qui fait quoi et quand. Je prévois une autre voie si le premier pas ne marche pas.</p>
+                  <div class="method-examples">
+                    <div class="method-example" data-level="personal"><b>Personnel</b><p>Demain matin, j’appelle le service avec le courrier sous les yeux. Si je n’obtiens pas de réponse, je prends rendez-vous au point d’accueil.</p></div>
+                    <div class="method-example" data-level="shared"><b>Entre personnes</b><p>Avec l’accord de notre père, je propose un échange à ma sœur ce week-end. Nous demandons à chacun ce qu’il souhaite et peut prendre en charge.</p></div>
+                    <div class="method-example" data-level="organization"><b>Équipe ou institution</b><p>Un responsable accepte de réunir les deux services. Nous apportons deux dossiers sans nom et faisons valider la règle avant de la diffuser.</p></div>
+                    <div class="method-example" data-level="public"><b>Collectif ou politique</b><p>Après une réunion ouverte, les habitants choisissent une demande prioritaire, désignent des porte-paroles volontaires et fixent une date pour demander une réponse.</p></div>
+                  </div>
+                </div>
+              </details></li>
+              <li><details><summary><strong>Essayer dans la réalité</strong><span>Je mets ce premier pas en pratique dans la situation concernée.</span><span class="method-more" aria-hidden="true">Voir des exemples</span></summary>
+                <div class="method-detail"><p>J’essaie le premier pas dans la situation réelle. Je remarque aussi ce qui se passe autrement que prévu.</p>
+                  <div class="method-examples">
+                    <div class="method-example" data-level="personal"><b>Personnel</b><p>J’appelle le service, note les pièces demandées et la date limite. Si la réponse change selon l’interlocuteur, je demande une confirmation écrite.</p></div>
+                    <div class="method-example" data-level="shared"><b>Entre personnes</b><p>Je parle avec notre père et ma sœur. Ensemble, nous répartissons le prochain rendez-vous sans imposer de tâche à l’un d’eux.</p></div>
+                    <div class="method-example" data-level="organization"><b>Équipe ou institution</b><p>Pendant deux semaines, l’équipe applique la règle validée à un type de dossier et note les retards ou les nouveaux blocages.</p></div>
+                    <div class="method-example" data-level="public"><b>Collectif ou politique</b><p>Les porte-paroles présentent la demande au réseau de transport, avec des trajets décrits par les habitants, puis notent la réponse et son délai.</p></div>
+                  </div>
+                </div>
+              </details></li>
+              <li><details><summary><strong>Évaluer et ajuster</strong><span>Qu’est-ce qui a changé ? Je poursuis, j’adapte ou j’essaie une autre solution.</span><span class="method-more" aria-hidden="true">Voir des exemples</span></summary>
+                <div class="method-detail"><p>Je regarde ce qui a changé et pour qui. Je peux continuer, ajuster ou revenir à une autre piste ; un essai sans résultat n’est pas un échec personnel.</p>
+                  <div class="method-examples">
+                    <div class="method-example" data-level="personal"><b>Personnel</b><p>J’ai la liste des pièces, mais il m’en manque une. Je demande si un autre document est accepté ou si un délai est possible.</p></div>
+                    <div class="method-example" data-level="shared"><b>Entre personnes</b><p>Ma sœur prend un rendez-vous, mais notre père dit se sentir écarté. Nous revoyons avec lui ce qu’il veut organiser lui-même.</p></div>
+                    <div class="method-example" data-level="organization"><b>Équipe ou institution</b><p>Il y a moins de dossiers repris, mais l’attente augmente dans l’autre service. Les deux équipes ajustent la règle ensemble.</p></div>
+                    <div class="method-example" data-level="public"><b>Collectif ou politique</b><p>Le réseau propose un essai de nouvel horaire. Les habitants vérifient s’il permet vraiment d’aller aux rendez-vous ; sinon, ils rediscutent la demande.</p></div>
+                  </div>
+                </div>
+              </details></li>
             </ol>
             <p class="method-source">Ces étapes s’inspirent d’un module du programme clinique <button type="button" class="glossary-button" data-term="ipt" aria-haspopup="dialog" aria-controls="term-dialog">IPT</button>. <a href="#ref-1">Voir la source</a>.</p>
           </div>
