@@ -21,7 +21,7 @@
         return `<details class="decision-guide section-gap" id="action-decision-diagram">
           <summary>Avant d’agir : voir les choix en logigramme</summary>
           <div class="details-body">
-            <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits sous le dessin.</p>
+            <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits dans « Lire en texte ».</p>
             <figure class="teaching-figure decision-figure scrollable-diagram" tabindex="0">
               <svg viewBox="0 0 360 565" role="img" aria-labelledby="first-step-flow-title first-step-flow-desc" xmlns="http://www.w3.org/2000/svg">
                 <title id="first-step-flow-title">Vérifier la sécurité et l’accord avant mon premier pas</title>
@@ -59,12 +59,18 @@
                 </g>
               </svg>
               <figcaption>${decision.inText} Ce dessin aide à préparer une décision ; il ne détermine pas si une situation est sans danger.</figcaption>
+              <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
             </figure>
+            <details class="diagram-text-fold">
+              <summary>Lire en texte</summary>
+              <div class="details-body">
             <ol class="diagram-reading diagram-text">
               <li><strong>Si je ne suis pas sûr ou si j’ai un doute :</strong> je fais une pause et cherche une aide adaptée. <a href="#securite">Voir les repères de sécurité</a>.</li>
               <li><strong>Si le pas est sûr :</strong> je vérifie qui doit décider ou donner son accord. ${decision.inText}</li>
               <li><strong>Si l’accord manque :</strong> je le demande sans forcer. En cas de refus, je change de piste ou cherche un autre soutien. S’il est présent ou non requis, je peux essayer un petit pas, observer un signe de progrès et faire le point.</li>
             </ol>
+              </div>
+            </details>
             <p class="source-note">Repère pédagogique, pas un test de sécurité ou une règle valable dans toute situation. <a href="#ref-4">[4]</a> <a href="#ref-22">[22]</a> <a href="#ref-33">[33]</a></p>
           </div>
         </details>`;

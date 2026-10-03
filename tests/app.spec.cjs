@@ -98,13 +98,25 @@ const errors = [];
       JSON.stringify(axeIssues, null, 2),
     );
   };
+  const savedFigureIsPng = async (targetPage, button, label) => {
+    assert.equal(await button.count(), 1, `${label}: one save button`);
+    const [download] = await Promise.all([targetPage.waitForEvent("download"), button.click()]);
+    assert.match(download.suggestedFilename(), /^[a-z0-9-]+.png$/, `${label}: file name`);
+    const file = path.join(output, "saved-" + download.suggestedFilename());
+    await download.saveAs(file);
+    const bytes = await fs.readFile(file);
+    assert.equal(bytes.subarray(1, 4).toString(), "PNG", `${label}: PNG signature`);
+    const size = { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+    assert(size.width >= 700 && size.height > size.width, `${label}: readable size ${size.width}x${size.height}`);
+    return size;
+  };
   const openFlowDiagram = async (targetPage, selector, svgBranches, textBranches) => {
     const details = targetPage.locator(selector);
     assert.equal(await details.count(), 1, `${selector}: one diagram`);
     assert.equal(await details.evaluate((node) => node.open), false, `${selector}: closed by default`);
     const svg = details.locator("figure svg[role=img]");
     assert.equal(await svg.isVisible(), false, `${selector}: hidden until requested`);
-    await details.locator("summary").click();
+    await details.locator(":scope > summary").click();
     assert(await svg.isVisible(), `${selector}: SVG visible after opening`);
     const labelledBy = (await svg.getAttribute("aria-labelledby") || "").split(/\s+/).filter(Boolean);
     assert.equal(labelledBy.length, 2, `${selector}: title and description linked to SVG`);
@@ -113,8 +125,14 @@ const errors = [];
     assert((await svg.locator("title").textContent()).trim().length > 15, `${selector}: meaningful title`);
     assert((await svg.locator("desc").textContent()).trim().length > 30, `${selector}: meaningful description`);
     assert((await details.locator("figure figcaption").innerText()).trim().length > 25, `${selector}: meaningful caption`);
+    const fold = details.locator(".diagram-text-fold");
+    assert.equal(await fold.count(), 1, `${selector}: one folded text version`);
+    assert.equal(await fold.evaluate((node) => node.open), false, `${selector}: text version folded by default`);
+    assert.match(await fold.locator("summary").innerText(), /Lire en texte/);
+    await fold.locator("summary").click();
     const equivalent = details.locator(".diagram-text");
-    assert(await equivalent.isVisible(), `${selector}: visible textual equivalent`);
+    assert(await equivalent.isVisible(), `${selector}: visible textual equivalent once opened`);
+    await savedFigureIsPng(targetPage, details.locator("[data-save-figure]"), `${selector}: saved image`);
     const graphic = await svg.textContent();
     const prose = await equivalent.innerText();
     for (const branch of svgBranches)
@@ -148,7 +166,7 @@ const errors = [];
   const homeStepNames = ["Commencer", "Clarifier", "Imaginer", "Choisir", "Agir", "Faire le point"];
   const brief = page.locator("#accueil .welcome-explain");
   assert.equal(await brief.evaluate((node) => node.open), false, "The six-step summary is closed by default");
-  assert.equal(await brief.locator(".method-list li").count(), 6);
+  assert.equal(await page.locator("#accueil .method-list").count(), 0, "The six steps are drawn once, not repeated as a list");
   assert.equal(await page.locator("#accueil .method-example").count(), 0, "No per-step examples on the home page");
   assert.equal(await page.locator('#accueil a[href="#comprendre"]').count(), 0, "The method sources are not promoted on the home page");
   assert.equal(await page.locator("#accueil .scale-entry h2").innerText(), "Pour commencer");
@@ -161,7 +179,11 @@ const errors = [];
   assert(await page.locator("#accueil .scale-card").last().evaluate((node) => node.getBoundingClientRect().bottom <= innerHeight), "All four level cards are visible without scrolling");
   await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
   await brief.locator("summary").click();
-  assert.deepEqual(await brief.locator(".method-list strong").allInnerTexts(), homeStepNames);
+  const figureText = await brief.locator("svg").textContent();
+  assert.match(figureText.replace(/\s+/g, " "), new RegExp(homeStepNames.join(".*")));
+  assert.match(figureText, /Je peux revenir en arrière/);
+  assert.match(figureText.replace(/\s+/g, " "), /Quels sont les faits.*voudrais changer/);
+  await savedFigureIsPng(page, brief.locator("[data-save-figure]"), "six steps image");
   await brief.screenshot({ path: path.join(output, "desktop-method-expanded.png") });
   assert.equal(new URL(page.url()).hash, "");
   await axe("open-method-step");
@@ -209,6 +231,8 @@ const errors = [];
     await visible("#outil");
     assert.equal(new URL(page.url()).hash, `#outil-${scale}`);
     assert((await page.locator("#selected-level").innerText()).includes(await page.locator(`#accueil [data-start-scale="${scale}"] strong`).innerText()));
+    assert.equal(await page.locator("#change-level summary").innerText().then((t) => /Changer de niveau/.test(t)), false, "The level pill carries no extra text");
+    assert.equal(await page.locator("#change-level").evaluate((node) => node.tagName + node.querySelector("summary").id), "DETAILSselected-level", "The chosen level is the clickable control");
     assert(!(await page.locator("#change-level [data-scale]").first().isVisible()));
     await step(1);
     assert.match(await page.locator("#step-title").innerText(), expected);
@@ -584,6 +608,22 @@ const errors = [];
   assert.match(await page.locator("#question-title").innerText(), /Ce qui se passe/);
   assert.equal(await page.locator(".question-segments .is-current").count(), 1);
   assert.equal(await page.locator(".question-segments .is-past").count(), 0);
+  // One main thing per screen: the question and its answer share one highlighted panel; options and tools come after it.
+  const hierarchy = await page.evaluate(() => {
+    const panel = document.querySelector(".question-panel");
+    const title = document.querySelector("#question-title");
+    const stepTitle = document.querySelector("#step-title");
+    const textarea = document.querySelector("#field-situation");
+    const optional = document.querySelector(".context-check");
+    return {
+      inPanel: panel.contains(title) && panel.contains(textarea),
+      optionalAfterPanel: !panel.contains(optional) && Boolean(panel.compareDocumentPosition(optional) & Node.DOCUMENT_POSITION_FOLLOWING),
+      questionBeforeAnswer: Boolean(title.compareDocumentPosition(textarea) & Node.DOCUMENT_POSITION_FOLLOWING),
+      questionLargerThanStepTitle: parseFloat(getComputedStyle(title).fontSize) > parseFloat(getComputedStyle(stepTitle).fontSize) * 1.5,
+      answerVisibleInFirstScreen: textarea.getBoundingClientRect().bottom <= innerHeight,
+    };
+  });
+  assert.deepEqual(hierarchy, { inPanel: true, optionalAfterPanel: true, questionBeforeAnswer: true, questionLargerThanStepTitle: true, answerVisibleInFirstScreen: true });
   assert(await page.locator(".example-visible").isVisible());
   assert.match(
     await page.locator(".example-visible").innerText(),
@@ -1029,7 +1069,7 @@ const errors = [];
   await page.screenshot({ path: path.join(output, "mobile-group.png"), fullPage: true });
   await page.locator("#group-stage-select").selectOption("1");
   if (!(await page.locator("#group-method-diagram").evaluate((node) => node.open)))
-    await page.locator("#group-method-diagram summary").click();
+    await page.locator("#group-method-diagram > summary").click();
   assert(await page.locator("#group-method-diagram svg").isVisible());
   await overflow("open group method flowchart mobile");
   await page.locator("#group-method-diagram .teaching-figure").screenshot({ path: path.join(output, "group-method-flow-mobile.png") });

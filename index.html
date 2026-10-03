@@ -1810,12 +1810,51 @@
       .scale-option[aria-pressed="true"] { border: 2px solid var(--brand); padding: 12px 15px; background: var(--mint); }
       .scale-option strong { font-size: .93rem; }
       .scale-option span { color: var(--muted); font-size: .8rem; line-height: 1.4; }
-      .selected-level { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 13px 18px; border: 1px solid #adc7e9; border-radius: 12px; background: #edf3fb; }
-      .selected-level strong { font-size: 1.08rem; }
+      .change-level { display: block; margin: 0 0 4px; border: 0; background: transparent; }
+      .change-level > summary { display: inline-flex; justify-content: flex-start; gap: 8px; padding: 6px 12px; border: 1px solid #adc7e9; border-radius: 999px; background: #edf3fb; color: var(--muted); font-size: .84rem; font-weight: 500; }
+      .change-level > summary strong { color: var(--deep); font-weight: 650; }
+      .change-level > summary:after { content: "⌄"; font-size: 1rem; line-height: 1; }
+      .change-level[open] > summary { border-bottom: 1px solid #adc7e9; }
+      .change-level[open] > summary:after { content: "⌃"; }
+      .change-level > .details-body { padding: 10px 0 4px; }
+      .primary-ask { margin-top: 18px; padding: clamp(18px, 3vw, 28px); border: 2px solid #9cb6d9; border-radius: 18px; background: linear-gradient(180deg, #eef4fc, #f8faff); }
+      .primary-ask > .label, .primary-ask legend { margin: 0 0 16px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.45rem, 3vw, 1.85rem); font-weight: 700; line-height: 1.2; }
+      .primary-ask select, .primary-ask #violence-context { max-width: none; min-height: 58px; border: 2px solid var(--brand); background: #fff; font-size: 1.05rem; }
+      .context-pick.primary-ask { max-width: none; }
+      .answer-tag { display: none; }
+      .primary-ask .answer-tag { display: block; margin: 0 0 6px; color: var(--brand); font-size: .74rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+      .primary-ask .field { margin-bottom: 26px; }
+      .primary-ask .field:last-child { margin-bottom: 0; }
+      .primary-ask .field > .label:not(.sr-only) { margin-bottom: 6px; color: var(--deep); font-size: 1.12rem; }
+      .primary-ask .field-hint { margin: 0 0 10px; font-size: 1.02rem; }
+      .primary-ask .example, .primary-ask .example-visible { margin: 8px 0 16px; padding: 4px 0 4px 14px; border-left: 3px solid #9cb6d9; border-radius: 0; background: transparent; font-size: .92rem; }
+      .primary-ask .example small { margin-bottom: 2px; }
+      .primary-ask textarea, .primary-ask input[type="text"], .primary-ask input[type="date"] { border: 2px solid var(--brand); background: #fff; font-size: 1.02rem; }
+      .primary-ask textarea { min-height: 150px; }
+      .primary-ask .option-head .label { font-size: 1.12rem; color: var(--deep); }
+      .primary-ask .add-idea { margin-top: 12px; }
+      .step-content > .primary-ask + * { margin-top: 18px; }
+      .option-card .choose-option { border: 2px solid var(--brand); font-weight: 650; }
+      .option-card .choose-option.primary { border-color: transparent; }
+      .primary-ask .example-help > summary { color: var(--brand); }
+      .is-question-screen #step-title { margin: 0; color: var(--muted); font-family: inherit; font-size: 1rem; font-weight: 650; }
+      .is-question-screen .step-lead { margin-top: 6px; font-size: .92rem; }
+      .is-question-screen .step-content { margin-top: 20px; }
+      .question-panel .question-orientation { margin-bottom: 18px; }
+      .question-panel #question-title { margin: 0 0 12px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.9rem, 4.5vw, 2.5rem); font-weight: 700; line-height: 1.1; letter-spacing: 0; }
+      .question-panel .question-progress { margin-bottom: 8px; font-size: .9rem; }
+      .question-panel .question-skip { margin-top: 10px; }
+      .idea-help { margin-top: 18px; font-size: .9rem; }
+      .option-card h3 { margin: 0 0 12px; font-size: 1.2rem; line-height: 1.3; }
+      .option-card .choose-option { margin-bottom: 14px; }
+      .option-card .compare-details { margin-top: 2px; }
+      .step-content > details { border-color: #e1e8f3; }
+      .step-content > details > summary { color: var(--muted); font-weight: 560; }
+      .primary-ask .choice-stack { gap: 12px; }
+      .primary-ask .pill { flex: 1 1 200px; padding: 16px 20px; background: #fff; font-size: 1.02rem; }
       #outil .intro { max-width: 780px; margin: 0 auto 18px; }
       #outil .intro h1 { font-size: clamp(1.7rem, 3vw, 2.2rem); }
-      .change-level { margin-top: 10px; }
-      .change-level .scale-options { margin-top: 4px; }
+      .change-level .scale-options { margin-top: 0; }
       .group-principle { margin-bottom: 22px; }
       .group-overview { margin-bottom: 22px; }
       .group-overview .teaching-figure { margin-bottom: 0; }
@@ -1838,6 +1877,8 @@
       .teaching-figure figcaption { margin: 12px 5px 2px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
       .decision-guide .teaching-figure { margin-top: 4px; }
       .diagram-scroll-hint { display: none; }
+      .figure-save { display: flex; margin: 14px auto 2px; }
+      .diagram-text-fold { margin-top: 14px; }
       .scrollable-diagram:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
       .diagram-reading { max-width: 620px; margin: 12px auto 0; }
       .diagram-reading li { padding-left: 4px; }
@@ -2010,35 +2051,30 @@
         <details class="welcome-explain">
           <summary>Comment ça marche : les six étapes</summary>
           <div class="details-body">
-            <ol class="method-list">
-              <li><strong>Commencer</strong><span>Je choisis ma situation et je vérifie que je me sens en sécurité pour réfléchir.</span></li>
-              <li><strong>Clarifier</strong><span>Quels sont les faits, ce que je voudrais changer et ce qui bloque ?</span></li>
-              <li><strong>Imaginer</strong><span>Je note plusieurs solutions possibles, même imparfaites.</span></li>
-              <li><strong>Choisir</strong><span>Je compare les avantages, les limites et les risques, puis je choisis.</span></li>
-              <li><strong>Agir</strong><span>Je prépare un premier pas précis : quoi, quand et comment voir si ça avance.</span></li>
-              <li><strong>Faire le point</strong><span>Après l’essai, qu’est-ce qui a changé ? Je continue, j’adapte ou je change de piste.</span></li>
-            </ol>
-            <p class="journey-preface">Chaque étape propose un exemple fictif adapté à la situation choisie. Je peux faire une pause ou revenir à une étape précédente.</p>
             <figure class="teaching-figure">
-              <svg viewBox="0 0 360 586" role="img" aria-labelledby="method-title method-desc" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 360 676" role="img" aria-labelledby="method-title method-desc" xmlns="http://www.w3.org/2000/svg">
                 <title id="method-title">Six étapes pour résoudre un problème</title>
-                <desc id="method-desc">Commencer en choisissant sa situation, clarifier le problème, imaginer une liste de solutions possibles en demandant au besoin d’autres idées, choisir en comparant leurs avantages et leurs limites, agir en préparant un premier pas précis, puis faire le point après l’essai.</desc>
-                <!-- Les flèches donnent le sens de lecture ; chaque case garde son sens sans la légende. -->
+                <desc id="method-desc">Six étapes, avec une flèche de retour possible vers les étapes précédentes. 1, Commencer : je choisis ma situation et je vérifie ma sécurité. 2, Clarifier : quels sont les faits, ce que je voudrais changer et ce qui bloque. 3, Imaginer : quelles solutions possibles, même imparfaites, en demandant au besoin d’autres idées. 4, Choisir : quels avantages, limites et risques pour chaque solution, puis choisir. 5, Agir : quel premier pas précis, quoi, quand et comment voir si cela avance. 6, Faire le point : qu’est-ce qui a changé, je continue, j’adapte ou je change de piste.</desc>
+                <!-- Les flèches donnent le sens de lecture ; la flèche en pointillés rappelle qu’on peut revenir en arrière. -->
                 <g fill="#ffffff" stroke="#b9cbe5" stroke-width="2">
-                  <rect x="16" y="12" width="328" height="76" rx="15"/>
-                  <rect x="16" y="108" width="328" height="76" rx="15"/>
-                  <rect x="16" y="204" width="328" height="76" rx="15"/>
-                  <rect x="16" y="300" width="328" height="76" rx="15"/>
-                  <rect x="16" y="396" width="328" height="76" rx="15"/>
-                  <rect x="16" y="492" width="328" height="76" rx="15"/>
+                  <rect x="12" y="12" width="308" height="92" rx="15"/>
+                  <rect x="12" y="124" width="308" height="92" rx="15"/>
+                  <rect x="12" y="236" width="308" height="92" rx="15"/>
+                  <rect x="12" y="348" width="308" height="92" rx="15"/>
+                  <rect x="12" y="460" width="308" height="92" rx="15"/>
+                  <rect x="12" y="572" width="308" height="92" rx="15"/>
                 </g>
-                <g fill="#285b9d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/><circle cx="48" cy="434" r="19"/><circle cx="48" cy="530" r="19"/></g>
-                <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text><text x="48" y="440">5</text><text x="48" y="536">6</text></g>
-                <g fill="#202b50" font-family="system-ui, sans-serif" font-size="17" font-weight="700"><text x="80" y="44">Commencer</text><text x="80" y="140">Clarifier</text><text x="80" y="236">Imaginer</text><text x="80" y="332">Choisir</text><text x="80" y="428">Agir</text><text x="80" y="524">Faire le point</text></g>
-                <g fill="#596680" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Ma situation · ma sécurité</text><text x="80" y="162">Faits · objectif · obstacle</text><text x="80" y="258">Lister des solutions possibles</text><text x="80" y="354">Comparer, puis choisir</text><text x="80" y="450">Un premier pas précis</text><text x="80" y="546">Continuer, adapter ou changer</text></g>
-                <g fill="none" stroke="#285b9d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/><path d="M180 472v15m-5-5 5 5 5-5"/></g>
+                <g fill="#285b9d"><circle cx="44" cy="58" r="19"/><circle cx="44" cy="170" r="19"/><circle cx="44" cy="282" r="19"/><circle cx="44" cy="394" r="19"/><circle cx="44" cy="506" r="19"/><circle cx="44" cy="618" r="19"/></g>
+                <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="44" y="64">1</text><text x="44" y="176">2</text><text x="44" y="288">3</text><text x="44" y="400">4</text><text x="44" y="512">5</text><text x="44" y="624">6</text></g>
+                <g fill="#202b50" font-family="system-ui, sans-serif" font-size="17" font-weight="700"><text x="76" y="46">Commencer</text><text x="76" y="158">Clarifier</text><text x="76" y="270">Imaginer</text><text x="76" y="382">Choisir</text><text x="76" y="494">Agir</text><text x="76" y="606">Faire le point</text></g>
+                <g fill="#596680" font-family="system-ui, sans-serif" font-size="13"><text x="76" y="69">Je choisis ma situation et je</text><text x="76" y="87">vérifie ma sécurité.</text><text x="76" y="181">Quels sont les faits, ce que je</text><text x="76" y="199">voudrais changer, ce qui bloque ?</text><text x="76" y="293">Quelles solutions possibles,</text><text x="76" y="311">même imparfaites ?</text><text x="76" y="405">Avantages, limites et risques de</text><text x="76" y="423">chaque solution. Je choisis.</text><text x="76" y="517">Quel premier pas précis : quoi,</text><text x="76" y="535">quand, comment voir si ça avance ?</text><text x="76" y="629">Qu’est-ce qui a changé ? Je</text><text x="76" y="647">continue, j’adapte ou change de piste.</text></g>
+                <g fill="none" stroke="#285b9d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M166 104v15m-5-5 5 5 5-5"/><path d="M166 216v15m-5-5 5 5 5-5"/><path d="M166 328v15m-5-5 5 5 5-5"/><path d="M166 440v15m-5-5 5 5 5-5"/><path d="M166 552v15m-5-5 5 5 5-5"/></g>
+                <g fill="none" stroke="#285b9d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="6 6"><path d="M320 618h16V170h-14"/></g>
+                <path d="M328 164l-6 6 6 6" fill="none" stroke="#285b9d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+                <text transform="translate(353 394) rotate(-90)" text-anchor="middle" fill="#596680" font-family="system-ui, sans-serif" font-size="12">Je peux revenir en arrière</text>
               </svg>
-              <figcaption>Pour enrichir ma liste, je peux demander d’autres idées ou chercher des informations fiables. Après l’essai, je peux revenir à une étape précédente.</figcaption>
+              <figcaption>Chaque étape propose un exemple fictif adapté à la situation choisie. Pour enrichir ma liste, je peux demander d’autres idées ou chercher des informations fiables. Je peux faire une pause ou revenir à une étape précédente.</figcaption>
+              <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
             </figure>
           </div>
         </details>
@@ -2206,6 +2242,7 @@
               <g fill="none" stroke="#285b9d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/></g>
             </svg>
             <figcaption>La personne aidée choisit la direction. Si son besoin change, on peut revenir à l’écoute. En cas de danger, on cherche d’abord une aide adaptée.</figcaption>
+          <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
           </figure>
             </div>
           </details>
@@ -2260,6 +2297,7 @@
                   </g>
                 </svg>
                 <figcaption>Le groupe peut revenir à l’écoute si les constats ou l’essai montrent qu’il manque une information.</figcaption>
+              <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
               </figure>
             </div>
           </details>
@@ -2287,7 +2325,7 @@
                 <details class="section-gap" id="group-method-diagram">
                   <summary>Voir le logigramme : comment écouter le groupe ?</summary>
                   <div class="details-body">
-                    <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits sous le dessin.</p>
+                    <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits dans « Lire en texte ».</p>
                     <figure class="teaching-figure scrollable-diagram" tabindex="0">
                       <svg viewBox="0 0 360 778" role="img" aria-labelledby="group-listen-title group-listen-desc" xmlns="http://www.w3.org/2000/svg">
                         <title id="group-listen-title">Choisir une manière d’écouter un groupe</title>
@@ -2341,14 +2379,19 @@
                         <text x="180" y="743" fill="#202b50" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14">Puis restituer et suivre la décision.</text>
                       </svg>
                       <figcaption>Je reprends le choix si une décision devient possible ou si les informations existantes laissent des questions ouvertes. Je vérifie que la langue, l’horaire et le format permettent de participer. Un sondage ne garantit pas la représentativité. Si écouter le groupe risque d’exposer des personnes à des représailles, je cherche d’abord un soutien adapté. Je ne lance pas d’enquête qui les expose.</figcaption>
+                    <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
                     </figure>
-                    <p><strong>Les choix en texte :</strong></p>
+                    <details class="diagram-text-fold">
+                      <summary>Lire en texte</summary>
+                      <div class="details-body">
                     <ol class="diagram-text">
                       <li>Je clarifie qui décide, ce qui peut changer et l’objectif de l’écoute. Si aucune décision réelle ne peut être influencée, je précise cela avant d’enquêter.</li>
                       <li>Si des informations existent déjà, je les examine et je vérifie leur interprétation avec des personnes concernées. S’il reste des questions, je choisis une autre manière d’écouter.</li>
                       <li>Si les personnes peuvent parler librement ensemble, je peux proposer une discussion volontaire. Si la parole en groupe est difficile, je peux proposer des entretiens individuels volontaires. Je vérifie que la langue, l’horaire et le format ne laissent personne de côté.</li>
                       <li>Si une même question concerne beaucoup de personnes, un sondage court peut compléter cette écoute. Ses résultats ne sont pas forcément représentatifs. Sinon, le sondage n’est pas nécessaire.</li>
                     </ol>
+                      </div>
+                    </details>
                     <p class="source-note">Ce logigramme est un aide-mémoire pour choisir une méthode, pas un algorithme validé. J’adapte la démarche avec les personnes concernées. <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-28">[28]</a> <a href="#ref-33">[33]</a></p>
                   </div>
                 </details>
@@ -2509,7 +2552,7 @@
             </p>
           </div>
           <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a></p>
-          <div class="section-gap violence-choice">
+          <div class="section-gap violence-choice primary-ask">
             <label class="label" for="violence-context"
               >Avec qui se passe la situation ?</label
             ><select id="violence-context" aria-describedby="violence-choice-help violence-context-note">
@@ -2657,6 +2700,7 @@
                     <g fill="none" stroke="#285b9d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/></g>
                   </svg>
                   <figcaption>Un test local aide à apprendre ; il ne suffit pas à généraliser un changement. Les règles, les ressources et la décision relèvent de l’organisation.</figcaption>
+                <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
                 </figure>
               </div>
             </details>
@@ -2682,6 +2726,7 @@
                     <g fill="none" stroke="#285b9d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/></g>
                   </svg>
                   <figcaption>Je ne parle pas au nom d’un groupe sans son accord. Une réponse peut prendre du temps et ne garantit pas le changement demandé.</figcaption>
+                <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
                 </figure>
               </div>
             </details>
@@ -5364,7 +5409,7 @@
         return `<details class="decision-guide section-gap" id="action-decision-diagram">
           <summary>Avant d’agir : voir les choix en logigramme</summary>
           <div class="details-body">
-            <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits sous le dessin.</p>
+            <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits dans « Lire en texte ».</p>
             <figure class="teaching-figure decision-figure scrollable-diagram" tabindex="0">
               <svg viewBox="0 0 360 565" role="img" aria-labelledby="first-step-flow-title first-step-flow-desc" xmlns="http://www.w3.org/2000/svg">
                 <title id="first-step-flow-title">Vérifier la sécurité et l’accord avant mon premier pas</title>
@@ -5402,12 +5447,18 @@
                 </g>
               </svg>
               <figcaption>${decision.inText} Ce dessin aide à préparer une décision ; il ne détermine pas si une situation est sans danger.</figcaption>
+              <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
             </figure>
+            <details class="diagram-text-fold">
+              <summary>Lire en texte</summary>
+              <div class="details-body">
             <ol class="diagram-reading diagram-text">
               <li><strong>Si je ne suis pas sûr ou si j’ai un doute :</strong> je fais une pause et cherche une aide adaptée. <a href="#securite">Voir les repères de sécurité</a>.</li>
               <li><strong>Si le pas est sûr :</strong> je vérifie qui doit décider ou donner son accord. ${decision.inText}</li>
               <li><strong>Si l’accord manque :</strong> je le demande sans forcer. En cas de refus, je change de piste ou cherche un autre soutien. S’il est présent ou non requis, je peux essayer un petit pas, observer un signe de progrès et faire le point.</li>
             </ol>
+              </div>
+            </details>
             <p class="source-note">Repère pédagogique, pas un test de sécurité ou une règle valable dans toute situation. <a href="#ref-4">[4]</a> <a href="#ref-22">[22]</a> <a href="#ref-33">[33]</a></p>
           </div>
         </details>`;
@@ -5964,7 +6015,7 @@
       function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false, beforeInput = "", hideLabel = false) {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label${hideLabel ? " sr-only" : ""}" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${beforeInput}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
+        return `<div class="field"><label class="label${hideLabel ? " sr-only" : ""}" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${beforeInput}${type === "textarea" ? '<span class="answer-tag" aria-hidden="true">Ma réponse</span>' : ""}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
       }
       function renderSteps() {
         const workflow = workflows[state.scale];
@@ -5997,9 +6048,9 @@
             const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
             const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
             const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
-            body = `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
+            body = `<details class="change-level" id="change-level"><summary id="selected-level" aria-label="Niveau : ${scales[state.scale][0]}. Changer de niveau"><span>Niveau</span><strong>${scales[state.scale][0]}</strong></summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick primary-ask"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
           } else {
-            body = `<fieldset><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+            body = `<div class="primary-ask"><fieldset><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
               ["safe", "Oui, je peux réfléchir"],
               ["unsure", "J’ai un doute"],
               ["danger", "Je me sens en danger"],
@@ -6010,7 +6061,7 @@
               )
               .join(
                 "",
-              )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="${violenceRouteForContext()}">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="${violenceRouteForContext()}">Voir les repères de violence</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="${violenceRouteForContext()}">Voir les repères de sécurité</a>.</p>`}`;
+              )}</div></fieldset></div>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="${violenceRouteForContext()}">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="${violenceRouteForContext()}">Voir les repères de violence</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="${violenceRouteForContext()}">Voir les repères de sécurité</a>.</p>`}`;
           }
         }
         if (i === 1) {
@@ -6025,22 +6076,22 @@
             : "";
           const questionTitles = ["Ce qui se passe", "Ce que je voudrais changer", "Ce qui bloque"];
           const questionMarkers = [0, 1, 2].map((part) => `<span class="${part < state.clarifyPart ? "is-past" : part === state.clarifyPart ? "is-current" : ""}"></span>`).join("");
-          body = `<div class="question-orientation"><h3 id="question-title" tabindex="-1"><span class="question-progress">Question ${state.clarifyPart + 1} sur 3</span>${questionTitles[state.clarifyPart]}</h3><div class="question-segments" aria-hidden="true">${questionMarkers}</div><p class="hint question-skip">Je peux passer si je ne sais pas encore.</p></div>` +
-            (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "") +
-            (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
-            field(key, label, hint, "textarea", sample, true, contextCheck, label === questionTitles[state.clarifyPart]) +
-            (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
+          const orientation = `<div class="question-orientation"><h3 id="question-title" tabindex="-1"><span class="question-progress">Question ${state.clarifyPart + 1} sur 3</span>${questionTitles[state.clarifyPart]}</h3><div class="question-segments" aria-hidden="true">${questionMarkers}</div><p class="hint question-skip">Je peux passer si je ne sais pas encore.</p></div>`;
+          const reviewNote = (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "");
+          const collectiveNote = (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "");
+          const part2 = (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
+          body = reviewNote + `<div class="primary-ask question-panel">${orientation}` + field(key, label, hint, "textarea", sample, true, "", label === questionTitles[state.clarifyPart]) + "</div>" + collectiveNote + contextCheck + part2;
         }
         if (i === 2) {
           const ideaExamples = c.examples?.ideas || workflow.ideas || [];
-          body = `<p class="hint">${linkGlossary(workflow.idea)}</p><div class="section-gap" id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 && ideaExamples[j] ? example(ideaExamples[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button>`;
+          body = `<div class="primary-ask"><div id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 && ideaExamples[j] ? example(ideaExamples[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn add-idea" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button></div><p class="hint idea-help">${linkGlossary(workflow.idea)}</p>`;
         }
         if (i === 3) {
           const options = state.options.filter((o) => o.text.trim());
           const ideaExamples = c.examples?.ideas || workflow.ideas || [];
           const comparison = c.examples?.comparison || workflow.comparison || [];
           body = options.length
-            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><details${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details><button class="btn ${state.chosen === o.id ? "primary" : ""} section-gap" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(ideaExamples[0] || "Une piste à essayer.")}</p><p><strong>Apport possible :</strong> ${esc(comparison[0] || "Je note ce qu’elle pourrait apporter.")}</p><p><strong>Limite :</strong> ${esc(comparison[1] || "Je note ce qui pourrait bloquer.")}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${linkGlossary(workflow.compare)}</p><p>Si les conséquences sont importantes, je peux demander un avis adapté avant d’agir.</p></div></details>`
+            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><button class="btn ${state.chosen === o.id ? "primary" : ""} choose-option" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button><details class="compare-details"${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(ideaExamples[0] || "Une piste à essayer.")}</p><p><strong>Apport possible :</strong> ${esc(comparison[0] || "Je note ce qu’elle pourrait apporter.")}</p><p><strong>Limite :</strong> ${esc(comparison[1] || "Je note ce qui pourrait bloquer.")}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${linkGlossary(workflow.compare)}</p><p>Si les conséquences sont importantes, je peux demander un avis adapté avant d’agir.</p></div></details>`
             : `<div class="notice amber"><strong>Je n’ai pas encore noté de piste.</strong>Je reviens à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
         }
         if (i === 4) {
@@ -6051,10 +6102,10 @@
             organization: ["Quand et où le test aura-t-il lieu ?", "Lors de la prochaine réunion d’équipe, sur un seul dossier."],
             public: ["Quand et auprès de qui faire cette démarche ?", "Lors de la prochaine permanence du service concerné."],
           }[state.scale];
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div>${chosen ? firstStepDecisionDiagram(state.scale) : ""}<div class="section-gap">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}<details class="optional-fields"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details></div>`;
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div>${chosen ? firstStepDecisionDiagram(state.scale) : ""}<div class="primary-ask">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}</div><details class="optional-fields section-gap"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details>`;
         }
         if (i === 5) {
-          body = `<fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[
+          body = `<div class="primary-ask"><fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[
             ["notyet", "Je n’ai pas encore essayé"],
             ["yes", "J’ai essayé"],
             ["partly", "J’ai essayé en partie"],
@@ -6066,7 +6117,7 @@
             )
             .join(
               "",
-            )}</div></fieldset>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="section-gap">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.examples?.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+            )}</div></fieldset></div>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="primary-ask">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.examples?.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
         }
         const selectedTool = i === 1 && c.tool ? c.tool : workflow.tools[i];
         if (selectedTool) {
@@ -6076,6 +6127,7 @@
         $("#step-container").innerHTML =
           `<div class="step-topline"><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         $("#step-container").classList.toggle("question-transition", focusQuestion && i === 1);
+        $("#step-container").classList.toggle("is-question-screen", i === 0 || i === 1);
         if (focus) {
           const focusTarget = focusQuestion && i === 1 ? $("#question-title") : $("#step-title");
           focusTarget.focus({ preventScroll: true });
@@ -6408,6 +6460,84 @@
         const [y, m, d] = s.split("-");
         return `${d}/${m}/${y}`;
       }
+      async function saveFigure(figure) {
+        const svg = figure.querySelector("svg");
+        if (!svg) return;
+        const title = svg.querySelector("title")?.textContent.trim() || "Schéma";
+        const caption = figure.querySelector("figcaption")?.textContent.trim() || "";
+        const box = svg.viewBox.baseVal;
+        const scale = 2;
+        const pad = 16;
+        const displayFont = '"Barlow Condensed", "Arial Narrow", sans-serif';
+        const textFont = "system-ui, sans-serif";
+        let url = "";
+        try {
+          const clone = svg.cloneNode(true);
+          clone.setAttribute("width", box.width);
+          clone.setAttribute("height", box.height);
+          clone.removeAttribute("role");
+          clone.removeAttribute("aria-labelledby");
+          url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: "image/svg+xml;charset=utf-8" }));
+          const img = new Image();
+          img.src = url;
+          await img.decode();
+          await document.fonts.load('700 26px "Barlow Condensed"');
+          const textWidth = box.width;
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const wrap = (text, font) => {
+            ctx.font = font;
+            const lines = [];
+            let line = "";
+            for (const word of text.split(/\s+/).filter(Boolean)) {
+              const next = line ? line + " " + word : word;
+              if (line && ctx.measureText(next).width > textWidth) {
+                lines.push(line);
+                line = word;
+              } else line = next;
+            }
+            if (line) lines.push(line);
+            return lines;
+          };
+          const titleFont = `700 26px ${displayFont}`;
+          const captionFont = `14px ${textFont}`;
+          const titleLines = wrap(title, titleFont);
+          const captionLines = wrap(caption, captionFont);
+          const titleHeight = titleLines.length * 30 + 10;
+          const captionHeight = captionLines.length * 20;
+          const width = box.width + pad * 2;
+          const height = pad + titleHeight + box.height + 14 + captionHeight + 30 + pad;
+          canvas.width = width * scale;
+          canvas.height = height * scale;
+          ctx.scale(scale, scale);
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
+          ctx.textBaseline = "alphabetic";
+          ctx.fillStyle = "#161f6e";
+          ctx.font = titleFont;
+          titleLines.forEach((line, i) => ctx.fillText(line, pad, pad + 24 + i * 30));
+          const figureTop = pad + titleHeight;
+          ctx.fillStyle = "#edf3fb";
+          ctx.fillRect(pad - 8, figureTop - 8, box.width + 16, box.height + 16);
+          ctx.drawImage(img, pad, figureTop, box.width, box.height);
+          ctx.fillStyle = "#3d4a66";
+          ctx.font = captionFont;
+          const captionTop = figureTop + box.height + 14;
+          captionLines.forEach((line, i) => ctx.fillText(line, pad, captionTop + 16 + i * 20));
+          ctx.fillStyle = "#596680";
+          ctx.font = `600 13px ${textFont}`;
+          ctx.fillText("Pas à pas · trimobe.org", pad, captionTop + captionHeight + 22);
+          const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+          if (!blob) throw new Error("PNG indisponible");
+          const slug = title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+          download(slug + ".png", blob, "image/png");
+          toast("Image enregistrée dans vos téléchargements.");
+        } catch (e) {
+          toast("L’image n’a pas pu être créée. Une capture d’écran du schéma fonctionne aussi.");
+        } finally {
+          if (url) URL.revokeObjectURL(url);
+        }
+      }
       function download(name, content, mime) {
         const a = document.createElement("a"),
           url = URL.createObjectURL(new Blob([content], { type: mime }));
@@ -6665,6 +6795,10 @@
       document.addEventListener("click", (e) => {
         const b = e.target.closest("button");
         if (!b) return;
+        if (b.dataset.saveFigure !== undefined) {
+          saveFigure(b.closest("figure"));
+          return;
+        }
         if (b.dataset.step !== undefined) {
           changeStep(Number(b.dataset.step));
           return;
@@ -6723,7 +6857,6 @@
           history.replaceState(null, "", "#outil-" + state.scale);
           persist();
           renderStep();
-          $("#selected-level").setAttribute("tabindex", "-1");
           $("#selected-level").focus();
           return;
         }

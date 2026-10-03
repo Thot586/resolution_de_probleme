@@ -49,12 +49,51 @@
       .scale-option[aria-pressed="true"] { border: 2px solid var(--brand); padding: 12px 15px; background: var(--mint); }
       .scale-option strong { font-size: .93rem; }
       .scale-option span { color: var(--muted); font-size: .8rem; line-height: 1.4; }
-      .selected-level { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 13px 18px; border: 1px solid #adc7e9; border-radius: 12px; background: #edf3fb; }
-      .selected-level strong { font-size: 1.08rem; }
+      .change-level { display: block; margin: 0 0 4px; border: 0; background: transparent; }
+      .change-level > summary { display: inline-flex; justify-content: flex-start; gap: 8px; padding: 6px 12px; border: 1px solid #adc7e9; border-radius: 999px; background: #edf3fb; color: var(--muted); font-size: .84rem; font-weight: 500; }
+      .change-level > summary strong { color: var(--deep); font-weight: 650; }
+      .change-level > summary:after { content: "⌄"; font-size: 1rem; line-height: 1; }
+      .change-level[open] > summary { border-bottom: 1px solid #adc7e9; }
+      .change-level[open] > summary:after { content: "⌃"; }
+      .change-level > .details-body { padding: 10px 0 4px; }
+      .primary-ask { margin-top: 18px; padding: clamp(18px, 3vw, 28px); border: 2px solid #9cb6d9; border-radius: 18px; background: linear-gradient(180deg, #eef4fc, #f8faff); }
+      .primary-ask > .label, .primary-ask legend { margin: 0 0 16px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.45rem, 3vw, 1.85rem); font-weight: 700; line-height: 1.2; }
+      .primary-ask select, .primary-ask #violence-context { max-width: none; min-height: 58px; border: 2px solid var(--brand); background: #fff; font-size: 1.05rem; }
+      .context-pick.primary-ask { max-width: none; }
+      .answer-tag { display: none; }
+      .primary-ask .answer-tag { display: block; margin: 0 0 6px; color: var(--brand); font-size: .74rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+      .primary-ask .field { margin-bottom: 26px; }
+      .primary-ask .field:last-child { margin-bottom: 0; }
+      .primary-ask .field > .label:not(.sr-only) { margin-bottom: 6px; color: var(--deep); font-size: 1.12rem; }
+      .primary-ask .field-hint { margin: 0 0 10px; font-size: 1.02rem; }
+      .primary-ask .example, .primary-ask .example-visible { margin: 8px 0 16px; padding: 4px 0 4px 14px; border-left: 3px solid #9cb6d9; border-radius: 0; background: transparent; font-size: .92rem; }
+      .primary-ask .example small { margin-bottom: 2px; }
+      .primary-ask textarea, .primary-ask input[type="text"], .primary-ask input[type="date"] { border: 2px solid var(--brand); background: #fff; font-size: 1.02rem; }
+      .primary-ask textarea { min-height: 150px; }
+      .primary-ask .option-head .label { font-size: 1.12rem; color: var(--deep); }
+      .primary-ask .add-idea { margin-top: 12px; }
+      .step-content > .primary-ask + * { margin-top: 18px; }
+      .option-card .choose-option { border: 2px solid var(--brand); font-weight: 650; }
+      .option-card .choose-option.primary { border-color: transparent; }
+      .primary-ask .example-help > summary { color: var(--brand); }
+      .is-question-screen #step-title { margin: 0; color: var(--muted); font-family: inherit; font-size: 1rem; font-weight: 650; }
+      .is-question-screen .step-lead { margin-top: 6px; font-size: .92rem; }
+      .is-question-screen .step-content { margin-top: 20px; }
+      .question-panel .question-orientation { margin-bottom: 18px; }
+      .question-panel #question-title { margin: 0 0 12px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.9rem, 4.5vw, 2.5rem); font-weight: 700; line-height: 1.1; letter-spacing: 0; }
+      .question-panel .question-progress { margin-bottom: 8px; font-size: .9rem; }
+      .question-panel .question-skip { margin-top: 10px; }
+      .idea-help { margin-top: 18px; font-size: .9rem; }
+      .option-card h3 { margin: 0 0 12px; font-size: 1.2rem; line-height: 1.3; }
+      .option-card .choose-option { margin-bottom: 14px; }
+      .option-card .compare-details { margin-top: 2px; }
+      .step-content > details { border-color: #e1e8f3; }
+      .step-content > details > summary { color: var(--muted); font-weight: 560; }
+      .primary-ask .choice-stack { gap: 12px; }
+      .primary-ask .pill { flex: 1 1 200px; padding: 16px 20px; background: #fff; font-size: 1.02rem; }
       #outil .intro { max-width: 780px; margin: 0 auto 18px; }
       #outil .intro h1 { font-size: clamp(1.7rem, 3vw, 2.2rem); }
-      .change-level { margin-top: 10px; }
-      .change-level .scale-options { margin-top: 4px; }
+      .change-level .scale-options { margin-top: 0; }
       .group-principle { margin-bottom: 22px; }
       .group-overview { margin-bottom: 22px; }
       .group-overview .teaching-figure { margin-bottom: 0; }
@@ -77,6 +116,8 @@
       .teaching-figure figcaption { margin: 12px 5px 2px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
       .decision-guide .teaching-figure { margin-top: 4px; }
       .diagram-scroll-hint { display: none; }
+      .figure-save { display: flex; margin: 14px auto 2px; }
+      .diagram-text-fold { margin-top: 14px; }
       .scrollable-diagram:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
       .diagram-reading { max-width: 620px; margin: 12px auto 0; }
       .diagram-reading li { padding-left: 4px; }
