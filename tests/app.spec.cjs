@@ -164,6 +164,8 @@ const errors = [];
   }
   const secondMethod = methodItems.nth(1).locator("details");
   await secondMethod.locator("summary").click();
+  assert.match(await secondMethod.locator("summary").innerText(), /liste de solutions possibles/);
+  assert.match(await secondMethod.locator(".method-detail").innerText(), /sites fiables[\s\S]*spécialiste[\s\S]*avant de choisir/);
   const methodWidths = await methodItems.evaluateAll((nodes) => nodes.map((node) => ({ item: node.getBoundingClientRect().width, grid: node.parentElement.getBoundingClientRect().width })));
   assert(methodWidths.every(({ item, grid }) => item >= grid - 2), "Opening any step leaves no empty grid cells");
   await page.locator("#accueil .method-overview").screenshot({ path: path.join(output, "desktop-second-step-open.png") });
@@ -207,6 +209,9 @@ const errors = [];
     assert(await contextCheck.locator(".details-body").isVisible(), `${scale}: prompt opens`);
     assert.equal(await page.locator("#step-container textarea").count(), 1, `${scale}: no additional answer field`);
     assert.equal(await page.locator("#steps li").count(), 6, `${scale}: no additional stage`);
+    await step(2);
+    assert.match(await page.locator("#step-container .step-lead").innerText(), /liste|liste de propositions|plusieurs changements|plusieurs démarches/i, `${scale}: the task is to make a list`);
+    assert.match(await page.locator("#step-container .hint").innerText(), /fiables[\s\S]*(spécialiste|tiers compétent)/, `${scale}: optional ways to expand the list`);
     await visit("accueil");
   }
   const direct = await context.newPage();

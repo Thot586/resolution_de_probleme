@@ -79,10 +79,11 @@
         {
           short: "Choisir",
           title: "Quel changement voulons-nous essayer ?",
-          intro: "Le groupe choisit une priorité et compare plusieurs réponses possibles avant de retenir un essai.",
+          intro: "Le groupe choisit une priorité. Nous faisons d’abord une liste de solutions possibles, puis nous les comparons avant de retenir un essai.",
           points: [
             "Quel changement serait utile pour qui, et à quelle échéance ?",
-            "Quelles pistes viennent des personnes concernées ? Pour chacune, quels bénéfices espérés, moyens nécessaires et limites ?",
+            "Quelles idées viennent des personnes concernées ? Pour allonger la liste, pouvons-nous chercher des exemples fiables en ligne ou consulter un spécialiste si nécessaire et accessible ?",
+            "Pour chaque piste, quels bénéfices espérés, moyens nécessaires et limites ?",
             "Qui profiterait ou supporterait le coût de chaque piste ? Quels désaccords et effets indésirables faut-il examiner ?",
           ],
           note: "La priorité, les pistes comparées, les raisons du choix et un signe de progrès",
