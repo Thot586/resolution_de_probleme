@@ -132,13 +132,15 @@ const errors = [];
     "Accueil",
   );
   assert.equal(await page.evaluate(() => localStorage.length), 0);
-  assert.match(await page.locator("#accueil .path-flow").innerText(), /décris.*cherche.*choisis.*essaie.*fais le point/);
+  assert.equal(await page.locator("#accueil .method-steps li:visible").count(), 6);
+  assert.match(await page.locator("#accueil .method-steps").innerText(), /Définir le problème[\s\S]*Imaginer des solutions[\s\S]*Comparer les solutions[\s\S]*Choisir et préparer[\s\S]*Essayer dans la réalité[\s\S]*Évaluer et ajuster/);
+  assert.match(await page.locator("#accueil .scale-intro").innerText(), /questions et les exemples seront adaptés/);
   assert.equal(await page.locator('#accueil a[href="#soutenir"]').count(), 1);
   assert.equal(await page.locator('#accueil a[href="#groupe"]').count(), 1);
   await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
   await page.locator("#accueil .welcome-explain summary").click();
   await visible("#accueil svg[aria-labelledby='method-title method-desc']");
-  assert.match(await page.locator("#accueil svg").textContent(), /Faire le point/);
+  assert.match(await page.locator("#accueil svg").textContent(), /Évaluer et ajuster/);
   await axe("method-diagram");
   await page.locator("#accueil .welcome-explain summary").click();
   assert.equal(await page.locator("#accueil [data-start-scale]").count(), 4);

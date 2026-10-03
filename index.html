@@ -1790,8 +1790,15 @@
       .path-heading h2 { margin-top: 4px; font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
       .path-heading p { max-width: 690px; margin-top: 8px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
       .path-kicker { color: var(--brand); font-size: .7rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
-      .path-flow { margin-top: 13px; color: var(--muted); font-size: .86rem; line-height: 1.5; }
-      .path-flow strong { color: var(--brand); }
+      .method-overview { margin-top: 20px; padding: 20px; border: 1px solid #d3e1d5; border-radius: 18px; background: #f5f9f4; }
+      .method-overview h3 { margin: 0 0 14px; font-size: 1.08rem; }
+      .method-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: method-step; }
+      .method-steps li { position: relative; display: grid; align-content: start; gap: 4px; min-width: 0; min-height: 110px; padding: 15px 15px 15px 48px; border: 1px solid var(--line); border-radius: 13px; background: #fff; counter-increment: method-step; }
+      .method-steps li::before { content: counter(method-step); position: absolute; top: 14px; left: 14px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: var(--brand); color: #fff; font-size: .8rem; font-weight: 750; }
+      .method-steps strong { font-size: .9rem; line-height: 1.35; }
+      .method-steps span { color: var(--muted); font-size: .82rem; line-height: 1.45; }
+      .method-source { margin: 12px 1px 0; color: var(--muted); font-size: .78rem; }
+      .scale-intro { margin-top: 20px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
       .scale-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
       .scale-card { position: relative; display: flex; flex-direction: column; gap: 8px; min-height: 148px; padding: 20px 32px 20px 20px; border: 1px solid var(--line); border-radius: 17px; background: #fff; box-shadow: 0 4px 18px #233e350a; text-decoration: none; color: var(--ink); transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
       .scale-card:hover { transform: translateY(-2px); border-color: #a9c5b3; box-shadow: 0 12px 26px #233e3516; }
@@ -1879,6 +1886,7 @@
       .support-related { margin-top: 15px; font-size: .88rem; color: var(--muted); }
 
       @media (max-width: 850px) {
+        .method-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .scale-grid, .support-stage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .group-layout { grid-template-columns: 1fr; }
       }
@@ -1888,6 +1896,10 @@
         .welcome-hero { padding: 27px 23px; border-radius: 20px; }
         .path-heading p { font-size: .88rem; }
         .scale-entry { margin-top: 26px; }
+        .method-overview { padding: 15px; }
+        .method-steps { grid-template-columns: 1fr; gap: 8px; }
+        .method-steps li { min-height: 0; padding: 12px 12px 12px 47px; }
+        .method-steps li::before { top: 12px; left: 12px; }
         .scale-grid, .scale-options, .help-grid { grid-template-columns: 1fr; }
         .scale-card { min-height: 0; padding: 14px 36px 14px 17px; gap: 3px; }
         .scale-card strong { font-size: 1rem; }
@@ -1978,19 +1990,30 @@
       >
             <section id="accueil" class="view" aria-labelledby="welcome-title">
         <div class="welcome-hero">
-          <div class="eyebrow">Outil pédagogique · Une démarche à adapter</div>
           <h1 id="welcome-title">Résoudre un problème</h1>
-          <p class="welcome-lead">Je choisis ce que je veux faire. L’outil m’aide à clarifier la situation, à préparer une action et à revoir ce qui s’est passé.</p>
+          <p class="welcome-lead">Je peux chercher une solution à mon problème ou apprendre à soutenir une personne ou un groupe. Je choisis mon point de départ ci-dessous.</p>
         </div>
         <section class="scale-entry" aria-labelledby="scale-entry-title">
           <div class="path-heading">
             <div>
               <span class="path-kicker">Un problème à résoudre</span>
               <h2 id="scale-entry-title">Je veux agir sur un problème</h2>
-              <p>Je choisis qui peut agir pour le résoudre. Je pourrai changer de niveau dans l’exercice.</p>
+              <p>Je pars d’une situation concrète : ce qui se passe, ce que je voudrais changer et ce qui m’en empêche. J’examine ensuite plusieurs solutions avant d’en essayer une et de voir ce qu’elle a changé.</p>
             </div>
           </div>
-          <p class="path-flow"><strong>Ensuite :</strong> je décris → je cherche → je choisis → j’essaie → je fais le point.</p>
+          <div class="method-overview" aria-labelledby="method-overview-title">
+            <h3 id="method-overview-title">Comment avancer, du problème au bilan</h3>
+            <ol class="method-steps">
+              <li><strong>Définir le problème</strong><span>Quels sont les faits, mon objectif et l’obstacle ?</span></li>
+              <li><strong>Imaginer des solutions</strong><span>Quelles actions pourraient aider ? J’en note plusieurs.</span></li>
+              <li><strong>Comparer les solutions</strong><span>Quels sont les avantages, les limites et les risques de chacune ?</span></li>
+              <li><strong>Choisir et préparer</strong><span>Quelle solution est faisable ? Quel sera mon premier pas ?</span></li>
+              <li><strong>Essayer dans la réalité</strong><span>Je mets ce premier pas en pratique dans la situation concernée.</span></li>
+              <li><strong>Évaluer et ajuster</strong><span>Qu’est-ce qui a changé ? Je poursuis, j’adapte ou j’essaie une autre solution.</span></li>
+            </ol>
+            <p class="method-source">Étapes inspirées du module de résolution de problèmes du Projet IPT <a class="citation" href="#ref-1">[1]</a>.</p>
+          </div>
+          <p class="scale-intro">Pour commencer, je choisis la situation qui ressemble le plus à la mienne. Les questions et les exemples seront adaptés à ce choix.</p>
           <div class="scale-grid">
             <a class="scale-card" href="#outil-personal" data-start-scale="personal">
               <strong>Personnel</strong>
@@ -2040,13 +2063,13 @@
           <a href="#securite">Trouver une aide urgente ↗</a>
         </div>
         <details class="welcome-explain">
-          <summary>Comment se déroule « Mon problème » ?</summary>
+          <summary>Voir les étapes en schéma</summary>
           <div class="details-body">
-            <p class="journey-preface">Je choisis d’abord le niveau et le domaine du problème, puis je vérifie que je peux réfléchir en sécurité. L’exercice suit ensuite cinq étapes. Je peux revenir en arrière.</p>
+            <p class="journey-preface">Après le choix de la situation, l’outil me guide pour préciser le problème, imaginer des solutions, les comparer et préparer une action. Je fais l’essai dans la vie réelle, puis je reviens pour faire le point. Je peux revenir à une étape précédente.</p>
             <figure class="teaching-figure">
-              <svg viewBox="0 0 360 490" role="img" aria-labelledby="method-title method-desc" xmlns="http://www.w3.org/2000/svg">
-                <title id="method-title">Du problème au bilan en cinq étapes</title>
-                <desc id="method-desc">Le parcours va de la description à la recherche de pistes, puis au choix, à l’essai et au bilan. Le bilan permet de revenir à une autre piste.</desc>
+              <svg viewBox="0 0 360 586" role="img" aria-labelledby="method-title method-desc" xmlns="http://www.w3.org/2000/svg">
+                <title id="method-title">Du problème au bilan en six étapes</title>
+                <desc id="method-desc">Définir le problème, imaginer plusieurs solutions, comparer leurs avantages et leurs limites, choisir et préparer une action, l’essayer dans la réalité, puis évaluer le résultat et ajuster son choix.</desc>
                 <!-- Les flèches donnent le sens de lecture ; chaque case garde son sens sans la légende. -->
                 <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
                   <rect x="16" y="12" width="328" height="76" rx="15"/>
@@ -2054,12 +2077,13 @@
                   <rect x="16" y="204" width="328" height="76" rx="15"/>
                   <rect x="16" y="300" width="328" height="76" rx="15"/>
                   <rect x="16" y="396" width="328" height="76" rx="15"/>
+                  <rect x="16" y="492" width="328" height="76" rx="15"/>
                 </g>
-                <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/><circle cx="48" cy="434" r="19"/></g>
-                <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text><text x="48" y="440">5</text></g>
-                <g fill="#203b36" font-family="system-ui, sans-serif" font-size="18" font-weight="700"><text x="80" y="44">Décrire</text><text x="80" y="140">Chercher</text><text x="80" y="236">Choisir</text><text x="80" y="332">Essayer</text><text x="80" y="428">Faire le point</text></g>
-                <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Faits · but · obstacle</text><text x="80" y="162">Plusieurs pistes possibles</text><text x="80" y="258">Une piste faisable et sûre</text><text x="80" y="354">Une action concrète</text><text x="80" y="450">Garder, changer ou arrêter</text></g>
-                <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/></g>
+                <g fill="#24594d"><circle cx="48" cy="50" r="19"/><circle cx="48" cy="146" r="19"/><circle cx="48" cy="242" r="19"/><circle cx="48" cy="338" r="19"/><circle cx="48" cy="434" r="19"/><circle cx="48" cy="530" r="19"/></g>
+                <g fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700"><text x="48" y="56">1</text><text x="48" y="152">2</text><text x="48" y="248">3</text><text x="48" y="344">4</text><text x="48" y="440">5</text><text x="48" y="536">6</text></g>
+                <g fill="#203b36" font-family="system-ui, sans-serif" font-size="17" font-weight="700"><text x="80" y="44">Définir le problème</text><text x="80" y="140">Imaginer des solutions</text><text x="80" y="236">Comparer les solutions</text><text x="80" y="332">Choisir et préparer</text><text x="80" y="428">Essayer dans la réalité</text><text x="80" y="524">Évaluer et ajuster</text></g>
+                <g fill="#586962" font-family="system-ui, sans-serif" font-size="14"><text x="80" y="66">Faits · objectif · obstacle</text><text x="80" y="162">Plusieurs actions possibles</text><text x="80" y="258">Avantages · limites · risques</text><text x="80" y="354">Une solution · un premier pas</text><text x="80" y="450">Mettre ce pas en pratique</text><text x="80" y="546">Continuer, adapter ou changer</text></g>
+                <g fill="none" stroke="#24594d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><path d="M180 88v15m-5-5 5 5 5-5"/><path d="M180 184v15m-5-5 5 5 5-5"/><path d="M180 280v15m-5-5 5 5 5-5"/><path d="M180 376v15m-5-5 5 5 5-5"/><path d="M180 472v15m-5-5 5 5 5-5"/></g>
               </svg>
               <figcaption>Une piste peut aussi être de demander de l’aide ou une information. Après l’essai, je peux revenir à une étape précédente.</figcaption>
             </figure>
@@ -3157,7 +3181,7 @@
                 </p>
                 <small
                   >Document fourni par l’utilisateur, mars 2003, notamment p. 3,
-                  8 et 25–37. Pas de lien public vérifié. Une adaptation de la
+                  8 et 25–39. Pas de lien public vérifié. Une adaptation de la
                   démarche ne constitue pas le programme IPT complet.</small
                 >
               </div>
