@@ -264,6 +264,10 @@
           "Indicateur d’équilibrage",
           "Signe suivi pour vérifier qu’une amélioration recherchée ne crée pas un autre problème important ailleurs. Il complète l’indicateur du résultat principal.",
         ],
+        culturalFormulation: [
+          "Formulation culturelle",
+          "Façon d’explorer comment une personne comprend son problème, ce qui compte pour elle, les soutiens qu’elle souhaite et les obstacles qu’elle rencontre. L’entretien de formulation culturelle de l’APA est un outil clinique ; les questions ouvertes de ce site ne sont pas cet entretien.",
+        ],
       };
       // The first sentence is the quick hint; the existing glossary entry gives the full definition.
       const glossaryHelp = {
@@ -291,6 +295,7 @@
         evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
         sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
         balancingIndicator: ["Vérifier qu’un progrès ne crée pas un autre problème.", "Si l’équipe réduit le temps d’attente, elle vérifie aussi que les personnes ayant besoin de plus de temps reçoivent encore une aide adaptée.", 22],
+        culturalFormulation: ["Comprendre le point de vue de la personne.", "Je demande ce qui compte pour elle et quelle aide lui semblerait utile, sans supposer sa réponse à partir de son origine. L’entretien complet est un outil clinique distinct.", 41],
       };
       const comparisonExamples = {
         daily: [
@@ -492,7 +497,7 @@
         },
         care: {
           note: "Repères centrés sur les droits de la personne soignée. Une procédure contraignante exige une analyse clinique et juridique propre au pays ; l’outil ne tranche pas sa légalité.",
-          refs: "[11]",
+          refs: "[11, 43]",
           items: [
             [
               "Respect",

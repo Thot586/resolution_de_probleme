@@ -41,8 +41,8 @@
       function term(k, label = glossary[k][0].toLowerCase()) {
         return `<button type="button" class="glossary-button" data-term="${k}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button>`;
       }
-      const glossaryWord = /(indicateurs? d[’']équilibrage|données probantes|données personnelles|décision partagée|violentomètre|sondages?|restitution|indicateurs?|biais|consentement|efficacité)/giu;
-      const glossaryKeys = { "indicateur d’équilibrage": "balancingIndicator", "indicateurs d’équilibrage": "balancingIndicator", "indicateur d'équilibrage": "balancingIndicator", "indicateurs d'équilibrage": "balancingIndicator", "données probantes": "evidence", "données personnelles": "personalData", "décision partagée": "sharedDecision", violentomètre: "violentometer", sondage: "survey", sondages: "survey", restitution: "feedback", indicateur: "indicator", indicateurs: "indicator", biais: "bias", consentement: "consent", efficacité: "efficacy" };
+      const glossaryWord = /(indicateurs? d[’']équilibrage|données probantes|données personnelles|décision partagée|formulation culturelle|violentomètre|sondages?|restitution|indicateurs?|biais|consentement|efficacité)/giu;
+      const glossaryKeys = { "indicateur d’équilibrage": "balancingIndicator", "indicateurs d’équilibrage": "balancingIndicator", "indicateur d'équilibrage": "balancingIndicator", "indicateurs d'équilibrage": "balancingIndicator", "données probantes": "evidence", "données personnelles": "personalData", "décision partagée": "sharedDecision", "formulation culturelle": "culturalFormulation", violentomètre: "violentometer", sondage: "survey", sondages: "survey", restitution: "feedback", indicateur: "indicator", indicateurs: "indicator", biais: "bias", consentement: "consent", efficacité: "efficacy" };
       function linkGlossary(text) {
         return String(text).split(glossaryWord).map((part) => {
           const key = glossaryKeys[part.toLocaleLowerCase("fr")];
@@ -295,10 +295,10 @@
         const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(currentContext().label)}</small><p>${esc(text)}</p></div>`;
         return visible ? content : `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary>${content}</details>`;
       }
-      function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false) {
+      function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false, beforeInput = "") {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
+        return `<div class="field"><label class="label" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${beforeInput}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
       }
       function renderSteps() {
         const workflow = workflows[state.scale];
@@ -351,10 +351,13 @@
             ["obstacle", workflow.fields[4], c.prompts?.[2] || workflow.fields[5], c.examples?.obstacle || workflow.examples?.[2]],
           ];
           const [key, label, hint, sample] = prompts[state.clarifyPart];
+          const contextCheck = state.clarifyPart === 0
+            ? `<details class="context-check"><summary>${esc(workflow.contextCheckTitle)}</summary><div class="details-body"><p>${linkGlossary(workflow.contextCheck)}</p><p class="hint">Je peux noter ici ce qui m’aide à comprendre la situation, ou passer.</p><p class="source-note">Ces questions sont des pistes à adapter à ma situation. <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a></p></div></details>`
+            : "";
           body = `<p class="question-progress">Question ${state.clarifyPart + 1} sur 3 · Je peux passer si je ne sais pas encore.</p>` +
             (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "") +
             (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
-            field(key, label, hint, "textarea", sample, true) +
+            field(key, label, hint, "textarea", sample, true, contextCheck) +
             (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
         }
         if (i === 2) {

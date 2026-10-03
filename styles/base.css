@@ -515,6 +515,13 @@
         font-weight: 700;
         margin-bottom: 19px;
       }
+      .context-check {
+        margin-bottom: 14px;
+      }
+      .context-check summary {
+        padding: 10px 14px;
+        font-size: 0.83rem;
+      }
       .context-pick {
         max-width: 520px;
       }

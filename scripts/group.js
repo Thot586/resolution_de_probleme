@@ -20,7 +20,7 @@
           intro: "Je regarde ce qui est déjà connu. Puis je choisis avec le groupe la méthode la plus légère qui répond à une question utile.",
           points: [
             "Quelle question devra éclairer la décision ?",
-            "Qui invite-t-on, et qui peut manquer parmi les réponses ?",
+            "Qui invite-t-on ? La langue, l’horaire ou le format risquent-ils d’exclure quelqu’un ?",
             "Avant de recueillir des données, j’explique leur usage et je demande l’accord des participants.",
           ],
           note: "La question à éclairer, la méthode choisie et les personnes à écouter",
@@ -36,7 +36,7 @@
             survey: "Je propose trois questions courtes aux 12 bénévoles et précise qui pourra lire leurs réponses.",
             existing: "Je regarde les créneaux non pourvus du trimestre, puis je demande ce que ce tableau ne montre pas.",
           },
-          refs: [23, 26],
+          refs: [23, 25, 26],
         },
         {
           short: "Analyser",
@@ -67,13 +67,13 @@
           title: "Les personnes se reconnaissent-elles dans le résultat ?",
           intro: "Je rends les constats au groupe avant de fixer une solution. Je laisse une place aux corrections et aux désaccords.",
           points: [
-            "Je présente quelques constats clairs, avec leurs limites, sans dévoiler de réponse identifiable.",
+            "Je présente quelques constats clairs, avec leurs limites, dans une langue et un format compréhensibles, sans dévoiler de réponse identifiable.",
             "Je demande : « Qu’avons-nous mal compris ? Qu’est-ce qui manque ? »",
             "J’explique ce qui sera décidé ensuite, par qui, et quand le groupe aura un retour.",
           ],
           note: "Le retour prévu au groupe, les corrections et les questions encore ouvertes",
-          prompt: "Je note ce que je rendrai au groupe, comment recueillir ses corrections et la date du prochain retour.",
-          example: "Je partage trois constats sans citation reconnaissable, puis demande : « Qu’avons-nous oublié ? »",
+          prompt: "Je note ce que je rendrai au groupe, sous quelle forme, comment recueillir ses corrections et la date du prochain retour.",
+          example: "Je partage trois constats sans citation reconnaissable, dans le format convenu, puis demande : « Qu’avons-nous oublié ? »",
           refs: [23, 25, 27],
         },
         {
@@ -120,9 +120,9 @@
         },
       ];
       const groupMethods = {
-        conversation: "Une discussion suffit parfois pour un petit groupe. Je donne aussi la parole aux personnes discrètes ; les absents restent à prendre en compte.",
-        interviews: "Je rencontre des personnes aux situations différentes. Je note les thèmes sans attribuer les propos à une personne identifiable.",
-        survey: "Je teste quelques questions neutres et compréhensibles. Je note combien ont été invités et combien ont répondu ; je ne généralise pas au-delà du groupe consulté.",
+        conversation: "Une discussion suffit parfois pour un petit groupe. Je vérifie que chacun peut y participer librement et je propose une autre façon de répondre si nécessaire.",
+        interviews: "Je rencontre volontairement des personnes aux situations différentes, dans un format qui leur convient. Je note les thèmes sans attribuer les propos à une personne identifiable.",
+        survey: "Je teste que les questions et leur langue sont comprises par les personnes sollicitées. Je note combien ont été invités et combien ont répondu ; je ne généralise pas au-delà du groupe consulté.",
         existing: "Je vérifie la date, la définition et les lacunes des données déjà disponibles. Je les confronte à ce que vivent les personnes concernées.",
       };
       let groupIndex = 0;
