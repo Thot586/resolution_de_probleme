@@ -1,3 +1,10 @@
+      @font-face {
+        font-family: "Barlow Condensed";
+        src: url("assets/fonts/BarlowCondensed-Bold.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+      }
       :root {
         /* Trimobe: bleu du globe et bleu du mot-symbole. */
         --ink: #202b50;
@@ -13,7 +20,7 @@
         --red: #923f3b;
         --rose: #fff0ed;
         --shadow: 0 10px 35px #161f6e12;
-        --font-display: "Arial Narrow", "Liberation Sans Narrow", "Aptos Narrow", "Roboto Condensed", sans-serif;
+        --font-display: "Barlow Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
         --radius: 20px;
         font-size: 16px;
         color-scheme: light;
@@ -1028,9 +1035,9 @@
         top: 105px;
       }
       .meter-detail h3 {
-        font-family: Georgia, serif;
+        font-family: var(--font-display);
         font-size: 1.5rem;
-        font-weight: 500;
+        font-weight: 700;
         margin: 12px 0;
       }
       .meter-detail p {

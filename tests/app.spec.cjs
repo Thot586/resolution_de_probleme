@@ -18,10 +18,16 @@ const errors = [];
   await fs.mkdir(output, { recursive: true });
   const html = await fs.readFile(path.join(root, "index.html"));
   const logo = await fs.readFile(path.join(root, "assets", "trimobe-logo.jpeg"));
+  const displayFont = await fs.readFile(path.join(root, "assets", "fonts", "BarlowCondensed-Bold.ttf"));
   server = createServer((req, res) => {
     if (req.url === "/assets/trimobe-logo.jpeg") {
       res.setHeader("Content-Type", "image/jpeg");
       res.end(logo);
+      return;
+    }
+    if (req.url === "/assets/fonts/BarlowCondensed-Bold.ttf") {
+      res.setHeader("Content-Type", "font/ttf");
+      res.end(displayFont);
       return;
     }
     res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -43,6 +49,7 @@ const errors = [];
       external.push(r.url());
   });
   await page.goto(url);
+  assert.equal(await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((font) => font.family === "Barlow Condensed" && font.status === "loaded"); }), true);
   assert.equal(await page.locator('link[rel="icon"]').getAttribute('href'), 'assets/trimobe-logo.jpeg');
   assert.equal(await page.locator('.footer-logo').getAttribute('href'), 'https://trimobe.org/');
   assert.equal(await page.locator('.footer-logo img').evaluate((img) => img.complete && img.naturalWidth > 0), true);
