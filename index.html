@@ -225,14 +225,6 @@
         padding: 38px 32px 70px;
         margin: auto;
       }
-      .eyebrow {
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        font-size: 0.69rem;
-        font-weight: 750;
-        color: var(--brand);
-        margin-bottom: 10px;
-      }
       .intro {
         display: flex;
         justify-content: space-between;
@@ -321,12 +313,6 @@
         padding: 19px 14px;
         font-size: 0.84rem;
         color: var(--muted);
-      }
-      .side-note strong {
-        display: block;
-        color: var(--brand);
-        font-weight: 550;
-        margin-bottom: 4px;
       }
       .side-actions {
         border-top: 1px solid var(--line);
@@ -1415,10 +1401,6 @@
         .page-heading h1 {
           font-size: 2.1rem;
         }
-        .eyebrow {
-          font-size: 0.63rem;
-          margin-bottom: 8px;
-        }
         .steps {
           gap: 3px;
         }
@@ -1782,14 +1764,12 @@
         color: #fff;
         background: radial-gradient(circle at 93% 8%, #47856f 0, transparent 34%), linear-gradient(135deg, #173f35, #24594d);
       }
-      .welcome-hero .eyebrow { color: #c9edda; }
       .welcome-hero h1 { max-width: 780px; font-size: clamp(2.1rem, 4vw, 3.2rem); }
       .welcome-lead { max-width: 700px; margin-top: 14px; color: #e2f2e7; font-size: clamp(.98rem, 1.6vw, 1.08rem); line-height: 1.55; }
       .scale-entry { margin-top: 34px; }
       .path-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
       .path-heading h2 { margin-top: 4px; font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
       .path-heading p { max-width: 690px; margin-top: 8px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
-      .path-kicker { color: var(--brand); font-size: .7rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
       .method-overview { margin-top: 20px; padding: 20px; border: 1px solid #d3e1d5; border-radius: 18px; background: #f5f9f4; }
       .method-overview h3 { margin: 0 0 14px; font-size: 1.08rem; }
       .method-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: method-step; }
@@ -1815,7 +1795,6 @@
       .support-entry small { color: var(--muted); font-size: .88rem; }
       .support-entry > span:last-child { color: var(--brand); font-weight: 750; }
       .quick-paths { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 20px 4px; border-bottom: 1px solid var(--line); }
-      .quick-paths span { color: var(--muted); font-size: .85rem; font-weight: 700; }
       .quick-paths a { font-size: .88rem; }
       .welcome-explain { margin: 20px 0 12px; }
       .welcome-explain .text-button { display: inline-block; margin-top: 10px; }
@@ -1998,13 +1977,12 @@
         <section class="scale-entry" aria-labelledby="scale-entry-title">
           <div class="path-heading">
             <div>
-              <span class="path-kicker">Un problème à résoudre</span>
               <h2 id="scale-entry-title">Je veux agir sur un problème</h2>
               <p>Je pars d’une situation concrète : ce qui se passe, ce que je voudrais changer et ce qui m’en empêche. J’examine ensuite plusieurs solutions avant d’en essayer une et de voir ce qu’elle a changé.</p>
             </div>
           </div>
           <div class="method-overview" aria-labelledby="method-overview-title">
-            <h3 id="method-overview-title">Comment avancer, du problème au bilan</h3>
+            <h3 id="method-overview-title">Les six étapes</h3>
             <ol class="method-steps">
               <li><strong>Définir le problème</strong><span>Quels sont les faits, mon objectif et l’obstacle ?</span></li>
               <li><strong>Imaginer des solutions</strong><span>Quelles actions pourraient aider ? J’en note plusieurs.</span></li>
@@ -2042,7 +2020,6 @@
         <section class="help-others" aria-labelledby="help-others-title">
           <div class="path-heading">
             <div>
-              <span class="path-kicker">Une aide à apporter</span>
               <h2 id="help-others-title">Je veux soutenir d’autres personnes</h2>
               <p>Je pars de leurs besoins et de ce qu’elles souhaitent faire.</p>
             </div>
@@ -2058,19 +2035,18 @@
             </a>
           </div>
         </section>
-        <div class="quick-paths">
-          <span>Repères utiles</span>
+        <nav class="quick-paths" aria-label="Autres repères utiles">
           <a href="#proche">Comment aider un proche ? ↗</a>
           <a href="#violences">Repérer une violence selon la relation ↗</a>
           <a href="#securite">Trouver une aide urgente ↗</a>
-        </div>
+        </nav>
         <details class="welcome-explain">
           <summary>Voir les étapes en schéma</summary>
           <div class="details-body">
             <p class="journey-preface">Après le choix de la situation, l’outil me guide pour préciser le problème, imaginer des solutions, les comparer et préparer une action. Je fais l’essai dans la vie réelle, puis je reviens pour faire le point. Je peux revenir à une étape précédente.</p>
             <figure class="teaching-figure">
               <svg viewBox="0 0 360 586" role="img" aria-labelledby="method-title method-desc" xmlns="http://www.w3.org/2000/svg">
-                <title id="method-title">Du problème au bilan en six étapes</title>
+                <title id="method-title">Six étapes pour résoudre un problème</title>
                 <desc id="method-desc">Définir le problème, imaginer plusieurs solutions, comparer leurs avantages et leurs limites, choisir et préparer une action, l’essayer dans la réalité, puis évaluer le résultat et ajuster son choix.</desc>
                 <!-- Les flèches donnent le sens de lecture ; chaque case garde son sens sans la légende. -->
                 <g fill="#ffffff" stroke="#b9d3c4" stroke-width="2">
@@ -2096,7 +2072,6 @@
       <section id="outil" class="view" aria-label="Mon problème" hidden>
         <div class="intro">
           <div>
-            <div class="eyebrow">Exercice</div>
             <h1>Mon problème</h1>
             <p>Je pars d’une situation concrète. Je peux passer une question si je ne sais pas encore y répondre.</p>
           </div>
@@ -2110,8 +2085,7 @@
               <ol class="steps" id="mobile-steps"></ol>
             </details>
             <div class="side-note">
-              <strong>À mon rythme.</strong>Je peux revenir en arrière ou
-              faire une pause.
+              Je peux revenir en arrière ou faire une pause.
             </div>
             <div class="side-actions">
               <a class="text-button" id="recap-shortcut" href="#recap" hidden>Voir mes réponses ↗</a>
@@ -2162,7 +2136,6 @@
       <section id="soutenir" class="view" hidden>
         <div class="page-narrow support-journey">
           <div class="page-heading">
-            <div class="eyebrow">Écouter · Comprendre · Agir avec la personne</div>
             <h1>Soutenir quelqu’un, sans prendre sa place</h1>
             <p>Je propose mon aide sans présumer ce dont la personne a besoin. Je l’écoute si elle veut parler, puis nous choisissons une aide qui lui convient. Elle peut refuser ou changer d’avis.</p>
           </div>
@@ -2227,7 +2200,7 @@
           </article>
           <p class="support-related">J’aide un proche ? <a href="#proche">Voir les conseils adaptés à cette relation ↗</a></p>
           <details class="support-illustration">
-            <summary>Voir les quatre étapes en dessin</summary>
+            <summary>Voir les quatre étapes en schéma</summary>
             <div class="details-body">
           <figure class="teaching-figure">
             <svg viewBox="0 0 360 394" role="img" aria-labelledby="journey-title journey-desc" xmlns="http://www.w3.org/2000/svg">
@@ -2266,7 +2239,6 @@
       <section id="groupe" class="view" aria-labelledby="group-title" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Parcours collectif · Faciliter sans décider à la place du groupe</div>
             <h1 id="group-title">Aider un groupe à résoudre un problème</h1>
             <p>Je prépare une démarche avec les personnes concernées. Je peux commencer à l’étape utile et revenir en arrière.</p>
             <p class="hint">Ce guide ne crée pas de sondage et n’analyse pas les réponses : il m’aide à préparer les décisions avec le groupe.</p>
@@ -2276,7 +2248,7 @@
             <strong>Avant d’enquêter :</strong> le groupe doit pouvoir influencer une décision réelle. Je clarifie qui décide, ce qui peut changer et quand les personnes sauront ce qui a été retenu ou écarté, avec les raisons.
           </div>
           <details class="group-overview">
-            <summary>Voir la démarche en un dessin</summary>
+            <summary>Voir les étapes collectives en schéma</summary>
             <div class="details-body">
               <figure class="teaching-figure">
                 <svg viewBox="0 0 360 335" role="img" aria-labelledby="group-map-title group-map-desc" xmlns="http://www.w3.org/2000/svg">
@@ -2429,7 +2401,6 @@
       <section id="proche" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Être présent, sans prendre la place</div>
             <h1>Comment aider un proche ?</h1>
             <p>
               Commencez par demander si votre proche souhaite parler ou recevoir
@@ -2439,7 +2410,6 @@
             <p><a href="#soutenir">Voir d’abord la démarche pour soutenir quelqu’un ↗</a></p>
           </div>
           <div class="support-card card">
-            <span class="tag">La question de départ</span>
             <p class="support-question">
               « Tu préfères que je t’écoute, qu’on cherche des pistes, que je
               t’aide concrètement, ou qu’on en reparle plus tard ? »
@@ -2546,7 +2516,6 @@
       <section id="violences" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Reconnaître · Se protéger · Être soutenu</div>
             <h1>Repérer une violence selon la relation</h1>
             <p>
               Je choisis une relation pour voir des situations concrètes, ce
@@ -2634,7 +2603,6 @@
       <section id="comprendre" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Le pourquoi, à votre rythme</div>
             <h1>Comprendre la démarche</h1>
             <p>
               La résolution de problème transforme une difficulté en options et
@@ -2719,7 +2687,7 @@
             </details>
           </section>
           <details class="section-gap">
-            <summary>Pourquoi montrer les étapes avant l’exercice ?</summary>
+            <summary>Pourquoi voir les étapes avant de commencer ?</summary>
             <div class="details-body">
               <p>Une vue courte aide à savoir où l’on va. Les détails restent facultatifs pour ne pas charger la première page. Des exemples peuvent aider à commencer ; ils ne remplacent pas l’adaptation à sa propre situation. Ces choix s’appuient sur les principes de charge cognitive et d’apprentissage des adultes, sans preuve que cette interface précise soit supérieure à une autre. <a class="citation" href="#ref-20">[20]</a> <a class="citation" href="#ref-21">[21]</a></p>
               <p>Dans l’aide à autrui, nous demandons d’abord ce que la personne souhaite. En formation, l’autonomie et la sécurité dans la conversation favorisent un retour utilisable ; le rapport hiérarchique exige une attention particulière. <a class="citation" href="#ref-18">[18]</a> <a class="citation" href="#ref-19">[19]</a></p>
@@ -2732,7 +2700,7 @@
               <p>La transposition sur écran demande aussi de la prudence : lors de la conception d’un outil numérique de l’OMS pour la dépression, les auteurs ont retiré la partie « gestion des problèmes », jugée difficile à transmettre ainsi. Il s’agit d’un choix de conception dans ce contexte, pas d’une preuve qu’un autre parcours est toujours supérieur. Ici, les étapes restent des repères facultatifs ; l’aide d’une personne et les ressources adaptées peuvent être nécessaires. <a class="citation" href="#ref-50">[50]</a></p>
             </div>
           </details>
-          <h2 class="block-heading">Les principes</h2>
+          <h2 class="block-heading">Les étapes en pratique</h2>
           <details>
             <summary>1. Décrire les faits, le but et l’obstacle</summary>
             <div class="details-body">
@@ -2813,7 +2781,7 @@
             </div>
           </details>
           <details>
-            <summary>Le contexte social et culturel compte</summary>
+            <summary>Langue, ressources et règles : ce qui change mes options</summary>
             <div class="details-body">
               <p>
                 Le revenu, le logement, la langue, les discriminations ou les
@@ -2942,10 +2910,10 @@
               </p>
             </div>
           </details>
-          <h2 class="block-heading">À faire / À éviter</h2>
+          <h2 class="block-heading">Conseils pratiques</h2>
           <div class="two-col">
             <div class="procon">
-              <h3>✓ Des habitudes aidantes</h3>
+              <h3>✓ Ce qui aide</h3>
               <ul>
                 <li>Traiter un problème à la fois.</li>
                 <li>Choisir un but concret et réaliste.</li>
@@ -2954,7 +2922,7 @@
               </ul>
             </div>
             <div class="procon avoid">
-              <h3>× Des pièges fréquents</h3>
+              <h3>× Ce qui complique</h3>
               <ul>
                 <li>Attendre la solution parfaite.</li>
                 <li>Vouloir contrôler la réaction d’autrui.</li>
@@ -2984,8 +2952,7 @@
       <section id="securite" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">La sécurité passe avant l’exercice</div>
-            <h1>Vous n’avez pas à gérer cela seul.</h1>
+            <h1>Trouver une aide en cas de danger</h1>
             <p>
               Ces repères s’adressent à tous les pays. Les ressources
               disponibles et les modalités d’accès varient selon votre lieu de
@@ -3005,7 +2972,7 @@
           </div>
           <div class="two-col section-gap">
             <div class="card padded">
-              <h3>Une aide dans votre pays</h3>
+              <h3>Trouver une ligne d’écoute</h3>
               <p>
                 Recherchez une ligne d’écoute par pays et par besoin. Vérifiez
                 les horaires, langues et moyens de contact.
@@ -3175,7 +3142,6 @@
       <section id="bibliographie" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Transparence & sources</div>
             <h1>Bibliographie</h1>
             <p>
               Les études, les recommandations et les choix de conception sont
@@ -3835,7 +3801,6 @@
       <section id="recap" class="view" hidden>
         <div class="page-narrow">
           <div class="page-heading">
-            <div class="eyebrow">Ma fiche de travail</div>
             <h1>Mon prochain pas</h1>
             <p>
               Je peux modifier mes réponses. Seuls les éléments que j’ai
@@ -6439,7 +6404,7 @@
       }
       function renderNeedGuidance() {
         if (!selectedNeed) {
-          $("#need-guidance").innerHTML = '<h3>Je pars de ce qu’elle me dit</h3><p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
+          $("#need-guidance").innerHTML = '<p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
           $$("[data-need]").forEach((button) => button.setAttribute("aria-pressed", "false"));
           return;
         }

@@ -6,14 +6,12 @@
         color: #fff;
         background: radial-gradient(circle at 93% 8%, #47856f 0, transparent 34%), linear-gradient(135deg, #173f35, #24594d);
       }
-      .welcome-hero .eyebrow { color: #c9edda; }
       .welcome-hero h1 { max-width: 780px; font-size: clamp(2.1rem, 4vw, 3.2rem); }
       .welcome-lead { max-width: 700px; margin-top: 14px; color: #e2f2e7; font-size: clamp(.98rem, 1.6vw, 1.08rem); line-height: 1.55; }
       .scale-entry { margin-top: 34px; }
       .path-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
       .path-heading h2 { margin-top: 4px; font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
       .path-heading p { max-width: 690px; margin-top: 8px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
-      .path-kicker { color: var(--brand); font-size: .7rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
       .method-overview { margin-top: 20px; padding: 20px; border: 1px solid #d3e1d5; border-radius: 18px; background: #f5f9f4; }
       .method-overview h3 { margin: 0 0 14px; font-size: 1.08rem; }
       .method-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: method-step; }
@@ -39,7 +37,6 @@
       .support-entry small { color: var(--muted); font-size: .88rem; }
       .support-entry > span:last-child { color: var(--brand); font-weight: 750; }
       .quick-paths { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 20px 4px; border-bottom: 1px solid var(--line); }
-      .quick-paths span { color: var(--muted); font-size: .85rem; font-weight: 700; }
       .quick-paths a { font-size: .88rem; }
       .welcome-explain { margin: 20px 0 12px; }
       .welcome-explain .text-button { display: inline-block; margin-top: 10px; }

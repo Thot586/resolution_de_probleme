@@ -212,14 +212,6 @@
         padding: 38px 32px 70px;
         margin: auto;
       }
-      .eyebrow {
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        font-size: 0.69rem;
-        font-weight: 750;
-        color: var(--brand);
-        margin-bottom: 10px;
-      }
       .intro {
         display: flex;
         justify-content: space-between;
@@ -308,12 +300,6 @@
         padding: 19px 14px;
         font-size: 0.84rem;
         color: var(--muted);
-      }
-      .side-note strong {
-        display: block;
-        color: var(--brand);
-        font-weight: 550;
-        margin-bottom: 4px;
       }
       .side-actions {
         border-top: 1px solid var(--line);
@@ -1401,10 +1387,6 @@
         .intro h1,
         .page-heading h1 {
           font-size: 2.1rem;
-        }
-        .eyebrow {
-          font-size: 0.63rem;
-          margin-bottom: 8px;
         }
         .steps {
           gap: 3px;

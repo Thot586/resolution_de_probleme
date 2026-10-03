@@ -780,7 +780,7 @@
       }
       function renderNeedGuidance() {
         if (!selectedNeed) {
-          $("#need-guidance").innerHTML = '<h3>Je pars de ce qu’elle me dit</h3><p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
+          $("#need-guidance").innerHTML = '<p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
           $$("[data-need]").forEach((button) => button.setAttribute("aria-pressed", "false"));
           return;
         }
