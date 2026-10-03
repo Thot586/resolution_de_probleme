@@ -58,16 +58,12 @@ const errors = [];
     await page.locator(s).waitFor({ state: "visible", timeout: 5000 });
     assert(await page.locator(s).isVisible(), `${s} must be visible`);
   };
-  const step = async (n) => {
-    const desktopStep = page.locator(`#steps [data-step="${n}"]`);
-    if (await desktopStep.isVisible()) {
-      await desktopStep.click();
-    } else {
-      const picker = page.locator("#mobile-step-picker");
-      if (!(await picker.evaluate((el) => el.open))) await picker.locator("summary").click();
-      await page.locator(`#mobile-steps [data-step="${n}"]`).click();
-    }
+  const goStep = async (targetPage, n) => {
+    const picker = targetPage.locator("#mobile-step-picker");
+    if (!(await picker.evaluate((el) => el.open))) await picker.locator("summary").click();
+    await targetPage.locator(`#steps [data-step="${n}"]`).click();
   };
+  const step = async (n) => goStep(page, n);
   const next = async () => page.locator("[data-action=next]").click();
   const visit = async (hash) => {
     await page.evaluate((h) => {
@@ -149,44 +145,34 @@ const errors = [];
     "Accueil",
   );
   assert.equal(await page.evaluate(() => localStorage.length), 0);
-  assert.equal(await page.locator("#accueil .method-steps li:visible").count(), 6);
-  assert.match(await page.locator("#accueil .method-steps").innerText(), /Définir le problème[\s\S]*Imaginer des solutions[\s\S]*Comparer les solutions[\s\S]*Choisir et préparer[\s\S]*Essayer dans la réalité[\s\S]*Évaluer et ajuster/);
+  const homeStepNames = ["Commencer", "Clarifier", "Imaginer", "Choisir", "Agir", "Faire le point"];
+  const brief = page.locator("#accueil .welcome-explain");
+  assert.equal(await brief.evaluate((node) => node.open), false, "The six-step summary is closed by default");
+  assert.equal(await brief.locator(".method-list li").count(), 6);
+  assert.equal(await page.locator("#accueil .method-example").count(), 0, "No per-step examples on the home page");
+  assert.equal(await page.locator('#accueil a[href="#comprendre"]').count(), 0, "The method sources are not promoted on the home page");
+  assert.equal(await page.locator("#accueil .scale-entry h2").innerText(), "Pour commencer");
   assert.match(await page.locator("#accueil .scale-intro").innerText(), /questions et les exemples seront adaptés/);
   assert.equal(await page.locator('#accueil a[href="#soutenir"]').count(), 1);
   assert.equal(await page.locator('#accueil a[href="#groupe"]').count(), 1);
-  assert.equal(await page.locator("#accueil .method-steps details").count(), 6);
+  assert.equal(await page.locator("#accueil .help-others").evaluate((node) => node.open), false, "Support entries are folded by default");
   assert(await page.locator("#accueil .early-help").evaluate((node) => node.nextElementSibling.matches(".scale-entry")), "Safety links precede the exercise choices");
   assert.equal(await page.locator('#accueil .help-others a[href="#proche"]').count(), 1);
+  assert(await page.locator("#accueil .scale-card").last().evaluate((node) => node.getBoundingClientRect().bottom <= innerHeight), "All four level cards are visible without scrolling");
   await page.screenshot({ path: path.join(output, "desktop-home.png"), fullPage: true });
-  const methodItems = page.locator("#accueil .method-steps > li");
-  const firstMethod = methodItems.first().locator("details");
-  assert.equal(await firstMethod.evaluate((node) => node.open), false);
-  await firstMethod.locator("summary").click();
-  assert(await firstMethod.locator(".method-detail").isVisible());
-  assert.match(await firstMethod.locator(".method-detail").innerText(), /documents sous quinze jours/);
-  assert.deepEqual(await firstMethod.locator(".method-example").evaluateAll((nodes) => nodes.map((node) => node.dataset.level)), ["personal", "shared", "organization", "public"]);
-  const expandedWidth = await methodItems.first().evaluate((node) => ({ item: node.getBoundingClientRect().width, grid: node.parentElement.getBoundingClientRect().width }));
-  assert(expandedWidth.item >= expandedWidth.grid - 2, "An open step uses the available width");
-  await firstMethod.screenshot({ path: path.join(output, "desktop-method-expanded.png") });
+  await brief.locator("summary").click();
+  assert.deepEqual(await brief.locator(".method-list strong").allInnerTexts(), homeStepNames);
+  await brief.screenshot({ path: path.join(output, "desktop-method-expanded.png") });
   assert.equal(new URL(page.url()).hash, "");
   await axe("open-method-step");
-  await firstMethod.locator("summary").focus();
+  await brief.locator("summary").focus();
   await page.keyboard.press("Enter");
-  assert.equal(await firstMethod.evaluate((node) => node.open), false);
-  for (const item of await methodItems.all()) {
-    const details = item.locator("details");
-    await details.locator("summary").click();
-    assert.equal(await details.locator(".method-example").count(), 4, "Each step shows four contexts");
-    await details.locator("summary").click();
-  }
-  const secondMethod = methodItems.nth(1).locator("details");
-  await secondMethod.locator("summary").click();
-  assert.match(await secondMethod.locator("summary").innerText(), /liste de solutions possibles/);
-  assert.match(await secondMethod.locator(".method-detail").innerText(), /sites fiables[\s\S]*spécialiste[\s\S]*avant de choisir/);
-  const methodWidths = await methodItems.evaluateAll((nodes) => nodes.map((node) => ({ item: node.getBoundingClientRect().width, grid: node.parentElement.getBoundingClientRect().width })));
-  assert(methodWidths.every(({ item, grid }) => item >= grid - 2), "Opening any step leaves no empty grid cells");
-  await page.locator("#accueil .method-overview").screenshot({ path: path.join(output, "desktop-second-step-open.png") });
-  await secondMethod.locator("summary").click();
+  assert.equal(await brief.evaluate((node) => node.open), false);
+  await brief.locator("summary").click();
+  await visible("#accueil svg[aria-labelledby='method-title method-desc']");
+  assert.match(await page.locator("#accueil svg").textContent(), /Faire le point/);
+  await axe("method-diagram");
+  await brief.locator("summary").click();
   await visit("comprendre");
   await page.locator("#comprendre details").filter({ hasText: "D’où viennent les six étapes ?" }).locator("summary").click();
   const ipt = page.locator("#comprendre [data-term=ipt]").first();
@@ -209,7 +195,7 @@ const errors = [];
   await visit("accueil");
   await page.locator("#accueil .welcome-explain summary").click();
   await visible("#accueil svg[aria-labelledby='method-title method-desc']");
-  assert.match(await page.locator("#accueil svg").textContent(), /Évaluer et ajuster/);
+  assert.match(await page.locator("#accueil svg").textContent(), /Faire le point/);
   await axe("method-diagram");
   await page.locator("#accueil .welcome-explain summary").click();
   assert.equal(await page.locator("#accueil [data-start-scale]").count(), 4);
@@ -316,7 +302,7 @@ const errors = [];
           path: path.join(output, `context-${group.scale}-${key}.png`),
           fullPage: true,
         });
-      await contextPage.locator('#steps [data-step="1"]').click();
+      await goStep(contextPage, 1);
       assert.match(await contextPage.locator(".field-hint").innerText(), hint);
       assert.match(await contextPage.locator(".example-visible").innerText(), situation);
       assert.match(
@@ -328,12 +314,12 @@ const errors = [];
         /^#ref-\d+$/,
       );
       if (idea) {
-        await contextPage.locator('#steps [data-step="2"]').click();
+        await goStep(contextPage, 2);
         assert.match(await contextPage.locator(".example-visible").innerText(), idea);
-        await contextPage.locator('#steps [data-step="4"]').click();
+        await goStep(contextPage, 4);
         assert.match(await contextPage.locator(".example-visible").innerText(), action);
       }
-      await contextPage.locator('#steps [data-step="0"]').click();
+      await goStep(contextPage, 0);
     }
   }
   await contextPage.close();
@@ -350,11 +336,11 @@ const errors = [];
   };
   for (const [scale, actor] of Object.entries(actors)) {
     await flowPage.goto(url + `#outil-${scale}`);
-    await flowPage.locator('#steps [data-step="2"]').click();
+    await goStep(flowPage, 2);
     await flowPage.locator("#idea-1").fill("Un petit pas à examiner.");
-    await flowPage.locator('#steps [data-step="3"]').click();
+    await goStep(flowPage, 3);
     await flowPage.locator('[data-choose="1"]').click();
-    await flowPage.locator('#steps [data-step="4"]').click();
+    await goStep(flowPage, 4);
     const diagram = await openFlowDiagram(
       flowPage,
       "#action-decision-diagram",
@@ -416,11 +402,11 @@ const errors = [];
   await importPage.locator("#dialog-confirm").click();
   assert.equal(await importPage.locator("#context-select").inputValue(), "other");
   assert.match(await importPage.locator("#context-review").innerText(), /relis ce que j’ai écrit/);
-  await importPage.locator('#steps [data-step="1"]').click();
+  await goStep(importPage, 1);
   assert.equal(await importPage.locator("#field-situation").inputValue(), legacy.fields.situation);
-  await importPage.locator('#steps [data-step="3"]').click();
+  await goStep(importPage, 3);
   assert.equal(await importPage.locator('[data-choose="2"][aria-pressed="true"]').count(), 1);
-  await importPage.locator('#steps [data-step="4"]').click();
+  await goStep(importPage, 4);
   assert.equal(await importPage.locator("#field-action").inputValue(), legacy.fields.action);
   await importPage.locator(".file-options summary").click();
   const migratedDownload = importPage.waitForEvent("download");
@@ -448,9 +434,9 @@ const errors = [];
   assert.equal(await storedPage.locator("#context-select").inputValue(), "other");
   assert.match(await storedPage.locator("#context-review").innerText(), /contexte/);
   assert.deepEqual(await storedPage.evaluate(() => Object.keys(localStorage)), ["pas-a-pas.brouillon.v2"]);
-  await storedPage.locator('#steps [data-step="1"]').click();
+  await goStep(storedPage, 1);
   assert.equal(await storedPage.locator("#field-situation").inputValue(), legacy.fields.situation);
-  await storedPage.locator('#steps [data-step="0"]').click();
+  await goStep(storedPage, 0);
   await storedPage.locator("#context-select").selectOption("neighbors");
   await storedPage.reload();
   assert.equal(await storedPage.locator("#context-select").inputValue(), "neighbors");
@@ -476,7 +462,7 @@ const errors = [];
   await v2Page.evaluate(() => { location.hash = "outil"; });
   assert.equal(await v2Page.locator("#context-select").inputValue(), "colleague");
   assert.match(await v2Page.locator("#context-review").innerText(), /contexte/);
-  await v2Page.locator('#steps [data-step="1"]').click();
+  await goStep(v2Page, 1);
   assert.equal(await v2Page.locator("#field-situation").inputValue(), previousColleague.fields.situation);
   await v2Page.evaluate((draft) => {
     localStorage.setItem("pas-a-pas.brouillon.v2", JSON.stringify(draft));
@@ -484,9 +470,10 @@ const errors = [];
   await v2Page.reload();
   assert.equal(await v2Page.locator("#context-select").inputValue(), "colleague");
   assert.equal(await v2Page.locator("#context-review").count(), 0, "Current catalog needs no migration warning");
-  await v2Page.locator('#steps [data-step="1"]').click();
+  await goStep(v2Page, 1);
   assert.equal(await v2Page.locator("#field-situation").inputValue(), previousColleague.fields.situation);
   await v2Context.close();
+  await page.locator("#accueil .help-others summary").click();
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
   assert(await page.locator("#soutenir .support-safety").isVisible());
@@ -580,7 +567,17 @@ const errors = [];
     fullPage: true,
   });
   await axe("start");
+  assert.equal(await page.locator("[data-safety]").count(), 0, "The safety question has its own screen");
+  assert.equal(await page.locator('[data-action="back"]').isVisible(), false, "No back button on the first screen");
   await page.locator("#context-select").selectOption("work");
+  await next();
+  assert.equal(await page.locator("#context-select").count(), 0, "The situation choice is not repeated on the safety screen");
+  assert.equal(await page.locator("[data-safety]").count(), 3);
+  assert.equal(await page.locator("#step-title").innerText(), "Ma sécurité");
+  await axe("start-safety");
+  await page.locator('[data-action="back"]').click();
+  assert.equal(await page.locator("#context-select").inputValue(), "work", "Going back keeps the chosen situation");
+  await next();
   await page.locator("[data-safety=safe]").click();
   await next();
   assert.match(await page.locator(".question-progress").innerText(), /Question 1 sur 3/);
@@ -874,10 +871,10 @@ const errors = [];
     await relationPage.evaluate(() => { location.hash = "outil-shared"; });
     await relationPage.locator("#outil").waitFor({ state: "visible" });
     await relationPage.locator("#context-select").selectOption(relation);
-    await relationPage.locator('#steps [data-step="1"]').click();
+    await goStep(relationPage, 1);
     const sentence = `Situation conservée : ${relation}`;
     await relationPage.locator("#field-situation").fill(sentence);
-    await relationPage.locator('#steps [data-step="0"]').click();
+    await goStep(relationPage, 0);
     const destination = `#violences-${relation}`;
     const link = relationPage.locator(`#outil a[href="${destination}"]`).first();
     assert(await link.isVisible(), `${relation}: the context offers its matching violence guide`);
@@ -888,7 +885,7 @@ const errors = [];
     await relationPage.evaluate(() => { location.hash = "outil"; });
     await relationPage.locator("#outil").waitFor({ state: "visible" });
     assert.equal(await relationPage.locator("#context-select").inputValue(), relation);
-    await relationPage.locator('#steps [data-step="1"]').click();
+    await goStep(relationPage, 1);
     assert.equal(await relationPage.locator("#field-situation").inputValue(), sentence, `${relation}: returning preserves the draft`);
   }
   await relationPage.close();
@@ -1017,16 +1014,13 @@ const errors = [];
   assert.equal(earlyHelpLayout.position, "static", "The home safety links stay in the page flow on mobile");
   assert(earlyHelpLayout.top >= earlyHelpLayout.heroBottom - 1 && earlyHelpLayout.bottom <= earlyHelpLayout.choicesTop + 1, "Safety links sit between the introduction and the exercise");
   await page.screenshot({ path: path.join(output, "mobile-home.png"), fullPage: true });
-  const mobileMethod = page.locator("#accueil .method-steps details").nth(2);
-  await mobileMethod.locator("summary").click();
-  const mobileExamples = await mobileMethod.locator(".method-example").evaluateAll((nodes) => nodes.map((node) => ({ top: node.getBoundingClientRect().top, bottom: node.getBoundingClientRect().bottom })));
-  assert(mobileExamples.every((rect, index) => index === 0 || rect.top >= mobileExamples[index - 1].bottom), "Examples stack without overlap on mobile");
-  await overflow("open four examples on mobile");
-  await mobileMethod.screenshot({ path: path.join(output, "mobile-method-expanded.png") });
-  await axe("open-method-step-mobile");
-  await mobileMethod.locator("summary").click();
+  assert(await page.locator("#accueil .scale-card").first().evaluate((node) => node.getBoundingClientRect().bottom <= innerHeight), "The first level card is visible without scrolling on a phone");
   await page.locator("#accueil .welcome-explain summary").click();
-  await overflow("open method diagram mobile");
+  await overflow("open six steps on mobile");
+  await axe("open-method-step-mobile");
+  await page.locator("#accueil .help-others summary").click();
+  await overflow("open support entries on mobile");
+  await page.locator("#accueil .help-others summary").click();
   await page.locator("#accueil .teaching-figure").screenshot({ path: path.join(output, "method-mobile.png") });
   await visit("soutenir");
   await page.locator("#soutenir .support-illustration summary").click();
@@ -1062,8 +1056,8 @@ const errors = [];
   assert(!(await page.locator("#steps").isVisible()));
   assert.match(await page.locator("#mobile-step-summary").innerText(), /Étape 1 sur 6/);
   await page.locator("#mobile-step-picker summary").click();
-  assert(await page.locator('#mobile-steps [data-step="2"]').isVisible());
-  await page.locator('#mobile-steps [data-step="2"]').click();
+  assert(await page.locator('#steps [data-step="2"]').isVisible());
+  await page.locator('#steps [data-step="2"]').click();
   assert.match(await page.locator("#mobile-step-summary").innerText(), /Étape 3 sur 6/);
   assert(!(await page.locator("#mobile-step-picker").evaluate((el) => el.open)));
   await step(0);

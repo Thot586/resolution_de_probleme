@@ -38,6 +38,8 @@
         ["Agir", "Un premier pas"],
         ["Faire le point", "Après l’essai"],
       ];
+      let startPart = 0;
+      const startParts = () => (state.scaleChosen ? ["context", "safety"] : ["level"]);
       function term(k, label = glossary[k][0].toLowerCase()) {
         return `<button type="button" class="glossary-button" data-term="${k}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button>`;
       }
@@ -133,6 +135,7 @@
         state.scaleChosen = true;
         state.step = 0;
         state.clarifyPart = 0;
+        startPart = 0;
         if (!Object.hasOwn(contextCatalog[scale], state.context)) {
           state.context = "other";
           if (hasWriting()) state.reviewContext = true;
@@ -295,10 +298,10 @@
         const content = `<div class="example${visible ? " example-visible" : ""}"><small>Exemple fictif · ${esc(currentContext().label)}</small><p>${esc(text)}</p></div>`;
         return visible ? content : `<details class="example-help"><summary${label ? ` aria-label="Voir un exemple : ${esc(label)}"` : ""}>Voir un exemple</summary>${content}</details>`;
       }
-      function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false, beforeInput = "") {
+      function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false, beforeInput = "", hideLabel = false) {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${beforeInput}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
+        return `<div class="field"><label class="label${hideLabel ? " sr-only" : ""}" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${beforeInput}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
       }
       function renderSteps() {
         const workflow = workflows[state.scale];
@@ -309,7 +312,6 @@
           )
           .join("");
         $("#steps").innerHTML = links;
-        $("#mobile-steps").innerHTML = links;
         $("#mobile-step-summary").textContent = `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]} — ${workflow.steps[state.step]}`;
       }
       function renderStep(focus = false, focusQuestion = false) {
@@ -322,27 +324,31 @@
         const titles = workflow.titles;
         const leads = workflow.leads;
         let body = "";
+        const startScreen = i === 0 ? startParts()[Math.min(startPart, startParts().length - 1)] : "";
         if (i === 0) {
           const scaleButtons = Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("");
-          const scaleChoice = state.scaleChosen
-            ? `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong><span>${scales[state.scale][1]}</span></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>`
-            : `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
-          const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
-          const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
-          const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
-          const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
-          body = `${scaleChoice}${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}<fieldset class="section-gap"><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
-            ["safe", "Oui, je peux réfléchir"],
-            ["unsure", "J’ai un doute"],
-            ["danger", "Je me sens en danger"],
-          ]
-            .map(
-              ([k, v]) =>
-                `<button class="pill" type="button" data-safety="${k}" aria-pressed="${state.safety === k}">${v}</button>`,
-            )
-            .join(
-              "",
-            )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="${violenceRouteForContext()}">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="${violenceRouteForContext()}">Voir les repères de violence</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="${violenceRouteForContext()}">Voir les repères de sécurité</a>.</p>`}`;
+          if (startScreen === "level") {
+            body = `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
+          } else if (startScreen === "context") {
+            const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
+            const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
+            const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
+            const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
+            body = `<div class="selected-level" id="selected-level"><span class="tag">Niveau choisi</span><strong>${scales[state.scale][0]}</strong></div><details class="change-level" id="change-level"><summary>Changer de niveau</summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick section-gap"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
+          } else {
+            body = `<fieldset><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+              ["safe", "Oui, je peux réfléchir"],
+              ["unsure", "J’ai un doute"],
+              ["danger", "Je me sens en danger"],
+            ]
+              .map(
+                ([k, v]) =>
+                  `<button class="pill" type="button" data-safety="${k}" aria-pressed="${state.safety === k}">${v}</button>`,
+              )
+              .join(
+                "",
+              )}</div></fieldset>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="${violenceRouteForContext()}">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="${violenceRouteForContext()}">Voir les repères de violence</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="${violenceRouteForContext()}">Voir les repères de sécurité</a>.</p>`}`;
+          }
         }
         if (i === 1) {
           const prompts = [
@@ -359,7 +365,7 @@
           body = `<div class="question-orientation"><h3 id="question-title" tabindex="-1"><span class="question-progress">Question ${state.clarifyPart + 1} sur 3</span>${questionTitles[state.clarifyPart]}</h3><div class="question-segments" aria-hidden="true">${questionMarkers}</div><p class="hint question-skip">Je peux passer si je ne sais pas encore.</p></div>` +
             (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "") +
             (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
-            field(key, label, hint, "textarea", sample, true, contextCheck) +
+            field(key, label, hint, "textarea", sample, true, contextCheck, label === questionTitles[state.clarifyPart]) +
             (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
         }
         if (i === 2) {
@@ -405,7 +411,7 @@
           body += `<details class="section-gap"><summary>Outil utile ici : ${esc(name)}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${esc(source)}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${i === 0 ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         $("#step-container").classList.toggle("question-transition", focusQuestion && i === 1);
         if (focus) {
           const focusTarget = focusQuestion && i === 1 ? $("#question-title") : $("#step-title");
@@ -418,7 +424,7 @@
           });
         }
       }
-      function changeStep(i) {
+      function changeStep(i, keepStartPart = false) {
         if (i > 0 && !state.scaleChosen) {
           state.step = 0;
           renderStep(true);
@@ -428,6 +434,7 @@
         }
         const destination = Math.max(0, Math.min(5, i));
         if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
+        if (destination === 0 && state.step !== 0 && !keepStartPart) startPart = 0;
         state.step = destination;
         persist();
         $("#mobile-step-picker").open = false;
@@ -440,6 +447,11 @@
         if (state.step === 0 && !state.scaleChosen) {
           toast("Choisissez d’abord le niveau du problème.");
           $(".scale-option")?.focus();
+          return;
+        }
+        if (state.step === 0 && startPart < startParts().length - 1) {
+          startPart++;
+          renderStep(true);
           return;
         }
         if (state.step === 1) {
@@ -1072,11 +1084,17 @@
             goNext();
             break;
           case "back":
-            if (state.step === 1 && state.clarifyPart > 0) {
+            if (state.step === 0 && startPart > 0) {
+              startPart--;
+              renderStep(true);
+            } else if (state.step === 1 && state.clarifyPart > 0) {
               state.clarifyPart--;
               persist();
               renderStep(true, true);
-            } else changeStep(state.step - 1);
+            } else {
+              if (state.step === 1) startPart = startParts().length - 1;
+              changeStep(state.step - 1, state.step === 1);
+            }
             break;
           case "pause":
             state.energy = "pause";
