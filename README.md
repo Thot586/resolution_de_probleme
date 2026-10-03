@@ -11,7 +11,7 @@ npm test
 npm run test:print
 ```
 
-`index.html` est généré à partir de `index.template.html`, des pages de `pages/`, des styles de `styles/` et des scripts de `scripts/`. Le fichier généré reste autonome pour un hébergement statique. Après chaque modification des sources, lancer `npm run build` et inclure le fichier généré dans le changement.
+`index.html` est généré à partir de `index.template.html`, des pages de `pages/`, des styles de `styles/` et des scripts de `scripts/`. Pour l'hébergement statique, publier aussi `assets/trimobe-logo.jpeg` (favicon et logo du pied de page). Après chaque modification des sources, lancer `npm run build` et inclure le fichier généré dans le changement.
 
 Les tests navigateur demandent Chromium pour Playwright : `npx playwright install chromium`. Sur Windows, définir `QA_OUTPUT` vers un dossier accessible pour les captures et rapports. Aucun service, compte ou base de données n'est requis pour utiliser la page.
 

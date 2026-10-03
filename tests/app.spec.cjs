@@ -17,7 +17,13 @@ const errors = [];
 (async () => {
   await fs.mkdir(output, { recursive: true });
   const html = await fs.readFile(path.join(root, "index.html"));
+  const logo = await fs.readFile(path.join(root, "assets", "trimobe-logo.jpeg"));
   server = createServer((req, res) => {
+    if (req.url === "/assets/trimobe-logo.jpeg") {
+      res.setHeader("Content-Type", "image/jpeg");
+      res.end(logo);
+      return;
+    }
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.end(html);
   });
@@ -37,6 +43,10 @@ const errors = [];
       external.push(r.url());
   });
   await page.goto(url);
+  assert.equal(await page.locator('link[rel="icon"]').getAttribute('href'), 'assets/trimobe-logo.jpeg');
+  assert.equal(await page.locator('.footer-logo').getAttribute('href'), 'https://trimobe.org/');
+  assert.equal(await page.locator('.footer-logo img').evaluate((img) => img.complete && img.naturalWidth > 0), true);
+  assert.match(await page.locator('.footer-credit').innerText(), /Dr FENOHASINA T\.J\. Felicien.*Psychiatre.*Analyste de donnée.*Développeur d'application web/);
   const visible = async (s) => {
     await page.locator(s).waitFor({ state: "visible", timeout: 5000 });
     assert(await page.locator(s).isVisible(), `${s} must be visible`);
@@ -567,6 +577,9 @@ const errors = [];
   await page.locator("[data-safety=safe]").click();
   await next();
   assert.match(await page.locator(".question-progress").innerText(), /Question 1 sur 3/);
+  assert.match(await page.locator("#question-title").innerText(), /Ce qui se passe/);
+  assert.equal(await page.locator(".question-segments .is-current").count(), 1);
+  assert.equal(await page.locator(".question-segments .is-past").count(), 0);
   assert(await page.locator(".example-visible").isVisible());
   assert.match(
     await page.locator(".example-visible").innerText(),
@@ -578,11 +591,21 @@ const errors = [];
     .fill("Deux dossiers à remettre le même jour.");
   await next();
   assert.match(await page.locator(".question-progress").innerText(), /Question 2 sur 3/);
+  assert.match(await page.locator("#question-title").innerText(), /Ce que je voudrais changer/);
+  assert.equal(await page.evaluate(() => document.activeElement?.id), "question-title");
+  assert.equal(await page.locator(".question-segments .is-past").count(), 1);
+  assert.equal(await page.locator(".question-orientation").evaluate((el) => getComputedStyle(el).animationName), "none");
+  assert(await page.locator("#question-title").evaluate((el) => el.getBoundingClientRect().top >= document.querySelector("header").getBoundingClientRect().bottom - 2));
+  await page.locator("#step-container").screenshot({ path: path.join(output, "desktop-question-2.png") });
   assert(await page.locator("#field-goal").isVisible());
   assert.equal(await page.locator("#field-obstacle").count(), 0);
   await page.locator("#field-goal").fill("Demander un ordre de priorité.");
   await next();
   assert.match(await page.locator(".question-progress").innerText(), /Question 3 sur 3/);
+  assert.match(await page.locator("#question-title").innerText(), /Ce qui bloque/);
+  assert.equal(await page.evaluate(() => document.activeElement?.id), "question-title");
+  assert.equal(await page.locator(".question-segments .is-past").count(), 2);
+  await page.locator("#step-container").screenshot({ path: path.join(output, "desktop-question-3.png") });
   assert(await page.locator("#field-obstacle").isVisible());
   await page.locator("#field-obstacle").fill("Le temps manque.");
   assert(!(await page.locator(".optional-fields .details-body").first().isVisible()));

@@ -312,7 +312,7 @@
         $("#mobile-steps").innerHTML = links;
         $("#mobile-step-summary").textContent = `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]} — ${workflow.steps[state.step]}`;
       }
-      function renderStep(focus = false) {
+      function renderStep(focus = false, focusQuestion = false) {
         hideTooltip();
         renderSteps();
         updateRecapShortcut();
@@ -354,7 +354,9 @@
           const contextCheck = state.clarifyPart === 0
             ? `<details class="context-check"><summary>${esc(workflow.contextCheckTitle)}</summary><div class="details-body"><p>${linkGlossary(workflow.contextCheck)}</p><p class="hint">Je peux noter ici ce qui m’aide à comprendre la situation, ou passer.</p><p class="source-note">Ces questions sont des pistes à adapter à ma situation. <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a></p></div></details>`
             : "";
-          body = `<p class="question-progress">Question ${state.clarifyPart + 1} sur 3 · Je peux passer si je ne sais pas encore.</p>` +
+          const questionTitles = ["Ce qui se passe", "Ce que je voudrais changer", "Ce qui bloque"];
+          const questionMarkers = [0, 1, 2].map((part) => `<span class="${part < state.clarifyPart ? "is-past" : part === state.clarifyPart ? "is-current" : ""}"></span>`).join("");
+          body = `<div class="question-orientation"><h3 id="question-title" tabindex="-1"><span class="question-progress">Question ${state.clarifyPart + 1} sur 3</span>${questionTitles[state.clarifyPart]}</h3><div class="question-segments" aria-hidden="true">${questionMarkers}</div><p class="hint question-skip">Je peux passer si je ne sais pas encore.</p></div>` +
             (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "") +
             (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "") +
             field(key, label, hint, "textarea", sample, true, contextCheck) +
@@ -403,12 +405,14 @@
           body += `<details class="section-gap"><summary>Outil utile ici : ${esc(name)}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${esc(source)}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${i === 0 ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? "Question suivante" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><span class="tag">${String(i + 1).padStart(2, "0")} / ${String(6).padStart(2, "0")} · ${stepNames[i][0]}</span><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${titles[i]}</h2>${leads[i] ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${i === 0 ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+        $("#step-container").classList.toggle("question-transition", focusQuestion && i === 1);
         if (focus) {
-          $("#step-title").focus({ preventScroll: true });
-          $("#step-container").scrollIntoView({
+          const focusTarget = focusQuestion && i === 1 ? $("#question-title") : $("#step-title");
+          focusTarget.focus({ preventScroll: true });
+          focusTarget.scrollIntoView({
             block: "start",
-            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+            behavior: focusQuestion || matchMedia("(prefers-reduced-motion: reduce)").matches
               ? "instant"
               : "smooth",
           });
@@ -442,7 +446,7 @@
           if (state.clarifyPart < 2) {
             state.clarifyPart++;
             persist();
-            renderStep(true);
+            renderStep(true, true);
             return;
           }
           state.reviewScale = false;
@@ -1071,7 +1075,7 @@
             if (state.step === 1 && state.clarifyPart > 0) {
               state.clarifyPart--;
               persist();
-              renderStep(true);
+              renderStep(true, true);
             } else changeStep(state.step - 1);
             break;
           case "pause":
