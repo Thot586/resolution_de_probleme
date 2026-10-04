@@ -338,3 +338,163 @@
         border-color: var(--brand);
         box-shadow: 0 0 0 3px #285b9d26;
       }
+
+      /* ---- Mouvement : chaque effet est un bonus (rien n'en dépend) et s'éteint si la personne demande moins d'animations ---- */
+      @supports (interpolate-size: allow-keywords) {
+        :root {
+          interpolate-size: allow-keywords;
+        }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        /* Retours au toucher et au survol. */
+        .btn,
+        .pill,
+        .scale-card,
+        .scale-option,
+        .step-link,
+        .help-button,
+        .menu-toggle,
+        #navigation a,
+        summary {
+          transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.18s ease, transform 0.12s ease;
+        }
+        @media (hover: hover) {
+          .btn:hover,
+          .pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px #161f6e1c;
+          }
+          details > summary:hover {
+            background: #f6f9fe;
+          }
+        }
+        .btn:active,
+        .pill:active {
+          transform: scale(0.985);
+          box-shadow: none;
+        }
+        /* Les volets s'ouvrent et se ferment en glissant (Chrome 131+, Firefox 143+, Safari 18.4+ ; ailleurs, instantané). */
+        @supports selector(::details-content) {
+          details::details-content {
+            block-size: 0;
+            overflow-y: clip;
+            transition: block-size 0.28s ease, content-visibility 0.28s ease allow-discrete;
+          }
+          details[open]::details-content {
+            block-size: auto;
+          }
+        }
+        /* Fenêtres : fondu et léger glissement à l'ouverture, et à la fermeture là où le navigateur le permet. */
+        dialog,
+        dialog::backdrop {
+          transition: opacity 0.22s ease, transform 0.22s ease, overlay 0.22s ease allow-discrete, display 0.22s ease allow-discrete;
+        }
+        dialog {
+          opacity: 0;
+          transform: translateY(10px) scale(0.98);
+        }
+        dialog[open] {
+          opacity: 1;
+          transform: none;
+        }
+        dialog::backdrop {
+          opacity: 0;
+        }
+        dialog[open]::backdrop {
+          opacity: 1;
+        }
+        @starting-style {
+          dialog[open] {
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+          }
+          dialog[open]::backdrop {
+            opacity: 0;
+          }
+        }
+        .term-dialog {
+          transform: translateX(28px);
+        }
+        @starting-style {
+          .term-dialog[open] {
+            transform: translateX(28px);
+          }
+        }
+        @media (max-width: 600px) {
+          .term-dialog {
+            transform: translateY(28px);
+          }
+          @starting-style {
+            .term-dialog[open] {
+              transform: translateY(28px);
+            }
+          }
+        }
+        .toast:not([hidden]) {
+          animation: toast-in 0.22s ease-out;
+        }
+        @keyframes toast-in {
+          from {
+            opacity: 0;
+            transform: translate(-50%, 8px);
+          }
+        }
+        /* Changement de page : la page qui apparaît entre en fondu court. Simple animation CSS : aucun instantané de la page,
+           aucun délai, aucun appui perdu, et même rendu partout. (L'API View Transitions a été écartée : elle plantait ou
+           bloquait la page dans WebKit.) */
+        .view:not([hidden]) {
+          animation: page-in 0.22s ease-out;
+        }
+        @keyframes page-in {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+        }
+        /* L'en-tête prend une ombre dès qu'on défile (Chrome 115+, Safari 26+). */
+        @supports (animation-timeline: scroll()) {
+          header {
+            animation: header-lift linear both;
+            animation-timeline: scroll(root block);
+            animation-range: 0 72px;
+          }
+          @keyframes header-lift {
+            from {
+              box-shadow: 0 0 0 #161f6e00;
+            }
+            to {
+              box-shadow: 0 8px 28px #161f6e18;
+            }
+          }
+        }
+      }
+
+      /* ---- Typographie : coupures de lignes plus soignées (bonus : ignoré tel quel par un navigateur qui ne connaît pas) ---- */
+      h1,
+      h2,
+      h3,
+      legend,
+      .choice-title,
+      .scale-card strong,
+      .tag {
+        text-wrap: balance;
+      }
+      p,
+      li,
+      .hint,
+      .details-body {
+        text-wrap: pretty;
+      }
+      body {
+        font-kerning: normal;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+      .step-counter,
+      #progress-label,
+      #group-progress-label {
+        font-variant-numeric: tabular-nums;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }

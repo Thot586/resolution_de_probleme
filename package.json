@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node tests/app.spec.cjs",
-    "test:print": "node tests/print.spec.cjs"
+    "test:print": "node tests/print.spec.cjs",
+    "test:engines": "node tests/engines.spec.cjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",

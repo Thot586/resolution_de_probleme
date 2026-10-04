@@ -48,6 +48,7 @@ const choose = async (target, selector, value) => {
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1050 },
     reducedMotion: "reduce",
+    colorScheme: process.env.QA_SCHEME === "dark" ? "dark" : "light",
     acceptDownloads: true,
   });
   const page = await context.newPage();
@@ -1525,7 +1526,7 @@ const choose = async (target, selector, value) => {
   await tp.locator("#groupe [data-term=survey]").first().tap();
   assert(await tp.locator("#term-dialog").isVisible());
   await tp.locator("#term-close").tap();
-  assert(!(await tp.locator("#term-dialog").isVisible()));
+  await tp.locator("#term-dialog").waitFor({ state: "hidden" }); // with animations on, the dialog fades out before it is hidden
   await touch.close();
   // Storage failure remains usable, and source content has a no-JS fallback.
   const blocked = await browser.newContext();
