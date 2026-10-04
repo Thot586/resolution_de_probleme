@@ -982,7 +982,6 @@
       }
       .violence-urgent strong { color: #6d302b; }
       .violence-empty { margin-top: 20px; color: var(--muted); }
-      #violence-context { max-width: 490px; }
       #violence-return { display: inline-block; }
       .meter {
         display: grid;

@@ -103,7 +103,7 @@
       .fiche-line a { color: var(--brand); font-weight: 600; }
       .primary-ask { margin-top: 18px; padding: clamp(18px, 3vw, 28px); border: 2px solid #9cb6d9; border-radius: 18px; background: linear-gradient(180deg, #eef4fc, #f8faff); }
       .primary-ask > .label, .primary-ask legend { margin: 0 0 16px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.45rem, 3vw, 1.85rem); font-weight: 700; line-height: 1.2; }
-      .primary-ask select, .primary-ask #violence-context { max-width: none; min-height: 58px; border: 2px solid var(--brand); background: #fff; font-size: 1.05rem; }
+      .primary-ask select { max-width: none; min-height: 58px; border: 2px solid var(--brand); background: #fff; font-size: 1.05rem; }
       .context-pick.primary-ask { max-width: none; }
       .answer-tag { display: none; }
       .primary-ask .answer-tag { display: block; margin: 0 0 6px; color: var(--brand); font-size: .74rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
@@ -160,7 +160,6 @@
       .group-overview .teaching-figure { margin-bottom: 0; }
       .group-layout { display: grid; grid-template-columns: minmax(180px, 250px) minmax(0, 1fr); align-items: start; gap: 20px; }
       .group-rail { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: #f6f8fd; }
-      .group-rail select { width: 100%; }
       .group-rail .hint { margin: 16px 0; }
       .group-step-card { min-width: 0; padding: clamp(20px, 3vw, 32px); }
       .group-step-card h2 { margin: 20px 0 10px; font-size: clamp(1.5rem, 2.5vw, 2rem); }
@@ -205,7 +204,6 @@
       .need-lab { margin-top: 18px; }
       .need-heading { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
       .need-start-hint { margin: 0 0 16px; color: var(--muted); font-size: .88rem; }
-      .need-lab select { max-width: 390px; }
       .need-guidance { padding: 22px; margin-top: 20px; border-left: 4px solid var(--brand); border-radius: 0 14px 14px 0; background: #edf3fb; }
       .need-guidance .say { margin: 14px 0; }
       .need-guidance .hint { margin-top: 12px; }

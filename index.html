@@ -996,7 +996,6 @@
       }
       .violence-urgent strong { color: #6d302b; }
       .violence-empty { margin-top: 20px; color: var(--muted); }
-      #violence-context { max-width: 490px; }
       #violence-return { display: inline-block; }
       .meter {
         display: grid;
@@ -1861,7 +1860,7 @@
       .fiche-line a { color: var(--brand); font-weight: 600; }
       .primary-ask { margin-top: 18px; padding: clamp(18px, 3vw, 28px); border: 2px solid #9cb6d9; border-radius: 18px; background: linear-gradient(180deg, #eef4fc, #f8faff); }
       .primary-ask > .label, .primary-ask legend { margin: 0 0 16px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.45rem, 3vw, 1.85rem); font-weight: 700; line-height: 1.2; }
-      .primary-ask select, .primary-ask #violence-context { max-width: none; min-height: 58px; border: 2px solid var(--brand); background: #fff; font-size: 1.05rem; }
+      .primary-ask select { max-width: none; min-height: 58px; border: 2px solid var(--brand); background: #fff; font-size: 1.05rem; }
       .context-pick.primary-ask { max-width: none; }
       .answer-tag { display: none; }
       .primary-ask .answer-tag { display: block; margin: 0 0 6px; color: var(--brand); font-size: .74rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
@@ -1918,7 +1917,6 @@
       .group-overview .teaching-figure { margin-bottom: 0; }
       .group-layout { display: grid; grid-template-columns: minmax(180px, 250px) minmax(0, 1fr); align-items: start; gap: 20px; }
       .group-rail { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: #f6f8fd; }
-      .group-rail select { width: 100%; }
       .group-rail .hint { margin: 16px 0; }
       .group-step-card { min-width: 0; padding: clamp(20px, 3vw, 32px); }
       .group-step-card h2 { margin: 20px 0 10px; font-size: clamp(1.5rem, 2.5vw, 2rem); }
@@ -1963,7 +1961,6 @@
       .need-lab { margin-top: 18px; }
       .need-heading { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
       .need-start-hint { margin: 0 0 16px; color: var(--muted); font-size: .88rem; }
-      .need-lab select { max-width: 390px; }
       .need-guidance { padding: 22px; margin-top: 20px; border-left: 4px solid var(--brand); border-radius: 0 14px 14px 0; background: #edf3fb; }
       .need-guidance .say { margin: 14px 0; }
       .need-guidance .hint { margin-top: 12px; }
@@ -2001,6 +1998,347 @@
       @media (max-width: 360px) {
         #group-method-diagram svg, .decision-guide svg { min-width: 300px; }
         .diagram-scroll-hint { display: block; }
+      }
+
+      /* Contrôles natifs améliorés, faits maison (aucune bibliothèque). Chaque amélioration se dégrade proprement :
+         sans le CSS récent, le contrôle reste un vrai bouton radio, un vrai <details>, un vrai <dialog>. */
+      :root {
+        --line-strong: #9cb6d9;
+        --focus-ring: #a06c25;
+      }
+
+      /* ---- Choix unique : <choice-group> (cartes ou pastilles), vrais boutons radio ---- */
+      choice-group {
+        display: block;
+        container-type: inline-size;
+      }
+      .choice-set {
+        display: grid;
+        gap: 22px;
+      }
+      .choice-fieldset {
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      .choice-legend {
+        display: block;
+        margin: 0 0 9px;
+        padding: 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr));
+        gap: 10px;
+      }
+      .choice {
+        position: relative;
+        display: block;
+        min-width: 0;
+      }
+      .choice > input {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .choice-body {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        height: 100%;
+        min-height: 56px;
+        padding: 12px 16px;
+        border: 1.5px solid var(--line);
+        border-radius: 14px;
+        background: var(--white);
+        color: var(--ink);
+        font-size: 1rem;
+        font-weight: 560;
+        line-height: 1.3;
+        transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      .choice-mark {
+        position: relative;
+        flex: none;
+        box-sizing: border-box;
+        width: 22px;
+        height: 22px;
+        border: 2px solid var(--line-strong);
+        border-radius: 50%;
+        background: var(--white);
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+      }
+      .choice-mark::after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid var(--white);
+        border-width: 0 2.5px 2.5px 0;
+        transform: rotate(45deg) scale(0);
+        transition: transform 0.15s ease;
+      }
+      .choice-text {
+        display: block;
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+      .choice-hint {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 0.86rem;
+        font-weight: 450;
+      }
+      @media (hover: hover) {
+        .choice:hover > input:not(:checked) + .choice-body {
+          border-color: var(--brand);
+          background: var(--mint);
+        }
+      }
+      .choice > input:checked + .choice-body {
+        border-color: var(--brand);
+        background: var(--mint);
+        box-shadow: inset 0 0 0 1px var(--brand);
+        color: var(--deep);
+      }
+      .choice > input:checked + .choice-body .choice-mark {
+        border-color: var(--brand);
+        background: var(--brand);
+      }
+      .choice > input:checked + .choice-body .choice-mark::after {
+        transform: rotate(45deg) scale(1);
+      }
+      .choice > input:focus-visible + .choice-body {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 3px;
+      }
+      .choice-set .choice-legend {
+        margin: 0 0 9px;
+        color: var(--muted);
+        font-family: inherit;
+        font-size: 0.82rem;
+        font-weight: 700;
+        line-height: 1.4;
+        letter-spacing: 0.02em;
+      }
+      /* Choix replié : une ligne « Relation choisie : … Changer » une fois le choix fait. */
+      .choice-fold {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+      .choice-fold > summary {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 2px 12px;
+        padding: 12px 16px;
+        border: 1.5px solid var(--brand);
+        border-radius: 14px;
+        background: var(--white);
+        box-shadow: inset 0 0 0 1px var(--brand);
+        font-size: 1rem;
+        font-weight: 560;
+      }
+      .choice-fold > summary:after,
+      .choice-fold[open] > summary:after {
+        content: none;
+      }
+      .choice-fold-body {
+        display: grid;
+        gap: 22px;
+      }
+      .choice-fold[open] > summary {
+        border-bottom: 1.5px solid var(--brand);
+        margin-bottom: 14px;
+      }
+      .choice-summary-label {
+        grid-column: 1 / -1;
+        color: var(--muted);
+        font-size: 0.86rem;
+        font-weight: 560;
+      }
+      .choice-summary-value {
+        grid-column: 1;
+        min-width: 0;
+        color: var(--deep);
+        font-weight: 700;
+        overflow-wrap: anywhere;
+      }
+      .choice-summary-action {
+        grid-column: 2;
+        grid-row: 2;
+        white-space: nowrap;
+        padding: 5px 13px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: var(--mint);
+        color: var(--brand);
+        font-size: 0.84rem;
+        font-weight: 650;
+      }
+      .choice-fold.is-empty .choice-summary-action,
+      .choice-fold[open] .choice-summary-action {
+        display: none;
+      }
+      .choice-fold.is-empty .choice-summary-label {
+        display: none;
+      }
+      .choice-fold.is-empty > summary {
+        display: none;
+      }
+      .choice-fold.is-empty .choice-summary-value {
+        color: var(--muted);
+        font-weight: 560;
+      }
+      /* Assez de place : l'étiquette, le choix et « Changer » tiennent sur une seule ligne. */
+      @container (min-width: 28rem) {
+        .choice-fold > summary {
+          grid-template-columns: auto minmax(0, 1fr) auto;
+        }
+        .choice-summary-label {
+          grid-column: 1;
+        }
+        .choice-summary-value {
+          grid-column: 2;
+        }
+        .choice-summary-action {
+          grid-column: 3;
+          grid-row: 1;
+        }
+      }
+      /* Pastilles : quelques choix courts sur une ligne, sans coche. */
+      .is-segmented .choice-grid {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .is-segmented .choice-body {
+        min-height: 48px;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+      }
+      .is-segmented .choice-mark {
+        display: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .choice-body,
+        .choice-mark,
+        .choice-mark::after {
+          transition: none;
+        }
+      }
+      @media (forced-colors: active) {
+        .choice-body {
+          border-color: ButtonText;
+        }
+        .choice > input:checked + .choice-body {
+          border-color: Highlight;
+          outline: 2px solid Highlight;
+          outline-offset: -4px;
+        }
+        .choice-mark {
+          border-color: ButtonText;
+        }
+        .choice > input:checked + .choice-body .choice-mark {
+          background: Highlight;
+          border-color: Highlight;
+        }
+      }
+
+      /* ---- Interrupteur : la case « Garder mon brouillon » reste une vraie case à cocher (role=switch) ---- */
+      .checkbox {
+        align-items: center;
+        gap: 14px;
+        min-height: 44px;
+        cursor: pointer;
+      }
+      .checkbox input[type="checkbox"] {
+        -webkit-appearance: none;
+        appearance: none;
+        position: relative;
+        flex: none;
+        width: 46px;
+        height: 28px;
+        margin: 0;
+        border: 1.5px solid var(--line-strong);
+        border-radius: 999px;
+        background: var(--mint);
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+      }
+      .checkbox input[type="checkbox"]::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--white);
+        box-shadow: 0 1px 3px #0003;
+        transform: translate(0, -50%);
+        transition: transform 0.2s ease;
+      }
+      .checkbox input[type="checkbox"]:checked {
+        border-color: var(--brand);
+        background: var(--brand);
+      }
+      .checkbox input[type="checkbox"]:checked::after {
+        transform: translate(18px, -50%);
+      }
+      .checkbox input[type="checkbox"]:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 3px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .checkbox input[type="checkbox"],
+        .checkbox input[type="checkbox"]::after {
+          transition: none;
+        }
+      }
+      @media (forced-colors: active) {
+        .checkbox input[type="checkbox"] {
+          -webkit-appearance: auto;
+          appearance: auto;
+          width: 20px;
+          height: 20px;
+        }
+        .checkbox input[type="checkbox"]::after {
+          content: none;
+        }
+      }
+
+      /* ---- Champs de saisie : le texte s'agrandit avec ce qu'on écrit (si le navigateur sait), focus net ---- */
+      textarea {
+        field-sizing: content;
+        max-height: min(70dvh, 38rem);
+      }
+      input[type="text"],
+      input[type="date"],
+      textarea {
+        accent-color: var(--brand);
+        caret-color: var(--brand);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      input[type="text"]:focus-visible,
+      input[type="date"]:focus-visible,
+      textarea:focus-visible {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px #285b9d26;
       }
     </style>
 
@@ -2179,7 +2517,7 @@
               <summary>Gérer mon brouillon</summary>
               <div class="details-body">
                 <label class="checkbox"
-                  ><input type="checkbox" id="remember" aria-describedby="remember-hint" />Garder mon brouillon
+                  ><input type="checkbox" id="remember" role="switch" aria-describedby="remember-hint" />Garder mon brouillon
                   dans ce navigateur</label
                 >
                 <p class="hint" id="remember-hint">
@@ -2245,13 +2583,13 @@
           <div class="card need-lab" id="need-lab">
             <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div></div>
             <p class="need-start-hint">Exemple de relation : un collègue. Je choisis ci-dessous le besoin qu’il exprime ; aucun besoin n’est supposé à sa place.</p>
-            <label class="label" for="support-relation">Dans quelle relation ?</label>
-            <select id="support-relation">
+            <span class="label" id="support-relation-label">Dans quelle relation ?</span>
+            <choice-group id="support-relation" name="support-relation" variant="segmented" value="colleague" aria-labelledby="support-relation-label">
               <option value="colleague">Collègue</option>
               <option value="learner">Personne que j’encadre ou forme</option>
               <option value="close">Proche</option>
               <option value="other">Autre relation</option>
-            </select>
+            </choice-group>
             <fieldset class="section-gap"><legend>Quel besoin la personne exprime-t-elle ?</legend><div class="choice-stack" id="need-choices">
               <button class="pill" type="button" data-need="listen" aria-pressed="false">Être écoutée</button>
               <button class="pill" type="button" data-need="clarify" aria-pressed="false">Voir plus clair</button>
@@ -2361,8 +2699,8 @@
           </details>
           <div class="group-layout">
             <aside class="group-rail" aria-label="Choisir une étape du parcours collectif">
-              <label class="label" for="group-stage-select">Aller à une étape</label>
-              <select id="group-stage-select"></select>
+              <span class="label" id="group-stage-label">Aller à une étape</span>
+              <choice-group id="group-stage-select" name="group-stage" fold summary-label="Étape :" aria-labelledby="group-stage-label"></choice-group>
               <p class="hint">Un <button class="glossary-button" type="button" data-term="survey">sondage</button> n’est qu’une option. Pour un petit groupe, une discussion peut suffire.</p>
               <a class="text-button" href="#soutenir">Pour aider une seule personne ↗</a>
             </aside>
@@ -2372,13 +2710,13 @@
               <p class="step-lead" id="group-step-intro"></p>
               <div id="group-guidance" class="group-guidance"></div>
               <div id="group-method-box" class="group-method-box" hidden>
-                <label class="label" for="group-method">Comment écouter le groupe ?</label>
-                <select id="group-method">
+                <span class="label" id="group-method-label">Comment écouter le groupe ?</span>
+                <choice-group id="group-method" name="group-method" variant="segmented" value="conversation" aria-labelledby="group-method-label">
                   <option value="conversation">Discussion de groupe</option>
                   <option value="interviews">Entretiens individuels</option>
                   <option value="survey">Sondage court</option>
                   <option value="existing">Données déjà disponibles</option>
-                </select>
+                </choice-group>
                 <p class="hint" id="group-method-hint"></p>
                 <details class="section-gap" id="group-method-diagram">
                   <summary>Voir le logigramme : comment écouter le groupe ?</summary>
@@ -2536,19 +2874,15 @@
           <details class="section-gap" id="support-adapt">
             <summary>Adapter l’aide à sa situation</summary>
             <div class="details-body">
-              <label class="label" for="support-context"
-                >Ce que traverse mon proche</label
-              ><select id="support-context">
-                <option value="">Choisir une situation</option>
+              <span class="label" id="support-context-label">Ce que traverse mon proche</span>
+              <choice-group id="support-context" name="support-context" fold summary-label="Situation choisie :" placeholder="Choisir une situation" aria-labelledby="support-context-label">
                 <option value="mental">Détresse ou trouble psychique</option>
                 <option value="couple">Difficulté dans le couple</option>
                 <option value="work">Travail ou études</option>
                 <option value="grief">Deuil, perte ou maladie</option>
-                <option value="material">
-                  Précarité, démarches ou isolement
-                </option>
+                <option value="material">Précarité, démarches ou isolement</option>
                 <option value="young">Enfant ou adolescent</option>
-              </select>
+              </choice-group>
               <div id="support-context-content" class="section-gap"></div>
             </div>
           </details>
@@ -2611,11 +2945,8 @@
           </div>
           <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a> <span id="violence-quit" hidden><button type="button" class="text-button" data-action="quick-exit">Quitter cette page ↗</button> <small>Remplace la page par Wikipédia ; n’efface pas l’historique.</small></span></p>
           <div class="section-gap violence-choice primary-ask">
-            <label class="label" for="violence-context"
-              >Avec qui se passe la situation ?</label
-            ><select id="violence-context" aria-describedby="violence-choice-help violence-context-note">
-              <option value="">Choisir une relation</option>
-            </select>
+            <span class="label" id="violence-context-label">Avec qui se passe la situation ?</span>
+            <choice-group id="violence-context" name="violence-context" fold summary-label="Relation choisie :" placeholder="Choisir une relation" aria-labelledby="violence-context-label" aria-describedby="violence-choice-help violence-context-note"></choice-group>
             <p class="hint" id="violence-choice-help">Je peux choisir « Une autre relation » si aucun exemple ne convient. Le choix apparaît dans l’adresse.</p>
           </div>
           <p class="hint" id="violence-context-note"></p>
@@ -5683,6 +6014,129 @@
         </details>`;
       };
 
+      // <choice-group> : un choix unique présenté en cartes ou en pastilles, construit avec de vrais boutons radio
+      // (clavier, lecteur d'écran et formulaires natifs). Même interface qu'un <select> : value, change, focus().
+      // Ses enfants <option> et <optgroup> décrivent les choix ; render(groupes, valeur) les remplace.
+      //   <choice-group name="x" variant="cards|segmented" aria-labelledby="…" aria-describedby="…" value="a">
+      // Option fold : une fois un choix fait, la liste se replie en une ligne « Relation choisie : … Changer ».
+      // (attributs summary-label et placeholder), pour que ce qui suit le choix reste à portée de main sur téléphone.
+      //     <optgroup label="Titre"><option value="a" data-hint="Aide courte">Libellé</option></optgroup>
+      //   </choice-group>
+      class ChoiceGroup extends HTMLElement {
+        static #serial = 0;
+        connectedCallback() {
+          if (this.dataset.built) return;
+          const groups = [];
+          const read = (option) => ({ value: option.value, label: option.textContent.trim(), hint: option.dataset.hint || "" });
+          let loose = null;
+          for (const child of [...this.children]) {
+            if (child.tagName === "OPTGROUP") {
+              groups.push({ label: child.label, items: [...child.querySelectorAll("option")].filter((o) => o.value).map(read) });
+              loose = null;
+            } else if (child.tagName === "OPTION" && child.value) {
+              if (!loose) groups.push((loose = { label: "", items: [] }));
+              loose.items.push(read(child));
+            }
+          }
+          this.addEventListener("change", () => this.#sync(true));
+          this.render(groups, this.getAttribute("value") || "");
+        }
+        render(groups, value = "") {
+          const name = this.getAttribute("name") || this.id || `choice-${ChoiceGroup.#serial}`;
+          const serial = ++ChoiceGroup.#serial;
+          const variant = this.getAttribute("variant") || "cards";
+          this.dataset.built = "1";
+          this.setAttribute("role", "radiogroup");
+          this.classList.add("choice-set", `is-${variant}`);
+          const element = (tag, className, text) => {
+            const node = document.createElement(tag);
+            if (className) node.className = className;
+            if (text) node.textContent = text;
+            return node;
+          };
+          const sections = groups.map((group, g) => {
+            const grid = element("div", "choice-grid");
+            group.items.forEach((item, i) => {
+              const label = element("label", "choice");
+              const input = element("input");
+              input.type = "radio";
+              input.name = name;
+              input.value = item.value;
+              input.checked = String(item.value) === String(value);
+              const body = element("span", "choice-body");
+              const mark = element("span", "choice-mark");
+              mark.setAttribute("aria-hidden", "true");
+              const text = element("span", "choice-text");
+              text.append(element("span", "choice-title", item.label));
+              if (item.hint) {
+                const hint = element("span", "choice-hint", item.hint);
+                hint.id = `${name}-${serial}-${g}-${i}-hint`;
+                input.setAttribute("aria-describedby", hint.id);
+                text.append(hint);
+              }
+              body.append(mark, text);
+              label.append(input, body);
+              grid.append(label);
+            });
+            if (!group.label) return grid;
+            const set = element("fieldset", "choice-fieldset");
+            set.append(element("legend", "choice-legend", group.label), grid);
+            return set;
+          });
+          if (!this.hasAttribute("fold")) {
+            this.replaceChildren(...sections);
+            return;
+          }
+          const details = element("details", "choice-fold");
+          const summary = element("summary", "choice-summary");
+          const label = element("span", "choice-summary-label", this.getAttribute("summary-label") || "");
+          const current = element("strong", "choice-summary-value");
+          const action = element("span", "choice-summary-action", "Changer");
+          summary.append(label, current, action);
+          // Tant qu'aucun choix n'est fait, la liste reste ouverte : l'en-tête n'est pas un bouton.
+          summary.addEventListener("click", (event) => {
+            if (!this.querySelector("input:checked")) event.preventDefault();
+          });
+          const body = element("div", "choice-fold-body");
+          body.append(...sections);
+          details.append(summary, body);
+          this.replaceChildren(details);
+          this.#sync(true);
+        }
+        #sync(close) {
+          const details = this.querySelector(":scope > .choice-fold");
+          if (!details) return;
+          const checked = this.querySelector("input:checked");
+          const text = checked ? checked.closest(".choice").querySelector(".choice-title").textContent : this.getAttribute("placeholder") || "";
+          details.querySelector(".choice-summary-value").textContent = text;
+          details.classList.toggle("is-empty", !checked);
+          if (!checked) details.open = true;
+          else if (close) {
+            const hadFocus = this.hasFocus;
+            details.open = false;
+            if (hadFocus) details.querySelector("summary").focus();
+          }
+        }
+        get value() {
+          return this.querySelector("input:checked")?.value ?? "";
+        }
+        set value(next) {
+          const inputs = [...this.querySelectorAll("input")];
+          const target = inputs.find((input) => input.value === String(next));
+          inputs.forEach((input) => (input.checked = input === target));
+          this.#sync(true);
+        }
+        focus(options) {
+          const details = this.querySelector(":scope > .choice-fold");
+          if (details && !details.open) return details.querySelector("summary").focus(options);
+          (this.querySelector("input:checked") || this.querySelector("input"))?.focus(options);
+        }
+        get hasFocus() {
+          return this.contains(document.activeElement);
+        }
+      }
+      customElements.define("choice-group", ChoiceGroup);
+
       // A facilitator's planning notes stay in memory. The tool never collects survey responses.
       const groupStages = [
         {
@@ -5890,12 +6344,7 @@
 
       function initGroup() {
         const selector = document.querySelector("#group-stage-select");
-        for (const [i, stage] of groupStages.entries()) {
-          const option = document.createElement("option");
-          option.value = String(i);
-          option.textContent = `${i + 1}. ${stage.short}`;
-          selector.append(option);
-        }
+        selector.render([{ label: "", items: groupStages.map((stage, i) => ({ value: String(i), label: `${i + 1}. ${stage.short}` })) }], String(groupIndex));
         selector.addEventListener("change", () => { groupIndex = Number(selector.value); renderGroup(true); });
         document.querySelector("#group-method").addEventListener("change", (event) => {
           groupMethod = event.target.value;
@@ -5917,7 +6366,7 @@
           }
         });
         document.querySelector("#group-download").addEventListener("click", () => {
-          const lines = ["PLAN DE TRAVAIL · AIDER UN GROUPE", "Méthode d’écoute envisagée : " + document.querySelector(`#group-method option[value="${groupMethod}"]`).textContent, ""];
+          const lines = ["PLAN DE TRAVAIL · AIDER UN GROUPE", "Méthode d’écoute envisagée : " + document.querySelector(`#group-method input[value="${groupMethod}"]`).closest(".choice").querySelector(".choice-title").textContent, ""];
           groupStages.forEach((stage, i) => lines.push(`${i + 1}. ${stage.title}\n${groupNotes[i].trim() || "À préciser avec le groupe."}\n`));
           download("plan-groupe-pas-a-pas.txt", lines.join("\n"), "text/plain;charset=utf-8");
         });
@@ -6374,11 +6823,11 @@
           if (startScreen === "level") {
             body = `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
           } else if (startScreen === "context") {
-            const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
+            const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}">${esc(value.label)}</option>`).join("");
             const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
             const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
             const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" || (state.scale === "organization" && state.context === "conditions") ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
-            body = `<details class="change-level" id="change-level"><summary id="selected-level" aria-label="Niveau : ${scales[state.scale][0]}. Changer de niveau"><span>Niveau</span><strong>${scales[state.scale][0]}</strong></summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick primary-ask"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
+            body = `<details class="change-level" id="change-level"><summary id="selected-level" aria-label="Niveau : ${scales[state.scale][0]}. Changer de niveau"><span>Niveau</span><strong>${scales[state.scale][0]}</strong></summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick primary-ask"><span class="label" id="context-select-label">Quelle situation ressemble le plus à la mienne ?</span><choice-group id="context-select" name="context-select" value="${state.context}" aria-labelledby="context-select-label" aria-describedby="context-description context-focus">${contextOptions}</choice-group><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
           } else {
             const safetyHint = (safetyByScale[state.scale] || safetyByScale.personal).hint;
             body = `<div class="primary-ask"><fieldset${safetyHint ? ' aria-describedby="safety-hint"' : ""}><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend>${safetyHint ? `<p class="hint safety-hint" id="safety-hint">${safetyHint}</p>` : ""}<div class="choice-stack">${[
@@ -7078,7 +7527,7 @@
               ].includes(hash)
             ? hash
             : "accueil";
-        const keepViolenceChoiceFocus = page === "violences" && document.activeElement === $("#violence-context");
+        const keepViolenceChoiceFocus = page === "violences" && $("#violence-context").hasFocus;
         $$(".view").forEach((el) => (el.hidden = el.id !== page));
         $$("nav a").forEach((a) => {
           if (
@@ -7182,10 +7631,11 @@
         }
       });
       document.addEventListener("change", (e) => {
-        if (e.target.id !== "context-select") return;
-        if (!Object.hasOwn(contextCatalog[state.scale], e.target.value)) return;
-        if (state.context === e.target.value) return;
-        state.context = e.target.value;
+        const choice = e.target.closest?.("#context-select");
+        if (!choice) return;
+        if (!Object.hasOwn(contextCatalog[state.scale], choice.value)) return;
+        if (state.context === choice.value) return;
+        state.context = choice.value;
         state.reviewContext = hasWriting();
         persist();
         renderStep();
@@ -7600,9 +8050,7 @@
       renderSupport();
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
-      $("#violence-context").innerHTML = '<option value="">Choisir une relation</option>' + violenceGroups
-        .map(([group, options]) => `<optgroup label="${esc(group)}">${options.map(([key, label]) => `<option value="${esc(key)}">${esc(label)}</option>`).join("")}</optgroup>`)
-        .join("");
+      $("#violence-context").render(violenceGroups.map(([label, options]) => ({ label, items: options.map(([value, text]) => ({ value, label: text })) })));
       renderMeter();
       initGroup();
       route();

@@ -9,11 +9,8 @@
           </div>
           <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a> <span id="violence-quit" hidden><button type="button" class="text-button" data-action="quick-exit">Quitter cette page ↗</button> <small>Remplace la page par Wikipédia ; n’efface pas l’historique.</small></span></p>
           <div class="section-gap violence-choice primary-ask">
-            <label class="label" for="violence-context"
-              >Avec qui se passe la situation ?</label
-            ><select id="violence-context" aria-describedby="violence-choice-help violence-context-note">
-              <option value="">Choisir une relation</option>
-            </select>
+            <span class="label" id="violence-context-label">Avec qui se passe la situation ?</span>
+            <choice-group id="violence-context" name="violence-context" fold summary-label="Relation choisie :" placeholder="Choisir une relation" aria-labelledby="violence-context-label" aria-describedby="violence-choice-help violence-context-note"></choice-group>
             <p class="hint" id="violence-choice-help">Je peux choisir « Une autre relation » si aucun exemple ne convient. Le choix apparaît dans l’adresse.</p>
           </div>
           <p class="hint" id="violence-context-note"></p>

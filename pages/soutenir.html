@@ -31,13 +31,13 @@
           <div class="card need-lab" id="need-lab">
             <div class="need-heading"><div><span class="tag">3 · Choisir avec la personne</span><h2>Préparer une aide adaptée</h2></div></div>
             <p class="need-start-hint">Exemple de relation : un collègue. Je choisis ci-dessous le besoin qu’il exprime ; aucun besoin n’est supposé à sa place.</p>
-            <label class="label" for="support-relation">Dans quelle relation ?</label>
-            <select id="support-relation">
+            <span class="label" id="support-relation-label">Dans quelle relation ?</span>
+            <choice-group id="support-relation" name="support-relation" variant="segmented" value="colleague" aria-labelledby="support-relation-label">
               <option value="colleague">Collègue</option>
               <option value="learner">Personne que j’encadre ou forme</option>
               <option value="close">Proche</option>
               <option value="other">Autre relation</option>
-            </select>
+            </choice-group>
             <fieldset class="section-gap"><legend>Quel besoin la personne exprime-t-elle ?</legend><div class="choice-stack" id="need-choices">
               <button class="pill" type="button" data-need="listen" aria-pressed="false">Être écoutée</button>
               <button class="pill" type="button" data-need="clarify" aria-pressed="false">Voir plus clair</button>

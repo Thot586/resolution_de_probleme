@@ -49,19 +49,15 @@
           <details class="section-gap" id="support-adapt">
             <summary>Adapter l’aide à sa situation</summary>
             <div class="details-body">
-              <label class="label" for="support-context"
-                >Ce que traverse mon proche</label
-              ><select id="support-context">
-                <option value="">Choisir une situation</option>
+              <span class="label" id="support-context-label">Ce que traverse mon proche</span>
+              <choice-group id="support-context" name="support-context" fold summary-label="Situation choisie :" placeholder="Choisir une situation" aria-labelledby="support-context-label">
                 <option value="mental">Détresse ou trouble psychique</option>
                 <option value="couple">Difficulté dans le couple</option>
                 <option value="work">Travail ou études</option>
                 <option value="grief">Deuil, perte ou maladie</option>
-                <option value="material">
-                  Précarité, démarches ou isolement
-                </option>
+                <option value="material">Précarité, démarches ou isolement</option>
                 <option value="young">Enfant ou adolescent</option>
-              </select>
+              </choice-group>
               <div id="support-context-content" class="section-gap"></div>
             </div>
           </details>

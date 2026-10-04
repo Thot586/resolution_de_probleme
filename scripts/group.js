@@ -205,12 +205,7 @@
 
       function initGroup() {
         const selector = document.querySelector("#group-stage-select");
-        for (const [i, stage] of groupStages.entries()) {
-          const option = document.createElement("option");
-          option.value = String(i);
-          option.textContent = `${i + 1}. ${stage.short}`;
-          selector.append(option);
-        }
+        selector.render([{ label: "", items: groupStages.map((stage, i) => ({ value: String(i), label: `${i + 1}. ${stage.short}` })) }], String(groupIndex));
         selector.addEventListener("change", () => { groupIndex = Number(selector.value); renderGroup(true); });
         document.querySelector("#group-method").addEventListener("change", (event) => {
           groupMethod = event.target.value;
@@ -232,7 +227,7 @@
           }
         });
         document.querySelector("#group-download").addEventListener("click", () => {
-          const lines = ["PLAN DE TRAVAIL · AIDER UN GROUPE", "Méthode d’écoute envisagée : " + document.querySelector(`#group-method option[value="${groupMethod}"]`).textContent, ""];
+          const lines = ["PLAN DE TRAVAIL · AIDER UN GROUPE", "Méthode d’écoute envisagée : " + document.querySelector(`#group-method input[value="${groupMethod}"]`).closest(".choice").querySelector(".choice-title").textContent, ""];
           groupStages.forEach((stage, i) => lines.push(`${i + 1}. ${stage.title}\n${groupNotes[i].trim() || "À préciser avec le groupe."}\n`));
           download("plan-groupe-pas-a-pas.txt", lines.join("\n"), "text/plain;charset=utf-8");
         });

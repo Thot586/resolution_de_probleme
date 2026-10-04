@@ -42,8 +42,8 @@
           </details>
           <div class="group-layout">
             <aside class="group-rail" aria-label="Choisir une étape du parcours collectif">
-              <label class="label" for="group-stage-select">Aller à une étape</label>
-              <select id="group-stage-select"></select>
+              <span class="label" id="group-stage-label">Aller à une étape</span>
+              <choice-group id="group-stage-select" name="group-stage" fold summary-label="Étape :" aria-labelledby="group-stage-label"></choice-group>
               <p class="hint">Un <button class="glossary-button" type="button" data-term="survey">sondage</button> n’est qu’une option. Pour un petit groupe, une discussion peut suffire.</p>
               <a class="text-button" href="#soutenir">Pour aider une seule personne ↗</a>
             </aside>
@@ -53,13 +53,13 @@
               <p class="step-lead" id="group-step-intro"></p>
               <div id="group-guidance" class="group-guidance"></div>
               <div id="group-method-box" class="group-method-box" hidden>
-                <label class="label" for="group-method">Comment écouter le groupe ?</label>
-                <select id="group-method">
+                <span class="label" id="group-method-label">Comment écouter le groupe ?</span>
+                <choice-group id="group-method" name="group-method" variant="segmented" value="conversation" aria-labelledby="group-method-label">
                   <option value="conversation">Discussion de groupe</option>
                   <option value="interviews">Entretiens individuels</option>
                   <option value="survey">Sondage court</option>
                   <option value="existing">Données déjà disponibles</option>
-                </select>
+                </choice-group>
                 <p class="hint" id="group-method-hint"></p>
                 <details class="section-gap" id="group-method-diagram">
                   <summary>Voir le logigramme : comment écouter le groupe ?</summary>

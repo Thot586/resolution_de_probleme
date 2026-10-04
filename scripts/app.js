@@ -441,11 +441,11 @@
           if (startScreen === "level") {
             body = `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
           } else if (startScreen === "context") {
-            const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
+            const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}">${esc(value.label)}</option>`).join("");
             const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
             const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
             const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" || (state.scale === "organization" && state.context === "conditions") ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
-            body = `<details class="change-level" id="change-level"><summary id="selected-level" aria-label="Niveau : ${scales[state.scale][0]}. Changer de niveau"><span>Niveau</span><strong>${scales[state.scale][0]}</strong></summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick primary-ask"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
+            body = `<details class="change-level" id="change-level"><summary id="selected-level" aria-label="Niveau : ${scales[state.scale][0]}. Changer de niveau"><span>Niveau</span><strong>${scales[state.scale][0]}</strong></summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick primary-ask"><span class="label" id="context-select-label">Quelle situation ressemble le plus à la mienne ?</span><choice-group id="context-select" name="context-select" value="${state.context}" aria-labelledby="context-select-label" aria-describedby="context-description context-focus">${contextOptions}</choice-group><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
           } else {
             const safetyHint = (safetyByScale[state.scale] || safetyByScale.personal).hint;
             body = `<div class="primary-ask"><fieldset${safetyHint ? ' aria-describedby="safety-hint"' : ""}><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend>${safetyHint ? `<p class="hint safety-hint" id="safety-hint">${safetyHint}</p>` : ""}<div class="choice-stack">${[
@@ -1145,7 +1145,7 @@
               ].includes(hash)
             ? hash
             : "accueil";
-        const keepViolenceChoiceFocus = page === "violences" && document.activeElement === $("#violence-context");
+        const keepViolenceChoiceFocus = page === "violences" && $("#violence-context").hasFocus;
         $$(".view").forEach((el) => (el.hidden = el.id !== page));
         $$("nav a").forEach((a) => {
           if (
@@ -1249,10 +1249,11 @@
         }
       });
       document.addEventListener("change", (e) => {
-        if (e.target.id !== "context-select") return;
-        if (!Object.hasOwn(contextCatalog[state.scale], e.target.value)) return;
-        if (state.context === e.target.value) return;
-        state.context = e.target.value;
+        const choice = e.target.closest?.("#context-select");
+        if (!choice) return;
+        if (!Object.hasOwn(contextCatalog[state.scale], choice.value)) return;
+        if (state.context === choice.value) return;
+        state.context = choice.value;
         state.reviewContext = hasWriting();
         persist();
         renderStep();
@@ -1667,9 +1668,7 @@
       renderSupport();
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
-      $("#violence-context").innerHTML = '<option value="">Choisir une relation</option>' + violenceGroups
-        .map(([group, options]) => `<optgroup label="${esc(group)}">${options.map(([key, label]) => `<option value="${esc(key)}">${esc(label)}</option>`).join("")}</optgroup>`)
-        .join("");
+      $("#violence-context").render(violenceGroups.map(([label, options]) => ({ label, items: options.map(([value, text]) => ({ value, label: text })) })));
       renderMeter();
       initGroup();
       route();

@@ -14,6 +14,15 @@ const root = path.resolve(__dirname, "..");
 const output = process.env.QA_OUTPUT || "/tmp/pas-a-pas-checks";
 let server, browser;
 const errors = [];
+// <choice-group> helpers : the chooser is a group of real radio buttons (folded after a choice on the violence page).
+const choiceValue = (target, selector) => target.locator(selector).evaluate((element) => element.value);
+const choiceValues = (target, selector) => target.locator(`${selector} input`).evaluateAll((nodes) => nodes.map((node) => node.value));
+const choose = async (target, selector, value) => {
+  const group = target.locator(selector);
+  const fold = group.locator(":scope > details.choice-fold");
+  if ((await fold.count()) && !(await fold.evaluate((details) => details.open))) await fold.locator("summary").click();
+  await group.locator(`input[value="${value}"]`).check();
+};
 (async () => {
   await fs.mkdir(output, { recursive: true });
   const html = await fs.readFile(path.join(root, "index.html"));
@@ -321,12 +330,12 @@ const errors = [];
   for (const group of contextCases) {
     await contextPage.goto(url + `#outil-${group.scale}`);
     assert.deepEqual(
-      await contextPage.locator("#context-select option").evaluateAll((nodes) => nodes.map((n) => n.value)),
+      await choiceValues(contextPage, "#context-select"),
       group.options,
       `${group.scale}: choices must be scoped to this level`,
     );
     for (const [key, focus, situation, hint, method, idea, action] of group.cases) {
-      await contextPage.locator("#context-select").selectOption(key);
+      await choose(contextPage, "#context-select", key);
       assert.match(await contextPage.locator("#context-focus").innerText(), focus);
       if (key === group.cases[0][0])
         await contextPage.screenshot({
@@ -431,7 +440,7 @@ const errors = [];
     buffer: Buffer.from(JSON.stringify(legacy)),
   });
   await importPage.locator("#dialog-confirm").click();
-  assert.equal(await importPage.locator("#context-select").inputValue(), "other");
+  assert.equal(await choiceValue(importPage, "#context-select"), "other");
   assert.match(await importPage.locator("#context-review").innerText(), /relis ce que j’ai écrit/);
   await goStep(importPage, 1);
   assert.equal(await importPage.locator("#field-situation").inputValue(), legacy.fields.situation);
@@ -462,15 +471,15 @@ const errors = [];
   }, { ...legacy, scale: "shared", context: "work" });
   await storedPage.reload();
   await storedPage.evaluate(() => { location.hash = "outil"; });
-  assert.equal(await storedPage.locator("#context-select").inputValue(), "other");
+  assert.equal(await choiceValue(storedPage, "#context-select"), "other");
   assert.match(await storedPage.locator("#context-review").innerText(), /contexte/);
   assert.deepEqual(await storedPage.evaluate(() => Object.keys(localStorage)), ["pas-a-pas.brouillon.v2"]);
   await goStep(storedPage, 1);
   assert.equal(await storedPage.locator("#field-situation").inputValue(), legacy.fields.situation);
   await goStep(storedPage, 0);
-  await storedPage.locator("#context-select").selectOption("neighbors");
+  await choose(storedPage, "#context-select", "neighbors");
   await storedPage.reload();
-  assert.equal(await storedPage.locator("#context-select").inputValue(), "neighbors");
+  assert.equal(await choiceValue(storedPage, "#context-select"), "neighbors");
   assert.equal(await storedPage.locator('#steps [data-step="1"]').count(), 1);
   await migrationContext.close();
   // The former v2 colleague context covered both peers and supervisors.
@@ -491,7 +500,7 @@ const errors = [];
   }, previousColleague);
   await v2Page.reload();
   await v2Page.evaluate(() => { location.hash = "outil"; });
-  assert.equal(await v2Page.locator("#context-select").inputValue(), "colleague");
+  assert.equal(await choiceValue(v2Page, "#context-select"), "colleague");
   assert.match(await v2Page.locator("#context-review").innerText(), /contexte/);
   await goStep(v2Page, 1);
   assert.equal(await v2Page.locator("#field-situation").inputValue(), previousColleague.fields.situation);
@@ -499,7 +508,7 @@ const errors = [];
     localStorage.setItem("pas-a-pas.brouillon.v2", JSON.stringify(draft));
   }, { ...previousColleague, catalogRevision: 3 });
   await v2Page.reload();
-  assert.equal(await v2Page.locator("#context-select").inputValue(), "colleague");
+  assert.equal(await choiceValue(v2Page, "#context-select"), "colleague");
   assert.equal(await v2Page.locator("#context-review").count(), 0, "Current catalog needs no migration warning");
   await goStep(v2Page, 1);
   assert.equal(await v2Page.locator("#field-situation").inputValue(), previousColleague.fields.situation);
@@ -605,11 +614,11 @@ const errors = [];
   assert.match(await page.locator("#soutenir svg").textContent(), /Seulement avec son accord/);
   await page.screenshot({ path: path.join(output, "desktop-support.png"), fullPage: true });
   await page.locator("#soutenir .support-illustration summary").click();
-  await page.locator("#support-relation").selectOption("learner");
+  await choose(page, "#support-relation", "learner");
   await page.locator("[data-need=advice]").click();
   assert.match(await page.locator("#need-guidance").innerText(), /accord/);
   assert.match(await page.locator("#need-guidance").innerText(), /encadrement/);
-  await page.locator("#support-relation").selectOption("close");
+  await choose(page, "#support-relation", "close");
   assert(await page.locator('#need-guidance a[href="#proche"]').isVisible());
   await page.locator('#soutenir a[href="#proche"]').first().click();
   await visible("#proche");
@@ -622,7 +631,7 @@ const errors = [];
   await page.locator("#group-note").fill("Décision : améliorer les horaires d’accueil.");
   await page.locator("#group-next").click();
   assert.match(await page.locator("#group-guidance").innerText(), /langue.*horaire.*format/);
-  await page.locator("#group-method").selectOption("survey");
+  await choose(page, "#group-method", "survey");
   assert.match(await page.locator("#group-method-hint").innerText(), /combien ont répondu/);
   const groupFlow = await openFlowDiagram(
     page,
@@ -636,16 +645,16 @@ const errors = [];
   const groupBar = await page.locator("#group-progress").boundingBox();
   assert(groupBar && groupBar.height >= 3 && groupBar.width >= 100, "The group guide still draws its progress bar");
   assert((await page.locator("#group-progress span").boundingBox()).width > 0, "...with a filled part");
-  await page.locator("#group-stage-select").selectOption("2");
+  await choose(page, "#group-stage-select", "2");
   assert(await page.locator("#group-guidance [data-term=survey]").isVisible());
-  await page.locator("#group-stage-select").selectOption("3");
+  await choose(page, "#group-stage-select", "3");
   assert.match(await page.locator("#group-step-title").innerText(), /reconnaissent/);
   assert.match(await page.locator("#group-guidance").innerText(), /langue et un format compréhensibles/);
-  await page.locator("#group-stage-select").selectOption("4");
+  await choose(page, "#group-stage-select", "4");
   assert.match(await page.locator("#group-note-prompt").innerText(), /pistes possibles.*choix motivé/);
-  await page.locator("#group-stage-select").selectOption("5");
+  await choose(page, "#group-stage-select", "5");
   assert.match(await page.locator("#group-note-prompt").innerText(), /effet gênant/);
-  await page.locator("#group-stage-select").selectOption("3");
+  await choose(page, "#group-stage-select", "3");
   await page.locator("#group-plan summary").click();
   assert.match(await page.locator("#group-plan-content").innerText(), /améliorer les horaires/);
   assert.equal(await page.evaluate(() => localStorage.length), 0);
@@ -687,14 +696,14 @@ const errors = [];
   await axe("start");
   assert.equal(await page.locator("[data-safety]").count(), 0, "The safety question has its own screen");
   assert.equal(await page.locator('[data-action="back"]').isVisible(), false, "No back button on the first screen");
-  await page.locator("#context-select").selectOption("work");
+  await choose(page, "#context-select", "work");
   await next();
   assert.equal(await page.locator("#context-select").count(), 0, "The situation choice is not repeated on the safety screen");
   assert.equal(await page.locator("[data-safety]").count(), 3);
   assert.equal(await page.locator("#step-title").innerText(), "Ma sécurité");
   await axe("start-safety");
   await page.locator('[data-action="back"]').click();
-  assert.equal(await page.locator("#context-select").inputValue(), "work", "Going back keeps the chosen situation");
+  assert.equal(await choiceValue(page, "#context-select"), "work", "Going back keeps the chosen situation");
   await next();
   await page.locator("[data-safety=safe]").click();
   await next();
@@ -879,7 +888,7 @@ const errors = [];
   // Context changes preserve original responses; examples change only.
   await visit("outil");
   await step(0);
-  await page.locator("#context-select").selectOption("health");
+  await choose(page, "#context-select", "health");
   assert.match(await page.locator("#context-review").innerText(), /mes réponses sont restées/i);
   await step(1);
   assert.equal(
@@ -978,9 +987,9 @@ const errors = [];
     await page.locator(`[data-support-mode=${mode}]`).click();
     assert((await page.locator("#support-content").innerText()).length > 100);
   }
-  assert.equal(await page.locator("#support-context").inputValue(), "");
+  assert.equal(await choiceValue(page, "#support-context"), "");
   assert.equal(await page.locator("#support-context-content").innerText(), "");
-  await page.locator("#support-adapt summary").click();
+  await page.locator("#support-adapt > summary").click();
   for (const val of [
     "mental",
     "couple",
@@ -989,7 +998,7 @@ const errors = [];
     "material",
     "young",
   ]) {
-    await page.selectOption("#support-context", val);
+    await choose(page, "#support-context", val);
     assert(
       (await page.locator("#support-context-content").innerText()).length > 100,
     );
@@ -1000,11 +1009,11 @@ const errors = [];
     "couple", "sibling", "peers", "family", "colleague",
     "work", "education", "care", "vulnerable", "other",
   ];
-  assert.equal(await page.locator("#violence-context").inputValue(), "", "Generic entry asks for a relation");
+  assert.equal(await choiceValue(page, "#violence-context"), "", "Generic entry asks for a relation");
   assert.equal(await page.locator("#meter [data-meter]").count(), 0, "Generic entry has no preselected guide");
   assert.match(await page.locator("#violences").innerText(), /choisir|choisissez|relation/i);
   assert.deepEqual(
-    (await page.locator("#violence-context option").evaluateAll((nodes) => nodes.map((node) => node.value).filter(Boolean))).sort(),
+    (await choiceValues(page, "#violence-context")).sort(),
     [...violenceContexts, "authority"].sort(),
     "Every authored guide, graded or not, is reachable from the relationship chooser",
   );
@@ -1016,7 +1025,7 @@ const errors = [];
     work: [51, 55], education: [52, 58], care: [54], vulnerable: [], other: [],
   };
   for (const val of violenceContexts) {
-    await page.locator("#violence-context").selectOption(val);
+    await choose(page, "#violence-context", val);
     assert.equal(new URL(page.url()).hash, `#violences-${val}`, `${val}: relationship choice updates the URL`);
     assert(await page.locator("#violence-credit").isVisible(), `${val}: prior creators are credited beside the guide`);
     assert.deepEqual(await page.locator('#violence-credit a[href^="#ref-"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href"))), ["#ref-7", ...priorWork[val].map((n) => `#ref-${n}`)], `${val}: the relevant earlier variants are credited`);
@@ -1038,11 +1047,11 @@ const errors = [];
     }
   }
   assert.equal(guideContent.size, violenceContexts.length, "Each relationship has distinct examples");
-  await page.locator("#violence-context").selectOption("sibling");
+  await choose(page, "#violence-context", "sibling");
   await page.locator('[data-meter="2"]').focus();
   await page.keyboard.press("Enter");
   assert.equal(await page.locator('[data-meter="2"]').getAttribute("aria-pressed"), "true", "Guide choices work from the keyboard");
-  await page.locator("#violence-context").selectOption("colleague");
+  await choose(page, "#violence-context", "colleague");
   assert.equal(await page.locator('#meter [aria-pressed="true"]').count(), 0, "Changing relationship clears the example");
   assert.match(await page.locator("#meter-detail").innerText(), /Quel comportement me questionne/);
   await axe("meter-colleague");
@@ -1062,12 +1071,12 @@ const errors = [];
   for (const val of violenceContexts) {
     await guidePage.goto(url + `#violences-${val}`);
     assert(await guidePage.locator("#violences").isVisible(), `${val}: direct link opens the guide`);
-    assert.equal(await guidePage.locator("#violence-context").inputValue(), val, `${val}: direct link preselects the relation`);
+    assert.equal(await choiceValue(guidePage, "#violence-context"), val, `${val}: direct link preselects the relation`);
     assert.equal(await guidePage.locator("#meter [data-meter]").count(), 6, `${val}: direct link shows six choices`);
     assert.equal(await guidePage.locator('#meter [aria-pressed="true"]').count(), 0, `${val}: direct link does not select a behavior`);
   }
   await guidePage.goto(url + "#violences");
-  assert.equal(await guidePage.locator("#violence-context").inputValue(), "", "Generic deep link returns to the chooser");
+  assert.equal(await choiceValue(guidePage, "#violence-context"), "", "Generic deep link returns to the chooser");
   assert.equal(await guidePage.locator("#meter [data-meter]").count(), 0);
   await guidePage.close();
   const relationPage = await context.newPage();
@@ -1079,7 +1088,7 @@ const errors = [];
   for (const relation of ["colleague", "sibling", "peers", "couple", "family", "other"]) {
     await relationPage.evaluate(() => { location.hash = "outil-shared"; });
     await relationPage.locator("#outil").waitFor({ state: "visible" });
-    await relationPage.locator("#context-select").selectOption(relation);
+    await choose(relationPage, "#context-select", relation);
     await goStep(relationPage, 1);
     const sentence = `Situation conservée : ${relation}`;
     await relationPage.locator("#field-situation").fill(sentence);
@@ -1090,10 +1099,10 @@ const errors = [];
     await link.click();
     await relationPage.locator("#violences").waitFor({ state: "visible" });
     assert.equal(new URL(relationPage.url()).hash, destination);
-    assert.equal(await relationPage.locator("#violence-context").inputValue(), relation);
+    assert.equal(await choiceValue(relationPage, "#violence-context"), relation);
     await relationPage.evaluate(() => { location.hash = "outil"; });
     await relationPage.locator("#outil").waitFor({ state: "visible" });
-    assert.equal(await relationPage.locator("#context-select").inputValue(), relation);
+    assert.equal(await choiceValue(relationPage, "#context-select"), relation);
     await goStep(relationPage, 1);
     assert.equal(await relationPage.locator("#field-situation").inputValue(), sentence, `${relation}: returning preserves the draft`);
   }
@@ -1150,14 +1159,14 @@ const errors = [];
   assert.equal(await publicPage.getByRole("link", { name: "Voir les repères de sécurité" }).getAttribute("href"), "#securite", "Collectif: the quiet reminder leads to help, the guide is offered after an answer");
   await publicPage.close();
   const conditionsPage = await openLevelPage("#outil-organization");
-  await conditionsPage.locator("#context-select").selectOption("conditions");
+  await choose(conditionsPage, "#context-select", "conditions");
   await conditionsPage.locator('#step-container .context-caution a[href="#violences"]').waitFor({ state: "visible" });
   assert.match(await conditionsPage.locator("#step-container .context-caution a[href=\"#violences\"]").innerText(), /Choisir des repères de violence/, "Conditions de travail et sécurité links to the violence guides");
   await conditionsPage.close();
   // The non-graded guide for Collectif: lists only, no meter, no colours, every source cited, folded limits.
   const authorityPage = await openLevelPage("#violences-authority");
   await authorityPage.locator("#violence-list").waitFor({ state: "visible" });
-  assert.equal(await authorityPage.locator("#violence-context").inputValue(), "authority", "direct link preselects the guide");
+  assert.equal(await choiceValue(authorityPage, "#violence-context"), "authority", "direct link preselects the guide");
   assert.equal(await authorityPage.locator("#violence-meter-layout").isVisible(), false, "no graded meter for the non-graded guide");
   assert.equal(await authorityPage.locator("[data-meter]").count(), 0);
   assert.equal(await authorityPage.locator("#violence-empty").isVisible(), false);
@@ -1169,8 +1178,8 @@ const errors = [];
   assert.match(authorityText, /Si c’est sûr pour moi, je note les faits/, "noting facts is conditioned on safety");
   assert.match(authorityText, /partagé ou surveillé, mieux vaut ne rien y garder/, "the shared or monitored device warning is visible");
   assert.doesNotMatch(authorityText, /Urgence possible|hostile|sans attendre/, "no grading vocabulary, no judging word, no time pressure");
-  assert.equal(await authorityPage.locator("#violence-context option:checked").innerText(), "Autorité, entreprise ou groupe puissant");
-  assert.equal(await authorityPage.locator("#violence-context optgroup").evaluateAll((nodes) => nodes.map((node) => node.label).includes("Droits et signalement")), true);
+  assert.equal(await authorityPage.locator("#violence-context .choice-summary-value").innerText(), "Autorité, entreprise ou groupe puissant");
+  assert.equal((await authorityPage.locator("#violence-context .choice-legend").allTextContents()).includes("Droits et signalement"), true);
   assert.equal(await authorityPage.locator("#violence-list .violence-facts details").count(), 5, "five kinds of pressure, each folded");
   assert.equal(await authorityPage.locator("#violence-list .violence-facts details[open]").count(), 0);
   assert.equal(await authorityPage.locator("#violence-notice-list").isVisible(), true, "the page notice written for this guide is shown");
@@ -1200,14 +1209,14 @@ const errors = [];
     assert(await authorityPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${width}px: the opened non-graded guide does not overflow`);
   }
   await authorityPage.setViewportSize({ width: 1100, height: 844 });
-  await authorityPage.locator("#violence-context").selectOption("couple");
+  await choose(authorityPage, "#violence-context", "couple");
   assert.equal(await authorityPage.locator("#violence-list").isVisible(), false, "choosing a graded guide hides the list");
   assert.equal(await authorityPage.locator("#violence-notice-graded").isVisible(), true, "the graded guides keep their notice");
   assert.equal(await authorityPage.locator("#violence-notice-list").isVisible(), false);
   assert.equal(await authorityPage.locator("#violence-threshold-red").isVisible(), true);
   assert.equal(await authorityPage.locator("#violence-quit").isVisible(), false, "the graded guides keep the page as it was");
   assert.equal(await authorityPage.locator("#meter [data-meter]").count(), 6);
-  await authorityPage.locator("#violence-context").selectOption("authority");
+  await choose(authorityPage, "#violence-context", "authority");
   assert.equal(await authorityPage.locator("#violence-list").isVisible(), true);
   assert.equal(await authorityPage.locator("#meter [data-meter]").count(), 0, "choosing the list guide clears the meter");
   await authorityPage.goto(url + "#securite");
@@ -1388,7 +1397,7 @@ const errors = [];
   await page.locator("#soutenir .teaching-figure").screenshot({ path: path.join(output, "support-figure-mobile.png") });
   await visit("groupe");
   await page.screenshot({ path: path.join(output, "mobile-group.png"), fullPage: true });
-  await page.locator("#group-stage-select").selectOption("1");
+  await choose(page, "#group-stage-select", "1");
   if (!(await page.locator("#group-method-diagram").evaluate((node) => node.open)))
     await page.locator("#group-method-diagram > summary").click();
   assert(await page.locator("#group-method-diagram svg").isVisible());
@@ -1452,13 +1461,13 @@ const errors = [];
   await page.locator("#navigation").waitFor({ state: "hidden" });
   assert(!(await page.locator("#navigation").isVisible()));
   await visit("violences");
-  assert.equal(await page.locator("#violence-context").inputValue(), "");
+  assert.equal(await choiceValue(page, "#violence-context"), "");
   assert(await page.locator('#violences .violence-urgent a[href="#securite"]').isVisible());
   await page.screenshot({
     path: path.join(output, "mobile-meter-chooser-390.png"),
     fullPage: true,
   });
-  await page.selectOption("#violence-context", "couple");
+  await choose(page, "#violence-context", "couple");
   await page.locator('[data-meter="3"]').click();
   await page.evaluate(() => {
     document.activeElement?.blur();
