@@ -1005,8 +1005,8 @@ const errors = [];
   assert.match(await page.locator("#violences").innerText(), /choisir|choisissez|relation/i);
   assert.deepEqual(
     (await page.locator("#violence-context option").evaluateAll((nodes) => nodes.map((node) => node.value).filter(Boolean))).sort(),
-    [...violenceContexts].sort(),
-    "Every authored guide is reachable from the relationship chooser",
+    [...violenceContexts, "authority"].sort(),
+    "Every authored guide, graded or not, is reachable from the relationship chooser",
   );
   assert.equal(await page.locator("#violence-credit").isVisible(), false, "Credits appear with a selected relation");
   await axe("meter-no-relation");
@@ -1111,8 +1111,8 @@ const errors = [];
   const levelCases = {
     personal: { hint: null, doubt: /La peur, les menaces ou le contrôle méritent de l’aide\./, guides: true },
     shared: { hint: null, doubt: /La peur, les menaces ou le contrôle méritent de l’aide\./, guides: true },
-    organization: { hint: /autres personnes de l’équipe/, doubt: /les pressions ou les représailles méritent de l’aide, pour moi comme pour mon équipe/, guides: true, danger: /Je n’impose ni confrontation ni médiation/ },
-    public: { hint: /personnes qui agissent avec moi/, doubt: /les menaces ou les représailles méritent de l’aide, pour moi comme pour le groupe/, guides: false },
+    organization: { hint: /autres personnes de l’équipe/, doubt: /les pressions ou les représailles méritent de l’aide, pour moi comme pour mon équipe/, guides: true, route: "#violences", danger: /Je n’impose ni confrontation ni médiation/ },
+    public: { hint: /personnes qui agissent avec moi/, doubt: /les menaces ou les représailles méritent de l’aide, pour moi comme pour le groupe/, guides: true, route: "#violences-authority", danger: /Ma sécurité et celle des autres passent avant l’exercice/, dangerGuide: /Repérer des pressions ou des représailles/ },
   };
   for (const [scale, expected] of Object.entries(levelCases)) {
     const levelPage = await openLevelPage(`#outil-${scale}`);
@@ -1131,11 +1131,14 @@ const errors = [];
     assert.match(await doubt.innerText(), expected.doubt, `${scale}: doubt text`);
     assert.equal(await doubt.locator('a[href="#securite"]').count(), 1, `${scale}: doubt offers help`);
     assert.equal(await doubt.locator('a:not([href="#securite"])').count(), expected.guides ? 1 : 0, `${scale}: the guides link appears only when a matching guide exists`);
+    if (expected.route) assert.equal(await doubt.locator('a:not([href="#securite"])').getAttribute("href"), expected.route, `${scale}: the guides link leads to the guide written for this level`);
     await levelPage.locator('[data-safety="danger"]').click();
     const danger = levelPage.locator("#step-container .notice.red");
     assert.equal(await danger.locator('a.btn.danger[href="#securite"]').count(), 1, `${scale}: danger offers help first`);
     assert.equal(await danger.locator("a.btn:not(.danger)").count(), expected.guides ? 1 : 0, `${scale}: danger guides link`);
     if (expected.danger) assert.match(await danger.innerText(), expected.danger);
+    if (expected.dangerGuide) assert.match(await danger.locator("a.btn:not(.danger)").innerText(), expected.dangerGuide, `${scale}: the guide button names what the guide is about`);
+    if (expected.route) assert.equal(await danger.locator("a.btn:not(.danger)").getAttribute("href"), expected.route, `${scale}: the danger notice leads to the same guide`);
     assert.equal(await danger.locator('button.btn[data-action="quick-exit"]').count(), 1, `${scale}: a quick exit sits on the red notice`);
     assert.match(await danger.locator(".notice-note").innerText(), /Remplace la page par Wikipédia\. N’efface ni l’historique ni un brouillon gardé\./);
     // Never click the quick exit here: it leaves for an external site and the suite asserts zero external requests.
@@ -1144,13 +1147,72 @@ const errors = [];
   }
   const publicPage = await openLevelPage("#outil-public");
   await publicPage.locator('[data-action="next"]').click();
-  assert.equal(await publicPage.getByRole("link", { name: "Voir les repères de sécurité" }).getAttribute("href"), "#securite", "Collectif: the reminder leads to help, not to a list where nothing fits");
+  assert.equal(await publicPage.getByRole("link", { name: "Voir les repères de sécurité" }).getAttribute("href"), "#securite", "Collectif: the quiet reminder leads to help, the guide is offered after an answer");
   await publicPage.close();
   const conditionsPage = await openLevelPage("#outil-organization");
   await conditionsPage.locator("#context-select").selectOption("conditions");
   await conditionsPage.locator('#step-container .context-caution a[href="#violences"]').waitFor({ state: "visible" });
   assert.match(await conditionsPage.locator("#step-container .context-caution a[href=\"#violences\"]").innerText(), /Choisir des repères de violence/, "Conditions de travail et sécurité links to the violence guides");
   await conditionsPage.close();
+  // The non-graded guide for Collectif: lists only, no meter, no colours, every source cited, folded limits.
+  const authorityPage = await openLevelPage("#violences-authority");
+  await authorityPage.locator("#violence-list").waitFor({ state: "visible" });
+  assert.equal(await authorityPage.locator("#violence-context").inputValue(), "authority", "direct link preselects the guide");
+  assert.equal(await authorityPage.locator("#violence-meter-layout").isVisible(), false, "no graded meter for the non-graded guide");
+  assert.equal(await authorityPage.locator("[data-meter]").count(), 0);
+  assert.equal(await authorityPage.locator("#violence-empty").isVisible(), false);
+  const authorityText = await authorityPage.locator("#violence-list").innerText();
+  assert.match(authorityText, /Quand je défends des droits humains ou que je signale un manquement/);
+  assert.match(authorityText, /Cette liste n’est pas classée/);
+  assert.match(authorityText, /Premiers pas/);
+  assert.match(authorityText, /Pratiques décrites par des organisations/, "the first steps are attributed to organisations");
+  assert.match(authorityText, /Si c’est sûr pour moi, je note les faits/, "noting facts is conditioned on safety");
+  assert.match(authorityText, /partagé ou surveillé, mieux vaut ne rien y garder/, "the shared or monitored device warning is visible");
+  assert.doesNotMatch(authorityText, /Urgence possible|hostile|sans attendre/, "no grading vocabulary, no judging word, no time pressure");
+  assert.equal(await authorityPage.locator("#violence-context option:checked").innerText(), "Autorité, entreprise ou groupe puissant");
+  assert.equal(await authorityPage.locator("#violence-context optgroup").evaluateAll((nodes) => nodes.map((node) => node.label).includes("Droits et signalement")), true);
+  assert.equal(await authorityPage.locator("#violence-list .violence-facts details").count(), 5, "five kinds of pressure, each folded");
+  assert.equal(await authorityPage.locator("#violence-list .violence-facts details[open]").count(), 0);
+  assert.equal(await authorityPage.locator("#violence-notice-list").isVisible(), true, "the page notice written for this guide is shown");
+  assert.equal(await authorityPage.locator("#violence-notice-graded").isVisible(), false, "the notice about violence between two people is hidden");
+  assert.equal(await authorityPage.locator("#violence-threshold-red").isVisible(), false, "no talk of a red box without a red box");
+  assert.equal(await authorityPage.locator('#violence-list button[data-action="quick-exit"]').count(), 1, "a quick exit sits in the guide");
+  assert.equal(await authorityPage.locator('#violence-quit button[data-action="quick-exit"]').isVisible(), true, "the quick exit is also at the top of the page, no scrolling needed");
+  assert.deepEqual(await authorityPage.locator('#violence-list .source-note a[href^="#ref-"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href"))), ["#ref-59", "#ref-60", "#ref-61", "#ref-62", "#ref-63", "#ref-64"], "every source of the guide is cited");
+  assert.deepEqual(await authorityPage.locator('#violence-credit a[href^="#ref-"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href"))), ["#ref-65"], "the earlier political violentomètres are credited");
+  assert.match(await authorityPage.locator("#violence-credit").innerText(), /n’est pas un violentomètre/);
+  assert.equal(await authorityPage.evaluate(() => [59, 60, 61, 62, 63, 64, 65].every((n) => document.querySelector(`#references li#ref-${n} a[href^="http"]`))), true, "every cited reference exists in the bibliography with a link");
+  assert.equal(await authorityPage.locator('#violence-list a[href="#securite"]').count(), 1, "the emergency route is one tap away");
+  assert.equal(await authorityPage.locator("#violence-list .violence-volets details").count(), 4, "advice, police and media, rights, limits: all folded");
+  assert.equal(await authorityPage.locator("#violence-list details[open]").count(), 0);
+  await axe("violence-list-authority", authorityPage);
+  for (const width of [320, 390, 1100]) {
+    await authorityPage.setViewportSize({ width, height: 844 });
+    assert(await authorityPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${width}px: the non-graded guide does not overflow`);
+  }
+  for (const summary of await authorityPage.locator("#violence-list details > summary").all()) await summary.click();
+  assert.equal(await authorityPage.locator("#violence-list details[open]").count(), 9, "every folded part opens");
+  assert.match(await authorityPage.locator("#violence-list").innerText(), /à n’utiliser que si l’on pense que c’est sûr, et à éviter si l’on estime que cela peut envenimer la situation/, "publicity is presented with its condition, attributed to organisations");
+  assert.match(await authorityPage.locator("#violence-list").innerText(), /ne sert pas à :[\s\S]*confirmer ou exclure que je sois visé ou surveillé/, "the guide neither confirms nor denies being targeted");
+  await axe("violence-list-authority-open", authorityPage);
+  for (const width of [320, 390]) {
+    await authorityPage.setViewportSize({ width, height: 844 });
+    assert(await authorityPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${width}px: the opened non-graded guide does not overflow`);
+  }
+  await authorityPage.setViewportSize({ width: 1100, height: 844 });
+  await authorityPage.locator("#violence-context").selectOption("couple");
+  assert.equal(await authorityPage.locator("#violence-list").isVisible(), false, "choosing a graded guide hides the list");
+  assert.equal(await authorityPage.locator("#violence-notice-graded").isVisible(), true, "the graded guides keep their notice");
+  assert.equal(await authorityPage.locator("#violence-notice-list").isVisible(), false);
+  assert.equal(await authorityPage.locator("#violence-threshold-red").isVisible(), true);
+  assert.equal(await authorityPage.locator("#violence-quit").isVisible(), false, "the graded guides keep the page as it was");
+  assert.equal(await authorityPage.locator("#meter [data-meter]").count(), 6);
+  await authorityPage.locator("#violence-context").selectOption("authority");
+  assert.equal(await authorityPage.locator("#violence-list").isVisible(), true);
+  assert.equal(await authorityPage.locator("#meter [data-meter]").count(), 0, "choosing the list guide clears the meter");
+  await authorityPage.goto(url + "#securite");
+  assert.equal(await authorityPage.locator('#securite a[href="#violences-authority"]').count(), 1, "the safety page points to the guide");
+  await authorityPage.close();
   await visit("comprendre");
   const guides = page.locator("#comprendre .visual-guides details");
   await page

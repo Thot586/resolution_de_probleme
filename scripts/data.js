@@ -168,14 +168,15 @@
         public: ["Collectif ou politique", "Une décision collective ou publique est en jeu."],
       };
       // Après « J’ai un doute » ou « Je me sens en danger », le texte suit le niveau choisi.
-      // Personnel et Entre personnes gardent le texte d’origine. Collectif n’a pas de lien « repères » tant qu’aucun
-      // repère collectif n’existe : la liste actuelle ne contient aucune relation qui corresponde (voir violenceData).
+      // Personnel et Entre personnes gardent le texte d’origine. Collectif renvoie vers le repère non gradué
+      // « authority » (voir violenceLists) : aucune relation interpersonnelle ne correspond à ce niveau.
       const interpersonalSafety = {
         hint: "",
         doubt: "La peur, les menaces ou le contrôle méritent de l’aide.",
         guideLink: "Voir les repères de violence",
         dangerTitle: "Ma sécurité passe avant l’exercice.",
         dangerBody: "Je peux chercher de l’aide maintenant.",
+        dangerGuide: "Repérer une violence",
         reminder: "Peur, menaces ou contrôle ?",
         guides: true,
       };
@@ -188,16 +189,20 @@
           guideLink: "Choisir des repères de violence",
           dangerTitle: "Ma sécurité et celle des autres passent avant l’exercice.",
           dangerBody: "Je peux chercher de l’aide maintenant. Je n’impose ni confrontation ni médiation tant que la peur ou les représailles sont là.",
+          dangerGuide: "Repérer une violence",
           reminder: "Peur, pressions ou représailles dans l’équipe ?",
           guides: true,
         },
         public: {
           hint: "Je pense aussi à la sécurité des personnes qui agissent avec moi.",
           doubt: "La peur, les menaces ou les représailles méritent de l’aide, pour moi comme pour le groupe.",
+          guideLink: "Voir les repères sur les pressions",
           dangerTitle: "Ma sécurité et celle des autres passent avant l’exercice.",
           dangerBody: "Je peux chercher de l’aide maintenant.",
+          dangerGuide: "Repérer des pressions ou des représailles",
           reminder: "Peur, menaces ou représailles pour moi ou pour le groupe ?",
-          guides: false,
+          reminderHref: "#securite",
+          guides: true,
         },
       };
       const glossary = {
@@ -446,6 +451,7 @@
           ["education", "Enseignant / élève ou étudiant"],
         ]],
         ["Soins", [["care", "Professionnel de santé / personne soignée"]]],
+        ["Droits et signalement", [["authority", "Autorité, entreprise ou groupe puissant"]]],
         ["Autre situation", [["other", "Une autre relation"]]],
       ];
       const violenceData = {
@@ -843,5 +849,87 @@
             ["Violence", "On m'agresse ou m'impose un acte sexuel.", "Une seule agression peut être grave. Je n'ai pas besoin d'attendre d'autres faits pour demander une aide adaptée.", "Je donne priorité à ma sécurité et à un soutien spécialisé."],
             ["Urgence possible", "Je suis blessé, enfermé ou menacé maintenant.", "La priorité est une protection immédiate, avant cet exercice ou toute tentative de médiation.", "Je rejoins si possible un lieu sûr et contacte les secours locaux ou une personne sûre à proximité."],
           ],
+        },
+      };
+      // Repère NON gradué : ce que décrivent des organisations, sans échelle ni couleurs, car aucune source ne soutient un ordre.
+      // Chaque phrase renvoie à une source vérifiée (références 59 à 64) et ne va pas au-delà de ce qu’elle dit ; ce qui n’est pas
+      // dans les sources est écrit dans la voix de l’appli (permissions, conditions de sûreté). Omissions volontaires : internement ou
+      // orientation psychiatrique, chiffres de seconde main, conseils numériques de 2011, conseils d’arrestation propres à un pays,
+      // « en cas de doute, supposer qu’on est surveillé ». Clé de lien : #violences-authority. Pas de score ; droits selon le pays.
+      const violenceLists = {
+        authority: {
+          note: "Pour une personne qui défend des droits humains par des moyens pacifiques, ou qui signale un manquement dans son travail. Ces repères décrivent ce que des organisations observent ; ils ne mesurent pas un danger. Les droits et recours dépendent du pays.",
+          title: "Quand je défends des droits humains ou que je signale un manquement",
+          lead: [
+            "Défendre des droits humains, seul ou avec d’autres, n’expose pas toujours à un risque, mais cela peut exposer à des pressions ou à des représailles.",
+            "Je peux chercher de l’aide sans preuve et sans savoir comment nommer ce que je vis.",
+          ],
+          facts: {
+            title: "Ce que des organisations ont constaté",
+            hint: "Cette liste n’est pas classée par gravité : un seul de ces faits peut déjà être grave, et ce que je vis peut ne pas y figurer.",
+            items: [
+              ["Mise en cause publique", "Étiquettes, accusations, campagnes pour salir la réputation.", "Des organisations décrivent des personnes présentées publiquement comme « terroristes », « subversives » ou « corrompues », comme des agents de puissances étrangères (par exemple « occidentales ») ou comme agissant pour des partis d’opposition, souvent par des autorités ou des médias d’État, avec des campagnes de diffamation. Ce repère ne dit pas si une accusation précise est fondée."],
+              ["Menaces", "Menaces contre une personne, ses collègues, son organisation ou ses proches.", "Menaces, y compris de mort, directes ou à mots couverts, en personne, par téléphone ou message, sur les réseaux sociaux, par un mot glissé sous la porte, par l’envoi de photos montrant que soi ou sa famille sont surveillés depuis longtemps, ou par l’inscription sur une liste publiée de personnes à abattre. Des organisations décrivent aussi du chantage visant les proches. Beaucoup de personnes menacées ont dit à l’ONU que la menace, à elle seule, les affaiblit et les laisse dans une peur constante."],
+              ["Surveillance", "Être surveillé ou mis sur écoute.", "Des organisations décrivent des personnes surveillées, dont la ligne téléphonique est écoutée ou coupée. Ce repère ne dit pas si ce que je vis correspond à l’un de ces faits."],
+              ["Mesures qui gênent l’action", "Arrestations, poursuites ou amendes que des organisations jugent injustifiées ; saisies ; fermetures de locaux.", "Des organisations décrivent des arrestations arbitraires ou des poursuites pour des motifs variés, des amendes lourdes pour des infractions mineures, l’obligation de se présenter à répétition à un bureau sans raison claire, des convocations par la police, la confiscation de papiers ou de matériel, la fermeture de locaux, des entraves aux déplacements et aux associations. Un contrôle ou une amende ordinaire n’est pas forcément une pression : les textes décrivent des mesures arbitraires, répétées, disproportionnées ou prises sous un prétexte, parfois utilisées pour harceler et occuper le temps des personnes."],
+              ["Travail ou études", "Perte d’emploi, sanction ou mise à l’écart liées à un signalement ou à un engagement.", "Après un signalement ou un engagement pour des droits, des organisations décrivent une perte d’emploi ou de possibilités d’études ; la directive européenne cite aussi sanction, mutation, évaluation négative, mise à l’écart ou intimidation. La directive parle de représailles quand un acte, dans le cadre du travail, est provoqué par un signalement et cause ou peut causer un préjudice injustifié. Une critique ou une évaluation ordinaire n’est pas, à elle seule, une représaille."],
+            ],
+          },
+          alert: "Des organisations conseillent de prendre toute menace au sérieux : la situation peut changer vite. Cela vaut pour toute menace, y compris une menace de mort ou visant mes proches, même si elle est isolée. Je n’ai pas à attendre une répétition ou une preuve pour chercher de l’aide.",
+          steps: {
+            title: "Premiers pas",
+            hint: "Pratiques décrites par des organisations, surtout pour des contextes à risque. Elles ne conviennent pas à toutes les situations, et les documents cités n’en mesurent pas l’effet.",
+            items: [
+              "Ce que je vis, et ma peur, méritent de l’attention. Je n’ai pas à rester seul avec cela.",
+              "J’en parle à une personne de confiance ou à une organisation spécialisée, par un moyen que je juge sûr. Je décide de la suite.",
+              "Si c’est sûr pour moi, je note les faits et je les range en lieu sûr.",
+              "Si l’appareil que j’utilise est partagé ou surveillé, mieux vaut ne rien y garder : ni ici, ni dans mes notes.",
+            ],
+          },
+          volets: [
+            {
+              title: "Autres conseils",
+              items: [
+                "Je note ce que j’ai vu ou reçu : quoi, quand, où, qui (si je le sais), comment, et si cela se répète. Si je pense savoir qui est derrière, je le note à part, comme une hypothèse : les menaces sont souvent anonymes, et l’auteur est difficile à identifier avec certitude.",
+                "Ces notes peuvent me nuire, ou nuire à d’autres, si quelqu’un les trouve : leur utilité varie selon le pays.",
+                "Personne ne doit me pousser à agir contre mon gré.",
+                "Je prends soin de moi, avec du soutien si je le souhaite.",
+                "Dans le doute, je choisis ce qui me semble le plus sûr. Cela peut être continuer, changer ma façon de faire ou m’arrêter pour un temps : le choix m’appartient.",
+              ],
+            },
+            {
+              title: "Police, médias, réponse publique : à bien peser",
+              paragraphs: [
+                "Ce repère ne dit pas s’il faut s’adresser à la police, rendre une situation publique ou répondre publiquement à une accusation : cela dépend du contexte.",
+                "Les forces de l’ordre peuvent être une option lorsque les contacter est sûr et pertinent dans mon contexte. Selon le Haut-Commissariat de l’ONU aux droits de l’homme, les autorités de l’État sont les auteurs les plus fréquents de violations contre les personnes qui défendent les droits humains, alors qu’elles ont aussi la responsabilité première de les protéger ; en leur sein, certaines personnes s’y efforcent. Dans certains pays, la police refuse parfois d’enregistrer les plaintes de personnes qui défendent des droits.",
+                "Des organisations présentent le fait de rendre une situation publique comme une option à n’utiliser que si l’on pense que c’est sûr, et à éviter si l’on estime que cela peut envenimer la situation ; beaucoup de personnes qui défendent des droits disent à l’ONU qu’une couverture médiatique rapide et visible des menaces aide à les protéger. Des organisations invitent aussi à se demander si répondre publiquement à une accusation risque de la faire circuler davantage.",
+                "En cas de danger immédiat, la page Sécurité reste la voie d’urgence.",
+              ],
+            },
+            {
+              title: "Droits et recours : cela dépend du pays",
+              paragraphs: [
+                "Les droits et les recours dépendent du pays où je vis. Une déclaration de l’ONU de 1998 reconnaît le droit de défendre les droits humains, seul ou avec d’autres. Elle n’oblige pas les États en elle-même, mais elle s’appuie sur des droits inscrits dans des traités.",
+                "Dans l’Union européenne, une directive demande aux États de protéger certaines personnes qui signalent, dans un cadre professionnel, certaines violations du droit de l’Union. Elle ne couvre pas toutes les situations, la protection dépend de conditions (par exemple, avoir de bonnes raisons de croire l’information vraie et passer par les canaux prévus), et elle passe par les lois de chaque pays.",
+              ],
+            },
+            {
+              title: "Limites de ce repère",
+              intro: "Ce repère décrit des situations. Il ne sert pas à :",
+              items: [
+                "mesurer un danger, ni savoir si une menace sera mise à exécution : on n’en est jamais sûr à 100 % ;",
+                "dire si ces faits sont fréquents ;",
+                "confirmer ou exclure que je sois visé ou surveillé : je peux avoir un doute sans certitude ;",
+                "dire qui a raison, ni prendre parti pour une cause ;",
+                "remplacer l’avis d’un juriste ou l’aide d’une organisation spécialisée.",
+              ],
+              paragraphs: [
+                "Il concerne des actions pacifiques. Il s’appuie sur des textes sur la défense des droits humains et sur le signalement au travail : il ne porte ni sur la compétition entre partis, ni sur les désaccords ordinaires dans un syndicat, une association ou un voisinage ; une personne élue ou syndiquée qui défend un droit humain peut toutefois s’y reconnaître. Pour un problème au travail, à l’école ou dans les soins, le guide de la relation correspondante convient peut-être mieux.",
+              ],
+            },
+          ],
+          refs: "[59, 60, 61, 62, 63, 64]",
+          credit: "Travaux antérieurs sur la violence politique envers les femmes au Mexique :",
+          creditRef: 65,
         },
       };

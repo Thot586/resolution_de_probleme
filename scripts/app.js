@@ -195,7 +195,7 @@
       };
       const currentContext = () => contextCatalog[state.scale][state.context];
       const violenceRouteForContext = () => {
-        const related = state.scale === "shared" ? {
+        const related = state.scale === "public" ? "authority" : state.scale === "shared" ? {
           couple: "couple",
           family: "family",
           sibling: "sibling",
@@ -210,12 +210,12 @@
         const texts = safetyByScale[state.scale] || safetyByScale.personal;
         const route = violenceRouteForContext();
         if (state.safety === "danger") {
-          return `<div class="notice red section-gap"><strong>${texts.dangerTitle}</strong>${texts.dangerBody}<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a>${texts.guides ? `<a class="btn" href="${route}">Repérer une violence</a>` : ""}<button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="notice-note">Remplace la page par Wikipédia. N’efface ni l’historique ni un brouillon gardé.</p></div>`;
+          return `<div class="notice red section-gap"><strong>${texts.dangerTitle}</strong>${texts.dangerBody}<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a>${texts.guides ? `<a class="btn" href="${route}">${texts.dangerGuide}</a>` : ""}<button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="notice-note">Remplace la page par Wikipédia. N’efface ni l’historique ni un brouillon gardé.</p></div>`;
         }
         if (state.safety === "unsure") {
           return `<div class="notice amber section-gap"><strong>${texts.doubt}</strong> ${texts.guides ? `<a href="${route}">${texts.guideLink}</a> ou <a href="#securite">chercher de l’aide</a>.` : '<a href="#securite">Chercher de l’aide</a>.'}</div>`;
         }
-        return `<p class="hint" style="margin-top:12px">${texts.reminder} <a href="${texts.guides ? route : "#securite"}">Voir les repères de sécurité</a>.</p>`;
+        return `<p class="hint" style="margin-top:12px">${texts.reminder} <a href="${texts.reminderHref || (texts.guides ? route : "#securite")}">Voir les repères de sécurité</a>.</p>`;
       };
       function selectScale(scale) {
         if (!Object.hasOwn(scales, scale)) return;
@@ -1037,12 +1037,36 @@
         );
       }
       // These are educational examples, not validated scales or risk scores.
+      // Repère non gradué : une carte de listes, sans échelle, sans couleurs et sans compteur ; le détail est replié.
+      function violenceListHtml(list) {
+        const plain = (items) => items.map((text) => `<li>${esc(text)}</li>`).join("");
+        const refLinks = list.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`);
+        const facts = list.facts.items.map(([label, gist, detail]) => `<details><summary><span class="fact-text"><strong>${esc(label)}</strong><span class="fact-gist">${esc(gist)}</span></span></summary><div class="details-body"><p>${esc(detail)}</p></div></details>`).join("");
+        const volets = list.volets.map((v) => `<details><summary>${esc(v.title)}</summary><div class="details-body">${v.intro ? `<p>${esc(v.intro)}</p>` : ""}${v.items ? `<ul>${plain(v.items)}</ul>` : ""}${(v.paragraphs || []).map((text) => `<p>${esc(text)}</p>`).join("")}</div></details>`).join("");
+        return `<h2 id="violence-list-title">${esc(list.title)}</h2>${list.lead.map((text) => `<p>${esc(text)}</p>`).join("")}<h3>${esc(list.facts.title)}</h3><p class="hint">${esc(list.facts.hint)}</p><div class="violence-facts">${facts}</div><p class="notice violence-callout">${esc(list.alert)}</p><div class="button-row section-gap"><a href="#securite" class="btn">Voir les possibilités d’aide →</a><button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="hint">Quitter remplace la page par Wikipédia. Cela n’efface ni l’historique ni un brouillon gardé.</p><h3>${esc(list.steps.title)}</h3><p class="hint">${esc(list.steps.hint)}</p><ul>${plain(list.steps.items)}</ul><div class="violence-volets">${volets}</div><p class="source-note">Repère pédagogique, sans échelle. Aucun diagnostic ni score de risque. Sources : ${refLinks}.</p>`;
+      }
       function renderMeter() {
         const key = $("#violence-context").value,
-          d = violenceData[key];
-        $("#violence-empty").hidden = Boolean(d);
+          d = Object.hasOwn(violenceData, key) ? violenceData[key] : null,
+          list = Object.hasOwn(violenceLists, key) ? violenceLists[key] : null;
+        $("#violence-empty").hidden = Boolean(d || list);
         $("#violence-meter-layout").hidden = !d;
+        $("#violence-list").hidden = !list;
+        $("#violence-notice-graded").hidden = Boolean(list);
+        $("#violence-notice-list").hidden = !list;
+        $("#violence-quit").hidden = !list;
+        $("#violence-threshold-red").hidden = Boolean(list);
         $("#violence-return").hidden = !state.scaleChosen;
+        if (list) {
+          $("#violence-context-note").textContent = list.note;
+          $("#violence-credit").innerHTML = `<strong>Ce repère n’est pas un violentomètre :</strong> il ne classe rien. ${esc(list.credit)} <a href="#ref-${list.creditRef}">[${list.creditRef}]</a>.`;
+          $("#violence-credit").hidden = false;
+          $("#meter").replaceChildren();
+          $("#meter-detail").replaceChildren();
+          $("#violence-list").innerHTML = violenceListHtml(list);
+          return;
+        }
+        $("#violence-list").replaceChildren();
         if (!d) {
           $("#violence-context-note").textContent = "";
           $("#violence-credit").hidden = true;
@@ -1093,7 +1117,7 @@
         const hash = location.hash.slice(1) || "accueil";
         const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
         const violenceMatch = /^violences-([a-z]+)$/.exec(hash);
-        const violenceKey = violenceMatch && Object.hasOwn(violenceData, violenceMatch[1]) ? violenceMatch[1] : null;
+        const violenceKey = violenceMatch && (Object.hasOwn(violenceData, violenceMatch[1]) || Object.hasOwn(violenceLists, violenceMatch[1])) ? violenceMatch[1] : null;
         if (scaleMatch) {
           selectScale(scaleMatch[1]);
           persist();
@@ -1520,7 +1544,7 @@
       $("#support-context").addEventListener("change", renderSupport);
       $("#violence-context").addEventListener("change", () => {
         const key = $("#violence-context").value;
-        if (key && !Object.hasOwn(violenceData, key)) return;
+        if (key && !Object.hasOwn(violenceData, key) && !Object.hasOwn(violenceLists, key)) return;
         const target = key ? `#violences-${key}` : "#violences";
         if (location.hash === target) {
           meterIndex = null;

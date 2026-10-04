@@ -7,7 +7,7 @@
               qu’elles peuvent signifier et où demander de l’aide.
             </p>
           </div>
-          <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a></p>
+          <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a> <span id="violence-quit" hidden><button type="button" class="text-button" data-action="quick-exit">Quitter cette page ↗</button> <small>Remplace la page par Wikipédia ; n’efface pas l’historique.</small></span></p>
           <div class="section-gap violence-choice primary-ask">
             <label class="label" for="violence-context"
               >Avec qui se passe la situation ?</label
@@ -18,7 +18,7 @@
           </div>
           <p class="hint" id="violence-context-note"></p>
           <p class="source-note" id="violence-credit" hidden></p>
-          <p class="hint violence-threshold">Dès qu’un fait m’inquiète, je peux chercher conseil. Je n’ai pas à attendre une répétition ou une « case rouge » pour demander de l’aide.</p>
+          <p class="hint violence-threshold">Dès qu’un fait m’inquiète, je peux chercher conseil. <span id="violence-threshold-red">Je n’ai pas à attendre une répétition ou une « case rouge » pour demander de l’aide.</span></p>
           <div id="violence-empty" class="card padded violence-empty" role="status">Je choisis une relation ci-dessus pour voir les repères qui lui correspondent.</div>
           <div class="meter-layout section-gap" id="violence-meter-layout" hidden>
             <div>
@@ -38,8 +38,13 @@
               aria-live="polite"
             ></article>
           </div>
+          <article class="card violence-list section-gap" id="violence-list" aria-labelledby="violence-list-title" hidden></article>
           <a id="violence-return" href="#outil" class="text-button section-gap" hidden>← Revenir à mon problème</a>
-          <div class="notice red section-gap">
+          <div class="notice red section-gap" id="violence-notice-list" hidden>
+            <strong>Je n’ai pas à porter cela seul.</strong>
+            <a href="#securite">Trouver du soutien en sécurité →</a>
+          </div>
+          <div class="notice red section-gap" id="violence-notice-graded">
             <strong
               >La violence n’est pas un problème à résoudre à deux à tout
               prix.</strong
@@ -76,9 +81,11 @@
                 <li>Pour les amitiés étudiantes : le service de santé étudiant de l’Université de Toulouse et son <em>Harcèlomètre</em> <a href="#ref-53">[53]</a>.</li>
                 <li>Dans les soins : l’Ordre des masseurs-kinésithérapeutes et l’association Du côté des femmes pour le <em>Déontomètre de la confiance thérapeutique</em> <a href="#ref-54">[54]</a>.</li>
                 <li>Pour l’accès à l’information : le Centre de Ressources Handicaps et Sexualités et L’Heureux Abri pour leur version en FALC, illustrée par Sandrine Crabeels <a href="#ref-56">[56]</a>.</li>
+                <li>Pour la violence politique envers les femmes : des équipes d’observatoires mexicains de la participation politique, dont les violentomètres sont reproduits dans un ouvrage de l’Institut électoral d’Oaxaca <a href="#ref-65">[65]</a>.</li>
               </ul>
               <p>
                 <strong>Les guides de cette page sont des créations distinctes, pas des adaptations officielles.</strong>
+                Le repère « Autorité, entreprise ou groupe puissant » n’est pas un violentomètre : il ne propose ni échelle ni couleurs, car aucune des sources consultées ne soutient un ordre entre ces situations.
                 Ils ne reprennent pas les textes de ces outils et ne revendiquent pas d’avoir été les premiers à décliner le Violentomètre.
                 Ils ne sont ni des échelles cliniques validées, ni des outils
                 prédictifs, ni un avis juridique. Les couleurs ne calculent
@@ -90,7 +97,8 @@
           </details>
           <p class="source-note">
             Situations formulées pour cette page à partir de publications sur
-            la santé, le travail, l’éducation et la prévention. Chaque guide cite
+            la santé, le travail, l’éducation, la prévention et la défense des
+            droits. Chaque guide cite
             ses sources et leurs limites.
             Le contexte de pouvoir compte ; les droits et recours précis
             dépendent du pays. <a href="#ref-6">[6]</a>

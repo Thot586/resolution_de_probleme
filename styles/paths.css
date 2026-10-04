@@ -109,6 +109,20 @@
       .primary-ask .answer-tag { display: block; margin: 0 0 6px; color: var(--brand); font-size: .74rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
       .primary-ask .safety-hint { margin: -8px 0 16px; font-size: .95rem; }
       .notice-note { margin: 10px 0 0; font-size: .85rem; }
+      .violence-list { padding: clamp(18px, 3vw, 28px); }
+      .violence-list h2 { margin: 0 0 12px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.45rem, 3vw, 1.85rem); font-weight: 700; line-height: 1.2; }
+      .violence-list h3 { margin: 28px 0 4px; color: var(--deep); font-size: 1.08rem; }
+      .violence-list p { font-size: .95rem; line-height: 1.6; }
+      .violence-list .hint { margin: 2px 0 0; font-size: .85rem; }
+      .violence-list ul { margin: 10px 0 0; padding-left: 1.25em; font-size: .93rem; line-height: 1.6; }
+      .violence-list li + li { margin-top: 8px; }
+      .violence-list .violence-facts { margin-top: 12px; }
+      .violence-list .violence-facts details + details { margin-top: 8px; }
+      .violence-list .fact-text { display: flex; flex-direction: column; gap: 3px; }
+      .violence-list .fact-gist { color: var(--muted); font-size: .88rem; font-weight: 450; line-height: 1.45; }
+      .violence-list .violence-volets { margin-top: 26px; }
+      .violence-list .details-body { font-size: .92rem; line-height: 1.65; }
+      .violence-list .violence-callout { margin: 16px 0 0; border-left: 4px solid var(--brand); border-radius: 0 12px 12px 0; font-size: .95rem; line-height: 1.6; }
       .primary-ask .field { margin-bottom: 26px; }
       .primary-ask .field:last-child { margin-bottom: 0; }
       .primary-ask .field > .label:not(.sr-only) { margin-bottom: 6px; color: var(--deep); font-size: 1.12rem; }
