@@ -52,10 +52,55 @@
       .change-level { display: block; margin: 0 0 4px; border: 0; background: transparent; }
       .change-level > summary { display: inline-flex; justify-content: flex-start; gap: 8px; padding: 6px 12px; border: 1px solid #adc7e9; border-radius: 999px; background: #edf3fb; color: var(--muted); font-size: .84rem; font-weight: 500; }
       .change-level > summary strong { color: var(--deep); font-weight: 650; }
-      .change-level > summary:after { content: "⌄"; font-size: 1rem; line-height: 1; }
+      .change-level > summary:after { content: "▾"; content: "▾" / ""; font-size: .8rem; line-height: 1; }
       .change-level[open] > summary { border-bottom: 1px solid #adc7e9; }
-      .change-level[open] > summary:after { content: "⌃"; }
+      .change-level[open] > summary:after { content: "▴"; content: "▴" / ""; }
       .change-level > .details-body { padding: 10px 0 4px; }
+      .side { justify-items: start; }
+      .mobile-step-picker { display: inline-block; max-width: 100%; border: 0; background: transparent; }
+      .mobile-step-picker > summary { display: inline-flex; justify-content: flex-start; gap: 6px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--muted); font-size: .84rem; font-weight: 560; }
+      .mobile-step-picker > summary:after { content: "▾"; content: "▾" / ""; font-size: .8rem; line-height: 1; }
+      .mobile-step-picker[open] { display: block; justify-self: stretch; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+      .mobile-step-picker[open] > summary { display: flex; border: 0; border-bottom: 1px solid #e5ecf7; border-radius: 14px 14px 0 0; background: transparent; }
+      .mobile-step-picker[open] > summary:after { content: "▴"; content: "▴" / ""; }
+      .step-link.is-done .step-num { position: relative; border-color: var(--brand); color: var(--brand); }
+      .step-link.is-done .step-num::after { content: "✓"; content: "✓" / ""; position: absolute; top: -6px; right: -7px; display: grid; place-items: center; width: 15px; height: 15px; border: 2px solid #fff; border-radius: 50%; background: var(--brand); color: #fff; font-size: .66rem; font-weight: 800; box-sizing: content-box; }
+      .step-link[aria-current="step"].is-done .step-num { border-color: #ffffff99; color: #fff; }
+      #step-container .step-topline { display: grid; grid-template-columns: minmax(0, 1fr); gap: 9px; margin-bottom: 18px; }
+      .step-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }
+      .fiche-link { margin-block: -10px; padding-block: 10px; font-size: .9rem; font-weight: 650; }
+      .keep-actions { display: contents; }
+      .step-counter { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.3; }
+      .step-counter strong { color: var(--deep); font-weight: 700; }
+      .step-bar { display: flex; gap: 5px; }
+      .step-bar span { flex: 1; height: 6px; border-radius: 99px; background: #dce5f2; }
+      .step-bar .is-done { background: var(--brand); }
+      .step-bar .is-current { height: 8px; margin-block: -1px; background: var(--deep); }
+      .step-bar .is-later { margin-left: 8px; box-sizing: border-box; border: 1.5px dashed #9fb4d3; background: transparent; }
+      .step-bar .is-later.is-done { border: 0; background: var(--brand); }
+      .step-bar .is-later.is-current { border: 0; background: var(--deep); }
+      .recap-banner { display: flex; align-items: flex-start; gap: 14px; margin: 4px 0 22px; padding: 18px 20px; border: 1.5px solid #9cb6d9; border-radius: 18px; background: linear-gradient(180deg, #eef4fc, #f8faff); }
+      .recap-banner:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
+      .recap-banner h2 { margin: 0 0 4px; color: var(--deep); font-size: 1.45rem; line-height: 1.15; }
+      .recap-banner p { margin: 0; color: var(--ink); font-size: .98rem; line-height: 1.55; }
+      .recap-check { flex: none; display: grid; place-items: center; width: 30px; height: 30px; margin-top: 2px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 800; }
+      .recap-later { margin-top: 30px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+      .recap-later h2 { margin: 0 0 8px; color: var(--deep); font-size: 1.25rem; }
+      .recap-later p { margin: 0 0 12px; color: var(--muted); font-size: .95rem; line-height: 1.55; }
+      .save-state { min-height: 1.5em; margin: 6px 2px 0; color: var(--brand); font-size: .85rem; font-weight: 600; line-height: 1.5; }
+      .scale-note { margin: 18px 0 0; color: var(--muted); font-size: .92rem; line-height: 1.5; }
+      .recap-banner .btn { margin-top: 10px; }
+      @media (pointer: coarse) {
+        .mobile-step-picker > summary, .change-level > summary { min-height: 44px; }
+        .privacy-line .text-button { min-height: 44px; }
+      }
+      @media (forced-colors: active) {
+        .step-bar span { border: 1px solid ButtonText; }
+        .step-bar .is-done, .step-bar .is-current { background: Highlight; forced-color-adjust: none; }
+        .step-link[aria-current="step"] { outline: 2px solid Highlight; outline-offset: -2px; }
+      }
+      .fiche-line { margin: 28px 0 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+      .fiche-line a { color: var(--brand); font-weight: 600; }
       .primary-ask { margin-top: 18px; padding: clamp(18px, 3vw, 28px); border: 2px solid #9cb6d9; border-radius: 18px; background: linear-gradient(180deg, #eef4fc, #f8faff); }
       .primary-ask > .label, .primary-ask legend { margin: 0 0 16px; color: var(--deep); font-family: var(--font-display); font-size: clamp(1.45rem, 3vw, 1.85rem); font-weight: 700; line-height: 1.2; }
       .primary-ask select, .primary-ask #violence-context { max-width: none; min-height: 58px; border: 2px solid var(--brand); background: #fff; font-size: 1.05rem; }
@@ -156,6 +201,7 @@
         .group-layout { grid-template-columns: 1fr; }
       }
       @media (max-width: 600px) {
+        .fiche-line { min-height: 3em; }
         .workspace { grid-template-columns: minmax(0, 1fr); }
         .step-card { min-width: 0; }
         .welcome-hero { padding: 27px 23px; border-radius: 20px; }

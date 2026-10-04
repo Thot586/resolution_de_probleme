@@ -103,10 +103,89 @@
       function hasPlan() {
         return Boolean(state.fields.action.trim());
       }
-      function updateRecapShortcut() {
-        const shortcut = $("#recap-shortcut");
-        shortcut.hidden = !hasWriting();
-        shortcut.textContent = hasPlan() ? "Voir mon plan ↗" : "Voir mes réponses ↗";
+      function stepDone(i) {
+        const f = state.fields;
+        const text = (key) => String(f[key] || "").trim();
+        if (i === 0) return state.scaleChosen && Boolean(state.safety);
+        if (i === 1) return Boolean(text("situation") || text("goal") || text("obstacle"));
+        if (i === 2) return state.options.some((o) => o.text.trim());
+        if (i === 3) return state.options.some((o) => o.id === state.chosen && o.text.trim());
+        if (i === 4) return hasPlan();
+        return (["yes", "partly", "no"].includes(f.trial) && hasWriting()) || Boolean(text("result") || text("learning") || text("next"));
+      }
+      function ficheSections() {
+        const f = state.fields;
+        const has = (...keys) => keys.some((key) => String(f[key] || "").trim());
+        return [
+          [has("situation", "goal", "obstacle", "emotion", "control", "outside"), "ma situation"],
+          [state.options.some((o) => o.text.trim()), "mes options"],
+          [state.options.some((o) => o.id === state.chosen && o.text.trim()), "mon choix"],
+          [has("action", "when", "support", "backup", "measure") || Boolean(formatDate(f.reviewDate)), "mon premier pas"],
+          [(["yes", "partly", "no"].includes(f.trial) && hasWriting()) || has("result", "learning", "next"), "mon bilan"],
+        ].filter(([filled]) => filled).map(([, label]) => label);
+      }
+      const atRisk = () => state.safety === "unsure" || state.safety === "danger";
+      const RISK_NOTE = "Si cet appareil est partagé ou surveillé, mieux vaut ne rien garder ici.";
+      let staleCopy = false;
+      function keepNoteText(kind) {
+        if (remember) return kind === "pause" ? "Je peux m’arrêter ici et reprendre plus tard : mon brouillon est gardé dans ce navigateur." : "Mon plan est gardé dans ce navigateur.";
+        if (atRisk()) return kind === "pause" ? "Je peux m’arrêter ici. " + RISK_NOTE + " Mes réponses disparaissent quand je ferme ou recharge la page." : "Mon plan reste dans ma fiche jusqu’à la fermeture de cette page. " + RISK_NOTE;
+        return kind === "pause"
+          ? "Je peux m’arrêter ici. Pour reprendre plus tard, je garde mon brouillon dans ce navigateur ou je le télécharge ; sinon mes réponses disparaissent quand je ferme ou recharge la page."
+          : "Mon plan reste dans ma fiche jusqu’à la fermeture de cette page. Pour le retrouver après l’essai, je le garde dans ce navigateur.";
+      }
+      function keepActionsHtml(kind) {
+        if (remember || atRisk()) return "";
+        const keep = `<button class="${kind === "pause" ? "btn small" : "btn"}" data-action="keep-local">Garder dans ce navigateur</button>`;
+        return kind === "pause" ? keep + '<button class="btn small" data-action="export-draft">Télécharger mon brouillon</button>' : keep;
+      }
+      const savedHtml = () => '<span aria-hidden="true">✓</span> Noté dans ma fiche · ' + (remember ? "gardé dans ce navigateur" : "sur cette page");
+      function refreshRememberUi() {
+        $$("[data-keep-note]").forEach((el) => { el.textContent = keepNoteText(el.dataset.keepNote); });
+        $$("[data-keep-actions]").forEach((el) => { el.innerHTML = keepActionsHtml(el.dataset.keepActions); });
+        $$(".save-state").forEach((el) => { if (el.textContent.trim()) el.innerHTML = savedHtml(); });
+        updateFicheLine();
+      }
+      function ficheLineHtml() {
+        if (state.step === 0 && state.safety === "danger") return "";
+        const link = '<a href="#recap">Voir ma fiche</a>';
+        const sections = ficheSections();
+        if (state.step === 4) return "Ensuite : ma fiche, à relire, modifier, imprimer. Je ferai le point après l’essai." + (sections.length ? " " + link : "");
+        if (state.step === 5) return sections.includes("mon bilan") ? "Mon bilan est dans ma fiche." : "Mon bilan s’ajoutera à ma fiche.";
+        if (!sections.length) return "Mes réponses s’ajoutent à ma fiche, que je retrouve à la fin.";
+        return "Dans ma fiche : " + sections.join(", ") + ". " + link;
+      }
+      let recapArrival = false;
+      const savedTimers = new Map();
+      function savedIdFor(el) {
+        if (el.dataset.field) return "saved-" + el.dataset.field;
+        if (el.dataset.option) return el.dataset.prop === "text" ? "saved-idea-" + el.dataset.option : "saved-" + el.dataset.prop + "-" + el.dataset.option;
+        return "";
+      }
+      function scheduleSavedState(el) {
+        const id = savedIdFor(el);
+        const out = id && document.getElementById(id);
+        if (!out) return;
+        clearTimeout(savedTimers.get(id));
+        if (!el.value.trim()) {
+          out.textContent = "";
+          return;
+        }
+        if (out.textContent) return;
+        savedTimers.set(id, setTimeout(() => { out.innerHTML = savedHtml(); }, 700));
+      }
+      function updateFicheLine() {
+        const line = $("#fiche-line");
+        if (line) {
+          const html = ficheLineHtml();
+          line.innerHTML = html;
+          line.hidden = !html;
+        }
+        const link = $("#fiche-link");
+        if (link) link.hidden = ficheSections().length === 0;
+      }
+      function stepDocumentTitle() {
+        return `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]}`;
       }
       const legacyContextMap = {
         personal: { daily: "daily", study: "study", work: "work", health: "health" },
@@ -245,23 +324,40 @@
         /* Corrupt or unavailable storage does not block use. */
       }
       function persist() {
-        if (!remember) return;
+        if (!remember) return false;
         try {
           localStorage.setItem(KEY, JSON.stringify(state));
+          return true;
         } catch (e) {
           remember = false;
+          try {
+            localStorage.removeItem(KEY);
+            staleCopy = false;
+          } catch (e2) {
+            staleCopy = true;
+          }
           $("#remember").checked = false;
           updatePrivacy();
           toast(
             "La sauvegarde a échoué. Téléchargez votre brouillon pour le conserver.",
           );
+          return false;
         }
       }
+      function privacyText() {
+        if (remember) return "Brouillon gardé dans ce navigateur. Rien n’est envoyé.";
+        if (staleCopy) return "Une copie de mes réponses reste dans ce navigateur (retrait impossible). Rien n’est envoyé.";
+        return "Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page. Rien n’est envoyé.";
+      }
       function updatePrivacy() {
-        $("#privacy-status").textContent = remember
-          ? "Brouillon gardé dans ce navigateur. Rien n’est envoyé."
-          : "Rien n’est envoyé.";
+        const status = $("#privacy-status");
+        const text = privacyText();
+        if (status.textContent !== text) status.textContent = text;
+        const keep = $("#keep-link");
+        const hideKeep = remember || atRisk();
+        if (keep.hidden !== hideKeep) keep.hidden = hideKeep;
         $("#remember").checked = remember;
+        refreshRememberUi();
       }
       function toast(t) {
         $("#toast").textContent = t;
@@ -301,23 +397,24 @@
       function field(key, label, hint = "", type = "textarea", ex = "", visibleExample = false, beforeInput = "", hideLabel = false) {
         const val = state.fields[key] || "",
           id = "field-" + key;
-        return `<div class="field"><label class="label${hideLabel ? " sr-only" : ""}" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${beforeInput}${type === "textarea" ? '<span class="answer-tag" aria-hidden="true">Ma réponse</span>' : ""}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${hint ? ` aria-describedby="hint-${key}"` : ""}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${hint ? ` aria-describedby="hint-${key}"` : ""}>`}</div>`;
+        const showSaved = type !== "date";
+        const describedBy = [hint ? "hint-" + key : "", showSaved ? "saved-" + key : ""].filter(Boolean).join(" ");
+        const described = describedBy ? ` aria-describedby="${describedBy}"` : "";
+        return `<div class="field"><label class="label${hideLabel ? " sr-only" : ""}" for="${id}">${label}</label>${hint ? `<p class="hint field-hint" id="hint-${key}">${linkGlossary(hint)}</p>` : ""}${ex ? example(ex, label, visibleExample) : ""}${beforeInput}${type === "textarea" ? '<span class="answer-tag" aria-hidden="true">Ma réponse</span>' : ""}${type === "textarea" ? `<textarea id="${id}" data-field="${key}" maxlength="6000" placeholder="Je note ma réponse…"${described}>${esc(val)}</textarea>` : `<input id="${id}" data-field="${key}" type="${type}" value="${esc(val)}"${type === "text" ? ' maxlength="6000" placeholder="Je note ma réponse…"' : ""}${described}>`}${showSaved ? `<p class="save-state" id="saved-${key}">${val.trim() ? savedHtml() : ""}</p>` : ""}</div>`;
       }
       function renderSteps() {
         const workflow = workflows[state.scale];
         const links = stepNames
-          .map(
-            (s, i) =>
-              `<li><button class="step-link" data-step="${i}"${i === state.step ? ' aria-current="step"' : ""}><span class="step-num">${i + 1}</span><span class="step-text"><b>${s[0]}</b><small>${workflow.steps[i]}</small></span></button></li>`,
-          )
+          .map((s, i) => {
+            const done = stepDone(i);
+            return `<li><button class="step-link${done ? " is-done" : ""}" data-step="${i}"${i === state.step ? ' aria-current="step"' : ""}><span class="step-num">${i + 1}</span><span class="step-text"><b>${s[0]}${done ? '<span class="sr-only"> (rempli)</span>' : ""}</b><small>${workflow.steps[i]}</small></span></button></li>`;
+          })
           .join("");
         $("#steps").innerHTML = links;
-        $("#mobile-step-summary").textContent = `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]} — ${workflow.steps[state.step]}`;
       }
       function renderStep(focus = false, focusQuestion = false) {
         hideTooltip();
         renderSteps();
-        updateRecapShortcut();
         const c = currentContext(),
           i = state.step,
           workflow = workflows[state.scale];
@@ -326,7 +423,7 @@
         let body = "";
         const startScreen = i === 0 ? startParts()[Math.min(startPart, startParts().length - 1)] : "";
         if (i === 0) {
-          const scaleButtons = Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("");
+          const scaleButtons = Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scaleChosen && state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("");
           if (startScreen === "level") {
             body = `<fieldset><legend>Je choisis le niveau de mon problème</legend><div class="scale-options">${scaleButtons}</div></fieldset>`;
           } else if (startScreen === "context") {
@@ -363,21 +460,21 @@
           const questionTitles = ["Ce qui se passe", "Ce que je voudrais changer", "Ce qui bloque"];
           const questionMarkers = [0, 1, 2].map((part) => `<span class="${part < state.clarifyPart ? "is-past" : part === state.clarifyPart ? "is-current" : ""}"></span>`).join("");
           const orientation = `<div class="question-orientation"><h3 id="question-title" tabindex="-1"><span class="question-progress">Question ${state.clarifyPart + 1} sur 3</span>${questionTitles[state.clarifyPart]}</h3><div class="question-segments" aria-hidden="true">${questionMarkers}</div><p class="hint question-skip">Je peux passer si je ne sais pas encore.</p></div>`;
-          const reviewNote = (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans le brouillon.</div>' : "");
+          const reviewNote = (state.clarifyPart === 0 && (state.reviewScale || state.reviewContext) ? '<div class="notice amber section-gap"><strong>Je relis mes réponses.</strong> Le niveau, le contexte ou les exemples ont changé ; mes réponses sont restées dans ma fiche.</div>' : "");
           const collectiveNote = (state.clarifyPart === 0 && (state.scale === "organization" || state.scale === "public") ? '<div class="notice section-gap"><strong>Je ne porte pas seul un problème collectif.</strong>Je peux identifier les personnes concernées et les décisions à prendre. Je demande l’accord avant de parler au nom d’autres personnes.</div>' : "");
-          const part2 = (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p>Je peux m’arrêter ici et reprendre plus tard. Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
+          const part2 = (state.clarifyPart === 2 ? `<details class="optional-fields"${["emotion", "control", "outside"].some((k) => state.fields[k]) ? " open" : ""}><summary>Préciser ce que je ressens et ce que je peux changer (facultatif)</summary><div class="details-body">${field("emotion", "Ce que je ressens", "Quelques mots suffisent.", "text")}${field("control", "Ce sur quoi je peux agir", "Même demander de l’aide est une action possible.", "textarea", c.examples?.control)}${field("outside", "Ce qui ne dépend pas de moi", "Ne pas pouvoir tout changer ne signifie pas être responsable du problème.", "textarea", c.examples?.outside)}</div></details><details class="section-gap"${state.energy === "pause" ? " open" : ""}><summary>Je peux faire une pause ou demander de l’aide</summary><div class="details-body"><p><span data-keep-note="pause">${keepNoteText("pause")}</span> Je peux aussi demander à une personne de confiance de rester avec moi pendant que je réfléchis.</p><div class="button-row"><button class="btn small" data-action="pause">Je fais une pause</button><span class="keep-actions" data-keep-actions="pause">${keepActionsHtml("pause")}</span><a class="btn small" href="#securite">Où trouver une aide extérieure ?</a></div>${state.energy === "pause" ? '<p class="hint" role="status">Ma pause est choisie. Je peux reprendre avec le bouton Continuer.</p>' : ""}</div></details>` : "");
           body = reviewNote + `<div class="primary-ask question-panel">${orientation}` + field(key, label, hint, "textarea", sample, true, "", label === questionTitles[state.clarifyPart]) + "</div>" + collectiveNote + contextCheck + part2;
         }
         if (i === 2) {
           const ideaExamples = c.examples?.ideas || workflow.ideas || [];
-          body = `<div class="primary-ask"><div id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 && ideaExamples[j] ? example(ideaExamples[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…">${esc(o.text)}</textarea></div>`).join("")}</div><button class="btn add-idea" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button></div><p class="hint idea-help">${linkGlossary(workflow.idea)}</p>`;
+          body = `<div class="primary-ask"><div id="ideas">${state.options.map((o, j) => `<div class="field"><div class="option-head"><label class="label" for="idea-${o.id}">Piste ${j + 1}</label>${state.options.length > 1 ? `<button class="remove" data-remove="${o.id}" aria-label="Retirer la piste ${j + 1}">Retirer</button>` : ""}</div>${j < 3 && ideaExamples[j] ? example(ideaExamples[j], "Piste " + (j + 1), j === 0) : ""}<textarea id="idea-${o.id}" data-option="${o.id}" data-prop="text" maxlength="6000" placeholder="Je pourrais…" aria-describedby="saved-idea-${o.id}">${esc(o.text)}</textarea><p class="save-state" id="saved-idea-${o.id}">${o.text.trim() ? savedHtml() : ""}</p></div>`).join("")}</div><button class="btn add-idea" data-action="add"${state.options.length >= 8 ? " disabled" : ""}>+ Ajouter une piste</button></div><p class="hint idea-help">${linkGlossary(workflow.idea)}</p>`;
         }
         if (i === 3) {
           const options = state.options.filter((o) => o.text.trim());
           const ideaExamples = c.examples?.ideas || workflow.ideas || [];
           const comparison = c.examples?.comparison || workflow.comparison || [];
           body = options.length
-            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><button class="btn ${state.chosen === o.id ? "primary" : ""} choose-option" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button><details class="compare-details"${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…">${esc(o.plus)}</textarea></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…">${esc(o.minus)}</textarea></div></div></div></details></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(ideaExamples[0] || "Une piste à essayer.")}</p><p><strong>Apport possible :</strong> ${esc(comparison[0] || "Je note ce qu’elle pourrait apporter.")}</p><p><strong>Limite :</strong> ${esc(comparison[1] || "Je note ce qui pourrait bloquer.")}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${linkGlossary(workflow.compare)}</p><p>Si les conséquences sont importantes, je peux demander un avis adapté avant d’agir.</p></div></details>`
+            ? `${options.map((o, j) => `<article class="option-card${state.chosen === o.id ? " selected" : ""}"><h3>${j + 1}. ${esc(o.text)}</h3><button class="btn ${state.chosen === o.id ? "primary" : ""} choose-option" data-choose="${o.id}" aria-pressed="${state.chosen === o.id}">${state.chosen === o.id ? "✓ Option choisie" : "Choisir cette option"}</button><details class="compare-details"${o.plus || o.minus ? " open" : ""}><summary>Comparer les avantages et les limites</summary><div class="details-body"><div class="field-row"><div><label class="label" for="plus-${o.id}">Ce qu’elle peut apporter</label><textarea id="plus-${o.id}" data-option="${o.id}" data-prop="plus" maxlength="6000" placeholder="Bénéfice attendu, besoin respecté…" aria-describedby="saved-plus-${o.id}">${esc(o.plus)}</textarea><p class="save-state" id="saved-plus-${o.id}">${o.plus.trim() ? savedHtml() : ""}</p></div><div><label class="label" for="minus-${o.id}">Contraintes et risques</label><textarea id="minus-${o.id}" data-option="${o.id}" data-prop="minus" maxlength="6000" placeholder="Temps, coût, énergie, sécurité…" aria-describedby="saved-minus-${o.id}">${esc(o.minus)}</textarea><p class="save-state" id="saved-minus-${o.id}">${o.minus.trim() ? savedHtml() : ""}</p></div></div></div></details></article>`).join("")}<details><summary>Un exemple de comparaison</summary><div class="details-body"><p><strong>Exemple fictif :</strong> ${esc(ideaExamples[0] || "Une piste à essayer.")}</p><p><strong>Apport possible :</strong> ${esc(comparison[0] || "Je note ce qu’elle pourrait apporter.")}</p><p><strong>Limite :</strong> ${esc(comparison[1] || "Je note ce qui pourrait bloquer.")}</p></div></details><details><summary>J’hésite entre plusieurs pistes</summary><div class="details-body"><p>${linkGlossary(workflow.compare)}</p><p>Si les conséquences sont importantes, je peux demander un avis adapté avant d’agir.</p></div></details>`
             : `<div class="notice amber"><strong>Je n’ai pas encore noté de piste.</strong>Je reviens à l’étape Imaginer pour en ajouter une.<div class="button-row section-gap"><button class="btn" data-step="2">Imaginer une piste →</button></div></div>`;
         }
         if (i === 4) {
@@ -388,7 +485,7 @@
             organization: ["Quand et où le test aura-t-il lieu ?", "Lors de la prochaine réunion d’équipe, sur un seul dossier."],
             public: ["Quand et auprès de qui faire cette démarche ?", "Lors de la prochaine permanence du service concerné."],
           }[state.scale];
-          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div>${chosen ? firstStepDecisionDiagram(state.scale) : ""}<div class="primary-ask">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}</div><details class="optional-fields section-gap"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details>`;
+          body = `<div class="notice"><strong>Ma piste choisie</strong>${chosen ? esc(chosen.text) : "Je n’ai pas encore choisi de piste. Je peux revenir à l’étape précédente."}</div><div class="primary-ask">${field("action", workflow.action[0], workflow.action[1], "textarea", c.examples?.action || workflow.actionExamples?.[0], true)}${field("when", when[0], "", "text", when[1])}${field("measure", workflow.action[2], workflow.action[3], "textarea", c.examples?.measure || workflow.actionExamples?.[1])}</div>${chosen ? firstStepDecisionDiagram(state.scale) : ""}<details class="optional-fields section-gap"${["support", "backup", "reviewDate"].some((k) => state.fields[k]) ? " open" : ""}><summary>Prévoir de l’aide, un obstacle ou une date de bilan (facultatif)</summary><div class="details-body">${field("support", "Qui ou quoi peut m’aider ?", "", "textarea", c.examples?.support)}${field("backup", "Si ça bloque, que pourrai-je faire ?", "Je prévois une autre action simple et sûre.", "textarea", c.examples?.backup)}${field("reviewDate", "Quand ferai-je le point ?", "Une date pour ma fiche, sans rappel automatique.", "date")}</div></details>`;
         }
         if (i === 5) {
           body = `<div class="primary-ask"><fieldset><legend>Où en suis-je de mon action ?</legend><div class="choice-stack">${[
@@ -403,7 +500,7 @@
             )
             .join(
               "",
-            )}</div></fieldset></div>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je peux garder mon plan pour plus tard.</strong>Je remplirai le bilan après l’essai. Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir mon plan →</a></div></div>` : `<div class="primary-ask">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.examples?.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
+            )}</div></fieldset></div>${state.fields.trial === "notyet" ? `<div class="notice section-gap"><strong>Je remplirai le bilan après l’essai.</strong><span data-keep-note="notyet">${keepNoteText("notyet")}</span> Je n’ai pas à inventer un résultat.<div class="button-row section-gap"><a class="btn" href="#recap">Voir ma fiche →</a><span class="keep-actions" data-keep-actions="notyet">${keepActionsHtml("notyet")}</span></div></div>` : `<div class="primary-ask">${field("result", "Ce qui s’est réellement passé", "Même si je n’ai fait qu’une partie.", "textarea", c.examples?.result)}${state.fields.measure ? `<div class="example" style="margin-bottom:22px"><small>Le progrès que j’espérais</small><p>${esc(state.fields.measure)}</p></div>` : ""}${field("learning", "Ce que j’en retiens", "Qu’est-ce qui a aidé ? Qu’est-ce qui manque ou reste difficile ?", "textarea", "L’action était faisable, mais j’avais besoin d’une information supplémentaire.")}${field("next", "Ce que je souhaite faire ensuite", "Continuer, ajuster, demander de l’aide ou faire une pause.", "textarea", "Réduire le prochain pas et demander l’information manquante.")}</div>`}`;
         }
         const selectedTool = i === 1 && c.tool ? c.tool : workflow.tools[i];
         if (selectedTool) {
@@ -411,14 +508,17 @@
           body += `<details class="section-gap"><summary>Outil utile ici : ${esc(name)}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${esc(source)}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><div class="progress" role="progressbar" aria-label="Position dans le parcours" aria-valuenow="${i + 1}" aria-valuemin="1" aria-valuemax="6"><span style="width:${((i + 1) / 6) * 100}%"></span></div></div><h2 id="step-title" tabindex="-1">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 ? "Voir mon bilan" : i === 4 ? "Voir mon plan" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><div class="step-head"><p class="step-counter" id="progress-label"><strong>Étape ${i + 1} sur ${stepNames.length}</strong> · ${stepNames[i][0]}${i === 5 ? " (après l’essai)" : ""}</p><a class="fiche-link" id="fiche-link" href="#recap"${ficheSections().length ? "" : " hidden"}>Ma fiche</a></div><div class="step-bar" aria-hidden="true">${stepNames.map((_, k) => `<span class="${k === i ? "is-current" : stepDone(k) ? "is-done" : ""}${k === 5 ? " is-later" : ""}"></span>`).join("")}</div></div><h2 id="step-title" tabindex="-1" aria-describedby="progress-label">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><p class="fiche-line" id="fiche-line"${ficheLineHtml() ? "" : " hidden"}>${ficheLineHtml()}</p><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 || i === 4 ? "Voir ma fiche" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         $("#step-container").classList.toggle("question-transition", focusQuestion && i === 1);
         $("#step-container").classList.toggle("is-question-screen", i === 0 || i === 1);
+        if (!$("#outil").hidden) document.title = stepDocumentTitle() + " - Pas à pas";
         if (focus) {
           const focusTarget = focusQuestion && i === 1 ? $("#question-title") : $("#step-title");
           focusTarget.focus({ preventScroll: true });
-          focusTarget.scrollIntoView({
-            block: "start",
+          const label = $("#progress-label");
+          const top = label.getBoundingClientRect().top + window.scrollY - $("header").offsetHeight - 16;
+          window.scrollTo({
+            top: Math.max(0, top),
             behavior: focusQuestion || matchMedia("(prefers-reduced-motion: reduce)").matches
               ? "instant"
               : "smooth",
@@ -433,6 +533,8 @@
           $(".scale-option")?.focus();
           return;
         }
+        $("#toast").hidden = true;
+        clearTimeout(toast.timer);
         const destination = Math.max(0, Math.min(5, i));
         if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
         if (destination === 0 && state.step !== 0 && !keepStartPart) startPart = 0;
@@ -471,6 +573,7 @@
           return;
         }
         if (state.step === 4 || state.step === 5) {
+          recapArrival = true;
           renderRecap();
           location.hash = "recap";
           return;
@@ -504,6 +607,32 @@
         $("#recap-review").hidden = !hasPlan();
         $("#recap-privacy").hidden = !hasWriting();
         $("#recap-note").hidden = !hasPlan();
+        const banner = $("#recap-banner");
+        const later = $("#recap-later");
+        banner.hidden = !hasWriting();
+        later.hidden = !hasPlan();
+        if (hasWriting()) {
+          const withBilan = ficheSections().includes("mon bilan");
+          const bannerTitle = withBilan ? "Mon bilan est noté dans ma fiche" : hasPlan() ? "Ma fiche est prête" : "Voici mes réponses jusqu’ici";
+          const keepSentence = remember ? " Elle est gardée dans ce navigateur." : " Elle reste dans cette page jusqu’à sa fermeture ou son rechargement.";
+          const bannerText = (hasPlan()
+            ? "Je peux la relire, la modifier, l’imprimer ou la télécharger." + (withBilan ? "" : " Ensuite, j’essaie mon premier pas, puis je reviens faire le point.")
+            : "Ma fiche se complète au fil des étapes. Je peux modifier ce que j’ai écrit, puis continuer l’exercice.") + keepSentence;
+          banner.innerHTML = (hasPlan() ? '<span class="recap-check" aria-hidden="true">✓</span>' : "") + `<div><h2 id="recap-banner-title">${bannerTitle}</h2><p>${bannerText}</p>${hasPlan() ? "" : '<p><a class="btn" href="#outil">Continuer l’exercice →</a></p>'}</div>`;
+          const when = state.fields.reviewDate ? formatDate(state.fields.reviewDate) : "";
+          $("#recap-later-text").textContent = withBilan
+            ? "J’ai fait le point après l’essai. Je peux revoir mon bilan ou le modifier."
+            : "Quand j’aurai essayé mon premier pas, je reviens faire le point." + (when ? " Date prévue : " + when + " (sans rappel automatique)." : "");
+          $("#recap-review").textContent = withBilan ? "Revoir mon bilan →" : "Faire le point après l’essai →";
+          $("#recap-keep-text").textContent = remember
+            ? "Ma fiche est gardée dans ce navigateur : je la retrouve en rouvrant cette page, dans « Mon problème »."
+            : atRisk()
+              ? RISK_NOTE + " Ma fiche disparaît quand je ferme ou recharge la page."
+              : "Pour la retrouver après l’essai, je la garde dans ce navigateur ou je télécharge mon brouillon ; sinon elle disparaît quand je ferme ou recharge la page.";
+          $("#recap-keep").hidden = remember || atRisk();
+          $("#recap-export").hidden = atRisk();
+          $("#recap-resume-text").hidden = atRisk();
+        }
         if (!hasWriting()) {
           $("#recap-content").innerHTML = '<article class="card padded empty-recap"><h2>Ma fiche est encore vide</h2><p>Je commence par choisir le niveau et le contexte de mon problème. Mes réponses apparaîtront ici au fur et à mesure.</p><button class="btn primary section-gap" data-step="0">Commencer l’exercice →</button></article>';
           return;
@@ -993,7 +1122,7 @@
         if (page === "groupe") renderGroup();
         const title = {
           accueil: "Choisir un parcours",
-          outil: "Mon problème",
+          outil: stepDocumentTitle(),
           soutenir: "Soutenir quelqu’un",
           groupe: "Aider un groupe",
           proche: "Comment aider un proche ?",
@@ -1012,8 +1141,16 @@
             ref.scrollIntoView({ block: "start" });
           }
         } else if (!keepViolenceChoiceFocus) {
-          $("#main").focus({ preventScroll: true });
+          const arrival = page === "recap" && recapArrival && !$("#recap-banner").hidden;
+          recapArrival = false;
+          (arrival ? $("#recap-banner") : $("#main")).focus({ preventScroll: true });
           window.scrollTo({ top: 0, behavior: "instant" });
+          if (arrival) {
+            const box = $("#recap-banner").getBoundingClientRect();
+            if (box.bottom > innerHeight - 8) {
+              window.scrollTo({ top: Math.max(0, box.top + window.scrollY - $("header").offsetHeight - 16), behavior: "instant" });
+            }
+          }
         }
       }
       function setMenuOpen(open) {
@@ -1066,7 +1203,11 @@
             persist();
           }
         }
-        if (el.dataset.field || el.dataset.option) updateRecapShortcut();
+        if (el.dataset.field || el.dataset.option) {
+          updateFicheLine();
+          scheduleSavedState(el);
+          if ($("#mobile-step-picker").open) renderSteps();
+        }
       });
       document.addEventListener("change", (e) => {
         if (e.target.id !== "context-select") return;
@@ -1093,6 +1234,7 @@
           state.safety = b.dataset.safety;
           persist();
           renderStep();
+          updatePrivacy();
           $(`[data-safety="${state.safety}"]`).focus();
           return;
         }
@@ -1105,12 +1247,15 @@
         }
         if (b.dataset.choose) {
           state.chosen = Number(b.dataset.choose);
+          const wasKept = remember;
           persist();
           renderStep();
           $(`[data-choose="${state.chosen}"]`).focus();
-          toast(
-            "Option choisie. Vous pouvez maintenant préparer votre action.",
-          );
+          if (!(wasKept && !remember)) {
+            toast(
+              "Option choisie. Vous pouvez maintenant préparer votre action.",
+            );
+          }
           return;
         }
         if (b.dataset.remove) {
@@ -1178,12 +1323,21 @@
               changeStep(state.step - 1, state.step === 1);
             }
             break;
-          case "pause":
+          case "pause": {
             state.energy = "pause";
+            const wasKept = remember;
             persist();
             renderStep();
-            toast("Vous pouvez faire une pause et reprendre à votre rythme.");
+            $('[data-action="pause"]')?.focus();
+            if (!(wasKept && !remember)) {
+              toast(
+                remember
+                  ? "Vous pouvez faire une pause et reprendre à votre rythme."
+                  : "Pause notée. Pour reprendre plus tard, gardez votre brouillon dans ce navigateur ou téléchargez-le.",
+              );
+            }
             break;
+          }
           case "add":
             if (state.options.length < 8) {
               const id = nextId++;
@@ -1193,7 +1347,27 @@
               $("#idea-" + id).focus();
             }
             break;
+          case "keep-local": {
+            if ($("#outil").hidden) {
+              confirmAction(
+                "Garder votre brouillon dans ce navigateur ?",
+                "Vos réponses seront gardées dans ce navigateur, sans chiffrement : d’autres personnes utilisant cet appareil peuvent les lire. Vous pouvez les effacer à tout moment : « Mon problème », « Gérer mon brouillon », puis « Tout effacer ».",
+                () => {
+                  setRemember(true);
+                  $("#recap-keep-text")?.focus();
+                },
+                "Garder",
+              );
+              break;
+            }
+            const options = $(".file-options");
+            options.open = true;
+            $("#remember").focus();
+            options.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+            break;
+          }
           case "export":
+          case "export-draft":
             download(
               "mon-brouillon-pas-a-pas.json",
               JSON.stringify(state, null, 2),
@@ -1208,6 +1382,7 @@
             break;
           case "text":
             exportText();
+            toast("Récapitulatif téléchargé. Il contient vos réponses personnelles.");
             break;
           case "print":
             preparePrint();
@@ -1216,7 +1391,7 @@
           case "reset":
             confirmAction(
               "Effacer mon brouillon ?",
-              "Toutes vos réponses dans cette page et la sauvegarde de ce navigateur seront supprimées. Vos téléchargements, impressions et historique ne seront pas effacés.",
+              "Toutes vos réponses dans cette page seront supprimées" + (remember ? ", ainsi que le brouillon gardé dans ce navigateur" : "") + ". Vos téléchargements, impressions et historique ne seront pas effacés.",
               () => {
                 let removed = true;
                 try {
@@ -1227,7 +1402,11 @@
                 }
                 state = fresh();
                 remember = false;
+                staleCopy = !removed;
                 nextId = 4;
+                groupNotes.fill("");
+                if ($("#group-note")) $("#group-note").value = "";
+                $("#print-document").replaceChildren();
                 updatePrivacy();
                 renderStep();
                 renderRecap();
@@ -1252,28 +1431,44 @@
             break;
         }
       });
-      $("#remember").addEventListener("change", (e) => {
-        remember = e.target.checked;
+      function setRemember(on) {
+        remember = on;
         if (remember) {
           persist();
-          toast(
-            remember
-              ? "Sauvegarde activée sur cet appareil."
-              : "Sauvegarde indisponible.",
-          );
+          if (remember) {
+            staleCopy = false;
+            toast("Brouillon gardé dans ce navigateur.");
+          }
         } else {
           try {
             localStorage.removeItem(KEY);
             localStorage.removeItem(OLD_KEY);
+            staleCopy = false;
             toast("Sauvegarde désactivée et retirée de ce navigateur.");
           } catch (e) {
+            staleCopy = true;
             toast(
               "Impossible de retirer la sauvegarde. Vérifiez les paramètres de votre navigateur.",
             );
           }
         }
         updatePrivacy();
+        if (!$("#recap").hidden) renderRecap();
+      }
+      window.addEventListener("storage", (e) => {
+        if (e.storageArea !== localStorage || !remember) return;
+        if ((e.key === KEY || e.key === null) && e.newValue === null) {
+          remember = false;
+          updatePrivacy();
+          if (!$("#recap").hidden) renderRecap();
+          toast("Le brouillon a été effacé dans un autre onglet. Cette page ne le garde plus ; vos réponses y restent tant qu’elle est ouverte.");
+        }
       });
+      document.addEventListener("click", (e) => {
+        const link = e.target.closest('a[href="#recap"]');
+        if (link && !$("#outil").hidden) recapArrival = true;
+      });
+      $("#remember").addEventListener("change", (e) => setRemember(e.target.checked));
       $("#import-file").addEventListener("change", async (e) => {
         const file = e.target.files[0];
         e.target.value = "";
@@ -1293,6 +1488,7 @@
               state = imported;
               nextId = state.options.length + 1;
               persist();
+              updatePrivacy();
               renderStep();
               if (location.hash !== "#outil") location.hash = "outil";
               else renderStep(true);
@@ -1423,6 +1619,10 @@
         b.setAttribute("aria-haspopup", "dialog");
         b.setAttribute("aria-controls", "term-dialog");
       });
+      const siteHeader = $("header");
+      const syncHeaderHeight = () => document.documentElement.style.setProperty("--header-h", siteHeader.offsetHeight + "px");
+      syncHeaderHeight();
+      if (window.ResizeObserver) new ResizeObserver(syncHeaderHeight).observe(siteHeader);
       updatePrivacy();
       renderStep();
       renderSupport();

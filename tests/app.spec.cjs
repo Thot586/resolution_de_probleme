@@ -170,6 +170,8 @@ const errors = [];
   assert.equal(await page.locator("#accueil .method-example").count(), 0, "No per-step examples on the home page");
   assert.equal(await page.locator('#accueil a[href="#comprendre"]').count(), 0, "The method sources are not promoted on the home page");
   assert.equal(await page.locator("#accueil .scale-entry h2").innerText(), "Pour commencer");
+  assert.match(await page.locator("#accueil .scale-note").innerText(), /mes réponses forment ma fiche/);
+  assert(await page.locator("#accueil .scale-note").evaluate((node) => node.getBoundingClientRect().top >= document.querySelector("#accueil .scale-grid").getBoundingClientRect().bottom), "The fiche is announced below the level cards, never above them");
   assert.match(await page.locator("#accueil .scale-intro").innerText(), /questions et les exemples seront adaptés/);
   assert.equal(await page.locator('#accueil a[href="#soutenir"]').count(), 1);
   assert.equal(await page.locator('#accueil a[href="#groupe"]').count(), 1);
@@ -259,7 +261,10 @@ const errors = [];
   const starter = await context.newPage();
   await starter.goto(url + "#outil");
   assert(await starter.locator("#outil .scale-options").isVisible());
-  assert(!(await starter.locator("#recap-shortcut").isVisible()));
+  assert.equal(await starter.locator("#recap-shortcut").count(), 0, "The old shortcut link is replaced by the fiche line");
+  assert.match(await starter.locator("#fiche-line").innerText(), /Mes réponses s’ajoutent à ma fiche, que je retrouve à la fin/);
+  assert.equal(await starter.locator("#fiche-line a").count(), 0, "No link to an empty fiche");
+  assert.match(await starter.locator("#progress-label").innerText(), /Étape 1 sur 6 · Commencer/);
   await starter.locator('[data-action="next"]').click();
   assert.equal(await starter.locator('#steps [aria-current="step"]').getAttribute("data-step"), "0");
   assert.match(await starter.locator("#toast").innerText(), /Choisissez d’abord le niveau/);
@@ -267,6 +272,8 @@ const errors = [];
   await starter.locator("#recap").waitFor({ state: "visible" });
   assert.match(await starter.locator("#recap-content").innerText(), /Ma fiche est encore vide/);
   assert(!(await starter.locator("#recap-actions").isVisible()));
+  assert(!(await starter.locator("#recap-banner").isVisible()), "No success message for an empty fiche");
+  assert(!(await starter.locator("#recap-later").isVisible()));
   await starter.locator('#recap-content [data-step="0"]').click();
   assert(await starter.locator("#outil .scale-options").isVisible());
   await starter.close();
@@ -497,6 +504,90 @@ const errors = [];
   await goStep(v2Page, 1);
   assert.equal(await v2Page.locator("#field-situation").inputValue(), previousColleague.fields.situation);
   await v2Context.close();
+  const keepPage = await context.newPage();
+  await keepPage.goto(url + "#outil-personal");
+  await keepPage.evaluate(() => { state.fields.situation = "Un test."; state.fields.action = "Faire un petit pas."; });
+  await keepPage.evaluate(() => { location.hash = "recap"; });
+  await keepPage.locator("#recap").waitFor({ state: "visible" });
+  assert.equal((await keepPage.locator("#recap-banner h2").innerText()).trim(), "Ma fiche est prête");
+  assert.equal(await keepPage.evaluate(() => document.activeElement?.id === "recap-banner"), false, "Opening the fiche from the menu does not move the focus to the message");
+  assert.equal(await keepPage.evaluate(() => localStorage.length), 0);
+  await keepPage.locator("#recap-keep").click();
+  await keepPage.locator("#confirm-dialog").waitFor({ state: "visible" });
+  await keepPage.locator("#dialog-confirm").click();
+  assert.equal(await keepPage.evaluate(() => localStorage.length), 1);
+  assert(!(await keepPage.locator("#recap-keep").isVisible()), "Nothing left to keep");
+  assert.match(await keepPage.locator("#recap-keep-text").innerText(), /gardée dans ce navigateur/);
+  assert.match(await keepPage.locator("#privacy-status").textContent(), /gardé dans ce navigateur/);
+  await keepPage.evaluate(() => { state.fields.trial = "yes"; state.fields.result = "Ça a marché."; renderRecap(); });
+  assert.equal((await keepPage.locator("#recap-banner h2").innerText()).trim(), "Mon bilan est noté dans ma fiche");
+  assert.match(await keepPage.locator("#recap-review").innerText(), /Revoir mon bilan/);
+  await keepPage.evaluate(() => localStorage.clear());
+  await keepPage.close();
+  // A person who says they are unsure or in danger is not invited to store or download anything.
+  const riskPage = await context.newPage();
+  await riskPage.goto(url + "#outil-personal");
+  await riskPage.locator('[data-action="next"]').click();
+  await riskPage.locator('[data-safety="danger"]').click();
+  assert(!(await riskPage.locator("#keep-link").isVisible()), "No invitation to keep answers after a danger answer");
+  assert.equal((await riskPage.locator("#fiche-line").isVisible()), false, "The exercise is not promoted under a danger message");
+  assert.equal(await riskPage.locator("#privacy-status").textContent().then((text) => /Rien n’est envoyé/.test(text)), true);
+  await riskPage.evaluate(() => { state.step = 1; state.clarifyPart = 2; state.fields.situation = "Un test."; state.fields.action = "Faire un pas."; renderStep(); });
+  await riskPage.locator("#step-container details").filter({ hasText: "Je peux faire une pause" }).locator("summary").click();
+  assert.match(await riskPage.locator("#step-container [data-keep-note=pause]").innerText(), /partagé ou surveillé, mieux vaut ne rien garder ici/);
+  assert.equal(await riskPage.locator('#step-container [data-action="keep-local"], #step-container [data-action="export-draft"]').count(), 0, "No keep or download buttons for a person at risk");
+  await riskPage.evaluate(() => { location.hash = "recap"; });
+  await riskPage.locator("#recap").waitFor({ state: "visible" });
+  assert.match(await riskPage.locator("#recap-keep-text").innerText(), /partagé ou surveillé, mieux vaut ne rien garder ici/);
+  assert(!(await riskPage.locator("#recap-keep").isVisible()));
+  assert(!(await riskPage.locator("#recap-export").isVisible()));
+  assert.equal(await riskPage.evaluate(() => localStorage.length), 0);
+  await riskPage.close();
+  // Erasing in one tab is not undone by another tab that kept the draft.
+  const tabA = await context.newPage();
+  const tabB = await context.newPage();
+  await tabA.goto(url + "#outil-personal");
+  await tabB.goto(url + "#outil-personal");
+  await tabA.evaluate(() => { state.fields.situation = "Réponse de l’onglet A."; });
+  await tabA.locator(".file-options summary").click();
+  await tabA.locator("#remember").check();
+  assert.equal(await tabA.evaluate(() => localStorage.length), 1);
+  await tabB.evaluate(() => localStorage.removeItem("pas-a-pas.brouillon.v2"));
+  await tabA.waitForFunction(() => remember === false, null, { timeout: 5000 });
+  assert.match(await tabA.locator("#privacy-status").textContent(), /Mes réponses restent dans ma fiche/);
+  assert.match(await tabA.locator("#toast").innerText(), /effacé dans un autre onglet/);
+  assert.equal(await tabA.evaluate(() => { state.fields.situation = "Encore une réponse."; return persist(); }), false);
+  assert.equal(await tabA.evaluate(() => localStorage.length), 0, "The other tab does not bring the erased draft back");
+  await tabA.close();
+  await tabB.close();
+  // One reading of "filled" for the list, the bar, the fiche line and the fiche.
+  const consistencyPage = await context.newPage();
+  await consistencyPage.goto(url + "#outil-personal");
+  const consistency = await consistencyPage.evaluate(() => {
+    state.fields.trial = "yes";
+    const alone = { sections: ficheSections(), done5: stepDone(5), writing: hasWriting() };
+    state.fields.situation = "Un test.";
+    const withText = { sections: ficheSections(), done5: stepDone(5) };
+    state.fields.situation = "";
+    state.fields.trial = "notyet";
+    state.fields.reviewDate = "20261-01-01";
+    const badDate = { sections: ficheSections() };
+    return { alone, withText, badDate };
+  });
+  assert.deepEqual(consistency.alone, { sections: [], done5: false, writing: false }, "A status alone does not fill the fiche");
+  assert.deepEqual(consistency.withText.sections, ["ma situation", "mon bilan"]);
+  assert.equal(consistency.withText.done5, true);
+  assert.deepEqual(consistency.badDate.sections, [], "A date the fiche cannot show does not count");
+  await consistencyPage.close();
+  // Assistive technology: the warning belongs to the checkbox and to the confirmation dialog.
+  assert.equal(await page.locator("#remember").getAttribute("aria-describedby"), "remember-hint");
+  assert.match(await page.locator("#remember-hint").textContent(), /sans chiffrement/);
+  assert.equal(await page.locator("#confirm-dialog").getAttribute("aria-describedby"), "dialog-description");
+  // The level is shown as chosen only once it was chosen.
+  const freshLevel = await context.newPage();
+  await freshLevel.goto(url + "#outil");
+  assert.equal(await freshLevel.locator('.scale-option[aria-pressed="true"]').count(), 0, "No level looks chosen before the choice");
+  await freshLevel.close();
   await page.locator("#accueil .help-others summary").click();
   await page.locator('#accueil a[href="#soutenir"]').first().click();
   await visible("#soutenir");
@@ -542,6 +633,9 @@ const errors = [];
   assert.match(await groupFlow.locator("figcaption").innerText(), /représailles/);
   await groupFlow.locator(".teaching-figure").screenshot({ path: path.join(output, "group-method-flow-desktop.png") });
   await axe("group-method-flow");
+  const groupBar = await page.locator("#group-progress").boundingBox();
+  assert(groupBar && groupBar.height >= 3 && groupBar.width >= 100, "The group guide still draws its progress bar");
+  assert((await page.locator("#group-progress span").boundingBox()).width > 0, "...with a filled part");
   await page.locator("#group-stage-select").selectOption("2");
   assert(await page.locator("#group-guidance [data-term=survey]").isVisible());
   await page.locator("#group-stage-select").selectOption("3");
@@ -624,6 +718,22 @@ const errors = [];
     };
   });
   assert.deepEqual(hierarchy, { inPanel: true, optionalAfterPanel: true, questionBeforeAnswer: true, questionLargerThanStepTitle: true, answerVisibleInFirstScreen: true });
+  // Orientation: a readable counter, fully visible after the step change, describing the title; the bar is decorative.
+  const orientation = await page.evaluate(() => {
+    const counter = document.querySelector("#progress-label");
+    const box = counter.getBoundingClientRect();
+    const header = document.querySelector("header").getBoundingClientRect();
+    return {
+      text: counter.textContent.replace(/\s+/g, " ").trim(),
+      visible: box.top >= header.bottom && box.bottom <= innerHeight,
+      describesTitle: document.querySelector("#step-title").getAttribute("aria-describedby") === "progress-label",
+      barDecorative: document.querySelector(".step-bar").getAttribute("aria-hidden") === "true",
+      segments: document.querySelectorAll(".step-bar span").length,
+      current: document.querySelectorAll(".step-bar .is-current").length,
+      laterSegment: document.querySelector(".step-bar span:last-child").classList.contains("is-later"),
+    };
+  });
+  assert.deepEqual(orientation, { text: "Étape 2 sur 6 · Clarifier", visible: true, describesTitle: true, barDecorative: true, segments: 6, current: 1, laterSegment: true });
   assert(await page.locator(".example-visible").isVisible());
   assert.match(
     await page.locator(".example-visible").innerText(),
@@ -633,6 +743,17 @@ const errors = [];
   await page
     .locator("#field-situation")
     .fill("Deux dossiers à remettre le même jour.");
+  await page.waitForFunction(() => /Noté dans ma fiche/.test(document.querySelector("#saved-situation")?.textContent || ""), null, { timeout: 3000 });
+  assert.match(await page.locator("#saved-situation").innerText(), /Noté dans ma fiche · sur cette page/, "The label says where the answer is");
+  assert.equal(await page.locator("#fiche-link").isVisible(), true, "The fiche link appears with the first answer");
+  assert.equal(await page.locator("#fiche-link").getAttribute("href"), "#recap");
+  assert.equal(await page.evaluate(() => document.activeElement?.id), "field-situation", "The assurance never takes the focus");
+  assert.match(await page.locator("#field-situation").getAttribute("aria-describedby"), /saved-situation/);
+  assert.equal(await page.evaluate(() => localStorage.length), 0);
+  assert.doesNotMatch(await page.locator("#outil").innerText(), /enregistr|sauvegard/i, "Nothing claims a saved draft while nothing is stored");
+  await page.locator("#field-situation").fill("");
+  assert.equal((await page.locator("#saved-situation").textContent()).trim(), "", "The assurance disappears with the answer");
+  await page.locator("#field-situation").fill("Deux dossiers à remettre le même jour.");
   await next();
   assert.match(await page.locator(".question-progress").innerText(), /Question 2 sur 3/);
   assert.match(await page.locator("#question-title").innerText(), /Ce que je voudrais changer/);
@@ -652,6 +773,24 @@ const errors = [];
   await page.locator("#step-container").screenshot({ path: path.join(output, "desktop-question-3.png") });
   assert(await page.locator("#field-obstacle").isVisible());
   await page.locator("#field-obstacle").fill("Le temps manque.");
+  const pauseBlock = page.locator("#step-container details").filter({ hasText: "Je peux faire une pause" });
+  await pauseBlock.locator("summary").click();
+  assert.match(await pauseBlock.innerText(), /sinon mes réponses disparaissent quand je ferme ou recharge la page/);
+  assert.equal(await pauseBlock.locator('[data-action="keep-local"]').count(), 1);
+  assert.equal(await pauseBlock.locator('[data-action="export-draft"]').count(), 1);
+  assert.equal(await page.locator("[data-action=export]").count(), 1, "The second download entry has its own action name");
+  await page.waitForFunction(() => /Noté dans ma fiche/.test(document.querySelector("#saved-obstacle")?.textContent || ""), null, { timeout: 3000 });
+  await page.locator(".file-options summary").click();
+  await page.locator("#remember").check();
+  assert.match(await pauseBlock.innerText(), /mon brouillon est gardé dans ce navigateur/, "Keeping the draft updates the pause text in place");
+  assert.equal(await pauseBlock.locator('[data-action="keep-local"]').count(), 0);
+  assert.match(await page.locator("#saved-obstacle").innerText(), /gardé dans ce navigateur/, "The labels follow the keep state");
+  await page.locator("#remember").uncheck();
+  assert.match(await pauseBlock.innerText(), /sinon mes réponses disparaissent quand je ferme ou recharge la page/, "Forgetting the draft updates it back");
+  assert.equal(await pauseBlock.locator('[data-action="keep-local"]').count(), 1);
+  assert.equal(await page.evaluate(() => localStorage.length), 0);
+  await page.locator(".file-options summary").click();
+  await pauseBlock.locator("summary").click();
   assert(!(await page.locator(".optional-fields .details-body").first().isVisible()));
   await next();
   await next(); // empty alternatives stay on the same step
@@ -659,8 +798,13 @@ const errors = [];
     await page.locator("#steps [aria-current=step]").getAttribute("data-step"),
     "2",
   );
+  assert.equal(await page.locator("#steps .is-done").count(), 2, "Commencer and Clarifier are filled, nothing is marked in advance");
+  assert.deepEqual(await page.locator("#steps .is-done").evaluateAll((nodes) => nodes.map((node) => node.dataset.step)), ["0", "1"]);
+  assert.equal(await page.locator(".step-bar .is-done").count(), 2);
+  assert.match(await page.locator("#fiche-line").innerText(), /Dans ma fiche : ma situation\. Voir ma fiche/);
   await page.locator("#idea-1").fill("Demander un arbitrage écrit.");
   await page.locator("#idea-2").fill("Proposer un nouveau délai.");
+  assert.match(await page.locator("#fiche-line").innerText(), /Dans ma fiche : ma situation, mes options\. Voir ma fiche/);
   await next();
   assert(!(await page.locator("#plus-1").isVisible()));
   await page.locator(".option-card summary").first().click();
@@ -669,6 +813,8 @@ const errors = [];
   await page.locator('[data-choose="1"]').click();
   await axe("compare");
   await next();
+  assert.match(await page.locator("#fiche-line").innerText(), /Ensuite : ma fiche, à relire, modifier, imprimer\. Je ferai le point après l’essai/);
+  assert.match(await page.locator("[data-action=next]").innerText(), /Voir ma fiche/);
   await page
     .locator("#field-action")
     .fill("Préparer la liste des tâches demain.");
@@ -689,9 +835,24 @@ const errors = [];
     await page.locator("#recap-content").innerText(),
     /Préparer la liste des tâches demain/,
   );
+  assert.equal(await page.locator("#recap-content .recap-section").count(), await page.evaluate(() => ficheSections().length), "The fiche line lists exactly the sections the fiche shows");
+  assert.equal(await page.evaluate(() => document.activeElement?.id), "recap-banner", "Arriving from the exercise focuses the message");
+  assert.equal((await page.locator("#recap-banner h2").innerText()).trim(), "Ma fiche est prête");
+  assert.match(await page.locator("#recap-banner").innerText(), /relire, la modifier, l’imprimer ou la télécharger/);
+  assert(await page.locator("#recap-later").isVisible());
+  assert.match(await page.locator("#recap-later-text").innerText(), /Date prévue : 09\/10\/2026 \(sans rappel automatique\)/);
+  assert.match(await page.locator("#recap-keep-text").innerText(), /disparaît quand je ferme ou recharge la page/);
+  assert.equal(await page.locator("[data-action=export]").count(), 1, "The fiche uses its own download action name");
+  await page.locator("#recap-keep").click();
+  await visible("#confirm-dialog");
+  assert.match(await page.locator("#dialog-description").innerText(), /sans chiffrement/);
+  await page.locator("#dialog-cancel").click();
+  assert.equal(await page.evaluate(() => localStorage.length), 0, "Cancelling keeps nothing");
+  await axe("recap-ready");
   const txtPromise = page.waitForEvent("download");
   await page.locator("[data-action=text]").click();
   const txt = await txtPromise;
+  assert.match(await page.locator("#toast").innerText(), /Récapitulatif téléchargé/);
   const text = await fs.readFile(await txt.path(), "utf8");
   assert.match(text, /MON PROCHAIN PAS/);
   assert.match(text, /Ma collègue/);
@@ -753,10 +914,18 @@ const errors = [];
   assert.equal(await page.evaluate(() => window.PWNED), undefined);
   // Saving is explicit; export/import round trip and malformed-file rejection.
   await visit("outil");
-  await page.locator(".file-options summary").click();
+  assert.match(await page.locator("#privacy-status").innerText(), /Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page\. Rien n’est envoyé\./);
+  assert.equal(await page.locator(".privacy-line").getAttribute("role"), "status");
+  assert(await page.locator("#keep-link").isVisible());
+  assert.equal(await page.locator(".file-options").evaluate((node) => node.open), false, "Draft options stay closed until asked");
+  await page.locator("#keep-link").click();
+  assert.equal(await page.locator(".file-options").evaluate((node) => node.open), true, "The link opens the draft options");
+  assert.equal(await page.evaluate(() => document.activeElement?.id), "remember");
+  assert.equal(await page.evaluate(() => localStorage.length), 0, "Opening the options stores nothing");
   await page.locator("#remember").check();
   assert.equal(await page.evaluate(() => localStorage.length), 1);
   assert.match(await page.locator("#privacy-status").innerText(), /gardé dans ce navigateur/);
+  assert(!(await page.locator("#keep-link").isVisible()), "The link goes away once the draft is kept");
   const exportPromise = page.waitForEvent("download");
   await page.locator("[data-action=export]").click();
   const draft = await exportPromise;
@@ -1008,7 +1177,7 @@ const errors = [];
   await page.locator("#securite [data-action=reset]").click();
   await page.locator("#dialog-confirm").click();
   await visit("outil");
-  assert(!(await page.locator("#recap-shortcut").isVisible()));
+  assert.equal(await page.locator("#fiche-line a").count(), 0, "No link to an empty fiche after a reset");
   assert(await page.locator("#outil .scale-options").isVisible());
   await page.locator('[data-scale="personal"]').click();
   await step(1);
@@ -1018,6 +1187,43 @@ const errors = [];
   await page.locator('[data-scale="personal"]').click();
   await step(1);
   assert.equal(await page.locator("#field-situation").inputValue(), "");
+  // The step counter is never hidden under the sticky header after a screen change (phones, large text).
+  const counterPage = await context.newPage();
+  for (const [width, height, zoom] of [[320, 568, "100%"], [320, 640, "200%"], [390, 844, "100%"]]) {
+    await counterPage.setViewportSize({ width, height });
+    await counterPage.goto(url + "#outil-personal");
+    await counterPage.addStyleTag({ content: `html { font-size: ${zoom}; }` });
+    const clickNext = async () => { await counterPage.locator('[data-action="next"]').click(); };
+    const clickBack = async () => { await counterPage.locator('[data-action="back"]').click(); };
+    const counterVisible = async (label) => {
+      await counterPage.waitForTimeout(300);
+      const gap = await counterPage.evaluate(() => document.querySelector("#progress-label").getBoundingClientRect().top - document.querySelector("header").getBoundingClientRect().bottom);
+      assert(gap >= 0, `${label} at ${width}px/${zoom}: counter hidden under the header (gap ${gap})`);
+    };
+    await clickNext();
+    await counterPage.locator('[data-safety="safe"]').click();
+    await clickNext();
+    await counterVisible("Q1");
+    await clickNext();
+    await counterVisible("Q2");
+    await clickNext();
+    await counterVisible("Q3");
+    await clickBack();
+    await counterVisible("back to Q2");
+    await clickBack();
+    await counterVisible("back to Q1");
+  }
+  await counterPage.close();
+  // The footer buttons wrap instead of overflowing with large text on a small phone.
+  const wrapPage = await context.newPage();
+  await wrapPage.setViewportSize({ width: 320, height: 640 });
+  await wrapPage.goto(url + "#outil-personal");
+  await wrapPage.addStyleTag({ content: "html { font-size: 200%; }" });
+  for (let i = 0; i < 3; i++) {
+    await wrapPage.locator('[data-action="next"]').click();
+    assert(await wrapPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Footer buttons overflow with large text on screen ${i}`);
+  }
+  await wrapPage.close();
   // Responsive layouts, all pages, and all form steps.
   for (const width of [320, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
@@ -1094,11 +1300,13 @@ const errors = [];
   await step(0);
   assert(await page.locator("#mobile-step-picker").isVisible());
   assert(!(await page.locator("#steps").isVisible()));
-  assert.match(await page.locator("#mobile-step-summary").innerText(), /Étape 1 sur 6/);
+  assert.match(await page.locator("#mobile-step-summary").innerText(), /Aller à une étape/);
+  assert.match(await page.locator("#progress-label").innerText(), /Étape 1 sur 6/);
   await page.locator("#mobile-step-picker summary").click();
   assert(await page.locator('#steps [data-step="2"]').isVisible());
   await page.locator('#steps [data-step="2"]').click();
-  assert.match(await page.locator("#mobile-step-summary").innerText(), /Étape 3 sur 6/);
+  assert.match(await page.locator("#progress-label").innerText(), /Étape 3 sur 6/);
+  assert.match(await page.title(), /Étape 3 sur 6 · Imaginer/, "The step is in the page title");
   assert(!(await page.locator("#mobile-step-picker").evaluate((el) => el.open)));
   await step(0);
   await page.evaluate(() => {

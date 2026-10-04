@@ -33,7 +33,7 @@
       }
       html {
         scroll-behavior: smooth;
-        scroll-padding-top: 110px;
+        scroll-padding-top: calc(var(--header-h, 96px) + 14px);
       }
       body {
         margin: 0;
@@ -250,10 +250,6 @@
         list-style: none;
         margin: 0;
       }
-      .mobile-step-picker > summary {
-        padding: 13px 18px;
-        color: var(--deep);
-      }
       #steps {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -314,12 +310,6 @@
       }
       .step-link[aria-current="step"] small {
         color: #dce9ff;
-      }
-      .side-actions {
-        padding: 0 4px;
-      }
-      .side-actions button {
-        font-size: 0.85rem;
       }
       .card {
         background: var(--white);
@@ -714,10 +704,16 @@
       .privacy-line {
         margin: 16px 3px 0;
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 7px;
+        gap: 2px 12px;
         color: var(--muted);
-        font-size: 0.75rem;
+        font-size: 0.84rem;
+        line-height: 1.5;
+      }
+      .privacy-line .text-button {
+        padding: 10px 0;
+        font-size: inherit;
       }
       .privacy-line svg {
         width: 14px;
@@ -1363,10 +1359,6 @@
         }
       }
       @media (max-width: 600px) {
-        .mobile-step-picker > summary {
-          padding: 12px 14px;
-          font-size: 0.88rem;
-        }
         #steps {
           grid-template-columns: minmax(0, 1fr);
           padding: 8px;
@@ -1456,8 +1448,10 @@
         .footer-actions {
           margin-top: 23px;
           align-items: stretch;
+          flex-wrap: wrap;
         }
         .footer-actions .btn {
+          flex: 1 1 min-content;
           padding: 10px 13px;
           font-size: 0.8rem;
         }

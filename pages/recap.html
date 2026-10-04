@@ -11,24 +11,43 @@
               éducatif, sans validation clinique propre.
             </p>
           </div>
+          <div class="recap-banner no-print" id="recap-banner" role="group" aria-labelledby="recap-banner-title" tabindex="-1" hidden></div>
           <div id="recap-content" class="recap-grid"></div>
           <div class="button-row section-gap no-print" id="recap-actions">
             <button class="btn primary" data-action="print">
               Imprimer / enregistrer en PDF</button
             ><button class="btn" data-action="text">
-              Télécharger le récapitulatif</button
-            ><button class="btn" id="recap-review" data-step="5">
-              Faire le point après l’essai →
+              Télécharger ma fiche (texte)
             </button>
           </div>
           <p class="hint no-print" id="recap-privacy">
             Le document contient mes réponses personnelles. Sur un appareil
             partagé, je vérifie où je le conserve.
           </p>
-          <div class="notice section-gap" id="recap-note">
-            Une action non réalisée ou un résultat décevant n’est pas un
-            jugement sur moi. Je peux revenir à une étape, chercher un appui ou
-            choisir un pas plus petit.
+          <div class="recap-later no-print" id="recap-later" hidden>
+            <h2>Après l’essai</h2>
+            <p id="recap-later-text"></p>
+            <p id="recap-keep-text" tabindex="-1"></p>
+            <div class="button-row">
+              <button class="btn" id="recap-review" data-step="5">
+                Faire le point après l’essai →
+              </button>
+              <button class="btn" id="recap-keep" data-action="keep-local">
+                Garder dans ce navigateur
+              </button>
+              <button class="btn" id="recap-export" data-action="export-draft">
+                Télécharger mon brouillon (pour reprendre)
+              </button>
+            </div>
+            <p class="hint" id="recap-resume-text">
+              Pour reprendre un brouillon téléchargé : « Mon problème », « Gérer
+              mon brouillon », « Reprendre un fichier ».
+            </p>
+            <div class="notice section-gap" id="recap-note">
+              Une action non réalisée ou un résultat décevant n’est pas un
+              jugement sur moi. Je peux revenir à une étape, chercher un appui ou
+              choisir un pas plus petit.
+            </div>
           </div>
         </div>
       </section>

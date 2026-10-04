@@ -7,26 +7,24 @@
         <div class="workspace">
           <aside class="side" aria-label="Étapes du parcours">
             <details class="mobile-step-picker" id="mobile-step-picker">
-              <summary id="mobile-step-summary">Choisir une étape</summary>
+              <summary id="mobile-step-summary">Aller à une étape</summary>
               <ol class="steps" id="steps"></ol>
             </details>
-            <div class="side-actions">
-              <a class="text-button" id="recap-shortcut" href="#recap" hidden>Voir mes réponses ↗</a>
-            </div>
           </aside>
           <div>
             <div id="step-container" class="step-card card"></div>
-            <p class="privacy-line">
-              <span id="privacy-status">Rien n’est envoyé.</span>
+            <p class="privacy-line" role="status" aria-atomic="true">
+              <span id="privacy-status">Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page. Rien n’est envoyé.</span>
+              <button type="button" class="text-button" id="keep-link" data-action="keep-local">Les garder dans ce navigateur</button>
             </p>
             <details class="file-options">
               <summary>Gérer mon brouillon</summary>
               <div class="details-body">
                 <label class="checkbox"
-                  ><input type="checkbox" id="remember" />Garder mon brouillon
+                  ><input type="checkbox" id="remember" aria-describedby="remember-hint" />Garder mon brouillon
                   dans ce navigateur</label
                 >
-                <p class="hint">
+                <p class="hint" id="remember-hint">
                   Sans sauvegarde, mes réponses disparaissent si je ferme ou
                   recharge la page. Avec la sauvegarde, elles restent dans ce
                   navigateur, sans chiffrement : d’autres personnes utilisant
