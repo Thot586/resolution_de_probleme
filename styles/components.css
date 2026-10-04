@@ -1,10 +1,5 @@
       /* Contrôles natifs améliorés, faits maison (aucune bibliothèque). Chaque amélioration se dégrade proprement :
          sans le CSS récent, le contrôle reste un vrai bouton radio, un vrai <details>, un vrai <dialog>. */
-      :root {
-        --line-strong: #9cb6d9;
-        --focus-ring: #a06c25;
-      }
-
       /* ---- Choix unique : <choice-group> (cartes ou pastilles), vrais boutons radio ---- */
       choice-group {
         display: block;
@@ -58,7 +53,7 @@
         padding: 12px 16px;
         border: 1.5px solid var(--line);
         border-radius: 14px;
-        background: var(--white);
+        background: var(--surface);
         color: var(--ink);
         font-size: 1rem;
         font-weight: 560;
@@ -71,9 +66,9 @@
         box-sizing: border-box;
         width: 22px;
         height: 22px;
-        border: 2px solid var(--line-strong);
+        border: 2px solid var(--field-line);
         border-radius: 50%;
-        background: var(--white);
+        background: var(--surface);
         transition: border-color 0.15s ease, background-color 0.15s ease;
       }
       .choice-mark::after {
@@ -83,7 +78,7 @@
         top: 2px;
         width: 5px;
         height: 10px;
-        border: solid var(--white);
+        border: solid var(--on-fill);
         border-width: 0 2.5px 2.5px 0;
         transform: rotate(45deg) scale(0);
         transition: transform 0.15s ease;
@@ -114,7 +109,7 @@
       }
       .choice > input:checked + .choice-body .choice-mark {
         border-color: var(--brand);
-        background: var(--brand);
+        background: var(--brand-fill);
       }
       .choice > input:checked + .choice-body .choice-mark::after {
         transform: rotate(45deg) scale(1);
@@ -146,7 +141,7 @@
         padding: 12px 16px;
         border: 1.5px solid var(--brand);
         border-radius: 14px;
-        background: var(--white);
+        background: var(--surface);
         box-shadow: inset 0 0 0 1px var(--brand);
         font-size: 1rem;
         font-weight: 560;
@@ -272,7 +267,7 @@
         width: 46px;
         height: 28px;
         margin: 0;
-        border: 1.5px solid var(--line-strong);
+        border: 1.5px solid var(--field-line);
         border-radius: 999px;
         background: var(--mint);
         cursor: pointer;
@@ -286,14 +281,14 @@
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        background: var(--white);
-        box-shadow: 0 1px 3px #0003;
+        background: var(--on-fill);
+        box-shadow: 0 1px 3px var(--shade-pop);
         transform: translate(0, -50%);
         transition: transform 0.2s ease;
       }
       .checkbox input[type="checkbox"]:checked {
         border-color: var(--brand);
-        background: var(--brand);
+        background: var(--brand-fill);
       }
       .checkbox input[type="checkbox"]:checked::after {
         transform: translate(18px, -50%);
@@ -336,7 +331,7 @@
       input[type="date"]:focus-visible,
       textarea:focus-visible {
         border-color: var(--brand);
-        box-shadow: 0 0 0 3px #285b9d26;
+        box-shadow: 0 0 0 3px var(--focus-glow);
       }
 
       /* ---- Icônes : tracés SVG en ligne, couleur du texte, nets à toute taille (ni fichier, ni police, ni caractère qui change selon l'appareil) ---- */
@@ -406,10 +401,10 @@
           .btn:hover,
           .pill:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px #161f6e1c;
+            box-shadow: 0 6px 16px var(--shade-hover);
           }
           details > summary:hover {
-            background: #f6f9fe;
+            background: var(--surface-soft);
           }
         }
         .btn:active,
@@ -514,7 +509,7 @@
               box-shadow: 0 0 0 #161f6e00;
             }
             to {
-              box-shadow: 0 8px 28px #161f6e18;
+              box-shadow: 0 8px 28px var(--shade-soft);
             }
           }
         }

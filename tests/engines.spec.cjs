@@ -60,16 +60,16 @@ async function exercise({ browser, name, label, width, height, url }) {
     await page.waitForTimeout(150);
     const after = await page.evaluate(() => document.querySelector("#context-select").value);
     if (before === after) problems.push(`${label}: arrow key did not move the choice`);
-    // Heading font: embedded, no request, ready.
+    // Heading font: embedded (no request), and the engine can decode it. fonts.load() forces the load and resolves with the
+    // faces that match; WebKit lets an unused face fall back to "unloaded", so the status alone proves nothing.
     step = "heading font";
-    // (Decoding is asynchronous: on a busy machine it may take a few seconds, but it must end "loaded".)
-    const fontReady = await page
-      .waitForFunction(() => [...document.fonts].some((face) => face.family.includes("Barlow") && face.status === "loaded"), null, { timeout: 15000 })
-      .then(() => true, () => false);
-    if (!fontReady) {
-      const faces = await page.evaluate(() => [...document.fonts].map((face) => `${face.family}:${face.status}`).join(", ") || "none");
-      problems.push(`${label}: heading font not ready (${faces})`);
-    }
+    const font = await page.evaluate(() =>
+      document.fonts.load('700 1em "Barlow Condensed"').then(
+        (faces) => ({ count: faces.length, statuses: faces.map((face) => face.status).join(",") }),
+        (error) => ({ count: 0, statuses: `error: ${error && error.message}` }),
+      ),
+    );
+    if (!font.count || font.statuses.split(",").some((status) => status !== "loaded")) problems.push(`${label}: heading font did not load (${JSON.stringify(font)})`);
     // Dialog and details.
     step = "dialog and details";
     await page.goto(`${url}#comprendre`);
