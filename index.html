@@ -779,13 +779,20 @@
       summary::-webkit-details-marker {
         display: none;
       }
+      /* Repère d'ouverture : un chevron dessiné (pas un caractère : même forme partout, visible en contraste forcé) */
       summary:after {
-        content: "+";
-        font-weight: 400;
-        font-size: 1.15rem;
+        content: "";
+        flex: none;
+        width: 0.5rem;
+        height: 0.5rem;
+        margin-right: 0.15rem;
+        border: solid currentColor;
+        border-width: 0 2px 2px 0;
+        opacity: 0.75;
+        transform: translateY(-0.14rem) rotate(45deg);
       }
       details[open] > summary:after {
-        content: "−";
+        transform: translateY(0.1rem) rotate(225deg);
       }
       details[open] > summary {
         border-bottom: 1px solid #e5ecf7;
@@ -1809,19 +1816,15 @@
       .change-level { display: block; margin: 0 0 4px; border: 0; background: transparent; }
       .change-level > summary { display: inline-flex; justify-content: flex-start; gap: 8px; padding: 6px 12px; border: 1px solid #adc7e9; border-radius: 999px; background: #edf3fb; color: var(--muted); font-size: .84rem; font-weight: 500; }
       .change-level > summary strong { color: var(--deep); font-weight: 650; }
-      .change-level > summary:after { content: "▾"; content: "▾" / ""; font-size: .8rem; line-height: 1; }
       .change-level[open] > summary { border-bottom: 1px solid #adc7e9; }
-      .change-level[open] > summary:after { content: "▴"; content: "▴" / ""; }
       .change-level > .details-body { padding: 10px 0 4px; }
       .side { justify-items: start; }
       .mobile-step-picker { display: inline-block; max-width: 100%; border: 0; background: transparent; }
       .mobile-step-picker > summary { display: inline-flex; justify-content: flex-start; gap: 6px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--muted); font-size: .84rem; font-weight: 560; }
-      .mobile-step-picker > summary:after { content: "▾"; content: "▾" / ""; font-size: .8rem; line-height: 1; }
       .mobile-step-picker[open] { display: block; justify-self: stretch; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
       .mobile-step-picker[open] > summary { display: flex; border: 0; border-bottom: 1px solid #e5ecf7; border-radius: 14px 14px 0 0; background: transparent; }
-      .mobile-step-picker[open] > summary:after { content: "▴"; content: "▴" / ""; }
       .step-link.is-done .step-num { position: relative; border-color: var(--brand); color: var(--brand); }
-      .step-link.is-done .step-num::after { content: "✓"; content: "✓" / ""; position: absolute; top: -6px; right: -7px; display: grid; place-items: center; width: 15px; height: 15px; border: 2px solid #fff; border-radius: 50%; background: var(--brand); color: #fff; font-size: .66rem; font-weight: 800; box-sizing: content-box; }
+      .step-link.is-done .step-num::after { content: ""; position: absolute; top: -6px; right: -7px; width: 15px; height: 15px; border: 2px solid #fff; border-radius: 50%; background: var(--brand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6.5'/%3E%3C/svg%3E") center / 9px 9px no-repeat; box-sizing: content-box; }
       .step-link[aria-current="step"].is-done .step-num { border-color: #ffffff99; color: #fff; }
       #step-container .step-topline { display: grid; grid-template-columns: minmax(0, 1fr); gap: 9px; margin-bottom: 18px; }
       .step-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }
@@ -2341,6 +2344,50 @@
         box-shadow: 0 0 0 3px #285b9d26;
       }
 
+      /* ---- Icônes : tracés SVG en ligne, couleur du texte, nets à toute taille (ni fichier, ni police, ni caractère qui change selon l'appareil) ---- */
+      .icon {
+        flex: none;
+        width: 1.1em;
+        height: 1.1em;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      @media (max-width: 850px) {
+        .menu-toggle {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+      }
+      .menu-icon path {
+        transform-box: fill-box;
+        transform-origin: center;
+      }
+      .menu-toggle[aria-expanded="true"] .menu-icon path:nth-child(1) {
+        transform: translateY(4.5px) rotate(45deg);
+      }
+      .menu-toggle[aria-expanded="true"] .menu-icon path:nth-child(2) {
+        opacity: 0;
+      }
+      .menu-toggle[aria-expanded="true"] .menu-icon path:nth-child(3) {
+        transform: translateY(-4.5px) rotate(-45deg);
+      }
+      @media (forced-colors: active) {
+        /* En contraste forcé, le fond du badge disparaît : on revient à une coche en texte. */
+        .step-link.is-done .step-num::after {
+          content: "✓";
+          display: grid;
+          place-items: center;
+          background-image: none;
+          color: CanvasText;
+          font-size: 0.66rem;
+          font-weight: 800;
+        }
+      }
+
       /* ---- Mouvement : chaque effet est un bonus (rien n'en dépend) et s'éteint si la personne demande moins d'animations ---- */
       @supports (interpolate-size: allow-keywords) {
         :root {
@@ -2374,6 +2421,13 @@
         .pill:active {
           transform: scale(0.985);
           box-shadow: none;
+        }
+        /* Le chevron des volets pivote ; le menu se transforme en croix. */
+        summary:after {
+          transition: transform 0.2s ease;
+        }
+        .menu-icon path {
+          transition: transform 0.22s ease, opacity 0.15s ease;
         }
         /* Les volets s'ouvrent et se ferment en glissant (Chrome 131+, Firefox 143+, Safari 18.4+ ; ailleurs, instantané). */
         @supports selector(::details-content) {
@@ -2443,8 +2497,8 @@
         }
         /* Changement de page : la page qui apparaît entre en fondu court. Simple animation CSS : aucun instantané de la page,
            aucun délai, aucun appui perdu, et même rendu partout. (L'API View Transitions a été écartée : elle plantait ou
-           bloquait la page dans WebKit.) */
-        .view:not([hidden]) {
+           bloquait la page dans WebKit.) L'aide (#securite) s'affiche sans aucun mouvement. */
+        .view:not([hidden]):not(#securite) {
           animation: page-in 0.22s ease-out;
         }
         @keyframes page-in {
@@ -2500,6 +2554,15 @@
       html {
         scrollbar-gutter: stable;
       }
+      /* Fenêtre ouverte : la page derrière ne défile plus (la gouttière réservée évite tout saut de mise en page). */
+      @supports selector(:has(*)) {
+        html:has(dialog[open]) {
+          overflow: hidden;
+        }
+      }
+      dialog {
+        overscroll-behavior: contain;
+      }
     </style>
 
   </head>
@@ -2529,7 +2592,10 @@
           aria-label="Ouvrir le menu"
           aria-controls="navigation"
         >
-          Menu ☰
+          <span class="menu-toggle-label">Menu</span>
+          <svg class="icon menu-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+            <path d="M3 5.5h14" /><path d="M3 10h14" /><path d="M3 14.5h14" />
+          </svg>
         </button>
         <nav id="navigation" aria-label="Navigation principale">
           <a href="#accueil" data-page="accueil">Accueil</a
@@ -4509,7 +4575,7 @@
     <div id="print-document" aria-hidden="true"></div>
     <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
     <dialog id="term-dialog" class="term-dialog" aria-labelledby="term-title" aria-describedby="term-brief">
-      <div class="term-dialog-head"><span class="tag">Glossaire</span><button class="btn small" id="term-close" type="button">Fermer ×</button></div>
+      <div class="term-dialog-head"><span class="tag">Glossaire</span><button class="btn small" id="term-close" type="button">Fermer<svg class="icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" /></svg></button></div>
       <h2 id="term-title"></h2>
       <p id="term-brief" class="term-brief"></p>
       <p id="term-detail"></p>
@@ -7739,7 +7805,7 @@
         const button = $(".menu-toggle");
         button.setAttribute("aria-expanded", String(open));
         button.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
-        button.textContent = open ? "Fermer ×" : "Menu ☰";
+        button.querySelector(".menu-toggle-label").textContent = open ? "Fermer" : "Menu";
       }
       $(".menu-toggle").addEventListener("click", () => {
         setMenuOpen(!$("#navigation").classList.contains("open"));

@@ -339,6 +339,50 @@
         box-shadow: 0 0 0 3px #285b9d26;
       }
 
+      /* ---- Icônes : tracés SVG en ligne, couleur du texte, nets à toute taille (ni fichier, ni police, ni caractère qui change selon l'appareil) ---- */
+      .icon {
+        flex: none;
+        width: 1.1em;
+        height: 1.1em;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      @media (max-width: 850px) {
+        .menu-toggle {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+      }
+      .menu-icon path {
+        transform-box: fill-box;
+        transform-origin: center;
+      }
+      .menu-toggle[aria-expanded="true"] .menu-icon path:nth-child(1) {
+        transform: translateY(4.5px) rotate(45deg);
+      }
+      .menu-toggle[aria-expanded="true"] .menu-icon path:nth-child(2) {
+        opacity: 0;
+      }
+      .menu-toggle[aria-expanded="true"] .menu-icon path:nth-child(3) {
+        transform: translateY(-4.5px) rotate(-45deg);
+      }
+      @media (forced-colors: active) {
+        /* En contraste forcé, le fond du badge disparaît : on revient à une coche en texte. */
+        .step-link.is-done .step-num::after {
+          content: "✓";
+          display: grid;
+          place-items: center;
+          background-image: none;
+          color: CanvasText;
+          font-size: 0.66rem;
+          font-weight: 800;
+        }
+      }
+
       /* ---- Mouvement : chaque effet est un bonus (rien n'en dépend) et s'éteint si la personne demande moins d'animations ---- */
       @supports (interpolate-size: allow-keywords) {
         :root {
@@ -372,6 +416,13 @@
         .pill:active {
           transform: scale(0.985);
           box-shadow: none;
+        }
+        /* Le chevron des volets pivote ; le menu se transforme en croix. */
+        summary:after {
+          transition: transform 0.2s ease;
+        }
+        .menu-icon path {
+          transition: transform 0.22s ease, opacity 0.15s ease;
         }
         /* Les volets s'ouvrent et se ferment en glissant (Chrome 131+, Firefox 143+, Safari 18.4+ ; ailleurs, instantané). */
         @supports selector(::details-content) {
@@ -441,8 +492,8 @@
         }
         /* Changement de page : la page qui apparaît entre en fondu court. Simple animation CSS : aucun instantané de la page,
            aucun délai, aucun appui perdu, et même rendu partout. (L'API View Transitions a été écartée : elle plantait ou
-           bloquait la page dans WebKit.) */
-        .view:not([hidden]) {
+           bloquait la page dans WebKit.) L'aide (#securite) s'affiche sans aucun mouvement. */
+        .view:not([hidden]):not(#securite) {
           animation: page-in 0.22s ease-out;
         }
         @keyframes page-in {
@@ -497,4 +548,13 @@
       }
       html {
         scrollbar-gutter: stable;
+      }
+      /* Fenêtre ouverte : la page derrière ne défile plus (la gouttière réservée évite tout saut de mise en page). */
+      @supports selector(:has(*)) {
+        html:has(dialog[open]) {
+          overflow: hidden;
+        }
+      }
+      dialog {
+        overscroll-behavior: contain;
       }

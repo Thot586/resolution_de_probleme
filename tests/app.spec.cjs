@@ -17,26 +17,23 @@ const errors = [];
 // <choice-group> helpers : the chooser is a group of real radio buttons (folded after a choice on the violence page).
 const choiceValue = (target, selector) => target.locator(selector).evaluate((element) => element.value);
 const choiceValues = (target, selector) => target.locator(`${selector} input`).evaluateAll((nodes) => nodes.map((node) => node.value));
+// The app answers in later tasks (a hash change, then a render, scroll events a frame late): let two frames pass before the next look at the page.
+const settle = (page) => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 const choose = async (target, selector, value) => {
   const group = target.locator(selector);
   const fold = group.locator(":scope > details.choice-fold");
   if ((await fold.count()) && !(await fold.evaluate((details) => details.open))) await fold.locator("summary").click();
   await group.locator(`input[value="${value}"]`).check();
+  await settle(typeof target.page === "function" ? target.page() : target);
 };
 (async () => {
   await fs.mkdir(output, { recursive: true });
   const html = await fs.readFile(path.join(root, "index.html"));
   const logo = await fs.readFile(path.join(root, "assets", "trimobe-logo.jpeg"));
-  const displayFont = await fs.readFile(path.join(root, "assets", "fonts", "BarlowCondensed-Bold.ttf"));
   server = createServer((req, res) => {
     if (req.url === "/assets/trimobe-logo.jpeg") {
       res.setHeader("Content-Type", "image/jpeg");
       res.end(logo);
-      return;
-    }
-    if (req.url === "/assets/fonts/BarlowCondensed-Bold.ttf") {
-      res.setHeader("Content-Type", "font/ttf");
-      res.end(displayFont);
       return;
     }
     res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -45,6 +42,17 @@ const choose = async (target, selector, value) => {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const url = `http://127.0.0.1:${server.address().port}/`;
   browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] });
+  // On a machine busy with other jobs, QA_TIMEOUT=90000 gives every page more time before an action or a load fails.
+  if (process.env.QA_TIMEOUT) {
+    const timeout = Number(process.env.QA_TIMEOUT);
+    const newContext = browser.newContext.bind(browser);
+    browser.newContext = async (...args) => {
+      const created = await newContext(...args);
+      created.setDefaultTimeout(timeout);
+      created.setDefaultNavigationTimeout(timeout);
+      return created;
+    };
+  }
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1050 },
     reducedMotion: "reduce",
@@ -1230,12 +1238,17 @@ const choose = async (target, selector, value) => {
     .filter({ hasText: "Préparer une action" })
     .click();
   const tip = page.locator("#comprendre [data-term=implementation]").first();
+  // Scrolling hides the tooltip by design, and scroll events arrive a frame late: bring the term into view and let them fire first.
+  await tip.scrollIntoViewIfNeeded();
+  await settle(page);
   await tip.focus();
   await visible("#tooltip");
   assert.match(await page.locator("#tooltip").innerText(), /plan précis/);
   await page.keyboard.press("Escape");
   assert(!(await page.locator("#tooltip").isVisible()));
   await page.keyboard.press("Tab");
+  await tip.scrollIntoViewIfNeeded();
+  await settle(page);
   await tip.hover();
   await visible("#tooltip");
   await tip.click();
@@ -1457,7 +1470,7 @@ const choose = async (target, selector, value) => {
   await step(0);
   await page.locator(".menu-toggle").click();
   await visible("#navigation");
-  assert.equal(await page.locator(".menu-toggle").innerText(), "Fermer ×");
+  assert.equal(await page.locator(".menu-toggle").innerText(), "Fermer");
   await page.locator("nav a[data-page=soutenir]").click();
   await page.locator("#navigation").waitFor({ state: "hidden" });
   assert(!(await page.locator("#navigation").isVisible()));

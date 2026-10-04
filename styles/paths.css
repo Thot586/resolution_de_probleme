@@ -52,19 +52,15 @@
       .change-level { display: block; margin: 0 0 4px; border: 0; background: transparent; }
       .change-level > summary { display: inline-flex; justify-content: flex-start; gap: 8px; padding: 6px 12px; border: 1px solid #adc7e9; border-radius: 999px; background: #edf3fb; color: var(--muted); font-size: .84rem; font-weight: 500; }
       .change-level > summary strong { color: var(--deep); font-weight: 650; }
-      .change-level > summary:after { content: "▾"; content: "▾" / ""; font-size: .8rem; line-height: 1; }
       .change-level[open] > summary { border-bottom: 1px solid #adc7e9; }
-      .change-level[open] > summary:after { content: "▴"; content: "▴" / ""; }
       .change-level > .details-body { padding: 10px 0 4px; }
       .side { justify-items: start; }
       .mobile-step-picker { display: inline-block; max-width: 100%; border: 0; background: transparent; }
       .mobile-step-picker > summary { display: inline-flex; justify-content: flex-start; gap: 6px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--muted); font-size: .84rem; font-weight: 560; }
-      .mobile-step-picker > summary:after { content: "▾"; content: "▾" / ""; font-size: .8rem; line-height: 1; }
       .mobile-step-picker[open] { display: block; justify-self: stretch; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
       .mobile-step-picker[open] > summary { display: flex; border: 0; border-bottom: 1px solid #e5ecf7; border-radius: 14px 14px 0 0; background: transparent; }
-      .mobile-step-picker[open] > summary:after { content: "▴"; content: "▴" / ""; }
       .step-link.is-done .step-num { position: relative; border-color: var(--brand); color: var(--brand); }
-      .step-link.is-done .step-num::after { content: "✓"; content: "✓" / ""; position: absolute; top: -6px; right: -7px; display: grid; place-items: center; width: 15px; height: 15px; border: 2px solid #fff; border-radius: 50%; background: var(--brand); color: #fff; font-size: .66rem; font-weight: 800; box-sizing: content-box; }
+      .step-link.is-done .step-num::after { content: ""; position: absolute; top: -6px; right: -7px; width: 15px; height: 15px; border: 2px solid #fff; border-radius: 50%; background: var(--brand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6.5'/%3E%3C/svg%3E") center / 9px 9px no-repeat; box-sizing: content-box; }
       .step-link[aria-current="step"].is-done .step-num { border-color: #ffffff99; color: #fff; }
       #step-container .step-topline { display: grid; grid-template-columns: minmax(0, 1fr); gap: 9px; margin-bottom: 18px; }
       .step-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }

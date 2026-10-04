@@ -1197,7 +1197,7 @@
         const button = $(".menu-toggle");
         button.setAttribute("aria-expanded", String(open));
         button.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
-        button.textContent = open ? "Fermer ×" : "Menu ☰";
+        button.querySelector(".menu-toggle-label").textContent = open ? "Fermer" : "Menu";
       }
       $(".menu-toggle").addEventListener("click", () => {
         setMenuOpen(!$("#navigation").classList.contains("open"));

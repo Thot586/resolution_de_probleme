@@ -765,13 +765,20 @@
       summary::-webkit-details-marker {
         display: none;
       }
+      /* Repère d'ouverture : un chevron dessiné (pas un caractère : même forme partout, visible en contraste forcé) */
       summary:after {
-        content: "+";
-        font-weight: 400;
-        font-size: 1.15rem;
+        content: "";
+        flex: none;
+        width: 0.5rem;
+        height: 0.5rem;
+        margin-right: 0.15rem;
+        border: solid currentColor;
+        border-width: 0 2px 2px 0;
+        opacity: 0.75;
+        transform: translateY(-0.14rem) rotate(45deg);
       }
       details[open] > summary:after {
-        content: "−";
+        transform: translateY(0.1rem) rotate(225deg);
       }
       details[open] > summary {
         border-bottom: 1px solid #e5ecf7;
