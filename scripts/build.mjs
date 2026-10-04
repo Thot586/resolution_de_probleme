@@ -18,6 +18,8 @@ const pages = [
 ];
 
 let html = await read("index.template.html");
+// Police des titres : sous-ensemble WOFF2 intégré en data: URI (aucune requête, aucun changement brusque au chargement).
+const fontBase64 = (await readFile(join(root, "assets/fonts/BarlowCondensed-Bold.subset.woff2"))).toString("base64");
 const [baseCss, pathsCss, dataJs, workflowJs, contextCatalogJs, decisionDiagramJs, groupJs, appJs, pageParts] = await Promise.all([
   read("styles/base.css"),
   read("styles/paths.css"),
@@ -32,7 +34,7 @@ const [baseCss, pathsCss, dataJs, workflowJs, contextCatalogJs, decisionDiagramJ
 const pageHtml = pageParts.join("");
 html = html.replace(
   "<!-- STYLES -->",
-  () => `<style>\n${baseCss}\n${pathsCss}    </style>`,
+  () => `<style>\n${baseCss.replace("__BARLOW_BOLD_WOFF2__", `data:font/woff2;base64,${fontBase64}`)}\n${pathsCss}    </style>`,
 );
 html = html.replace(
   "<!-- PAGES -->",
@@ -42,6 +44,7 @@ html = html.replace(
   "<!-- SCRIPT -->",
   () => `<script>\n      "use strict";\n${dataJs}\n${workflowJs}\n${contextCatalogJs}\n${decisionDiagramJs}\n${groupJs}\n${appJs}    </script>`,
 );
+if (html.includes("__BARLOW_BOLD_WOFF2__")) throw new Error("La police intégrée n'a pas été insérée.");
 if (html.includes("<!-- STYLES -->") || html.includes("<!-- PAGES -->") || html.includes("<!-- SCRIPT -->")) {
   throw new Error("Un emplacement du modèle n'a pas été rempli.");
 }

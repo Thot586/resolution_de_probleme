@@ -1,9 +1,12 @@
+      /* Barlow Condensed Bold (SIL OFL 1.1, voir assets/fonts/OFL.txt), sous-ensemble WOFF2 intégré au document par le build :
+         aucune requête, aucune dépendance externe, pas de changement brusque de police au chargement.
+         Régénération : python scripts/subset-font.py */
       @font-face {
         font-family: "Barlow Condensed";
-        src: url("assets/fonts/BarlowCondensed-Bold.ttf") format("truetype");
+        src: url("__BARLOW_BOLD_WOFF2__") format("woff2");
         font-style: normal;
         font-weight: 700;
-        font-display: swap;
+        font-display: block;
       }
       :root {
         /* Trimobe: bleu du globe et bleu du mot-symbole. */
