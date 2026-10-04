@@ -107,6 +107,8 @@
       .context-pick.primary-ask { max-width: none; }
       .answer-tag { display: none; }
       .primary-ask .answer-tag { display: block; margin: 0 0 6px; color: var(--brand); font-size: .74rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+      .primary-ask .safety-hint { margin: -8px 0 16px; font-size: .95rem; }
+      .notice-note { margin: 10px 0 0; font-size: .85rem; }
       .primary-ask .field { margin-bottom: 26px; }
       .primary-ask .field:last-child { margin-bottom: 0; }
       .primary-ask .field > .label:not(.sr-only) { margin-bottom: 6px; color: var(--deep); font-size: 1.12rem; }

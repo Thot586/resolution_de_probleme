@@ -167,6 +167,39 @@
         organization: ["Équipe ou institution", "Une équipe, ses règles ou ses moyens sont en jeu."],
         public: ["Collectif ou politique", "Une décision collective ou publique est en jeu."],
       };
+      // Après « J’ai un doute » ou « Je me sens en danger », le texte suit le niveau choisi.
+      // Personnel et Entre personnes gardent le texte d’origine. Collectif n’a pas de lien « repères » tant qu’aucun
+      // repère collectif n’existe : la liste actuelle ne contient aucune relation qui corresponde (voir violenceData).
+      const interpersonalSafety = {
+        hint: "",
+        doubt: "La peur, les menaces ou le contrôle méritent de l’aide.",
+        guideLink: "Voir les repères de violence",
+        dangerTitle: "Ma sécurité passe avant l’exercice.",
+        dangerBody: "Je peux chercher de l’aide maintenant.",
+        reminder: "Peur, menaces ou contrôle ?",
+        guides: true,
+      };
+      const safetyByScale = {
+        personal: interpersonalSafety,
+        shared: interpersonalSafety,
+        organization: {
+          hint: "Je pense aussi à la sécurité des autres personnes de l’équipe.",
+          doubt: "La peur, les pressions ou les représailles méritent de l’aide, pour moi comme pour mon équipe.",
+          guideLink: "Choisir des repères de violence",
+          dangerTitle: "Ma sécurité et celle des autres passent avant l’exercice.",
+          dangerBody: "Je peux chercher de l’aide maintenant. Je n’impose ni confrontation ni médiation tant que la peur ou les représailles sont là.",
+          reminder: "Peur, pressions ou représailles dans l’équipe ?",
+          guides: true,
+        },
+        public: {
+          hint: "Je pense aussi à la sécurité des personnes qui agissent avec moi.",
+          doubt: "La peur, les menaces ou les représailles méritent de l’aide, pour moi comme pour le groupe.",
+          dangerTitle: "Ma sécurité et celle des autres passent avant l’exercice.",
+          dangerBody: "Je peux chercher de l’aide maintenant.",
+          reminder: "Peur, menaces ou représailles pour moi ou pour le groupe ?",
+          guides: false,
+        },
+      };
       const glossary = {
         ipt: [
           "IPT — programme intégratif de thérapies psychologiques",

@@ -197,11 +197,25 @@
       const violenceRouteForContext = () => {
         const related = state.scale === "shared" ? {
           couple: "couple",
+          family: "family",
           sibling: "sibling",
           peers: "peers",
           colleague: "colleague",
+          other: "other",
         }[state.context] : null;
         return related ? `#violences-${related}` : "#violences";
+      };
+      // Notice sous la question de sécurité : texte et liens suivent le niveau (voir safetyByScale).
+      const safetyNoticeHtml = () => {
+        const texts = safetyByScale[state.scale] || safetyByScale.personal;
+        const route = violenceRouteForContext();
+        if (state.safety === "danger") {
+          return `<div class="notice red section-gap"><strong>${texts.dangerTitle}</strong>${texts.dangerBody}<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a>${texts.guides ? `<a class="btn" href="${route}">Repérer une violence</a>` : ""}<button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="notice-note">Remplace la page par Wikipédia. N’efface ni l’historique ni un brouillon gardé.</p></div>`;
+        }
+        if (state.safety === "unsure") {
+          return `<div class="notice amber section-gap"><strong>${texts.doubt}</strong> ${texts.guides ? `<a href="${route}">${texts.guideLink}</a> ou <a href="#securite">chercher de l’aide</a>.` : '<a href="#securite">Chercher de l’aide</a>.'}</div>`;
+        }
+        return `<p class="hint" style="margin-top:12px">${texts.reminder} <a href="${texts.guides ? route : "#securite"}">Voir les repères de sécurité</a>.</p>`;
       };
       function selectScale(scale) {
         if (!Object.hasOwn(scales, scale)) return;
@@ -430,10 +444,11 @@
             const contextOptions = Object.entries(contextCatalog[state.scale]).map(([key, value]) => `<option value="${key}"${state.context === key ? " selected" : ""}>${esc(value.label)}</option>`).join("");
             const reviewNotice = state.reviewScale ? `<div class="notice amber section-gap" role="status"><strong>J’ai changé de niveau.</strong>Mes réponses sont restées. Je les relirai pour vérifier qu’elles correspondent encore à cette situation.</div>` : "";
             const reviewContext = state.reviewContext ? '<div class="notice amber section-gap" id="context-review" role="status"><strong>Je vérifie mon contexte.</strong>Mes réponses sont restées. Le contexte ou ses exemples ont changé ; je relis ce que j’ai écrit avant de continuer.</div>' : "";
-            const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
+            const safetyLink = state.scale === "personal" && state.context === "health" ? ' <a href="#securite">Voir les possibilités d’aide →</a>' : (state.scale === "personal" && state.context === "boundaries") || state.scale === "shared" || (state.scale === "organization" && state.context === "conditions") ? ` <a href="${violenceRouteForContext()}">${violenceRouteForContext() === "#violences" ? "Choisir des repères de violence" : "Voir les repères pour cette relation"} →</a>` : "";
             body = `<details class="change-level" id="change-level"><summary id="selected-level" aria-label="Niveau : ${scales[state.scale][0]}. Changer de niveau"><span>Niveau</span><strong>${scales[state.scale][0]}</strong></summary><div class="details-body"><div class="scale-options">${scaleButtons}</div></div></details>${reviewNotice}<div class="context-pick primary-ask"><label class="label" for="context-select">Quelle situation ressemble le plus à la mienne ?</label><select id="context-select" aria-describedby="context-description context-focus">${contextOptions}</select><p class="hint" id="context-description">${linkGlossary(c.description)}</p><p class="hint" id="context-focus"><strong>À vérifier ici :</strong> ${linkGlossary(c.focus)}</p>${c.caution ? `<div class="notice amber context-caution"><strong>Point de vigilance</strong>${linkGlossary(c.caution)}${safetyLink}</div>` : ""}</div>${reviewContext}`;
           } else {
-            body = `<div class="primary-ask"><fieldset><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend><div class="choice-stack">${[
+            const safetyHint = (safetyByScale[state.scale] || safetyByScale.personal).hint;
+            body = `<div class="primary-ask"><fieldset${safetyHint ? ' aria-describedby="safety-hint"' : ""}><legend>Est-ce que je me sens en sécurité pour réfléchir ?</legend>${safetyHint ? `<p class="hint safety-hint" id="safety-hint">${safetyHint}</p>` : ""}<div class="choice-stack">${[
               ["safe", "Oui, je peux réfléchir"],
               ["unsure", "J’ai un doute"],
               ["danger", "Je me sens en danger"],
@@ -444,7 +459,7 @@
               )
               .join(
                 "",
-              )}</div></fieldset></div>${state.safety === "danger" ? `<div class="notice red section-gap"><strong>Ma sécurité passe avant l’exercice.</strong>Je peux chercher de l’aide maintenant.<div class="button-row section-gap"><a class="btn danger" href="#securite">Voir les possibilités d’aide →</a><a class="btn" href="${violenceRouteForContext()}">Repérer une violence</a></div></div>` : state.safety === "unsure" ? `<div class="notice amber section-gap"><strong>La peur, les menaces ou le contrôle méritent de l’aide.</strong> <a href="${violenceRouteForContext()}">Voir les repères de violence</a> ou <a href="#securite">chercher de l’aide</a>.</div>` : `<p class="hint" style="margin-top:12px">Peur, menaces ou contrôle ? <a href="${violenceRouteForContext()}">Voir les repères de sécurité</a>.</p>`}`;
+              )}</div></fieldset></div>${safetyNoticeHtml()}`;
           }
         }
         if (i === 1) {

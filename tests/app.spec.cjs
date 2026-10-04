@@ -1076,7 +1076,7 @@ const errors = [];
     if (!r.url().startsWith(url) && !r.url().startsWith("blob:")) external.push(r.url());
   });
   await relationPage.goto(url + "#outil-shared");
-  for (const relation of ["colleague", "sibling", "peers", "couple"]) {
+  for (const relation of ["colleague", "sibling", "peers", "couple", "family", "other"]) {
     await relationPage.evaluate(() => { location.hash = "outil-shared"; });
     await relationPage.locator("#outil").waitFor({ state: "visible" });
     await relationPage.locator("#context-select").selectOption(relation);
@@ -1098,6 +1098,59 @@ const errors = [];
     assert.equal(await relationPage.locator("#field-situation").inputValue(), sentence, `${relation}: returning preserves the draft`);
   }
   await relationPage.close();
+  // The safety answer follows the level: help and guides match the situation, not one interpersonal text for everyone.
+  const openLevelPage = async (hash) => {
+    const levelPage = await context.newPage();
+    levelPage.on("pageerror", (e) => errors.push(e.message));
+    levelPage.on("request", (r) => {
+      if (!r.url().startsWith(url) && !r.url().startsWith("blob:")) external.push(r.url());
+    });
+    await levelPage.goto(url + hash);
+    return levelPage;
+  };
+  const levelCases = {
+    personal: { hint: null, doubt: /La peur, les menaces ou le contrôle méritent de l’aide\./, guides: true },
+    shared: { hint: null, doubt: /La peur, les menaces ou le contrôle méritent de l’aide\./, guides: true },
+    organization: { hint: /autres personnes de l’équipe/, doubt: /les pressions ou les représailles méritent de l’aide, pour moi comme pour mon équipe/, guides: true, danger: /Je n’impose ni confrontation ni médiation/ },
+    public: { hint: /personnes qui agissent avec moi/, doubt: /les menaces ou les représailles méritent de l’aide, pour moi comme pour le groupe/, guides: false },
+  };
+  for (const [scale, expected] of Object.entries(levelCases)) {
+    const levelPage = await openLevelPage(`#outil-${scale}`);
+    await levelPage.locator('[data-action="next"]').click();
+    await levelPage.locator("#step-container fieldset").waitFor({ state: "visible" });
+    assert.equal(await levelPage.locator("#safety-hint").count(), expected.hint ? 1 : 0, `${scale}: the line under the question appears only for Équipe and Collectif`);
+    if (expected.hint) {
+      assert.match(await levelPage.locator("#safety-hint").innerText(), expected.hint);
+      assert.equal(await levelPage.locator("#step-container fieldset").getAttribute("aria-describedby"), "safety-hint", `${scale}: the line is read with the question`);
+    } else {
+      assert.equal(await levelPage.locator("#step-container fieldset").getAttribute("aria-describedby"), null);
+    }
+    assert.equal(await levelPage.locator("[data-safety]").count(), 3, `${scale}: still three answers`);
+    await levelPage.locator('[data-safety="unsure"]').click();
+    const doubt = levelPage.locator("#step-container .notice.amber");
+    assert.match(await doubt.innerText(), expected.doubt, `${scale}: doubt text`);
+    assert.equal(await doubt.locator('a[href="#securite"]').count(), 1, `${scale}: doubt offers help`);
+    assert.equal(await doubt.locator('a:not([href="#securite"])').count(), expected.guides ? 1 : 0, `${scale}: the guides link appears only when a matching guide exists`);
+    await levelPage.locator('[data-safety="danger"]').click();
+    const danger = levelPage.locator("#step-container .notice.red");
+    assert.equal(await danger.locator('a.btn.danger[href="#securite"]').count(), 1, `${scale}: danger offers help first`);
+    assert.equal(await danger.locator("a.btn:not(.danger)").count(), expected.guides ? 1 : 0, `${scale}: danger guides link`);
+    if (expected.danger) assert.match(await danger.innerText(), expected.danger);
+    assert.equal(await danger.locator('button.btn[data-action="quick-exit"]').count(), 1, `${scale}: a quick exit sits on the red notice`);
+    assert.match(await danger.locator(".notice-note").innerText(), /Remplace la page par Wikipédia\. N’efface ni l’historique ni un brouillon gardé\./);
+    // Never click the quick exit here: it leaves for an external site and the suite asserts zero external requests.
+    assert.equal(await levelPage.evaluate(() => atRisk()), true, `${scale}: a danger answer still counts as at risk`);
+    await levelPage.close();
+  }
+  const publicPage = await openLevelPage("#outil-public");
+  await publicPage.locator('[data-action="next"]').click();
+  assert.equal(await publicPage.getByRole("link", { name: "Voir les repères de sécurité" }).getAttribute("href"), "#securite", "Collectif: the reminder leads to help, not to a list where nothing fits");
+  await publicPage.close();
+  const conditionsPage = await openLevelPage("#outil-organization");
+  await conditionsPage.locator("#context-select").selectOption("conditions");
+  await conditionsPage.locator('#step-container .context-caution a[href="#violences"]').waitFor({ state: "visible" });
+  assert.match(await conditionsPage.locator("#step-container .context-caution a[href=\"#violences\"]").innerText(), /Choisir des repères de violence/, "Conditions de travail et sécurité links to the violence guides");
+  await conditionsPage.close();
   await visit("comprendre");
   const guides = page.locator("#comprendre .visual-guides details");
   await page
