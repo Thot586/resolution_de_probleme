@@ -1,7 +1,6 @@
       const contexts = {
         daily: {
           label: "Vie quotidienne",
-          icon: "⌂",
           situation:
             "Depuis deux semaines, je repousse le rangement de mes papiers et je ne retrouve plus les factures.",
           goal: "Retrouver les deux factures à régler cette semaine.",
@@ -25,7 +24,6 @@
         },
         work: {
           label: "Travail",
-          icon: "▣",
           situation:
             "Cette semaine, deux responsables m’ont confié trois dossiers urgents avec la même échéance.",
           goal: "Obtenir un ordre de priorité et un délai réaliste pour ces dossiers.",
@@ -51,7 +49,6 @@
         },
         couple: {
           label: "Couple & relations",
-          icon: "♧",
           situation:
             "Cette semaine, nous avons annulé deux moments ensemble car nos horaires n’étaient pas coordonnés.",
           goal: "Proposer un moment ensemble compatible avec nos deux horaires.",
@@ -74,7 +71,6 @@
         },
         family: {
           label: "Famille",
-          icon: "♧",
           situation:
             "Le matin, mon enfant et moi nous pressons et nous arrivons souvent en retard.",
           goal: "Préparer un départ plus calme deux matins cette semaine.",
@@ -99,7 +95,6 @@
         },
         study: {
           label: "Études",
-          icon: "▤",
           situation:
             "Je dois rendre un travail la semaine prochaine et je n’ai pas commencé le plan.",
           goal: "Rédiger un plan provisoire en trois parties.",
@@ -122,7 +117,6 @@
         },
         health: {
           label: "Santé & soins",
-          icon: "✚",
           situation:
             "J’ai manqué deux rendez-vous car le trajet était difficile à organiser.",
           goal: "Préparer le déplacement pour mon prochain rendez-vous.",
@@ -147,7 +141,6 @@
         },
         collective: {
           label: "Vie collective",
-          icon: "◇",
           situation: "Dans mon quartier, l’arrêt de bus le plus proche reste difficile d’accès pour plusieurs habitants.",
           goal: "Faire connaître les difficultés d’accès et obtenir une réponse de l’autorité compétente.",
           obstacle: "Je ne sais pas qui décide ni quelles demandes ont déjà été faites.",

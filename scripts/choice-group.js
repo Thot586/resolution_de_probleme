@@ -22,7 +22,20 @@
               loose.items.push(read(child));
             }
           }
-          this.addEventListener("change", () => this.#sync(true));
+          // Replié par un geste de pointeur ou un toucher (detail > 0), jamais par une flèche : une flèche sur un bouton radio
+          // coche le suivant et émet un clic simulé (detail 0), et la personne doit pouvoir parcourir la liste au clavier.
+          // Un clic sur le choix déjà fait replie aussi la liste (aucun change n'est émis dans ce cas).
+          this.addEventListener("click", (event) => {
+            if (event.detail > 0 && event.target instanceof HTMLInputElement && event.target.type === "radio") this.#sync(true, true);
+          });
+          // Entrée confirme le choix en cours : la liste se replie et le focus passe à son résumé.
+          this.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+            if (!(event.target instanceof HTMLInputElement) || event.target.type !== "radio" || !this.querySelector("input:checked")) return;
+            event.preventDefault();
+            this.#sync(true, true);
+          });
+          this.addEventListener("change", () => this.#sync(false));
           this.render(groups, this.getAttribute("value") || "");
         }
         render(groups, value = "") {
@@ -87,7 +100,9 @@
           this.replaceChildren(details);
           this.#sync(true);
         }
-        #sync(close) {
+        // Met le résumé à jour ; replie la liste si close. moveFocus : la personne vient d'agir dans le groupe (clic, Entrée), donc le
+        // focus passe au résumé même si le navigateur ne l'avait pas donné au bouton radio (Safari ne focalise pas un radio touché).
+        #sync(close, moveFocus = false) {
           const details = this.querySelector(":scope > .choice-fold");
           if (!details) return;
           const checked = this.querySelector("input:checked");
@@ -96,19 +111,21 @@
           details.classList.toggle("is-empty", !checked);
           if (!checked) details.open = true;
           else if (close) {
-            const hadFocus = this.hasFocus;
+            const hadFocus = moveFocus || this.hasFocus;
             details.open = false;
-            if (hadFocus) details.querySelector("summary").focus();
+            if (hadFocus) details.querySelector("summary").focus({ preventScroll: true });
           }
         }
         get value() {
           return this.querySelector("input:checked")?.value ?? "";
         }
         set value(next) {
+          const before = this.value;
           const inputs = [...this.querySelectorAll("input")];
           const target = inputs.find((input) => input.value === String(next));
           inputs.forEach((input) => (input.checked = input === target));
-          this.#sync(true);
+          // Un changement venu du programme (adresse, brouillon restauré) replie la liste, sauf si la personne la parcourt au clavier.
+          this.#sync(before !== this.value && !this.hasFocus);
         }
         focus(options) {
           const details = this.querySelector(":scope > .choice-fold");

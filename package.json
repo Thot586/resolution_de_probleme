@@ -5,9 +5,15 @@
   "description": "Parcours interactif de résolution de problème et d'accompagnement",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "pretest": "node scripts/build.mjs",
     "test": "node tests/app.spec.cjs",
+    "pretest:print": "node scripts/build.mjs",
     "test:print": "node tests/print.spec.cjs",
+    "pretest:engines": "node scripts/build.mjs",
     "test:engines": "node tests/engines.spec.cjs"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",

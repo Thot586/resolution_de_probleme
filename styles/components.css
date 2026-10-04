@@ -116,7 +116,7 @@
       }
       .choice > input:focus-visible + .choice-body {
         outline: 3px solid var(--focus-ring);
-        outline-offset: 3px;
+        outline-offset: -3px; /* dans la carte : un volet qui rogne ses bords (::details-content) ne coupe pas l'anneau */
       }
       .choice-set .choice-legend {
         margin: 0 0 9px;
@@ -139,10 +139,9 @@
         align-items: center;
         gap: 2px 12px;
         padding: 12px 16px;
-        border: 1.5px solid var(--brand);
+        border: 1.5px solid var(--line-strong); /* un rappel discret : le contenu qui suit reste la chose principale de l'écran */
         border-radius: 14px;
         background: var(--surface);
-        box-shadow: inset 0 0 0 1px var(--brand);
         font-size: 1rem;
         font-weight: 560;
       }
@@ -155,7 +154,6 @@
         gap: 22px;
       }
       .choice-fold[open] > summary {
-        border-bottom: 1.5px solid var(--brand);
         margin-bottom: 14px;
       }
       .choice-summary-label {
@@ -221,6 +219,7 @@
       .is-segmented .choice-body {
         min-height: 48px;
         padding: 10px 20px;
+        border-color: var(--field-line); /* sans cercle, le contour est le seul repère du choix : 3:1 */
         border-radius: 12px;
         font-size: 0.95rem;
       }
@@ -238,10 +237,10 @@
         .choice-body {
           border-color: ButtonText;
         }
+        /* Le choix fait se lit à la bordure épaisse : un contour (outline) cacherait l'anneau de focus. */
         .choice > input:checked + .choice-body {
           border-color: Highlight;
-          outline: 2px solid Highlight;
-          outline-offset: -4px;
+          border-width: 3px;
         }
         .choice-mark {
           border-color: ButtonText;
@@ -249,6 +248,19 @@
         .choice > input:checked + .choice-body .choice-mark {
           background: Highlight;
           border-color: Highlight;
+        }
+        .pill[aria-pressed="true"] {
+          border-width: 3px;
+          border-color: Highlight;
+        }
+        #navigation a[aria-current="page"] {
+          text-decoration: underline;
+          text-decoration-thickness: 3px;
+          text-underline-offset: 6px;
+        }
+        .step-link[aria-current="step"]:focus-visible {
+          outline: 3px solid Highlight;
+          outline-offset: 3px;
         }
       }
 
@@ -398,17 +410,22 @@
           transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.18s ease, transform 0.12s ease;
         }
         @media (hover: hover) {
-          .btn:hover,
-          .pill:hover {
+          .btn:hover:not(:disabled),
+          .pill:hover:not(:disabled) {
             transform: translateY(-1px);
             box-shadow: 0 6px 16px var(--shade-hover);
           }
-          details > summary:hover {
+          /* Les pastilles de niveau et de volet gardent leur fond ; le fond survolé suit l'arrondi du volet. */
+          details:not(.change-level):not(.mobile-step-picker):not(.choice-fold) > summary:hover {
+            border-radius: 10px;
             background: var(--surface-soft);
           }
+          details[open]:not(.change-level):not(.mobile-step-picker):not(.choice-fold) > summary:hover {
+            border-radius: 10px 10px 0 0;
+          }
         }
-        .btn:active,
-        .pill:active {
+        .btn:active:not(:disabled),
+        .pill:active:not(:disabled) {
           transform: scale(0.985);
           box-shadow: none;
         }
@@ -419,8 +436,9 @@
         .menu-icon path {
           transition: transform 0.22s ease, opacity 0.15s ease;
         }
-        /* Les volets s'ouvrent et se ferment en glissant (Chrome 131+, Firefox 143+, Safari 18.4+ ; ailleurs, instantané). */
-        @supports selector(::details-content) {
+        /* Les volets s'ouvrent et se ferment en glissant : il faut ::details-content ET interpolate-size (Chrome et Edge 131+).
+           Ailleurs ils s'ouvrent d'un coup, sans que le contenu soit rogné. L'aide (#securite) n'a aucun mouvement. */
+        @supports (interpolate-size: allow-keywords) and selector(::details-content) {
           details::details-content {
             block-size: 0;
             overflow-y: clip;
@@ -429,11 +447,22 @@
           details[open]::details-content {
             block-size: auto;
           }
+          #securite details::details-content {
+            transition: none;
+          }
         }
-        /* Fenêtres : fondu et léger glissement à l'ouverture, et à la fermeture là où le navigateur le permet. */
+        /* Fenêtres : léger glissement et fondu à l'ouverture partout où @starting-style existe ; à la fermeture seulement là où
+           « overlay » existe (Chrome et Edge 117+) : sans lui, la fenêtre sortirait de la couche supérieure et resterait affichée,
+           déplacée en bas de page, pendant le fondu. Ailleurs elle se ferme d'un coup. */
         dialog,
         dialog::backdrop {
-          transition: opacity 0.22s ease, transform 0.22s ease, overlay 0.22s ease allow-discrete, display 0.22s ease allow-discrete;
+          transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+        @supports (overlay: auto) {
+          dialog,
+          dialog::backdrop {
+            transition: opacity 0.22s ease, transform 0.22s ease, overlay 0.22s ease allow-discrete, display 0.22s ease allow-discrete;
+          }
         }
         dialog {
           opacity: 0;
@@ -506,7 +535,7 @@
           }
           @keyframes header-lift {
             from {
-              box-shadow: 0 0 0 #161f6e00;
+              box-shadow: 0 0 0 transparent;
             }
             to {
               box-shadow: 0 8px 28px var(--shade-soft);
@@ -544,7 +573,7 @@
       html {
         scrollbar-gutter: stable;
       }
-      /* Fenêtre ouverte : la page derrière ne défile plus (la gouttière réservée évite tout saut de mise en page). */
+      /* Fenêtre ouverte : la page derrière ne défile plus (la gouttière réservée évite un saut de mise en page, sauf Safari avant 18.2). */
       @supports selector(:has(*)) {
         html:has(dialog[open]) {
           overflow: hidden;
@@ -552,4 +581,9 @@
       }
       dialog {
         overscroll-behavior: contain;
+      }
+
+      /* ---- « Quitter cette page » : le bouton de sécurité se repère d'un coup d'œil (contour franc, sans fond de couleur) ---- */
+      .btn[data-action="quick-exit"] {
+        border: 2px solid var(--brand);
       }

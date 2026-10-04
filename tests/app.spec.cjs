@@ -14,6 +14,9 @@ const root = path.resolve(__dirname, "..");
 const output = process.env.QA_OUTPUT || "/tmp/pas-a-pas-checks";
 let server, browser;
 const errors = [];
+// QA_TIMEOUT (milliseconds) raises every timeout, explicit ones included, on a machine busy with other jobs.
+const ms = (milliseconds) => Math.max(milliseconds, Number(process.env.QA_TIMEOUT) || 0);
+const scheme = process.env.QA_SCHEME === "dark" ? "dark" : "light";
 // <choice-group> helpers : the chooser is a group of real radio buttons (folded after a choice on the violence page).
 const choiceValue = (target, selector) => target.locator(selector).evaluate((element) => element.value);
 const choiceValues = (target, selector) => target.locator(`${selector} input`).evaluateAll((nodes) => nodes.map((node) => node.value));
@@ -29,11 +32,11 @@ const choose = async (target, selector, value) => {
 (async () => {
   await fs.mkdir(output, { recursive: true });
   const html = await fs.readFile(path.join(root, "index.html"));
-  const logo = await fs.readFile(path.join(root, "assets", "trimobe-logo.jpeg"));
+  // index.html est autonome (police, logo et icône intégrés) : le serveur ne connaît que la page, tout autre chemin répond 404.
   server = createServer((req, res) => {
-    if (req.url === "/assets/trimobe-logo.jpeg") {
-      res.setHeader("Content-Type", "image/jpeg");
-      res.end(logo);
+    if (req.url !== "/") {
+      res.statusCode = 404;
+      res.end();
       return;
     }
     res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -42,38 +45,38 @@ const choose = async (target, selector, value) => {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const url = `http://127.0.0.1:${server.address().port}/`;
   browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] });
-  // On a machine busy with other jobs, QA_TIMEOUT=90000 gives every page more time before an action or a load fails.
-  if (process.env.QA_TIMEOUT) {
-    const timeout = Number(process.env.QA_TIMEOUT);
-    const newContext = browser.newContext.bind(browser);
-    browser.newContext = async (...args) => {
-      const created = await newContext(...args);
-      created.setDefaultTimeout(timeout);
-      created.setDefaultNavigationTimeout(timeout);
-      return created;
-    };
-  }
+  // Every context follows QA_SCHEME (light by default) and QA_TIMEOUT: one factory, so no context escapes the theme under test.
+  const newContext = browser.newContext.bind(browser);
+  browser.newContext = async (options = {}) => {
+    const created = await newContext({ colorScheme: scheme, ...options });
+    if (process.env.QA_TIMEOUT) {
+      created.setDefaultTimeout(Number(process.env.QA_TIMEOUT));
+      created.setDefaultNavigationTimeout(Number(process.env.QA_TIMEOUT));
+    }
+    return created;
+  };
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1050 },
     reducedMotion: "reduce",
-    colorScheme: process.env.QA_SCHEME === "dark" ? "dark" : "light",
     acceptDownloads: true,
   });
   const page = await context.newPage();
   page.on("pageerror", (e) => errors.push(e.message));
   const external = [];
   page.on("request", (r) => {
-    if (!r.url().startsWith(url) && !r.url().startsWith("blob:"))
+    if (r.url().split("#")[0] !== url && !r.url().startsWith("blob:"))
       external.push(r.url());
   });
   await page.goto(url);
   assert.equal(await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((font) => font.family === "Barlow Condensed" && font.status === "loaded"); }), true);
-  assert.equal(await page.locator('link[rel="icon"]').getAttribute('href'), 'assets/trimobe-logo.jpeg');
+  assert.match(await page.locator('link[rel="icon"]').getAttribute('href'), /^data:image\/jpeg;base64,/, "the icon is embedded");
   assert.equal(await page.locator('.footer-logo').getAttribute('href'), 'https://trimobe.org/');
   assert.equal(await page.locator('.footer-logo img').evaluate((img) => img.complete && img.naturalWidth > 0), true);
+  // The theme under test is really applied: the page background is the token of that theme.
+  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), scheme === "dark" ? "rgb(14, 20, 36)" : "rgb(247, 249, 253)", `the ${scheme} theme is applied`);
   assert.match(await page.locator('.footer-credit').innerText(), /Dr FENOHASINA T\.J\. Felicien.*Psychiatre.*Analyste de donnée.*Développeur d'application web/);
   const visible = async (s) => {
-    await page.locator(s).waitFor({ state: "visible", timeout: 5000 });
+    await page.locator(s).waitFor({ state: "visible", timeout: ms(5000) });
     assert(await page.locator(s).isVisible(), `${s} must be visible`);
   };
   const goStep = async (targetPage, n) => {
@@ -398,13 +401,13 @@ const choose = async (target, selector, value) => {
     );
     assert.equal((await diagram.locator("[data-decision-actor]").textContent()).trim(), actor);
     if (scale === "personal") {
-      await flowPage.locator("#toast").waitFor({ state: "hidden", timeout: 7000 });
+      await flowPage.locator("#toast").waitFor({ state: "hidden", timeout: ms(7000) });
       await diagram.locator(".teaching-figure").screenshot({ path: path.join(output, "action-flow-personal-desktop.png") });
       await axe("action-flow-personal", flowPage);
     }
   }
   await flowPage.setViewportSize({ width: 390, height: 844 });
-  await flowPage.locator("#toast").waitFor({ state: "hidden", timeout: 7000 });
+  await flowPage.locator("#toast").waitFor({ state: "hidden", timeout: ms(7000) });
   assert(
     await flowPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
     "Horizontal overflow: open action flowchart mobile",
@@ -571,7 +574,7 @@ const choose = async (target, selector, value) => {
   await tabA.locator("#remember").check();
   assert.equal(await tabA.evaluate(() => localStorage.length), 1);
   await tabB.evaluate(() => localStorage.removeItem("pas-a-pas.brouillon.v2"));
-  await tabA.waitForFunction(() => remember === false, null, { timeout: 5000 });
+  await tabA.waitForFunction(() => remember === false, null, { timeout: ms(5000) });
   assert.match(await tabA.locator("#privacy-status").textContent(), /Mes réponses restent dans ma fiche/);
   assert.match(await tabA.locator("#toast").innerText(), /effacé dans un autre onglet/);
   assert.equal(await tabA.evaluate(() => { state.fields.situation = "Encore une réponse."; return persist(); }), false);
@@ -598,6 +601,7 @@ const choose = async (target, selector, value) => {
   assert.deepEqual(consistency.badDate.sections, [], "A date the fiche cannot show does not count");
   await consistencyPage.close();
   // Assistive technology: the warning belongs to the checkbox and to the confirmation dialog.
+  assert.equal(await page.locator("#remember").getAttribute("role"), "switch", "keeping the draft is a real switch");
   assert.equal(await page.locator("#remember").getAttribute("aria-describedby"), "remember-hint");
   assert.match(await page.locator("#remember-hint").textContent(), /sans chiffrement/);
   assert.equal(await page.locator("#confirm-dialog").getAttribute("aria-describedby"), "dialog-description");
@@ -669,7 +673,9 @@ const choose = async (target, selector, value) => {
   assert.equal(await page.evaluate(() => localStorage.length), 0);
   const groupDownload = page.waitForEvent("download");
   await page.locator("#group-download").click();
-  assert.equal((await groupDownload).suggestedFilename(), "plan-groupe-pas-a-pas.txt");
+  const groupFile = await groupDownload;
+  assert.equal(groupFile.suggestedFilename(), "plan-groupe-pas-a-pas.txt");
+  assert.match(await fs.readFile(await groupFile.path(), "utf8"), /Méthode d’écoute envisagée : Sondage court/, "the downloaded plan names the method chosen");
   await page.screenshot({ path: path.join(output, "desktop-group.png"), fullPage: true });
   await axe("group");
   await page.locator("#group-clear").click();
@@ -761,7 +767,7 @@ const choose = async (target, selector, value) => {
   await page
     .locator("#field-situation")
     .fill("Deux dossiers à remettre le même jour.");
-  await page.waitForFunction(() => /Noté dans ma fiche/.test(document.querySelector("#saved-situation")?.textContent || ""), null, { timeout: 3000 });
+  await page.waitForFunction(() => /Noté dans ma fiche/.test(document.querySelector("#saved-situation")?.textContent || ""), null, { timeout: ms(3000) });
   assert.match(await page.locator("#saved-situation").innerText(), /Noté dans ma fiche · sur cette page/, "The label says where the answer is");
   assert.equal(await page.locator("#fiche-link").isVisible(), true, "The fiche link appears with the first answer");
   assert.equal(await page.locator("#fiche-link").getAttribute("href"), "#recap");
@@ -797,7 +803,7 @@ const choose = async (target, selector, value) => {
   assert.equal(await pauseBlock.locator('[data-action="keep-local"]').count(), 1);
   assert.equal(await pauseBlock.locator('[data-action="export-draft"]').count(), 1);
   assert.equal(await page.locator("[data-action=export]").count(), 1, "The second download entry has its own action name");
-  await page.waitForFunction(() => /Noté dans ma fiche/.test(document.querySelector("#saved-obstacle")?.textContent || ""), null, { timeout: 3000 });
+  await page.waitForFunction(() => /Noté dans ma fiche/.test(document.querySelector("#saved-obstacle")?.textContent || ""), null, { timeout: ms(3000) });
   await page.locator(".file-options summary").click();
   await page.locator("#remember").check();
   assert.match(await pauseBlock.innerText(), /mon brouillon est gardé dans ce navigateur/, "Keeping the draft updates the pause text in place");
@@ -1231,6 +1237,20 @@ const choose = async (target, selector, value) => {
   await authorityPage.goto(url + "#securite");
   assert.equal(await authorityPage.locator('#securite a[href="#violences-authority"]').count(), 1, "the safety page points to the guide");
   await authorityPage.close();
+  // « Quitter cette page » really leaves: the page is replaced by Wikipedia (the answer is stubbed, so the suite still reaches no
+  // external server) and the back button does not return to it.
+  for (const where of ["#securite", "#violences-authority"]) {
+    const exitContext = await browser.newContext();
+    const exitPage = await exitContext.newPage();
+    await exitContext.route("https://www.wikipedia.org/**", (route) => route.fulfill({ status: 200, contentType: "text/html", body: "<title>stub</title>" }));
+    await exitPage.goto(url + where);
+    await exitPage.locator('button[data-action="quick-exit"]:visible').first().click();
+    await exitPage.waitForURL("https://www.wikipedia.org/**");
+    assert.equal(await exitPage.title(), "stub", `${where}: the quick exit leaves for Wikipedia`);
+    await exitPage.goBack().catch(() => {});
+    assert(!exitPage.url().startsWith(url), `${where}: the back button does not return to the page`);
+    await exitContext.close();
+  }
   await visit("comprendre");
   const guides = page.locator("#comprendre .visual-guides details");
   await page

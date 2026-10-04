@@ -39,6 +39,7 @@ from __future__ import annotations
 import argparse
 import csv
 import difflib
+import glob
 import math
 import re
 import sys
@@ -294,15 +295,17 @@ def scan(text: str, filename: str = "<css>"):
 
 # ====================================================================================== jetons
 def load_tokens(path: Path):
-    """Lit tokens.css -> {"light": {nom: valeur}, "dark": {nom: valeur}, "mirror": {nom: valeur}}."""
-    res = {"light": {}, "dark": {}, "mirror": {}}
+    """Lit tokens.css -> {"light": {…}, "dark": {…}, "mirror": {…}, "more": {…}} (nom -> valeur ; more = contraste renforcé)."""
+    res = {"light": {}, "dark": {}, "mirror": {}, "more": {}}
     for d in scan(path.read_text(encoding="utf-8"), str(path)):
         if not d["prop"].startswith("--"):
             continue
         ats, sel = " ".join(d["atrules"]), d["selector"]
         if "print" in ats:
             continue
-        if "prefers-color-scheme: dark" in ats:
+        if "prefers-contrast: more" in ats:
+            res["more"][d["prop"]] = d["value"]  # surcharges du thème clair pour le contraste renforcé
+        elif "prefers-color-scheme: dark" in ats:
             res["dark"][d["prop"]] = d["value"]
         elif 'data-theme="dark"' in sel:
             res["mirror"][d["prop"]] = d["value"]
@@ -420,11 +423,21 @@ OVERRIDES = [
     # Coche et bouton d'interrupteur : blancs sur aplat de marque (et non couleur de surface)
     (r"\.choice-mark::after", r"border", "var(--white)", "--on-fill"),
     (r"\.checkbox input\[type=\"checkbox\"\]::after", r"background", "var(--white)", "--on-fill"),
+    # Cercles de choix et interrupteur : bord à 3:1 comme les champs de saisie (WCAG 1.4.11). Le CSS d'origine les avait à
+    # var(--line-strong), 2,1:1 ; les autres usages de --line-strong (cadres, rails) restent tels quels.
+    (r"\.choice-mark", r"border", "var(--line-strong)", "--field-line"),
+    (r"\.checkbox input\[type=\"checkbox\"\]", r"border", "var(--line-strong)", "--field-line"),
     # Pastille du logo : reste blanche dans les deux thèmes (le JPEG a un fond blanc)
     (r"\.footer-logo", r"background", "#ffffff", "--on-fill"),
     # Contour de focus d'un îlot clair : valeur du thème de la PAGE (le jeton --brand de l'îlot est clair)
     (r"\.scrollable-diagram:focus-visible", r"outline", "var(--brand)", "--page-ring"),
 ]
+
+# Écarts VOLONTAIRES de la table : le jeton n'a pas la valeur d'origine, pour une raison d'accessibilité. Exemptés de MAX_DE
+# (--selftest les liste). (rôle, couleur d'origine) -> raison.
+INTENTIONAL = {
+    ("line", "#bbc9df"): "bord des champs relevé à 3:1 (WCAG 1.4.11) : --field-line vaut #7589b1 ; le CSS d'origine était à 1,7:1",
+}
 
 # Anciens jetons dont le sens se dédouble : (nom, rôle) -> nouveau nom.  Rôle « * » = tous les rôles.
 LEGACY_VARS = {
@@ -488,6 +501,32 @@ def rgb_func_to_hex(text: str):
         return round(float(v[:-1]) * 2.55) if v.endswith("%") else round(float(v))
 
     r, g, b = (max(0, min(255, ch(m.group(i)))) for i in (1, 2, 3))
+    a = 1.0
+    if m.group(4):
+        a = float(m.group(4)[:-1]) / 100 if m.group(4).endswith("%") else float(m.group(4))
+    return normalize_hex(f"#{r:02x}{g:02x}{b:02x}" + (f"{round(a * 255):02x}" if a < 0.999 else ""))
+
+
+def hsl_func_to_hex(text: str):
+    """hsl(…)/hsla(…) à valeurs numériques (virgules ou espaces, alpha après « / » ou 4e valeur) -> couleur normalisée ; None sinon."""
+    m = re.fullmatch(r"hsla?\(\s*([-\d.]+)(?:deg)?[\s,]+([\d.]+)%[\s,]+([\d.]+)%(?:\s*[,/]\s*([\d.]+%?))?\s*\)", text.strip(), re.I)
+    if not m:
+        return None
+    h, s_, l_ = (float(m.group(1)) % 360) / 360, min(1.0, float(m.group(2)) / 100), min(1.0, float(m.group(3)) / 100)
+
+    def hue(p, q, t):
+        t %= 1
+        if t < 1 / 6:
+            return p + (q - p) * 6 * t
+        if t < 1 / 2:
+            return q
+        if t < 2 / 3:
+            return p + (q - p) * (2 / 3 - t) * 6
+        return p
+
+    q = l_ * (1 + s_) if l_ < 0.5 else l_ + s_ - l_ * s_
+    p = 2 * l_ - q
+    r, g, b = (round(hue(p, q, h + d) * 255) for d in (1 / 3, 0, -1 / 3))
     a = 1.0
     if m.group(4):
         a = float(m.group(4)[:-1]) / 100 if m.group(4).endswith("%") else float(m.group(4))
@@ -606,7 +645,7 @@ def migrate_text(text: str, filename: str, tokens: dict, snap: float | None = No
                     continue  # les couleurs qu'elle contient sont traitées une à une
                 close = find_close(mval, it.end() - 1)
                 fn = value[a : close + 1]
-                hx = rgb_func_to_hex(fn) if fname in ("rgb", "rgba") else None
+                hx = (rgb_func_to_hex(fn) if fname in ("rgb", "rgba") else hsl_func_to_hex(fn) if fname in ("hsl", "hsla") else None)
                 skip_until = close + 1
                 if hx is None:
                     add("exempt" if exempt else "unknown", a, close + 1, None, fn, note="notation fonctionnelle non convertie")
@@ -859,6 +898,11 @@ def check_tokens(tokens_path: Path):
             problems.append(f"{name} : bloc @media sombre ({dark.get(name)!r}) != miroir [data-theme=dark] ({mirror.get(name)!r})")
         if name not in light:
             problems.append(f"{name} : valeur sombre sans valeur claire")
+    for name in sorted(t["more"]):
+        if name not in light:
+            problems.append(f"{name} : surcharge prefers-contrast: more sans valeur claire")
+        elif t["more"][name].startswith("#") and token_color(t["more"], name) is None:
+            problems.append(f"{name} : valeur prefers-contrast: more invalide ({t['more'][name]})")
     for name in sorted(light):
         if name not in dark and name not in CONSTANT_TOKENS:
             problems.append(f"{name} : sans valeur sombre (identique en sombre ? l'ajouter alors à CONSTANT_TOKENS dans migrate.py)")
@@ -940,6 +984,9 @@ def selftest(tokens: dict, tokens_path: Path | None = None) -> int:
             bad += 1
             continue
         de = delta_e(c, v)
+        if (role, c) in INTENTIONAL:
+            print(f"VOLONTAIRE  {role:9} {c} -> {t} ({v}) : ΔE2000 = {de:.2f} ; {INTENTIONAL[(role, c)]}")
+            continue
         rows.append((de, role, c, t, v))
         if de > MAX_DE:
             print(f"ERREUR  {role:9} {c} -> {t} ({v}) : ΔE2000 = {de:.2f} > {MAX_DE}")
@@ -957,8 +1004,8 @@ def selftest(tokens: dict, tokens_path: Path | None = None) -> int:
             print("ERREUR  tokens.css :", p)
             bad += 1
     worst = max(rows)[0] if rows else 0.0
-    print(f"selftest : {len(rows)} correspondances, ΔE2000 max = {worst:.2f} (limite {MAX_DE}), {len(light)} jetons clairs, "
-          f"{len(tokens['dark'])} sombres, {bad} erreur(s)")
+    print(f"selftest : {len(rows)} correspondances (+ {len(INTENTIONAL)} écart volontaire), ΔE2000 max = {worst:.2f} (limite {MAX_DE}), {len(light)} jetons clairs, "
+          f"{len(tokens['dark'])} sombres, {len(tokens['more'])} en contraste renforcé, {bad} erreur(s)")
     return 2 if bad else 0
 
 
@@ -998,6 +1045,12 @@ def main(argv=None) -> int:
     ap.add_argument("--meta", metavar="HTML", help="ajoute <meta color-scheme> et theme-color sombre au modèle HTML puis quitte")
     ap.add_argument("-v", "--verbose", action="store_true", help="détail des jetons utilisés et des exemptions")
     args = ap.parse_args(argv)
+    # PowerShell et cmd ne développent pas styles/*.css : le script le fait lui-même.
+    expanded = []
+    for name in args.files:
+        hits = sorted(glob.glob(name)) if any(ch in name for ch in "*?[") else []
+        expanded += hits or [name]
+    args.files = expanded
 
     tokens_path = Path(args.tokens) if args.tokens else default_tokens()
     if not tokens_path.exists():

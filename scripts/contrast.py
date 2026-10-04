@@ -7,8 +7,7 @@ Python 3 standard uniquement. Réutilise l'analyseur de CSS et les fonctions cou
   python scripts/contrast.py                      # matrice des paires texte/fond et composants, clair et sombre
   python scripts/contrast.py --md                 # même chose en tableaux Markdown
   python scripts/contrast.py --csv matrice.csv    # même chose en CSV (point-virgule)
-  python scripts/contrast.py --theme dark         # un seul thème
-  python scripts/contrast.py --dom audit/dark.json [--dom audit/light.json]   # paires RÉELLES relevées dans le DOM (tools/audit-dom.cjs)
+  python scripts/contrast.py --theme dark         # un seul thème (light, dark ou more = clair en contraste renforcé)
 Codes de sortie : 0 = tout passe en sombre et aucune régression en clair ; 1 = une paire sombre (ou une paire claire non
 préexistante) est sous le seuil AA ; 2 = erreur (miroir sombre différent du bloc @media, jeton absent).
 
@@ -22,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import json
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -64,6 +62,8 @@ class Theme:
         table = dict(tokens["light"])
         if name == "dark":
             table.update(tokens["dark"])
+        elif name == "more":  # thème clair + surcharges prefers-contrast: more
+            table.update(tokens.get("more", {}))
         self.table = table
 
     def rgba(self, token: str):
@@ -85,7 +85,7 @@ class Theme:
         return tuple(rgb)
 
 
-# ------------------------------------------------------------------ paires utilisées (d'après les règles CSS et l'audit du DOM)
+# ------------------------------------------------------------------ paires utilisées (d'après les règles CSS ; à compléter à chaque nouveau couple texte/fond)
 # (groupe, premier plan, fond(s), type, où)   fond = jeton, « a/b » (a posé sur b) ou liste de jetons (dégradé : pire cas)
 T, U = "text", "ui"
 ISLAND = "Schémas : îlot clair (mêmes valeurs dans les deux thèmes)"
@@ -146,6 +146,10 @@ PAIRS = [
     ("Composants (3:1)", "--brand", "--surface", U, "bord 2 px des champs principaux, filet de sélection, focus de champ"),
     ("Composants (3:1)", "--brand", GRAD, U, "même bord, côté fond du cadre (dégradé)"),
     ("Composants (3:1)", "--line-strong", "--line-soft", U, "question passée / rail (information doublée par le texte)"),
+    ("Composants (3:1)", "--brand", ["--amber", "--rose", "--surface"], U, "contour 2 px de « Quitter cette page » sur sa notice"),
+    ("Composants (3:1)", "--red-line", "--surface", U, "bord du bouton de danger (« Effacer mon brouillon »)"),
+    ("Composants (3:1)", "--red-line", "--rose", U, "bord du bouton de danger dans la notice rouge"),
+    ("Composants (3:1)", "--line-warm", "--header-bg/--paper", U, "bord du bouton « Besoin d'aide ? » (le libellé rouge porte le sens)"),
     ("Composants (3:1)", "--brand-fill", "--surface", U, "choix coché, interrupteur actif"),
     ("Composants (3:1)", "--brand-fill", "--mint", U, "pastille et coche sur teinte"),
     ("Composants (3:1)", "--on-fill", "--brand-fill", U, "coche et bouton de l'interrupteur"),
@@ -180,10 +184,14 @@ PAIRS = [
     (ISLAND, "#285b9d", "#edf3fb", U, "SVG : flèches et contours des losanges"),
 ]
 
-# Paires d'interface sous 3:1 en clair depuis l'origine du CSS et laissées telles quelles. Les bords de champs, cercles de choix
-# et interrupteurs (--field-line, #7589b1) ont été relevés à 3:1 lors de la refonte : ils ne sont plus dans cette liste.
+# Paires d'interface sous 3:1 en clair depuis l'origine du CSS et laissées telles quelles : les rails des segments, dont
+# l'information est doublée par le texte. Les bords de champs, cercles de choix et interrupteurs (--field-line, #7589b1) ont
+# été relevés à 3:1 lors de la refonte : ils ne sont plus dans cette liste. Le contraste renforcé (--theme more) corrige les rails.
 KNOWN_LIGHT_UI = {
     ("--line-strong", "--line-soft"),
+    ("--red-line", "--surface"),
+    ("--red-line", "--rose"),
+    ("--line-warm", "--header-bg/--paper"),
 }
 
 
@@ -217,10 +225,13 @@ def build_matrix(tokens: dict, themes=("light", "dark")):
         res = {}
         for n in themes:
             # l'îlot clair garde les valeurs claires quel que soit le thème de la page
-            r, which = eval_pair(th["light"] if group == ISLAND and "light" in th else th[n], fg, bg)
+            r, which = eval_pair(th["light"] if group == ISLAND and "light" in th and n == "dark" else th[n], fg, bg)
             res[n] = (r, which)
         rows.append((group, fg, bg, kind, need, usage, res))
     return rows
+
+
+LABEL = {"light": "L", "dark": "D", "more": "M"}
 
 
 def is_known(fg, bg, theme):
@@ -240,7 +251,7 @@ def render_text(rows, themes) -> str:
         if group != cur:
             out.append(f"\n== {group}")
             cur = group
-        cells = "  ".join(f"{n[:1].upper()} {cell(res[n][0], need, fg, bg, n):>22}" for n in themes)
+        cells = "  ".join(f"{LABEL[n]} {cell(res[n][0], need, fg, bg, n):>22}" for n in themes)
         out.append(f"{fg:18} / {bg_label(bg):40} seuil {need:3.1f}  {cells}  {usage}")
     return "\n".join(out)
 
@@ -249,11 +260,13 @@ def render_md(rows, themes) -> str:
     out, cur = [], None
     for group, fg, bg, kind, need, usage, res in rows:
         if group != cur:
-            out += ["", f"**{group}**", "", "| Premier plan | Fond | Où | Seuil | Clair | Sombre |", "|---|---|---|---|---|---|"]
+            heads = {"light": "Clair", "dark": "Sombre", "more": "Clair, contraste renforcé"}
+            out += ["", f"**{group}**", "", "| Premier plan | Fond | Où | Seuil | " + " | ".join(heads[n] for n in themes) + " |",
+                    "|---|---|---|---|" + "---|" * len(themes)]
             cur = group
         cells = [cell(res[n][0], need, fg, bg, n) for n in themes]
         bgs = bg_label(bg).replace("--header-bg/--paper", "--header-bg sur --paper")
-        out.append(f"| `{fg}` | `{bgs}` | {usage} | {need:g}:1 | {cells[0]} | {cells[1] if len(cells) > 1 else ''} |")
+        out.append(f"| `{fg}` | `{bgs}` | {usage} | {need:g}:1 | " + " | ".join(cells) + " |")
     return "\n".join(out)
 
 
@@ -274,105 +287,6 @@ def summary(rows, themes):
     return s
 
 
-# ------------------------------------------------------------------ audit du DOM (paires réelles)
-def stack_backdrops(layers, depth=0):
-    """Pile de fonds (du haut vers le bas) -> liste de couleurs opaques possibles (dégradés : chaque arrêt)."""
-    if not layers:
-        return [(255.0, 255.0, 255.0)]
-    top, rest = layers[0], layers[1:]
-    kind = top["k"]
-    if kind == "img":
-        return stack_backdrops(rest, depth + 1)
-    options = [tuple(top["c"])] if kind == "color" else [tuple(c) for c in top["s"]]
-    outs = []
-    for c in options:
-        if c[3] >= 0.999:
-            outs.append(tuple(c[:3]))
-        else:
-            for under in stack_backdrops(rest, depth + 1):
-                outs.append(over(c, under))
-    return outs or [(255.0, 255.0, 255.0)]
-
-
-def is_large(fs: float, fw: int) -> bool:
-    return fs >= 24 or (fs >= 18.66 and fw >= 700)
-
-
-def audit_dom(path: Path, tokens: dict, theme_name: str):
-    data = json.loads(path.read_text(encoding="utf-8"))
-    theme = Theme(tokens, theme_name if theme_name in ("light", "dark") else data.get("theme", "light"))
-    names = {}
-    for tok in theme.table:
-        try:
-            names.setdefault(theme.hex(tok), []).append(tok)
-        except Exception:
-            pass
-
-    def name_of(rgb):
-        """Nom lisible d'une couleur : les jetons « --on-* » d'abord, puis les autres ; --page-ring en dernier."""
-        h = mg.normalize_hex("#%02x%02x%02x" % tuple(int(round(c)) for c in rgb[:3]))
-        cands = sorted(names.get(h, [h]), key=lambda t: (0 if t.startswith("--on-") else 2 if t == "--page-ring" else 1, t))
-        return "/".join(cands[:2])
-
-    groups = defaultdict(lambda: {"n": 0, "ex": [], "states": set(), "min": 1e9, "need": 4.5})
-    ui_groups = defaultdict(lambda: {"n": 0, "ex": [], "min": 1e9})
-    total_text = total_fail = 0
-    for state, widths in data["states"].items():
-        for width, rows in widths.items():
-            for r in rows:
-                if r.get("ui"):
-                    bc = tuple(r["border"])
-                    for side in ("inside", "outside"):
-                        for b in stack_backdrops(r[side]):
-                            f = over(bc, b) if bc[3] < 0.999 else bc[:3]
-                            rt = ratio(f, b)
-                            k = (name_of(bc), side, name_of(b))
-                            g = ui_groups[k]
-                            g["n"] += 1
-                            g["min"] = min(g["min"], rt)
-                            if len(g["ex"]) < 2:
-                                g["ex"].append(r["d"])
-                    continue
-                if r.get("disabled") or not r.get("fg"):
-                    continue
-                total_text += 1
-                need = AA_LARGE if is_large(r.get("fs", 16), r.get("fw", 400)) else AA_TEXT
-                op = r.get("op", 1.0)
-                worst, worst_bg = 1e9, None
-                for b in stack_backdrops(r["layers"]):
-                    fg = tuple(r["fg"])
-                    a = fg[3] * op
-                    f = over((fg[0], fg[1], fg[2], a), b)
-                    rt = ratio(f, b)
-                    if rt < worst:
-                        worst, worst_bg = rt, (b, fg)
-                k = (name_of(worst_bg[1]), name_of(worst_bg[0]), need)
-                g = groups[k]
-                g["n"] += 1
-                g["min"] = min(g["min"], worst)
-                g["need"] = need
-                g["states"].add(state)
-                if len(g["ex"]) < 3:
-                    g["ex"].append(f"{r['d']} « {r.get('t', '')} »")
-                if worst < need:
-                    total_fail += 1
-    return theme, groups, ui_groups, total_text, total_fail
-
-
-def render_dom(path: Path, tokens: dict, theme_name: str) -> int:
-    theme, groups, ui_groups, total, fail = audit_dom(path, tokens, theme_name)
-    print(f"\n### Audit du DOM ({path.name}, thème {theme.name}) : {total} textes visibles, {fail} sous le seuil\n")
-    print("| Texte | Fond (pire arrêt) | Seuil | Rapport min. | Occurrences | Exemple |")
-    print("|---|---|---|---|---|---|")
-    for (fg, bg, need), g in sorted(groups.items(), key=lambda kv: kv[1]["min"]):
-        flag = "" if g["min"] >= need else " **ÉCHEC**"
-        print(f"| `{fg}` | `{bg}` | {need:g}:1 | {g['min']:.2f}{flag} | {g['n']} | {g['ex'][0][:80]} |")
-    bad_ui = [(k, g) for k, g in ui_groups.items() if g["min"] < 3 and ("input" in g["ex"][0] or "textarea" in g["ex"][0] or "select" in g["ex"][0])]
-    print("\nBords de champs (input, textarea, select), pire rapport par côté : "
-          + (", ".join(f"{k[0]} / {k[1]} {k[2]} = {g['min']:.2f}" for k, g in bad_ui) or "tous >= 3:1"))
-    return fail
-
-
 # ------------------------------------------------------------------ CLI
 def main(argv=None) -> int:
     try:
@@ -381,11 +295,10 @@ def main(argv=None) -> int:
         pass
     ap = argparse.ArgumentParser(description="Matrice de contraste WCAG calculée depuis tokens.css.")
     ap.add_argument("--tokens", default=None, help="défaut : tokens.css à côté du script ou styles/tokens.css")
-    ap.add_argument("--theme", choices=["light", "dark", "both"], default="both")
+    ap.add_argument("--theme", choices=["light", "dark", "more", "both"], default="both",
+                    help="both = clair, sombre et (si tokens.css le définit) clair en contraste renforcé")
     ap.add_argument("--md", action="store_true", help="sortie Markdown")
     ap.add_argument("--csv", metavar="FICHIER", help="écrit aussi la matrice en CSV (point-virgule)")
-    ap.add_argument("--dom", action="append", default=[], help="relevé de audit-dom.cjs à vérifier (répétable)")
-    ap.add_argument("--dom-theme", choices=["light", "dark"], help="thème des valeurs de jetons pour nommer les couleurs du relevé")
     args = ap.parse_args(argv)
     tokens_path = Path(args.tokens) if args.tokens else mg.default_tokens()
     tokens = mg.load_tokens(tokens_path)
@@ -393,7 +306,7 @@ def main(argv=None) -> int:
         diff = sorted(set(tokens["dark"].items()) ^ set(tokens["mirror"].items()))
         print("ERREUR : le miroir [data-theme=\"dark\"] diffère du bloc @media :", diff[:6], "(python migrate.py --sync-mirror)", file=sys.stderr)
         return 2
-    themes = ("light", "dark") if args.theme == "both" else (args.theme,)
+    themes = (("light", "dark") + (("more",) if tokens.get("more") else ())) if args.theme == "both" else (args.theme,)
     try:
         rows = build_matrix(tokens, themes)
     except KeyError as e:
@@ -416,10 +329,6 @@ def main(argv=None) -> int:
             line += " ; SOUS LE SEUIL : " + "; ".join(f"{fg} / {bg_label(bg)} = {r:.2f} (< {need:g})" for _, fg, bg, r, need, _ in new)
             rc = 1
         print(line)
-    for p in args.dom:
-        tn = args.dom_theme or ("dark" if "dark" in Path(p).name else "light")
-        if render_dom(Path(p), tokens, tn) and tn == "dark":
-            rc = 1
     return rc
 
 

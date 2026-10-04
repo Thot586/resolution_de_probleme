@@ -12,7 +12,7 @@
         /* Trimobe: bleu du globe et bleu du mot-symbole. */
         --font-display: "Barlow Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
         --radius: 20px;
-        font-size: 16px;
+        font-size: 100%;
       }
       * {
         box-sizing: border-box;
@@ -38,15 +38,13 @@
       }
       button,
       input,
-      textarea,
-      select {
+      textarea {
         font: inherit;
       }
       button,
       a,
       input,
       textarea,
-      select,
       summary {
         -webkit-tap-highlight-color: transparent;
       }
@@ -109,8 +107,7 @@
         outline-offset: 4px;
       }
       input:focus-visible,
-      textarea:focus-visible,
-      select:focus-visible {
+      textarea:focus-visible {
         outline: 2px solid var(--brand);
         outline-offset: 2px;
       }
@@ -135,7 +132,6 @@
         z-index: 30;
         background: var(--header-bg);
         border-bottom: 1px solid var(--line);
-        backdrop-filter: blur(14px);
       }
       .navbar {
         max-width: 1320px;
@@ -317,9 +313,7 @@
         margin-bottom: 23px;
       }
       .tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+        display: inline-block;
         padding: 4px 10px;
         border-radius: 6px;
         background: var(--mint);
@@ -433,7 +427,7 @@
         gap: 12px;
       }
       .pill {
-        border: 1px solid var(--line);
+        border: 1px solid var(--field-line);
         border-radius: 10px;
         background: var(--surface);
         padding: 13px 20px;
@@ -593,8 +587,7 @@
       }
       input[type="text"],
       input[type="date"],
-      textarea,
-      select {
+      textarea {
         width: 100%;
         border: 1px solid var(--field-line);
         border-radius: 10px;
@@ -654,7 +647,7 @@
         text-align: center;
         line-height: 1.4;
       }
-      .btn:hover {
+      .btn:hover:not(:disabled) {
         background: var(--mint);
       }
       .btn.primary {

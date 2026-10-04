@@ -153,6 +153,14 @@ const fs = require("node:fs/promises");
       );
     }
     assert.deepEqual(errors, []);
+    // Paper stays light whatever the screen theme: on a system in dark mode, the page is dark on screen and white in print.
+    const dark = await browser.newPage({ colorScheme: "dark" });
+    await dark.goto("file://" + path.resolve(__dirname, "../index.html"));
+    const background = () => dark.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    assert.equal(await background(), "rgb(14, 20, 36)", "dark on screen");
+    await dark.emulateMedia({ media: "print" });
+    assert.equal(await background(), "rgb(255, 255, 255)", "white in print, even from a dark system");
+    await dark.close();
   } finally {
     await browser.close();
   }

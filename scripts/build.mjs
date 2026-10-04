@@ -3,7 +3,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const read = (path) => readFile(join(root, path), "utf8");
+// Fins de ligne normalisées en LF : le même index.html sur toutes les plates-formes (le dépôt est en CRLF sous Windows).
+const read = async (path) => (await readFile(join(root, path), "utf8")).replace(/\r\n/g, "\n");
 const pages = [
   "accueil",
   "outil",
@@ -18,8 +19,11 @@ const pages = [
 ];
 
 let html = await read("index.template.html");
-// Police des titres : sous-ensemble WOFF2 intégré en data: URI (aucune requête, aucun changement brusque au chargement).
-const fontBase64 = (await readFile(join(root, "assets/fonts/BarlowCondensed-Bold.subset.woff2"))).toString("base64");
+// Police des titres, logo et icône : intégrés en data: URI (aucune requête, aucun changement brusque au chargement).
+const dataUri = async (path, type) => `data:${type};base64,${(await readFile(join(root, path))).toString("base64")}`;
+const fontUri = await dataUri("assets/fonts/BarlowCondensed-Bold.subset.woff2", "font/woff2");
+const logoUri = await dataUri("assets/trimobe-logo-176.jpeg", "image/jpeg");
+const faviconUri = await dataUri("assets/trimobe-logo-64.jpeg", "image/jpeg");
 const [tokensCss, baseCss, pathsCss, componentsCss, dataJs, workflowJs, contextCatalogJs, decisionDiagramJs, choiceGroupJs, groupJs, appJs, pageParts] = await Promise.all([
   read("styles/tokens.css"),
   read("styles/base.css"),
@@ -37,7 +41,7 @@ const [tokensCss, baseCss, pathsCss, componentsCss, dataJs, workflowJs, contextC
 const pageHtml = pageParts.join("");
 html = html.replace(
   "<!-- STYLES -->",
-  () => `<style>\n${tokensCss}\n${baseCss.replace("__BARLOW_BOLD_WOFF2__", `data:font/woff2;base64,${fontBase64}`)}\n${pathsCss}\n${componentsCss}    </style>`,
+  () => `<style>\n${tokensCss}\n${baseCss.replace("__BARLOW_BOLD_WOFF2__", fontUri)}\n${pathsCss}\n${componentsCss}    </style>`,
 );
 html = html.replace(
   "<!-- PAGES -->",
@@ -47,7 +51,10 @@ html = html.replace(
   "<!-- SCRIPT -->",
   () => `<script>\n      "use strict";\n${dataJs}\n${workflowJs}\n${contextCatalogJs}\n${decisionDiagramJs}\n${choiceGroupJs}\n${groupJs}\n${appJs}    </script>`,
 );
-if (html.includes("__BARLOW_BOLD_WOFF2__")) throw new Error("La police intégrée n'a pas été insérée.");
+html = html.replaceAll("__LOGO_DATA_URI__", logoUri).replaceAll("__FAVICON_DATA_URI__", faviconUri);
+// Typographie : une flèche ne reste jamais seule en début de ligne (espace insécable avant « → » et « ↗ », après « ← »).
+html = html.replace(/ ([→↗])/g, " $1").replace(/([←]) /g, "$1 ");
+if (/__BARLOW_BOLD_WOFF2__|__LOGO_DATA_URI__|__FAVICON_DATA_URI__/.test(html)) throw new Error("Une ressource intégrée n'a pas été insérée.");
 if (html.includes("<!-- STYLES -->") || html.includes("<!-- PAGES -->") || html.includes("<!-- SCRIPT -->")) {
   throw new Error("Un emplacement du modèle n'a pas été rempli.");
 }

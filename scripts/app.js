@@ -1342,7 +1342,7 @@
           if (matchMedia("(max-width:600px)").matches)
             $("#meter-detail").scrollIntoView({
               block: "start",
-              behavior: "smooth",
+              behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
             });
           return;
         }
@@ -1463,7 +1463,7 @@
           case "meter-back": {
             const selected = $("[data-meter][aria-pressed=true]");
             selected?.focus();
-            selected?.scrollIntoView({ block: "center", behavior: "smooth" });
+            selected?.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
             break;
           }
           case "quick-exit":

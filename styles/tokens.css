@@ -5,10 +5,13 @@
    les règles d'impression (valeurs fixes : le papier est toujours clair) et ::backdrop (valeur de secours).
 
    - Clair : valeurs du CSS d'origine ; les quasi-doublons sont fusionnés seulement si leur écart de
-     couleur CIEDE2000 reste <= 2,0 (voir `python migrate.py --selftest`).
+     couleur CIEDE2000 reste <= 2,0 (voir `python scripts/migrate.py --selftest`). Exception voulue : --field-line,
+     relevé de #bbc9df à #7589b1 pour atteindre 3:1 (WCAG 1.4.11).
    - Sombre : suit le réglage du système (prefers-color-scheme). <html data-theme="dark|light"> force un
-     thème (tests, futur sélecteur) : le miroir reprend EXACTEMENT les valeurs du bloc @media.
+     thème (futur sélecteur ; les tests émulent prefers-color-scheme) : le miroir reprend EXACTEMENT les valeurs du bloc @media.
    - Impression : toujours claire (les blocs sombres sont limités à `screen`).
+   - Contraste renforcé demandé par le système (prefers-contrast: more) : les rails, cadres et bords de boutons de sécurité
+     passent à 3:1 au moins sur les fonds clairs ; rien ne change par défaut (voir le bloc après les valeurs claires).
    - Schémas SVG (couleurs écrites en dur dans pages/*.html et scripts/decision-diagram.js) : îlot clair,
      c'est-à-dire que .teaching-figure (ou .on-light) reprend les jetons clairs, dans les deux thèmes.
    - Transparences : jetons à alpha intégré (#rrggbbaa), valables dans tous les navigateurs ; ni color-mix()
@@ -99,6 +102,21 @@
   --shadow: 0 10px 35px var(--shade-soft);  /* ombre standard des cartes et du message */
 }
 
+/* ---- Contraste renforcé demandé par le système (macOS « Augmenter le contraste », Windows…) : les rails et cadres
+   (--line-strong) et les bords des boutons de danger et d'aide passent à 3:1 au moins sur les fonds clairs. Rien ne change par
+   défaut. Le thème sombre atteint déjà 3:1 :
+   il garde ses valeurs (sa règle, plus spécifique, vient après). Mesuré par `python scripts/contrast.py --theme more`. */
+@media (prefers-contrast: more) {
+  :root,
+  :root[data-theme="light"],
+  .on-light,
+  .teaching-figure {
+    --line-strong: #6a82a8;  /* 3,9:1 sur --surface, 3,2:1 sur --line-soft (2,1:1 et 1,7:1 par défaut) */
+    --red-line: #b86d66;  /* bord du bouton de danger : 3,9:1 sur --surface, 3,5:1 sur --rose (2,0:1 et 1,8:1 par défaut) */
+    --line-warm: #978870;  /* bord de « Besoin d'aide ? » : 3,3:1 sur --paper (1,6:1 par défaut) */
+  }
+}
+
 /* Alias réservé à la page : non redéfini dans les îlots clairs, il garde la valeur du thème courant
    (contour de focus d'un schéma, dessiné sur le fond de la page). */
 :root {
@@ -140,7 +158,7 @@
     --line-mid: #46608b;
     --line-strong: #6a83b0;
     --line-ctx: #5784c4;
-    --line-warm: #5b4d36;
+    --line-warm: #716550;
     /* Aplats de marque */
     --brand-fill: #3b76c3;
     --brand-fill-hover: #3069b4;
@@ -151,7 +169,7 @@
     --hero-glow: #2f559b;
     /* Statuts : danger (rouge) et vigilance (ambre) */
     --red: #f68b82;
-    --red-line: #94504f;
+    --red-line: #a05d5b;
     --red-ink: #ffd2cc;
     --rose: #3b1c21;
     --rose-line: #7a3a40;
@@ -170,7 +188,7 @@
     --m4-edge: #e8873f;
     --m4-ink: #fac79a;
     --m5-bg: #3d1d1c;
-    --m5-edge: #ee6a60;
+    --m5-edge: #f2745f;
     --m6-bg: #4a1618;
     --m6-edge: #ff5a5a;
     --m6-ink: #ffc9c9;
@@ -186,7 +204,7 @@
   }
 }
 
-/* ---- Sombre, forcé (miroir : mêmes valeurs que le bloc ci-dessus ; `python migrate.py --sync-mirror` le recopie). */
+/* ---- Sombre, forcé (miroir : mêmes valeurs que le bloc ci-dessus ; `python scripts/migrate.py --sync-mirror` le recopie). */
 @media screen {
   :root[data-theme="dark"] {
     color-scheme: dark;
@@ -211,7 +229,7 @@
     --line-mid: #46608b;
     --line-strong: #6a83b0;
     --line-ctx: #5784c4;
-    --line-warm: #5b4d36;
+    --line-warm: #716550;
     /* Aplats de marque */
     --brand-fill: #3b76c3;
     --brand-fill-hover: #3069b4;
@@ -222,7 +240,7 @@
     --hero-glow: #2f559b;
     /* Statuts : danger (rouge) et vigilance (ambre) */
     --red: #f68b82;
-    --red-line: #94504f;
+    --red-line: #a05d5b;
     --red-ink: #ffd2cc;
     --rose: #3b1c21;
     --rose-line: #7a3a40;
@@ -241,7 +259,7 @@
     --m4-edge: #e8873f;
     --m4-ink: #fac79a;
     --m5-bg: #3d1d1c;
-    --m5-edge: #ee6a60;
+    --m5-edge: #f2745f;
     --m6-bg: #4a1618;
     --m6-edge: #ff5a5a;
     --m6-ink: #ffc9c9;
