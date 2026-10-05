@@ -202,6 +202,14 @@
     --shade-drawer: #0000006b;
     --focus-glow: #8db4ee33;
   }
+  /* ::backdrop n'hérite des propriétés personnalisées que dans les navigateurs récents (Chrome 122, Firefox 120, Safari 17.4) : en
+     dessous, le repli de base.css serait le voile clair. Ce repli-ci, plus spécifique, donne le voile sombre. */
+  :root:not([data-theme="light"]) dialog::backdrop {
+    background: var(--scrim, #02050cb3);
+  }
+  :root:not([data-theme="light"]) .term-dialog::backdrop {
+    background: var(--scrim-soft, #02050ca6);
+  }
 }
 
 /* ---- Sombre, forcé (miroir : mêmes valeurs que le bloc ci-dessus ; `python scripts/migrate.py --sync-mirror` le recopie). */

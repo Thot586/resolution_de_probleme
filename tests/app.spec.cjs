@@ -289,6 +289,10 @@ const choose = async (target, selector, value) => {
   await starter.locator('[data-action="next"]').click();
   assert.equal(await starter.locator('#steps [aria-current="step"]').getAttribute("data-step"), "0");
   assert.match(await starter.locator("#toast").innerText(), /Choisissez d’abord le niveau/);
+  // The message is also written into a live region that exists from the start (the only reliable way to have it announced).
+  assert.equal(await starter.locator("#toast").getAttribute("aria-hidden"), "true", "the visible pill is not announced twice");
+  await starter.waitForFunction(() => /Choisissez d’abord le niveau/.test(document.querySelector("#live-status")?.textContent || ""), null, { timeout: ms(3000) });
+  assert.equal(await starter.locator("#live-status").getAttribute("role"), "status");
   await starter.evaluate(() => { location.hash = "recap"; });
   await starter.locator("#recap").waitFor({ state: "visible" });
   assert.match(await starter.locator("#recap-content").innerText(), /Ma fiche est encore vide/);
@@ -1258,15 +1262,19 @@ const choose = async (target, selector, value) => {
     .filter({ hasText: "Préparer une action" })
     .click();
   const tip = page.locator("#comprendre [data-term=implementation]").first();
-  // Scrolling hides the tooltip by design, and scroll events arrive a frame late: bring the term into view and let them fire first.
-  await tip.scrollIntoViewIfNeeded();
+  // Keyboard, term far below the fold: the browser scrolls to the focused term, and the tooltip it just caused stays (it follows the term).
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await settle(page);
+  assert(await tip.evaluate((node) => node.getBoundingClientRect().top > innerHeight), "the term starts below the visible area");
   await tip.focus();
   await visible("#tooltip");
+  await page.waitForTimeout(700); // longer than the smooth scroll the focus triggers
+  assert(await page.locator("#tooltip").isVisible(), "the tooltip survives the scroll caused by the focus");
   assert.match(await page.locator("#tooltip").innerText(), /plan précis/);
   await page.keyboard.press("Escape");
   assert(!(await page.locator("#tooltip").isVisible()));
   await page.keyboard.press("Tab");
+  // Scrolling hides a pointer tooltip by design, and scroll events arrive a frame late: bring the term into view and let them fire first.
   await tip.scrollIntoViewIfNeeded();
   await settle(page);
   await tip.hover();

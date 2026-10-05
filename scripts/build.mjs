@@ -39,9 +39,13 @@ const [tokensCss, baseCss, pathsCss, componentsCss, dataJs, workflowJs, contextC
   Promise.all(pages.map((name) => read(`pages/${name}.html`))),
 ]);
 const pageHtml = pageParts.join("");
+// Les commentaires des feuilles de style (≈ 29 Ko) restent dans les sources ; le fichier livré n'en garde que ceux qui commencent par « /*! »
+// (la mention de licence de la police). Aucune chaîne CSS du projet ne contient « /* ».
+const stripCssComments = (css) => css.replace(/\/\*(?!!)[\s\S]*?\*\//g, "").replace(/\n[ \t]*\n(?:[ \t]*\n)+/g, "\n\n");
+const allCss = stripCssComments(`${tokensCss}\n${baseCss}\n${pathsCss}\n${componentsCss}`).replace("__BARLOW_BOLD_WOFF2__", fontUri);
 html = html.replace(
   "<!-- STYLES -->",
-  () => `<style>\n${tokensCss}\n${baseCss.replace("__BARLOW_BOLD_WOFF2__", fontUri)}\n${pathsCss}\n${componentsCss}    </style>`,
+  () => `<style>\n${allCss}    </style>`,
 );
 html = html.replace(
   "<!-- PAGES -->",

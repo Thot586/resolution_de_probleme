@@ -14,83 +14,58 @@
     <meta name="referrer" content="no-referrer" />
     <title>Pas à pas - Résoudre un problème</title>
     <style>
-/* ==========================================================================
-   tokens.css : jetons de couleur de « Pas à pas », clair et sombre
-   ==========================================================================
-   Seul fichier qui définit des couleurs. Les autres feuilles n'écrivent que var(--jeton), sauf
-   les règles d'impression (valeurs fixes : le papier est toujours clair) et ::backdrop (valeur de secours).
 
-   - Clair : valeurs du CSS d'origine ; les quasi-doublons sont fusionnés seulement si leur écart de
-     couleur CIEDE2000 reste <= 2,0 (voir `python scripts/migrate.py --selftest`). Exception voulue : --field-line,
-     relevé de #bbc9df à #7589b1 pour atteindre 3:1 (WCAG 1.4.11).
-   - Sombre : suit le réglage du système (prefers-color-scheme). <html data-theme="dark|light"> force un
-     thème (futur sélecteur ; les tests émulent prefers-color-scheme) : le miroir reprend EXACTEMENT les valeurs du bloc @media.
-   - Impression : toujours claire (les blocs sombres sont limités à `screen`).
-   - Contraste renforcé demandé par le système (prefers-contrast: more) : les rails, cadres et bords de boutons de sécurité
-     passent à 3:1 au moins sur les fonds clairs ; rien ne change par défaut (voir le bloc après les valeurs claires).
-   - Schémas SVG (couleurs écrites en dur dans pages/*.html et scripts/decision-diagram.js) : îlot clair,
-     c'est-à-dire que .teaching-figure (ou .on-light) reprend les jetons clairs, dans les deux thèmes.
-   - Transparences : jetons à alpha intégré (#rrggbbaa), valables dans tous les navigateurs ; ni color-mix()
-     ni light-dark(), qui feraient perdre la déclaration entière sur un navigateur plus ancien.
-   - Un jeton absent du bloc sombre garde sa valeur claire (constantes : --on-fill*).
-
-   Modifier une valeur sombre : éditer le bloc @media, puis `python scripts/migrate.py --sync-mirror`
-   (recopie dans le miroir) et `python scripts/contrast.py` (contrastes WCAG, clair et sombre).
-   Nouvelle règle CSS avec une couleur en dur : `python scripts/migrate.py styles/*.css`.
-   À charger AVANT les autres feuilles (scripts/build.mjs).
-   ========================================================================== */
 
 :root,
 :root[data-theme="light"],
 .on-light,
 .teaching-figure {
-  /* Surfaces */
-  --paper: #f7f9fd;  /* fond de page */
-  --surface: #ffffff;  /* cartes, champs, boutons, boîtes de dialogue */
-  --surface-soft: #f8faff;  /* survol léger, encarts, exemples, bas des dégradés (7 teintes, ΔE <= 1,3) */
-  --mint: #edf3fb;  /* teinte bleue : sélection, étiquette, notice, survol (5 teintes, ΔE <= 1,5) */
-  --header-bg: #f9fbfff5;  /* en-tête collant (légère transparence) */
-  /* Texte */
-  --ink: #202b50;  /* texte principal */
-  --muted: #596680;  /* texte secondaire */
-  --brand: #285b9d;  /* accent : liens, étiquettes, filets de sélection (en sombre : bleu clair) */
-  --deep: #161f6e;  /* titres, mots forts, segment d'étape courante (en sombre : bleu très clair) */
-  --placeholder: #69758b;  /* texte d'aide dans les champs vides */
-  --example-ink: #4f6282;  /* texte et étiquette des exemples fictifs (2 teintes, ΔE <= 1,6) */
-  --on-fill: #ffffff;  /* texte et coches sur aplat de marque ; pastille du logo (JPEG à fond blanc) */
-  --on-fill-soft: #e2edff;  /* texte secondaire sur aplat foncé : chapeau du bandeau, petit texte de l'étape (2 teintes, ΔE <= 1,6) */
-  /* Traits */
-  --line-soft: #e2eaf7;  /* séparateurs discrets, rails des segments et barres de progression (6 teintes, ΔE <= 1,5) */
-  --line: #d9e2ef;  /* trait standard des cartes (3 teintes, ΔE <= 1,7) */
-  --line-tint: #ccdbee;  /* bord des encarts teintés : « à éviter », « Dire », aide (3 teintes, ΔE <= 1,7) */
-  --field-line: #7589b1;  /* bord des champs de saisie, des cases de choix et de l'interrupteur : au moins 3:1 sur blanc et sur teinte (WCAG 1.4.11) ; le CSS d'origine était à #bbc9df (1,7:1) */
-  --line-mid: #b1c8e7;  /* bord des cartes de niveau, de la pastille « niveau », filet des exemples (3 teintes, ΔE <= 1,9) */
-  --line-strong: #9cb6d9;  /* cadres mis en avant, coches, interrupteur, segments (4 teintes, ΔE <= 2,0 ; valeur d'origine gardée) */
-  --line-ctx: #86a9d4;  /* filet de la remarque de contexte */
-  --line-warm: #d3c7b6;  /* bord du bouton « Besoin d'aide ? » */
-  /* Aplats de marque */
-  --brand-fill: #285b9d;  /* boutons principaux, pastilles, coches (texte --on-fill dessus) */
-  --brand-fill-hover: #161f6e;  /* survol du bouton principal */
-  --deep-fill: #161f6e;  /* logo, étape courante, info-bulle, message, lien d'évitement (texte --on-fill dessus) */
-  --progress-fill: #3b72b2;  /* remplissage de la barre de progression du collectif */
-  --hero-from: #161f6e;  /* bandeau d'accueil : début du dégradé */
-  --hero-to: #285b9d;  /* bandeau d'accueil : fin du dégradé */
-  --hero-glow: #3b64ae;  /* bandeau d'accueil : halo */
-  --on-fill-line: #ffffff55;  /* contour discret sur aplat foncé */
-  --on-fill-wash: #ffffff15;  /* voile clair sur aplat foncé */
-  --on-fill-edge: #ffffff99;  /* contour net sur aplat foncé */
-  /* Statuts : danger (rouge) et vigilance (ambre). Le sens est toujours porté par le texte, jamais par la couleur seule. */
-  --red: #96423c;  /* texte, pictogramme et barre de danger (2 teintes, ΔE <= 1,9) */
-  --red-line: #d5b1ac;  /* bord du bouton de danger */
-  --red-ink: #753430;  /* texte courant d'une notice de danger (3 teintes, ΔE <= 1,9) */
-  --rose: #fff0ed;  /* fond d'une notice de danger (2 teintes, ΔE <= 1,9) */
-  --rose-line: #eaccc7;  /* bord d'une notice de danger (2 teintes, ΔE <= 1,4) */
-  --amber: #fff3d9;  /* fond d'une notice de vigilance (2 teintes, ΔE <= 1,4) */
-  --amber-line: #ecd8b1;  /* bord d'une notice de vigilance */
-  --amber-ink: #684814;  /* texte d'une notice de vigilance (2 teintes, ΔE <= 1,1) */
-  --focus-ring: #a06c25;  /* anneau de focus clavier */
-  /* Violentomètre : 6 niveaux ordonnés (vert, vert-jaune, ambre, orange, rouge, rouge profond).
-     Niveau 3 = --amber, --amber-ink et --m3-edge ; niveau 2 : texte = --m1-ink ; niveau 5 : texte = --red-ink. */
+  
+  --paper: #f7f9fd;  
+  --surface: #ffffff;  
+  --surface-soft: #f8faff;  
+  --mint: #edf3fb;  
+  --header-bg: #f9fbfff5;  
+  
+  --ink: #202b50;  
+  --muted: #596680;  
+  --brand: #285b9d;  
+  --deep: #161f6e;  
+  --placeholder: #69758b;  
+  --example-ink: #4f6282;  
+  --on-fill: #ffffff;  
+  --on-fill-soft: #e2edff;  
+  
+  --line-soft: #e2eaf7;  
+  --line: #d9e2ef;  
+  --line-tint: #ccdbee;  
+  --field-line: #7589b1;  
+  --line-mid: #b1c8e7;  
+  --line-strong: #9cb6d9;  
+  --line-ctx: #86a9d4;  
+  --line-warm: #d3c7b6;  
+  
+  --brand-fill: #285b9d;  
+  --brand-fill-hover: #161f6e;  
+  --deep-fill: #161f6e;  
+  --progress-fill: #3b72b2;  
+  --hero-from: #161f6e;  
+  --hero-to: #285b9d;  
+  --hero-glow: #3b64ae;  
+  --on-fill-line: #ffffff55;  
+  --on-fill-wash: #ffffff15;  
+  --on-fill-edge: #ffffff99;  
+  
+  --red: #96423c;  
+  --red-line: #d5b1ac;  
+  --red-ink: #753430;  
+  --rose: #fff0ed;  
+  --rose-line: #eaccc7;  
+  --amber: #fff3d9;  
+  --amber-line: #ecd8b1;  
+  --amber-ink: #684814;  
+  --focus-ring: #a06c25;  
+  
   --m1-bg: #e7f2e7;
   --m1-edge: #2f7655;
   --m1-ink: #1f533e;
@@ -105,41 +80,34 @@
   --m6-bg: #f5d9d4;
   --m6-edge: #8c2e2e;
   --m6-ink: #752323;
-  /* Voiles, ombres et halo (transparence intégrée) */
-  --scrim: #0c1648a6;  /* voile derrière les boîtes de dialogue */
-  --scrim-soft: #0c164899;  /* voile derrière le volet du glossaire */
-  --shade-soft: #161f6e12;  /* ombre douce des cartes (4 opacités, ΔE <= 1,4) */
-  --shade-hover: #161f6e20;  /* ombre d'une carte ou d'un bouton survolé */
-  --shade-menu: #161f6e2d;  /* ombre du menu déroulant mobile */
-  --shade-pop: #00000033;  /* ombre des info-bulles, boîtes de dialogue, pouce de l'interrupteur */
-  --shade-drawer: #00000022;  /* ombre du volet du glossaire */
-  --focus-glow: #285b9d26;  /* halo de focus des champs de saisie */
-  /* Composé */
-  --shadow: 0 10px 35px var(--shade-soft);  /* ombre standard des cartes et du message */
+  
+  --scrim: #0c1648a6;  
+  --scrim-soft: #0c164899;  
+  --shade-soft: #161f6e12;  
+  --shade-hover: #161f6e20;  
+  --shade-menu: #161f6e2d;  
+  --shade-pop: #00000033;  
+  --shade-drawer: #00000022;  
+  --focus-glow: #285b9d26;  
+  
+  --shadow: 0 10px 35px var(--shade-soft);  
 }
 
-/* ---- Contraste renforcé demandé par le système (macOS « Augmenter le contraste », Windows…) : les rails et cadres
-   (--line-strong) et les bords des boutons de danger et d'aide passent à 3:1 au moins sur les fonds clairs. Rien ne change par
-   défaut. Le thème sombre atteint déjà 3:1 :
-   il garde ses valeurs (sa règle, plus spécifique, vient après). Mesuré par `python scripts/contrast.py --theme more`. */
 @media (prefers-contrast: more) {
   :root,
   :root[data-theme="light"],
   .on-light,
   .teaching-figure {
-    --line-strong: #6a82a8;  /* 3,9:1 sur --surface, 3,2:1 sur --line-soft (2,1:1 et 1,7:1 par défaut) */
-    --red-line: #b86d66;  /* bord du bouton de danger : 3,9:1 sur --surface, 3,5:1 sur --rose (2,0:1 et 1,8:1 par défaut) */
-    --line-warm: #978870;  /* bord de « Besoin d'aide ? » : 3,3:1 sur --paper (1,6:1 par défaut) */
+    --line-strong: #6a82a8;  
+    --red-line: #b86d66;  
+    --line-warm: #978870;  
   }
 }
 
-/* Alias réservé à la page : non redéfini dans les îlots clairs, il garde la valeur du thème courant
-   (contour de focus d'un schéma, dessiné sur le fond de la page). */
 :root {
   --page-ring: var(--brand);
 }
 
-/* Schéma de couleurs annoncé au navigateur : barres de défilement, champs natifs, calendrier. */
 :root {
   color-scheme: light dark;
 }
@@ -149,24 +117,23 @@
   color-scheme: light;
 }
 
-/* ---- Sombre, automatique (réglage du système). Limité à `screen` : l'impression reste claire. */
 @media screen and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    /* Surfaces */
+    
     --paper: #0e1424;
     --surface: #151c30;
     --surface-soft: #19213a;
     --mint: #1e2a49;
     --header-bg: #0e1424f5;
-    /* Texte */
+    
     --ink: #e6ebf7;
     --muted: #a9b4cc;
     --brand: #8db4ee;
     --deep: #c5d5f6;
     --placeholder: #8e9ab3;
     --example-ink: #b0bcd6;
-    /* Traits */
+    
     --line-soft: #263150;
     --line: #303b5c;
     --line-tint: #324165;
@@ -175,7 +142,7 @@
     --line-strong: #6a83b0;
     --line-ctx: #5784c4;
     --line-warm: #716550;
-    /* Aplats de marque */
+    
     --brand-fill: #3b76c3;
     --brand-fill-hover: #3069b4;
     --deep-fill: #2a3a8c;
@@ -183,7 +150,7 @@
     --hero-from: #141c5c;
     --hero-to: #22498a;
     --hero-glow: #2f559b;
-    /* Statuts : danger (rouge) et vigilance (ambre) */
+    
     --red: #f68b82;
     --red-line: #a05d5b;
     --red-ink: #ffd2cc;
@@ -193,7 +160,7 @@
     --amber-line: #6e5628;
     --amber-ink: #f2d997;
     --focus-ring: #f0b95a;
-    /* Violentomètre */
+    
     --m1-bg: #15301f;
     --m1-edge: #3fae7a;
     --m1-ink: #c8ecd6;
@@ -208,7 +175,7 @@
     --m6-bg: #4a1618;
     --m6-edge: #ff5a5a;
     --m6-ink: #ffc9c9;
-    /* Voiles, ombres et halo */
+    
     --scrim: #02050cb3;
     --scrim-soft: #02050ca6;
     --shade-soft: #00000047;
@@ -218,26 +185,32 @@
     --shade-drawer: #0000006b;
     --focus-glow: #8db4ee33;
   }
+  
+  :root:not([data-theme="light"]) dialog::backdrop {
+    background: var(--scrim, #02050cb3);
+  }
+  :root:not([data-theme="light"]) .term-dialog::backdrop {
+    background: var(--scrim-soft, #02050ca6);
+  }
 }
 
-/* ---- Sombre, forcé (miroir : mêmes valeurs que le bloc ci-dessus ; `python scripts/migrate.py --sync-mirror` le recopie). */
 @media screen {
   :root[data-theme="dark"] {
     color-scheme: dark;
-    /* Surfaces */
+    
     --paper: #0e1424;
     --surface: #151c30;
     --surface-soft: #19213a;
     --mint: #1e2a49;
     --header-bg: #0e1424f5;
-    /* Texte */
+    
     --ink: #e6ebf7;
     --muted: #a9b4cc;
     --brand: #8db4ee;
     --deep: #c5d5f6;
     --placeholder: #8e9ab3;
     --example-ink: #b0bcd6;
-    /* Traits */
+    
     --line-soft: #263150;
     --line: #303b5c;
     --line-tint: #324165;
@@ -246,7 +219,7 @@
     --line-strong: #6a83b0;
     --line-ctx: #5784c4;
     --line-warm: #716550;
-    /* Aplats de marque */
+    
     --brand-fill: #3b76c3;
     --brand-fill-hover: #3069b4;
     --deep-fill: #2a3a8c;
@@ -254,7 +227,7 @@
     --hero-from: #141c5c;
     --hero-to: #22498a;
     --hero-glow: #2f559b;
-    /* Statuts : danger (rouge) et vigilance (ambre) */
+    
     --red: #f68b82;
     --red-line: #a05d5b;
     --red-ink: #ffd2cc;
@@ -264,7 +237,7 @@
     --amber-line: #6e5628;
     --amber-ink: #f2d997;
     --focus-ring: #f0b95a;
-    /* Violentomètre */
+    
     --m1-bg: #15301f;
     --m1-edge: #3fae7a;
     --m1-ink: #c8ecd6;
@@ -279,7 +252,7 @@
     --m6-bg: #4a1618;
     --m6-edge: #ff5a5a;
     --m6-ink: #ffc9c9;
-    /* Voiles, ombres et halo */
+    
     --scrim: #02050cb3;
     --scrim-soft: #02050ca6;
     --shade-soft: #00000047;
@@ -291,22 +264,17 @@
   }
 }
 
-/* ---- Impression : toujours claire, quel que soit le thème de l'écran. */
 @media print {
   :root {
     color-scheme: light;
   }
 }
 
-/* ==========================================================================
-   Règles associées (elles lisent les jetons, aucune couleur en dur)
-   ========================================================================== */
-/* <dialog> n'avait pas de fond explicite : il prenait « Canvas », qui suit color-scheme. */
 dialog {
   background: var(--surface);
 }
 
-      /* Barlow Condensed Bold (SIL OFL 1.1, voir assets/fonts/OFL.txt), sous-ensemble WOFF2 intégré au document par le build :
+      /*! Barlow Condensed Bold (SIL OFL 1.1, voir assets/fonts/OFL.txt), sous-ensemble WOFF2 intégré au document par le build :
          aucune requête, aucune dépendance externe, pas de changement brusque de police au chargement.
          Régénération : python scripts/subset-font.py */
       @font-face {
@@ -317,7 +285,7 @@ dialog {
         font-display: block;
       }
       :root {
-        /* Trimobe: bleu du globe et bleu du mot-symbole. */
+        
         --font-display: "Barlow Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
         --radius: 20px;
         font-size: 100%;
@@ -676,10 +644,6 @@ dialog {
         line-height: 1.35;
         margin-bottom: 16px;
       }
-      .subtle {
-        font-size: 0.82rem;
-        color: var(--muted);
-      }
       fieldset {
         border: 0;
         padding: 0;
@@ -688,46 +652,6 @@ dialog {
       }
       fieldset + fieldset {
         margin-top: 24px;
-      }
-      .contexts {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-      }
-      .context {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        min-height: 87px;
-        display: flex;
-        align-items: flex-start;
-        flex-direction: column;
-        justify-content: center;
-        padding: 13px 17px;
-        text-align: left;
-        gap: 4px;
-      }
-      .context:hover {
-        border-color: var(--brand);
-        background: var(--surface-soft);
-      }
-      .context[aria-pressed="true"] {
-        border: 2px solid var(--brand);
-        padding: 12px 16px;
-        background: var(--mint);
-      }
-      .context-icon {
-        font-size: 1.1rem;
-        line-height: 1;
-      }
-      .context-icon svg {
-        width: 20px;
-        height: 20px;
-        display: block;
-      }
-      .context span:last-child {
-        font-size: 0.85rem;
-        font-weight: 600;
       }
       .choice-stack {
         display: flex;
@@ -1005,11 +929,6 @@ dialog {
         padding: 10px 0;
         font-size: inherit;
       }
-      .privacy-line svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-      }
       .file-options {
         margin-top: 20px;
       }
@@ -1018,17 +937,11 @@ dialog {
       }
       .checkbox {
         display: flex;
-        gap: 10px;
-        align-items: flex-start;
         font-size: 0.87rem;
         font-weight: 500;
       }
       .checkbox input {
-        margin-top: 6px;
-        accent-color: var(--brand);
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
+        accent-color: var(--brand); 
       }
       details {
         border: 1px solid var(--line);
@@ -1052,7 +965,7 @@ dialog {
       summary::-webkit-details-marker {
         display: none;
       }
-      /* Repère d'ouverture : un chevron dessiné (pas un caractère : même forme partout, visible en contraste forcé) */
+      
       summary:after {
         content: "";
         flex: none;
@@ -1102,12 +1015,6 @@ dialog {
       }
       .optional-fields {
         margin-top: 22px;
-      }
-      .error {
-        color: var(--red);
-        font-size: 0.86rem;
-        font-weight: 600;
-        margin-bottom: 15px;
       }
       .option-card {
         border: 1px solid var(--line);
@@ -1480,10 +1387,6 @@ dialog {
       .recap-section dl {
         margin: 0;
       }
-      .recap-section .empty {
-        font-style: italic;
-        color: var(--muted);
-      }
       dialog {
         border: 1px solid var(--line);
         border-radius: 18px;
@@ -1584,19 +1487,15 @@ dialog {
         .step-card {
           padding: 34px;
         }
-        .context {
-          padding: 12px;
-        }
-        .context[aria-pressed="true"] {
-          padding: 11px;
-        }
         footer {
           margin: 0 24px 20px;
         }
       }
       @media (max-width: 850px) {
         .menu-toggle {
-          display: block;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
           margin-left: auto;
         }
         .menu-toggle[aria-expanded="true"] {
@@ -1716,23 +1615,6 @@ dialog {
         .step-lead {
           font-size: 0.9rem;
         }
-        .contexts {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 8px;
-        }
-        .context {
-          min-height: 75px;
-          padding: 10px 14px;
-        }
-        .context[aria-pressed="true"] {
-          padding: 9px 13px;
-        }
-        .context span:last-child {
-          font-size: 0.8rem;
-        }
-        .context-icon {
-          font-size: 1rem;
-        }
         .field-row,
         .two-col,
         .meter-layout {
@@ -1821,7 +1703,6 @@ dialog {
         }
       }
 
-      /* The same A4 layout is measured on screen and used for printing. */
       #print-document {
         display: none;
       }
@@ -2050,9 +1931,6 @@ dialog {
       .scale-entry { margin-top: 26px; padding: clamp(20px, 3.2vw, 34px); border: 2px solid var(--line-strong); border-radius: 26px; background: linear-gradient(180deg, var(--mint), var(--surface-soft) 70%); box-shadow: 0 18px 44px var(--shade-soft); }
       .entry-kicker { margin: 0 0 6px; color: var(--brand); font-size: .78rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
       .scale-entry h2 { margin: 0; font-size: clamp(2rem, 3.6vw, 2.8rem); color: var(--deep); }
-      .path-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
-      .path-heading h2 { margin-top: 4px; font-size: clamp(1.45rem, 2.2vw, 1.9rem); }
-      .path-heading p { max-width: 690px; margin-top: 8px; color: var(--muted); font-size: .93rem; line-height: 1.55; }
       .scale-intro { margin-top: 10px; max-width: 640px; color: var(--muted); font-size: 1rem; line-height: 1.55; }
       .scale-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
       .scale-card { position: relative; display: flex; flex-direction: column; gap: 8px; min-height: 160px; padding: 22px 22px 56px; border: 1.5px solid var(--line-mid); border-radius: 18px; background: var(--surface); box-shadow: 0 6px 20px var(--shade-soft); text-decoration: none; color: var(--ink); transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
@@ -2075,11 +1953,6 @@ dialog {
       .help-related { margin: 12px 2px 0; color: var(--muted); font-size: .88rem; }
       .welcome-explain { margin: 18px 0 0; }
       .welcome-explain > summary { font-weight: 650; color: var(--deep); }
-      .method-list { margin: 0; padding: 0; list-style: none; counter-reset: method-step; display: grid; gap: 10px; }
-      .method-list li { position: relative; display: grid; gap: 2px; padding-left: 40px; counter-increment: method-step; line-height: 1.5; }
-      .method-list li::before { content: counter(method-step); position: absolute; left: 0; top: 1px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--brand-fill); color: var(--on-fill); font-size: .8rem; font-weight: 750; }
-      .method-list span { color: var(--muted); }
-      .journey-preface { margin-top: 14px; color: var(--muted); }
       .scale-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
       .scale-option { display: grid; gap: 3px; min-height: 86px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); text-align: left; }
       .scale-option:hover { border-color: var(--brand); background: var(--surface-soft); }
@@ -2252,7 +2125,6 @@ dialog {
         .step-card { min-width: 0; }
         .welcome-hero { padding: 27px 23px; border-radius: 20px; }
         .early-help { display: grid; gap: 8px; padding: 12px 15px; }
-        .path-heading p { font-size: .88rem; }
         .scale-entry { margin-top: 20px; border-radius: 20px; }
         .footer-actions .step-meta { display: none; }
         .scale-grid, .scale-options, .help-grid { grid-template-columns: 1fr; }
@@ -2275,9 +2147,6 @@ dialog {
         .diagram-scroll-hint { display: block; }
       }
 
-      /* Contrôles natifs améliorés, faits maison (aucune bibliothèque). Chaque amélioration se dégrade proprement :
-         sans le CSS récent, le contrôle reste un vrai bouton radio, un vrai <details>, un vrai <dialog>. */
-      /* ---- Choix unique : <choice-group> (cartes ou pastilles), vrais boutons radio ---- */
       choice-group {
         display: block;
         container-type: inline-size;
@@ -2393,7 +2262,7 @@ dialog {
       }
       .choice > input:focus-visible + .choice-body {
         outline: 3px solid var(--focus-ring);
-        outline-offset: -3px; /* dans la carte : un volet qui rogne ses bords (::details-content) ne coupe pas l'anneau */
+        outline-offset: -3px; 
       }
       .choice-set .choice-legend {
         margin: 0 0 9px;
@@ -2404,7 +2273,7 @@ dialog {
         line-height: 1.4;
         letter-spacing: 0.02em;
       }
-      /* Choix replié : une ligne « Relation choisie : … Changer » une fois le choix fait. */
+      
       .choice-fold {
         border: 0;
         border-radius: 0;
@@ -2416,7 +2285,7 @@ dialog {
         align-items: center;
         gap: 2px 12px;
         padding: 12px 16px;
-        border: 1.5px solid var(--line-strong); /* un rappel discret : le contenu qui suit reste la chose principale de l'écran */
+        border: 1.5px solid var(--line-strong); 
         border-radius: 14px;
         background: var(--surface);
         font-size: 1rem;
@@ -2472,7 +2341,7 @@ dialog {
         color: var(--muted);
         font-weight: 560;
       }
-      /* Assez de place : l'étiquette, le choix et « Changer » tiennent sur une seule ligne. */
+      
       @container (min-width: 28rem) {
         .choice-fold > summary {
           grid-template-columns: auto minmax(0, 1fr) auto;
@@ -2488,7 +2357,7 @@ dialog {
           grid-row: 1;
         }
       }
-      /* Pastilles : quelques choix courts sur une ligne, sans coche. */
+      
       .is-segmented .choice-grid {
         display: flex;
         flex-wrap: wrap;
@@ -2496,7 +2365,7 @@ dialog {
       .is-segmented .choice-body {
         min-height: 48px;
         padding: 10px 20px;
-        border-color: var(--field-line); /* sans cercle, le contour est le seul repère du choix : 3:1 */
+        border-color: var(--field-line); 
         border-radius: 12px;
         font-size: 0.95rem;
       }
@@ -2514,7 +2383,7 @@ dialog {
         .choice-body {
           border-color: ButtonText;
         }
-        /* Le choix fait se lit à la bordure épaisse : un contour (outline) cacherait l'anneau de focus. */
+        
         .choice > input:checked + .choice-body {
           border-color: Highlight;
           border-width: 3px;
@@ -2541,7 +2410,6 @@ dialog {
         }
       }
 
-      /* ---- Interrupteur : la case « Garder mon brouillon » reste une vraie case à cocher (role=switch) ---- */
       .checkbox {
         align-items: center;
         gap: 14px;
@@ -2604,7 +2472,6 @@ dialog {
         }
       }
 
-      /* ---- Champs de saisie : le texte s'agrandit avec ce qu'on écrit (si le navigateur sait), focus net ---- */
       textarea {
         field-sizing: content;
         max-height: min(70dvh, 38rem);
@@ -2623,7 +2490,6 @@ dialog {
         box-shadow: 0 0 0 3px var(--focus-glow);
       }
 
-      /* ---- Icônes : tracés SVG en ligne, couleur du texte, nets à toute taille (ni fichier, ni police, ni caractère qui change selon l'appareil) ---- */
       .icon {
         flex: none;
         width: 1.1em;
@@ -2633,13 +2499,6 @@ dialog {
         stroke-width: 1.9;
         stroke-linecap: round;
         stroke-linejoin: round;
-      }
-      @media (max-width: 850px) {
-        .menu-toggle {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-        }
       }
       .menu-icon path {
         transform-box: fill-box;
@@ -2655,7 +2514,7 @@ dialog {
         transform: translateY(-4.5px) rotate(-45deg);
       }
       @media (forced-colors: active) {
-        /* En contraste forcé, le fond du badge disparaît : on revient à une coche en texte. */
+        
         .step-link.is-done .step-num::after {
           content: "✓";
           display: grid;
@@ -2667,14 +2526,13 @@ dialog {
         }
       }
 
-      /* ---- Mouvement : chaque effet est un bonus (rien n'en dépend) et s'éteint si la personne demande moins d'animations ---- */
       @supports (interpolate-size: allow-keywords) {
         :root {
           interpolate-size: allow-keywords;
         }
       }
       @media (prefers-reduced-motion: no-preference) {
-        /* Retours au toucher et au survol. */
+        
         .btn,
         .pill,
         .scale-card,
@@ -2692,7 +2550,7 @@ dialog {
             transform: translateY(-1px);
             box-shadow: 0 6px 16px var(--shade-hover);
           }
-          /* Les pastilles de niveau et de volet gardent leur fond ; le fond survolé suit l'arrondi du volet. */
+          
           details:not(.change-level):not(.mobile-step-picker):not(.choice-fold) > summary:hover {
             border-radius: 10px;
             background: var(--surface-soft);
@@ -2706,15 +2564,14 @@ dialog {
           transform: scale(0.985);
           box-shadow: none;
         }
-        /* Le chevron des volets pivote ; le menu se transforme en croix. */
+        
         summary:after {
           transition: transform 0.2s ease;
         }
         .menu-icon path {
           transition: transform 0.22s ease, opacity 0.15s ease;
         }
-        /* Les volets s'ouvrent et se ferment en glissant : il faut ::details-content ET interpolate-size (Chrome et Edge 131+).
-           Ailleurs ils s'ouvrent d'un coup, sans que le contenu soit rogné. L'aide (#securite) n'a aucun mouvement. */
+        
         @supports (interpolate-size: allow-keywords) and selector(::details-content) {
           details::details-content {
             block-size: 0;
@@ -2728,9 +2585,7 @@ dialog {
             transition: none;
           }
         }
-        /* Fenêtres : léger glissement et fondu à l'ouverture partout où @starting-style existe ; à la fermeture seulement là où
-           « overlay » existe (Chrome et Edge 117+) : sans lui, la fenêtre sortirait de la couche supérieure et resterait affichée,
-           déplacée en bas de page, pendant le fondu. Ailleurs elle se ferme d'un coup. */
+        
         dialog,
         dialog::backdrop {
           transition: opacity 0.22s ease, transform 0.22s ease;
@@ -2791,9 +2646,7 @@ dialog {
             transform: translate(-50%, 8px);
           }
         }
-        /* Changement de page : la page qui apparaît entre en fondu court. Simple animation CSS : aucun instantané de la page,
-           aucun délai, aucun appui perdu, et même rendu partout. (L'API View Transitions a été écartée : elle plantait ou
-           bloquait la page dans WebKit.) L'aide (#securite) s'affiche sans aucun mouvement. */
+        
         .view:not([hidden]):not(#securite) {
           animation: page-in 0.22s ease-out;
         }
@@ -2803,7 +2656,7 @@ dialog {
             transform: translateY(8px);
           }
         }
-        /* L'en-tête prend une ombre dès qu'on défile (Chrome 115+, Safari 26+). */
+        
         @supports (animation-timeline: scroll()) {
           header {
             animation: header-lift linear both;
@@ -2821,7 +2674,6 @@ dialog {
         }
       }
 
-      /* ---- Typographie : coupures de lignes plus soignées (bonus : ignoré tel quel par un navigateur qui ne connaît pas) ---- */
       h1,
       h2,
       h3,
@@ -2850,7 +2702,7 @@ dialog {
       html {
         scrollbar-gutter: stable;
       }
-      /* Fenêtre ouverte : la page derrière ne défile plus (la gouttière réservée évite un saut de mise en page, sauf Safari avant 18.2). */
+      
       @supports selector(:has(*)) {
         html:has(dialog[open]) {
           overflow: hidden;
@@ -2860,7 +2712,6 @@ dialog {
         overscroll-behavior: contain;
       }
 
-      /* ---- « Quitter cette page » : le bouton de sécurité se repère d'un coup d'œil (contour franc, sans fond de couleur) ---- */
       .btn[data-action="quick-exit"] {
         border: 2px solid var(--brand);
       }
@@ -4883,7 +4734,8 @@ dialog {
       <div class="term-example"><strong>Exemple concret</strong><p id="term-example"></p></div>
       <a id="term-source" class="text-button" href="#bibliographie">Voir une source utilisée dans ce document ↗</a>
     </dialog>
-    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <div class="toast" id="toast" aria-hidden="true" hidden></div>
+    <div class="sr-only" id="live-status" role="status" aria-live="polite" aria-atomic="true"></div>
     <dialog id="confirm-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
       <h2 id="dialog-title"></h2>
       <p id="dialog-description"></p>
@@ -6934,21 +6786,6 @@ dialog {
         );
       const KEY = "pas-a-pas.brouillon.v2";
       const OLD_KEY = "pas-a-pas.brouillon.v1";
-      const contextIcon = (k) => {
-        const paths = {
-          daily: "M3 10l9-7 9 7M5 9v12h14V9M9 21v-7h6v7",
-          work: "M8 6V3h8v3M3 6h18v14H3zM3 11c6 4 12 4 18 0M10 12h4",
-          couple:
-            "M12 20S2 14 2 8a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 6-10 12-10 12z",
-          family:
-            "M3 20v-4a4 4 0 0 1 8 0v4M13 20v-4a4 4 0 0 1 8 0v4M10 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M20 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
-          study:
-            "M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1v15",
-          health: "M9 3h6v6h6v6h-6v6H9v-6H3V9h6z",
-          collective: "M4 20h16M6 20V9l6-5 6 5v11M9 12h6M9 16h6",
-        };
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[k]}"/></svg>`;
-      };
       const stepNames = [
         ["Commencer", "Mon contexte"],
         ["Clarifier", "Un but précis"],
@@ -7292,11 +7129,23 @@ dialog {
         $("#remember").checked = remember;
         refreshRememberUi();
       }
+      // Message bref : la pastille est pour les yeux (aria-hidden) ; le texte est aussi écrit dans une zone « live » présente depuis le
+      // chargement, seule façon fiable de le faire annoncer. On la vide d'abord pour qu'un même message puisse être annoncé deux fois.
       function toast(t) {
+        const live = $("#live-status");
+        live.textContent = "";
+        clearTimeout(toast.liveTimer);
+        toast.liveTimer = setTimeout(() => (live.textContent = t), 60);
         $("#toast").textContent = t;
         $("#toast").hidden = false;
         clearTimeout(toast.timer);
-        toast.timer = setTimeout(() => ($("#toast").hidden = true), 5500);
+        toast.timer = setTimeout(hideToast, 5500);
+      }
+      function hideToast() {
+        $("#toast").hidden = true;
+        $("#live-status").textContent = "";
+        clearTimeout(toast.timer);
+        clearTimeout(toast.liveTimer);
       }
       function confirmAction(title, text, action, label = "Confirmer") {
         previousFocus = document.activeElement;
@@ -7467,8 +7316,7 @@ dialog {
           $(".scale-option")?.focus();
           return;
         }
-        $("#toast").hidden = true;
-        clearTimeout(toast.timer);
+        hideToast();
         const destination = Math.max(0, Math.min(5, i));
         if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
         if (destination === 0 && state.step !== 0 && !keepStartPart) startPart = 0;
@@ -8570,7 +8418,23 @@ dialog {
         hideTooltip();
         if (innerWidth > 850) setMenuOpen(false);
       });
-      window.addEventListener("scroll", hideTooltip, { passive: true });
+      // Le défilement masque la bulle de la souris. Celle d'un terme qui a le focus (clavier) suit le terme tant qu'il est à l'écran :
+      // le navigateur défile lui-même pour amener un terme hors écran, et ce défilement ne doit pas supprimer la bulle qu'il vient de faire naître.
+      window.addEventListener(
+        "scroll",
+        () => {
+          const owner = tooltipOwner;
+          if (owner && owner.matches(":focus")) {
+            const box = owner.getBoundingClientRect();
+            if (box.bottom > 0 && box.top < innerHeight) {
+              showTooltip(owner);
+              return;
+            }
+          }
+          hideTooltip();
+        },
+        { passive: true },
+      );
       $("#glossary-list").innerHTML = `<div class="glossary-index">${Object.entries(glossary)
         .map(([key, [label]]) => `<p><button type="button" class="glossary-button" data-term="${key}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button> — ${esc(glossaryHelp[key][0])}</p>`)
         .join("")}</div>`;

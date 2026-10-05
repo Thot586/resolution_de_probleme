@@ -15,21 +15,6 @@
         );
       const KEY = "pas-a-pas.brouillon.v2";
       const OLD_KEY = "pas-a-pas.brouillon.v1";
-      const contextIcon = (k) => {
-        const paths = {
-          daily: "M3 10l9-7 9 7M5 9v12h14V9M9 21v-7h6v7",
-          work: "M8 6V3h8v3M3 6h18v14H3zM3 11c6 4 12 4 18 0M10 12h4",
-          couple:
-            "M12 20S2 14 2 8a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 6-10 12-10 12z",
-          family:
-            "M3 20v-4a4 4 0 0 1 8 0v4M13 20v-4a4 4 0 0 1 8 0v4M10 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M20 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
-          study:
-            "M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1v15",
-          health: "M9 3h6v6h6v6h-6v6H9v-6H3V9h6z",
-          collective: "M4 20h16M6 20V9l6-5 6 5v11M9 12h6M9 16h6",
-        };
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[k]}"/></svg>`;
-      };
       const stepNames = [
         ["Commencer", "Mon contexte"],
         ["Clarifier", "Un but précis"],
@@ -373,11 +358,23 @@
         $("#remember").checked = remember;
         refreshRememberUi();
       }
+      // Message bref : la pastille est pour les yeux (aria-hidden) ; le texte est aussi écrit dans une zone « live » présente depuis le
+      // chargement, seule façon fiable de le faire annoncer. On la vide d'abord pour qu'un même message puisse être annoncé deux fois.
       function toast(t) {
+        const live = $("#live-status");
+        live.textContent = "";
+        clearTimeout(toast.liveTimer);
+        toast.liveTimer = setTimeout(() => (live.textContent = t), 60);
         $("#toast").textContent = t;
         $("#toast").hidden = false;
         clearTimeout(toast.timer);
-        toast.timer = setTimeout(() => ($("#toast").hidden = true), 5500);
+        toast.timer = setTimeout(hideToast, 5500);
+      }
+      function hideToast() {
+        $("#toast").hidden = true;
+        $("#live-status").textContent = "";
+        clearTimeout(toast.timer);
+        clearTimeout(toast.liveTimer);
       }
       function confirmAction(title, text, action, label = "Confirmer") {
         previousFocus = document.activeElement;
@@ -548,8 +545,7 @@
           $(".scale-option")?.focus();
           return;
         }
-        $("#toast").hidden = true;
-        clearTimeout(toast.timer);
+        hideToast();
         const destination = Math.max(0, Math.min(5, i));
         if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
         if (destination === 0 && state.step !== 0 && !keepStartPart) startPart = 0;
@@ -1651,7 +1647,23 @@
         hideTooltip();
         if (innerWidth > 850) setMenuOpen(false);
       });
-      window.addEventListener("scroll", hideTooltip, { passive: true });
+      // Le défilement masque la bulle de la souris. Celle d'un terme qui a le focus (clavier) suit le terme tant qu'il est à l'écran :
+      // le navigateur défile lui-même pour amener un terme hors écran, et ce défilement ne doit pas supprimer la bulle qu'il vient de faire naître.
+      window.addEventListener(
+        "scroll",
+        () => {
+          const owner = tooltipOwner;
+          if (owner && owner.matches(":focus")) {
+            const box = owner.getBoundingClientRect();
+            if (box.bottom > 0 && box.top < innerHeight) {
+              showTooltip(owner);
+              return;
+            }
+          }
+          hideTooltip();
+        },
+        { passive: true },
+      );
       $("#glossary-list").innerHTML = `<div class="glossary-index">${Object.entries(glossary)
         .map(([key, [label]]) => `<p><button type="button" class="glossary-button" data-term="${key}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button> — ${esc(glossaryHelp[key][0])}</p>`)
         .join("")}</div>`;
