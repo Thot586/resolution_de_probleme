@@ -8367,6 +8367,7 @@ dialog {
         $("#term-detail").textContent = glossary[k][1];
         $("#term-example").textContent = info[1];
         $("#term-source").href = "#ref-" + info[2];
+        openReferencesInNewTab($("#term-source"));
         $("#term-dialog").showModal();
         $("#term-close").focus();
       }
@@ -8378,7 +8379,22 @@ dialog {
         if (termOpener?.isConnected && !termOpener.closest("[hidden]")) termOpener.focus();
         termOpener = null;
       });
-      $("#term-source").addEventListener("click", () => $("#term-dialog").close());
+      // Les renvois vers une référence (« [3] », « Voir la source et ses limites », le lien du glossaire) s'ouvrent dans un nouvel onglet :
+      // la personne garde sa place dans l'exercice, et sa fenêtre de définition reste ouverte. Sur la page Bibliographie elle-même ils
+      // restent dans la page. C'est fait ici et non à la main : les liens sont écrits dans les pages et refabriqués à chaque affichage.
+      function openReferencesInNewTab(root) {
+        const links = root.matches?.('a[href^="#ref-"]') ? [root] : [];
+        links.push(...(root.querySelectorAll?.('a[href^="#ref-"]') || []));
+        for (const link of links) {
+          if (link.target === "_blank" || link.closest("#bibliographie")) continue;
+          link.target = "_blank";
+          link.rel = "noopener";
+          // Le nom accessible garde le texte visible et prévient du nouvel onglet.
+          if (!link.hasAttribute("aria-label")) link.setAttribute("aria-label", `${link.textContent.replace(/\s*[↗→]\s*$/, "").trim()}, s’ouvre dans un nouvel onglet`);
+        }
+      }
+      openReferencesInNewTab(document);
+      new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach((node) => node.nodeType === 1 && openReferencesInNewTab(node)))).observe(document.body, { childList: true, subtree: true });
       document.addEventListener("mouseover", (e) => {
         const b = e.target.closest("[data-term]");
         if (b) showTooltip(b);

@@ -62,6 +62,7 @@ const choose = async (target, selector, value) => {
   });
   const page = await context.newPage();
   page.on("pageerror", (e) => errors.push(e.message));
+  page.on("popup", (popup) => popup.on("pageerror", (e) => errors.push(e.message)));
   const external = [];
   page.on("request", (r) => {
     if (r.url().split("#")[0] !== url && !r.url().startsWith("blob:"))
@@ -1063,7 +1064,7 @@ const choose = async (target, selector, value) => {
       );
       assert((await page.locator("#meter-detail").innerText()).length > 100);
       assert(
-        await page.locator('#meter-detail a[href^="#ref-"]').count() > 0,
+        await page.locator('#meter-detail a[href^="#ref-"][target="_blank"]').count() > 0,
         `${val}: the guide cites a source`,
       );
     }
@@ -1310,10 +1311,15 @@ const choose = async (target, selector, value) => {
   await page.locator("#glossary-list [data-term=indicator]").click();
   await visible("#term-dialog");
   assert.match(await page.locator("#term-title").innerText(), /Indicateur/);
-  await page.locator("#term-source").click();
-  assert(!(await page.locator("#term-dialog").isVisible()));
-  await visible("#bibliographie");
-  assert.equal(new URL(page.url()).hash, "#ref-22");
+  assert.equal(await page.locator("#term-source").getAttribute("target"), "_blank", "the glossary source opens in a new tab");
+  const [sourceTab] = await Promise.all([page.waitForEvent("popup"), page.locator("#term-source").click()]);
+  await sourceTab.locator("#bibliographie").waitFor({ state: "visible", timeout: ms(10000) });
+  assert.equal(new URL(sourceTab.url()).hash, "#ref-22");
+  assert.equal(await sourceTab.evaluate(() => document.activeElement.id), "ref-22", "the new tab lands on the reference");
+  assert(await page.locator("#term-dialog").isVisible(), "the definition stays open in the original tab");
+  assert.equal(new URL(page.url()).hash, "#comprendre", "the original tab does not move");
+  await sourceTab.close();
+  await page.locator("#term-close").click();
   await visit("comprendre");
   await axe("theory");
   assert.equal(await guides.count(), 2);
@@ -1329,15 +1335,22 @@ const choose = async (target, selector, value) => {
   assert.doesNotMatch(await page.locator("#bibliographie").innerText(), /La progression s’appuie/);
   assert.match(await page.locator("#ref-1").innerText(), /Brenner[\s\S]*Pomini[\s\S]*Briand/);
   assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('a[href^="#ref-"]')].map((a) => a.getAttribute("href")).filter((href) => !document.getElementById(href.slice(1)))), []);
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('a[href^="#ref-"]')].filter((a) => !a.closest("#bibliographie") && (a.target !== "_blank" || !/noopener/.test(a.rel))).map((a) => a.getAttribute("href"))), [], "every reference link outside the bibliography opens in a new tab");
   await axe("references");
   await page.locator('footer a[href="#comprendre"]').click();
   await page
     .locator("summary")
     .filter({ hasText: "Thérapie de résolution" })
     .click();
-  await page.locator('#comprendre a[href="#ref-2"]:visible').click();
-  await visible("#bibliographie");
-  assert.equal(await page.evaluate(() => document.activeElement.id), "ref-2");
+  const citation = page.locator('#comprendre a[href="#ref-2"]:visible');
+  assert.equal(await citation.getAttribute("target"), "_blank", "a citation opens in a new tab");
+  assert.match(await citation.getAttribute("rel"), /noopener/);
+  assert.match(await citation.getAttribute("aria-label"), /^\[2\], s’ouvre dans un nouvel onglet$/, "the accessible name keeps the visible text and warns of the new tab");
+  const [referenceTab] = await Promise.all([page.waitForEvent("popup"), citation.click()]);
+  await referenceTab.locator("#bibliographie").waitFor({ state: "visible", timeout: ms(10000) });
+  assert.equal(await referenceTab.evaluate(() => document.activeElement.id), "ref-2");
+  assert(await page.locator("#comprendre").isVisible(), "the person keeps their place in the original tab");
+  await referenceTab.close();
   await visit("securite");
   await axe("safety");
   // Reset needs confirmation, then clears both session state and saved state.
