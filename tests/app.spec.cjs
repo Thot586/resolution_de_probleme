@@ -350,6 +350,9 @@ const choose = async (target, selector, value) => {
       group.options,
       `${group.scale}: choices must be scoped to this level`,
     );
+    // Several situations may apply: the screen says that the choice is only a way in, and that changing it later keeps the answers.
+    assert.match(await contextPage.locator("#context-hint").innerText(), /Plusieurs situations me concernent.*Mes réponses restent si je change ensuite/, `${group.scale}: the hint about several situations is shown`);
+    assert.match((await contextPage.locator("#context-select").getAttribute("aria-describedby")) || "", /context-hint/);
     for (const [key, focus, situation, hint, method, idea, action] of group.cases) {
       await choose(contextPage, "#context-select", key);
       assert.match(await contextPage.locator("#context-focus").innerText(), focus);

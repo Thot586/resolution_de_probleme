@@ -504,6 +504,9 @@
       .context-pick {
         max-width: 520px;
       }
+      #context-hint {
+        margin: 6px 0 14px;
+      }
       #context-description {
         margin-top: 9px;
       }
