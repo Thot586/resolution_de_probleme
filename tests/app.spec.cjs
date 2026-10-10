@@ -582,7 +582,7 @@ const choose = async (target, selector, value) => {
   await tabA.locator("#remember").check();
   assert.equal(await tabA.evaluate(() => localStorage.length), 1);
   await tabB.evaluate(() => localStorage.removeItem("pas-a-pas.brouillon.v2"));
-  await tabA.waitForFunction(() => remember === false, null, { timeout: ms(5000) });
+  await tabA.waitForFunction(() => ui.remember === false, null, { timeout: ms(5000) });
   assert.match(await tabA.locator("#privacy-status").textContent(), /Mes réponses restent dans ma fiche/);
   assert.match(await tabA.locator("#toast").innerText(), /effacé dans un autre onglet/);
   assert.equal(await tabA.evaluate(() => { state.fields.situation = "Encore une réponse."; return persist(); }), false);
@@ -1624,7 +1624,7 @@ const choose = async (target, selector, value) => {
   assert(!(await tp.locator("#navigation").isVisible()));
   await tp.goto(url + "#groupe");
   await tp.locator("#groupe [data-term=survey]").first().tap();
-  assert(await tp.locator("#term-dialog").isVisible());
+  await tp.locator("#term-dialog").waitFor({ state: "visible", timeout: ms(5000) }); // the tap may land while the page is still drawing the group view
   await tp.locator("#term-close").tap();
   await tp.locator("#term-dialog").waitFor({ state: "hidden" }); // with animations on, the dialog fades out before it is hidden
   await touch.close();

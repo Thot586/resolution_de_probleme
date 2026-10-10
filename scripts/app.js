@@ -27,9 +27,8 @@
       // un écran déduit d'eux, comme la page des repères de violence, se met à jour seul quand ils changent (voir scripts/core.js).
       // `state` reste un objet simple en apparence : on lit et on écrit ses champs comme avant.
       const state = reactive(fresh());
-      const ui = reactive({ startPart: 0, supportMode: "listen", selectedNeed: null, meterIndex: null, violenceKey: "", recapArrival: false });
-      let remember = false,
-        nextId = 4,
+      const ui = reactive({ startPart: 0, supportMode: "listen", selectedNeed: null, meterIndex: null, violenceKey: "", recapArrival: false, remember: false, staleCopy: false });
+      let nextId = 4,
         previousFocus = null,
         pendingConfirm = null;
       // Remplace tout l'état (brouillon repris, import, effacement) en gardant le même objet : les écrans qui le lisent se mettent à jour une fois.
@@ -69,25 +68,23 @@
       }
       const atRisk = () => state.safety === "unsure" || state.safety === "danger";
       const RISK_NOTE = "Si cet appareil est partagé ou surveillé, mieux vaut ne rien garder ici.";
-      let staleCopy = false;
       function keepNoteText(kind) {
-        if (remember) return kind === "pause" ? "Je peux m’arrêter ici et reprendre plus tard : mon brouillon est gardé dans ce navigateur." : "Mon plan est gardé dans ce navigateur.";
+        if (ui.remember) return kind === "pause" ? "Je peux m’arrêter ici et reprendre plus tard : mon brouillon est gardé dans ce navigateur." : "Mon plan est gardé dans ce navigateur.";
         if (atRisk()) return kind === "pause" ? "Je peux m’arrêter ici. " + RISK_NOTE + " Mes réponses disparaissent quand je ferme ou recharge la page." : "Mon plan reste dans ma fiche jusqu’à la fermeture de cette page. " + RISK_NOTE;
         return kind === "pause"
           ? "Je peux m’arrêter ici. Pour reprendre plus tard, je garde mon brouillon dans ce navigateur ou je le télécharge ; sinon mes réponses disparaissent quand je ferme ou recharge la page."
           : "Mon plan reste dans ma fiche jusqu’à la fermeture de cette page. Pour le retrouver après l’essai, je le garde dans ce navigateur.";
       }
       function keepActionsHtml(kind) {
-        if (remember || atRisk()) return "";
+        if (ui.remember || atRisk()) return "";
         const keep = `<button class="${kind === "pause" ? "btn small" : "btn"}" data-action="keep-local">Garder dans ce navigateur</button>`;
         return kind === "pause" ? keep + '<button class="btn small" data-action="export-draft">Télécharger mon brouillon</button>' : keep;
       }
-      const savedHtml = () => '<span aria-hidden="true">✓</span> Noté dans ma fiche · ' + (remember ? "gardé dans ce navigateur" : "sur cette page");
+      const savedHtml = () => '<span aria-hidden="true">✓</span> Noté dans ma fiche · ' + (ui.remember ? "gardé dans ce navigateur" : "sur cette page");
       function refreshRememberUi() {
         $$("[data-keep-note]").forEach((el) => { el.textContent = keepNoteText(el.dataset.keepNote); });
         $$("[data-keep-actions]").forEach((el) => { el.innerHTML = keepActionsHtml(el.dataset.keepActions); });
         $$(".save-state").forEach((el) => { if (el.textContent.trim()) el.innerHTML = savedHtml(); });
-        updateFicheLine();
       }
       function ficheLineHtml() {
         if (state.step === 0 && state.safety === "danger") return "";
@@ -116,15 +113,17 @@
         if (out.textContent) return;
         savedTimers.set(id, setTimeout(() => { out.innerHTML = savedHtml(); }, 700));
       }
+      // Effet : on lit d'abord l'état, sans condition. Un effet ne suit que ce qu'il a lu, et au démarrage la ligne n'existe pas encore.
       function updateFicheLine() {
+        const html = ficheLineHtml();
+        const hasSections = ficheSections().length > 0;
         const line = $("#fiche-line");
         if (line) {
-          const html = ficheLineHtml();
           line.innerHTML = html;
           line.hidden = !html;
         }
         const link = $("#fiche-link");
-        if (link) link.hidden = ficheSections().length === 0;
+        if (link) link.hidden = !hasSections;
       }
       function stepDocumentTitle() {
         return `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]}`;
@@ -199,7 +198,7 @@
           }
         }
         if (restored) {
-          remember = true;
+          ui.remember = true;
           nextId = state.options.length + 1;
           if (restoredFromV2 && localStorage.getItem(OLD_KEY)) {
             try { localStorage.removeItem(OLD_KEY); } catch (e) { /* Keep the readable draft. */ }
@@ -209,20 +208,18 @@
         /* Corrupt or unavailable storage does not block use. */
       }
       function persist() {
-        if (!remember) return false;
+        if (!ui.remember) return false;
         try {
           localStorage.setItem(KEY, JSON.stringify(state));
           return true;
         } catch (e) {
-          remember = false;
+          ui.remember = false;
           try {
             localStorage.removeItem(KEY);
-            staleCopy = false;
+            ui.staleCopy = false;
           } catch (e2) {
-            staleCopy = true;
+            ui.staleCopy = true;
           }
-          $("#remember").checked = false;
-          updatePrivacy();
           toast(
             "La sauvegarde a échoué. Téléchargez votre brouillon pour le conserver.",
           );
@@ -230,8 +227,8 @@
         }
       }
       function privacyText() {
-        if (remember) return "Brouillon gardé dans ce navigateur. Rien n’est envoyé.";
-        if (staleCopy) return "Une copie de mes réponses reste dans ce navigateur (retrait impossible). Rien n’est envoyé.";
+        if (ui.remember) return "Brouillon gardé dans ce navigateur. Rien n’est envoyé.";
+        if (ui.staleCopy) return "Une copie de mes réponses reste dans ce navigateur (retrait impossible). Rien n’est envoyé.";
         return "Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page. Rien n’est envoyé.";
       }
       function updatePrivacy() {
@@ -239,9 +236,9 @@
         const text = privacyText();
         if (status.textContent !== text) status.textContent = text;
         const keep = $("#keep-link");
-        const hideKeep = remember || atRisk();
+        const hideKeep = ui.remember || atRisk();
         if (keep.hidden !== hideKeep) keep.hidden = hideKeep;
-        $("#remember").checked = remember;
+        $("#remember").checked = ui.remember;
         refreshRememberUi();
       }
       // Message bref : la pastille est pour les yeux (aria-hidden) ; le texte est aussi écrit dans une zone « live » présente depuis le
@@ -511,7 +508,7 @@
         if (hasWriting()) {
           const withBilan = ficheSections().includes("mon bilan");
           const bannerTitle = withBilan ? "Mon bilan est noté dans ma fiche" : hasPlan() ? "Ma fiche est prête" : "Voici mes réponses jusqu’ici";
-          const keepSentence = remember ? " Elle est gardée dans ce navigateur." : " Elle reste dans cette page jusqu’à sa fermeture ou son rechargement.";
+          const keepSentence = ui.remember ? " Elle est gardée dans ce navigateur." : " Elle reste dans cette page jusqu’à sa fermeture ou son rechargement.";
           const bannerText = (hasPlan()
             ? "Je peux la relire, la modifier, l’imprimer ou la télécharger." + (withBilan ? "" : " Ensuite, j’essaie mon premier pas, puis je reviens faire le point.")
             : "Ma fiche se complète au fil des étapes. Je peux modifier ce que j’ai écrit, puis continuer l’exercice.") + keepSentence;
@@ -521,12 +518,12 @@
             ? "J’ai fait le point après l’essai. Je peux revoir mon bilan ou le modifier."
             : "Quand j’aurai essayé mon premier pas, je reviens faire le point." + (when ? " Date prévue : " + when + " (sans rappel automatique)." : "");
           $("#recap-review").textContent = withBilan ? "Revoir mon bilan →" : "Faire le point après l’essai →";
-          $("#recap-keep-text").textContent = remember
+          $("#recap-keep-text").textContent = ui.remember
             ? "Ma fiche est gardée dans ce navigateur : je la retrouve en rouvrant cette page, dans « Mon problème »."
             : atRisk()
               ? RISK_NOTE + " Ma fiche disparaît quand je ferme ou recharge la page."
               : "Pour la retrouver après l’essai, je la garde dans ce navigateur ou je télécharge mon brouillon ; sinon elle disparaît quand je ferme ou recharge la page.";
-          $("#recap-keep").hidden = remember || atRisk();
+          $("#recap-keep").hidden = ui.remember || atRisk();
           $("#recap-export").hidden = atRisk();
           $("#recap-resume-text").hidden = atRisk();
         }
@@ -1128,7 +1125,6 @@
           }
         }
         if (el.dataset.field || el.dataset.option) {
-          updateFicheLine();
           scheduleSavedState(el);
           if ($("#mobile-step-picker").open) renderSteps();
         }
@@ -1159,7 +1155,6 @@
           state.safety = b.dataset.safety;
           persist();
           renderStep();
-          updatePrivacy();
           $(`[data-safety="${state.safety}"]`).focus();
           return;
         }
@@ -1172,11 +1167,11 @@
         }
         if (b.dataset.choose) {
           state.chosen = Number(b.dataset.choose);
-          const wasKept = remember;
+          const wasKept = ui.remember;
           persist();
           renderStep();
           $(`[data-choose="${state.chosen}"]`).focus();
-          if (!(wasKept && !remember)) {
+          if (!(wasKept && !ui.remember)) {
             toast(
               "Option choisie. Vous pouvez maintenant préparer votre action.",
             );
@@ -1249,13 +1244,13 @@
             break;
           case "pause": {
             state.energy = "pause";
-            const wasKept = remember;
+            const wasKept = ui.remember;
             persist();
             renderStep();
             $('[data-action="pause"]')?.focus();
-            if (!(wasKept && !remember)) {
+            if (!(wasKept && !ui.remember)) {
               toast(
-                remember
+                ui.remember
                   ? "Vous pouvez faire une pause et reprendre à votre rythme."
                   : "Pause notée. Pour reprendre plus tard, gardez votre brouillon dans ce navigateur ou téléchargez-le.",
               );
@@ -1315,7 +1310,7 @@
           case "reset":
             confirmAction(
               "Effacer mon brouillon ?",
-              "Toutes vos réponses dans cette page seront supprimées" + (remember ? ", ainsi que le brouillon gardé dans ce navigateur" : "") + ". Vos téléchargements, impressions et historique ne seront pas effacés.",
+              "Toutes vos réponses dans cette page seront supprimées" + (ui.remember ? ", ainsi que le brouillon gardé dans ce navigateur" : "") + ". Vos téléchargements, impressions et historique ne seront pas effacés.",
               () => {
                 let removed = true;
                 try {
@@ -1325,13 +1320,12 @@
                   removed = false;
                 }
                 replaceState(fresh());
-                remember = false;
-                staleCopy = !removed;
+                ui.remember = false;
+                ui.staleCopy = !removed;
                 nextId = 4;
                 groupNotes.fill("");
                 if ($("#group-note")) $("#group-note").value = "";
                 $("#print-document").replaceChildren();
-                updatePrivacy();
                 renderStep();
                 renderRecap();
                 if (location.hash === "recap") location.hash = "outil";
@@ -1356,34 +1350,32 @@
         }
       });
       function setRemember(on) {
-        remember = on;
-        if (remember) {
+        ui.remember = on;
+        if (ui.remember) {
           persist();
-          if (remember) {
-            staleCopy = false;
+          if (ui.remember) {
+            ui.staleCopy = false;
             toast("Brouillon gardé dans ce navigateur.");
           }
         } else {
           try {
             localStorage.removeItem(KEY);
             localStorage.removeItem(OLD_KEY);
-            staleCopy = false;
+            ui.staleCopy = false;
             toast("Sauvegarde désactivée et retirée de ce navigateur.");
           } catch (e) {
-            staleCopy = true;
+            ui.staleCopy = true;
             toast(
               "Impossible de retirer la sauvegarde. Vérifiez les paramètres de votre navigateur.",
             );
           }
         }
-        updatePrivacy();
         if (!$("#recap").hidden) renderRecap();
       }
       window.addEventListener("storage", (e) => {
-        if (e.storageArea !== localStorage || !remember) return;
+        if (e.storageArea !== localStorage || !ui.remember) return;
         if ((e.key === KEY || e.key === null) && e.newValue === null) {
-          remember = false;
-          updatePrivacy();
+          ui.remember = false;
           if (!$("#recap").hidden) renderRecap();
           toast("Le brouillon a été effacé dans un autre onglet. Cette page ne le garde plus ; vos réponses y restent tant qu’elle est ouverte.");
         }
@@ -1412,7 +1404,6 @@
               replaceState(imported);
               nextId = state.options.length + 1;
               persist();
-              updatePrivacy();
               renderStep();
               if (location.hash !== "#outil") location.hash = "outil";
               else renderStep(true);
@@ -1581,7 +1572,9 @@
       const syncHeaderHeight = () => document.documentElement.style.setProperty("--header-h", siteHeader.offsetHeight + "px");
       syncHeaderHeight();
       if (window.ResizeObserver) new ResizeObserver(syncHeaderHeight).observe(siteHeader);
-      updatePrivacy();
+      // La ligne de confidentialité, les notes « garder » et la ligne « Dans ma fiche » se déduisent de l'état : plus d'appel à la main.
+      effect(updatePrivacy);
+      effect(updateFicheLine);
       renderStep();
       renderSupport();
       $("#support-relation").addEventListener("change", renderNeedGuidance);

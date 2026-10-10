@@ -129,6 +129,8 @@
       }
 
       // Exécute fn, la rejoue quand ce qu'elle a lu change. Renvoie une fonction qui l'arrête.
+      // Piège : un effet ne suit que ce qu'il LIT. Lire l'état avant de tester le DOM, pas après : un effet qui sort sans avoir rien lu
+      // (« l'élément n'existe pas encore ») ne se rejouera jamais.
       function effect(fn) {
         const running = { id: ++effectCount, sources: new Set(), stopped: false, onChange: null };
         running.run = () => {

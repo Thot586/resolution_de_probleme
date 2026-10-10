@@ -128,6 +128,26 @@ test("computed : calculé à la demande, gardé, invalidé par ce qu'il lit, et 
   assert.equal(calls, 2);
 });
 
+test("piège : un effet qui sort avant de lire l'état ne se rejouera jamais", () => {
+  const { reactive, effect } = load(["core.js"], ["reactive", "effect"]);
+  const state = reactive({ title: "a" });
+  let element = null; // l'élément du DOM n'existe pas encore au démarrage
+  const written = [];
+  effect(() => {
+    if (!element) return; // sort sans rien lire
+    written.push(state.title);
+  });
+  const careful = [];
+  effect(() => {
+    const title = state.title; // lit d'abord
+    if (element) careful.push(title);
+  });
+  element = {};
+  state.title = "b";
+  assert.deepEqual(written, [], "l'effet qui n'a rien lu n'est jamais prévenu");
+  assert.deepEqual(careful, ["b"], "l'effet qui lit d'abord se rejoue");
+});
+
 test("untracked lit sans s'abonner", () => {
   const { reactive, effect, untracked } = load(["core.js"], ["reactive", "effect", "untracked"]);
   const state = reactive({ watched: 1, ignored: 1 });
