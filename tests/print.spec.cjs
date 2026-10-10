@@ -75,7 +75,7 @@ const fs = require("node:fs/promises");
     };
     for (const [name, fields] of Object.entries(samples)) {
       await page.evaluate((fields) => {
-        state = fresh();
+        replaceState(fresh()); // l'état est un objet réactif unique : on le remplace, on ne le réaffecte pas
         Object.assign(state.fields, fields);
         state.fields.trial = "yes";
         state.options = [

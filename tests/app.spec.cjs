@@ -1102,6 +1102,49 @@ const choose = async (target, selector, value) => {
   assert.equal(await choiceValue(guidePage, "#violence-context"), "", "Generic deep link returns to the chooser");
   assert.equal(await guidePage.locator("#meter [data-meter]").count(), 0);
   await guidePage.close();
+  // The order of the relations follows the problem in progress: nothing is hidden, nothing is chosen for the person.
+  const originPage = await context.newPage();
+  originPage.on("pageerror", (e) => errors.push(e.message));
+  const legendsOf = () => originPage.locator("#violence-context .choice-legend").allTextContents();
+  const allRelations = [...violenceContexts, "authority"].sort();
+  await originPage.goto(url + "#violences");
+  assert.deepEqual(await legendsOf(), ["Vie personnelle", "Travail et études", "Soins", "Droits et signalement", "Autre situation"], "no problem chosen: the original order");
+  assert.equal(await originPage.locator("#violence-origin-note").isHidden(), true, "nothing to explain without a chosen problem");
+  assert.equal(await originPage.locator("#violence-return").isHidden(), true);
+  await originPage.goto(url + "#outil-organization");
+  await choose(originPage, "#context-select", "conditions");
+  await originPage.locator('[data-action="next"]').click();
+  await originPage.locator('[data-safety="danger"]').click();
+  const toViolence = originPage.locator(".notice.red a.btn", { hasText: "Repérer une violence" });
+  assert.equal(await toViolence.getAttribute("href"), "#violences", "the team level leads to the generic list");
+  await toViolence.click();
+  await originPage.locator("#violences").waitFor({ state: "visible" });
+  assert.deepEqual(await legendsOf(), ["Travail et études", "Droits et signalement", "Vie personnelle", "Soins", "Autre situation"], "from the team level, work relations come first");
+  assert.match(await originPage.locator("#violence-origin-note").innerText(), /Équipe ou institution · Conditions de travail et sécurité.*Rien n’est choisi à ma place/);
+  assert.equal(await originPage.locator("#violence-return").isVisible(), true);
+  assert.equal(await choiceValue(originPage, "#violence-context"), "", "nothing is chosen for the person");
+  assert.deepEqual((await choiceValues(originPage, "#violence-context")).sort(), allRelations, "every relation stays reachable");
+  assert.deepEqual((await choiceValues(originPage, "#violence-context")).slice(0, 3), ["work", "colleague", "education"], "the closest relations come first inside the group");
+  assert.equal((await originPage.locator("#violence-context input").first().getAttribute("value")), "work");
+  // A direct link still opens its relation, whatever the problem in progress.
+  await originPage.goto(url + "#violences-couple");
+  assert.equal(await choiceValue(originPage, "#violence-context"), "couple");
+  assert.equal(await originPage.locator("#meter [data-meter]").count(), 6);
+  // Opening an example keeps the list and the keyboard focus (the order effect does not redraw the list).
+  await originPage.locator('[data-meter="2"]').focus();
+  await originPage.keyboard.press("Enter");
+  assert.equal(await originPage.locator('[data-meter="2"]').getAttribute("aria-pressed"), "true");
+  assert.equal(await originPage.evaluate(() => document.activeElement?.dataset.meter), "2", "the focus stays on the example button");
+  // Changing the level of the problem reorders the list.
+  await originPage.goto(url + "#outil-public");
+  await originPage.goto(url + "#violences");
+  assert.equal((await legendsOf())[0], "Droits et signalement", "from the collective level, rights and reporting come first");
+  assert.match(await originPage.locator("#violence-origin-note").innerText(), /Collectif ou politique/);
+  await originPage.goto(url + "#outil-personal");
+  await choose(originPage, "#context-select", "health");
+  await originPage.goto(url + "#violences");
+  assert.equal((await legendsOf())[0], "Soins", "from a care context, care comes first");
+  await originPage.close();
   const relationPage = await context.newPage();
   relationPage.on("pageerror", (e) => errors.push(e.message));
   relationPage.on("request", (r) => {

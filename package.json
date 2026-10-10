@@ -5,6 +5,7 @@
   "description": "Parcours interactif de résolution de problème et d'accompagnement",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "test:unit": "node --test tests/unit.spec.cjs",
     "pretest": "node scripts/build.mjs",
     "test": "node tests/app.spec.cjs",
     "pretest:print": "node scripts/build.mjs",

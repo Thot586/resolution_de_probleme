@@ -447,6 +447,24 @@
         ["Droits et signalement", [["authority", "Autorité, entreprise ou groupe puissant"]]],
         ["Autre situation", [["other", "Une autre relation"]]],
       ];
+      // Où se place la personne : quelles relations montrer en premier sur la page des repères de violence.
+      // Seul l'ordre change : aucune relation n'est masquée, aucune n'est choisie à la place de la personne, « Autre situation » reste en dernier.
+      // Clé « niveau/contexte » : précision ; clé « niveau » : valeur par défaut du niveau ; rien : l'ordre d'origine ci-dessus.
+      const violenceFirst = {
+        organization: ["work", "colleague", "authority"],
+        public: ["authority"],
+        "personal/study": ["education", "peers"],
+        "personal/work": ["work", "colleague"],
+        "personal/health": ["care", "vulnerable"],
+        "shared/family": ["family", "sibling", "vulnerable"],
+        "shared/sibling": ["sibling", "family"],
+        "shared/peers": ["peers", "sibling"],
+        "shared/colleague": ["colleague", "work"],
+        "shared/mentoring": ["education", "work"],
+        "shared/neighbors": ["peers"],
+        "organization/coordination": ["colleague", "work"],
+        "organization/service": ["authority", "care", "education"],
+      };
       const violenceData = {
         couple: {
           note: "Tous les genres et toutes les orientations sont concernés. Des moments respectueux n’effacent pas les violences.",

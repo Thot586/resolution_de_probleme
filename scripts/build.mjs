@@ -24,18 +24,15 @@ const dataUri = async (path, type) => `data:${type};base64,${(await readFile(joi
 const fontUri = await dataUri("assets/fonts/BarlowCondensed-Bold.subset.woff2", "font/woff2");
 const logoUri = await dataUri("assets/trimobe-logo-176.jpeg", "image/jpeg");
 const faviconUri = await dataUri("assets/trimobe-logo-64.jpeg", "image/jpeg");
-const [tokensCss, baseCss, pathsCss, componentsCss, dataJs, workflowJs, contextCatalogJs, decisionDiagramJs, choiceGroupJs, groupJs, appJs, pageParts] = await Promise.all([
+// Scripts : un seul <script> classique, dans cet ordre (chacun peut lire les noms définis avant lui).
+// tests/unit.spec.cjs charge les mêmes fichiers dans le même ordre.
+const scriptFiles = ["core", "data", "workflows", "context-catalog", "decision-diagram", "choice-group", "draft", "selectors", "group", "app"];
+const [tokensCss, baseCss, pathsCss, componentsCss, scriptParts, pageParts] = await Promise.all([
   read("styles/tokens.css"),
   read("styles/base.css"),
   read("styles/paths.css"),
   read("styles/components.css"),
-  read("scripts/data.js"),
-  read("scripts/workflows.js"),
-  read("scripts/context-catalog.js"),
-  read("scripts/decision-diagram.js"),
-  read("scripts/choice-group.js"),
-  read("scripts/group.js"),
-  read("scripts/app.js"),
+  Promise.all(scriptFiles.map((name) => read(`scripts/${name}.js`))),
   Promise.all(pages.map((name) => read(`pages/${name}.html`))),
 ]);
 const pageHtml = pageParts.join("");
@@ -53,7 +50,7 @@ html = html.replace(
 );
 html = html.replace(
   "<!-- SCRIPT -->",
-  () => `<script>\n      "use strict";\n${dataJs}\n${workflowJs}\n${contextCatalogJs}\n${decisionDiagramJs}\n${choiceGroupJs}\n${groupJs}\n${appJs}    </script>`,
+  () => `<script>\n      "use strict";\n${scriptParts.join("\n")}    </script>`,
 );
 html = html.replaceAll("__LOGO_DATA_URI__", logoUri).replaceAll("__FAVICON_DATA_URI__", faviconUri);
 // Typographie : une flèche ne reste jamais seule en début de ligne (espace insécable avant « → » et « ↗ », après « ← »).

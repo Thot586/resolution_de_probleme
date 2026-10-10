@@ -783,6 +783,9 @@ dialog {
       #context-hint {
         margin: 6px 0 14px;
       }
+      #violence-origin-note {
+        margin: 6px 0 14px;
+      }
       #context-description {
         margin-top: 9px;
       }
@@ -3327,7 +3330,8 @@ dialog {
           <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a> <span id="violence-quit" hidden><button type="button" class="text-button" data-action="quick-exit">Quitter cette page ↗</button> <small>Remplace la page par Wikipédia ; n’efface pas l’historique.</small></span></p>
           <div class="section-gap violence-choice primary-ask">
             <span class="label" id="violence-context-label">Avec qui se passe la situation ?</span>
-            <choice-group id="violence-context" name="violence-context" fold summary-label="Relation choisie :" placeholder="Choisir une relation" aria-labelledby="violence-context-label" aria-describedby="violence-choice-help violence-context-note"></choice-group>
+            <p class="hint" id="violence-origin-note" hidden></p>
+            <choice-group id="violence-context" name="violence-context" fold summary-label="Relation choisie :" placeholder="Choisir une relation" aria-labelledby="violence-context-label" aria-describedby="violence-choice-help violence-origin-note violence-context-note"></choice-group>
             <p class="hint" id="violence-choice-help">Je peux choisir « Une autre relation » si aucun exemple ne convient. Le choix apparaît dans l’adresse.</p>
           </div>
           <p class="hint" id="violence-context-note"></p>
@@ -4749,6 +4753,212 @@ dialog {
     </dialog>
     <script>
       "use strict";
+      // Noyau maison, sans dépendance. Deux outils :
+      //  1. un gabarit qui échappe par défaut : html`<p>${texte}</p>` ; raw() marque un fragment de confiance ;
+      //  2. un état réactif : un effet lit l'état, et se rejoue tout seul quand ce qu'il a lu change.
+      // L'idée : un écran est une fonction de l'état. On change l'état ; l'écran suit, sans appel de rendu à la main.
+      // Rien ici ne touche au DOM : ces fonctions se testent dans Node (tests/unit.spec.cjs).
+
+      // ---- Gabarit qui échappe par défaut
+      const esc = (value) =>
+        String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      class RawHtml {
+        constructor(text) {
+          this.text = text;
+        }
+        toString() {
+          return this.text;
+        }
+      }
+      const raw = (text) => new RawHtml(String(text ?? ""));
+      const fragment = (value) =>
+        value instanceof RawHtml ? value.text : Array.isArray(value) ? value.map(fragment).join("") : value === null || value === undefined || value === false ? "" : esc(value);
+      const html = (strings, ...values) => new RawHtml(strings.reduce((out, chunk, i) => out + chunk + (i < values.length ? fragment(values[i]) : ""), ""));
+
+      // ---- État réactif (objets simples et tableaux, en profondeur)
+      const ITERATE = Symbol("iterate");
+      const subscriptions = new WeakMap(); // objet brut -> Map(clé -> Set(effets))
+      const proxyOf = new WeakMap(); // objet brut -> son proxy
+      const rawOf = new WeakMap(); // proxy -> objet brut
+      let activeEffect = null;
+      let batchDepth = 0;
+      let effectCount = 0;
+      const queued = new Set();
+
+      // Objet simple : prototype nul, ou prototype dont le prototype est nul (vrai aussi pour un objet venu d'une autre fenêtre ou d'un autre contexte).
+      const isPlain = (value) => {
+        if (value === null || typeof value !== "object") return false;
+        if (Array.isArray(value)) return true;
+        const proto = Object.getPrototypeOf(value);
+        return proto === null || Object.getPrototypeOf(proto) === null;
+      };
+
+      function track(target, key) {
+        if (!activeEffect) return;
+        let keys = subscriptions.get(target);
+        if (!keys) subscriptions.set(target, (keys = new Map()));
+        let effects = keys.get(key);
+        if (!effects) keys.set(key, (effects = new Set()));
+        effects.add(activeEffect);
+        activeEffect.sources.add(effects);
+      }
+      function trigger(target, keys) {
+        const map = subscriptions.get(target);
+        if (!map) return;
+        const affected = new Set();
+        for (const key of keys) (map.get(key) || []).forEach((effect) => affected.add(effect));
+        // Ordre de création : un écran déduit d'un autre se rejoue après lui.
+        [...affected].sort((a, b) => a.id - b.id).forEach(schedule);
+      }
+      function schedule(effect) {
+        if (effect === activeEffect || effect.stopped) return; // un effet qui écrit ce qu'il lit ne se rappelle pas lui-même
+        if (effect.onChange) effect.onChange();
+        else if (batchDepth > 0) queued.add(effect);
+        else rerun(effect);
+      }
+      function rerun(effect) {
+        try {
+          effect.run();
+        } catch (error) {
+          // L'écriture qui a déclenché l'effet doit se terminer ; l'erreur, elle, reste visible.
+          queueMicrotask(() => {
+            throw error;
+          });
+        }
+      }
+      function flush() {
+        while (queued.size) {
+          const waiting = [...queued].sort((a, b) => a.id - b.id);
+          queued.clear();
+          waiting.forEach((effect) => !effect.stopped && rerun(effect));
+        }
+      }
+
+      function reactive(target) {
+        if (!isPlain(target) || rawOf.has(target)) return target;
+        const known = proxyOf.get(target);
+        if (known) return known;
+        const proxy = new Proxy(target, {
+          get(object, key, receiver) {
+            const value = Reflect.get(object, key, receiver);
+            if (typeof key === "symbol") return value;
+            track(object, key);
+            return isPlain(value) ? reactive(value) : value;
+          },
+          has(object, key) {
+            track(object, key);
+            return Reflect.has(object, key);
+          },
+          ownKeys(object) {
+            track(object, ITERATE);
+            return Reflect.ownKeys(object);
+          },
+          set(object, key, value) {
+            const stored = rawOf.get(value) || value; // jamais de proxy rangé dans l'objet brut
+            const existed = Object.hasOwn(object, key);
+            const previous = object[key];
+            const previousLength = Array.isArray(object) ? object.length : 0;
+            Reflect.set(object, key, stored);
+            if (!existed) {
+              trigger(object, Array.isArray(object) ? [key, "length", ITERATE] : [key, ITERATE]);
+            } else if (!Object.is(previous, stored)) {
+              const keys = [key];
+              if (Array.isArray(object) && key === "length") {
+                // Un tableau raccourci : les cases supprimées changent aussi.
+                for (const tracked of subscriptions.get(object)?.keys() || []) if (/^\d+$/.test(String(tracked)) && Number(tracked) >= stored && Number(tracked) < previousLength) keys.push(tracked);
+              }
+              trigger(object, keys);
+            }
+            return true;
+          },
+          deleteProperty(object, key) {
+            const existed = Object.hasOwn(object, key);
+            const done = Reflect.deleteProperty(object, key);
+            if (existed) trigger(object, [key, ITERATE]);
+            return done;
+          },
+        });
+        proxyOf.set(target, proxy);
+        rawOf.set(proxy, target);
+        return proxy;
+      }
+
+      // Exécute fn, la rejoue quand ce qu'elle a lu change. Renvoie une fonction qui l'arrête.
+      function effect(fn) {
+        const running = { id: ++effectCount, sources: new Set(), stopped: false, onChange: null };
+        running.run = () => {
+          running.sources.forEach((set) => set.delete(running));
+          running.sources.clear();
+          const previous = activeEffect;
+          activeEffect = running;
+          try {
+            return fn();
+          } finally {
+            activeEffect = previous;
+          }
+        };
+        running.run();
+        return () => {
+          running.stopped = true;
+          running.sources.forEach((set) => set.delete(running));
+          running.sources.clear();
+        };
+      }
+      // Valeur dérivée : calculée à la demande, gardée tant que ce qu'elle lit ne change pas.
+      function computed(getter) {
+        const box = {};
+        let value;
+        let dirty = true;
+        const inner = { id: ++effectCount, sources: new Set(), stopped: false };
+        inner.run = () => {
+          inner.sources.forEach((set) => set.delete(inner));
+          inner.sources.clear();
+          const previous = activeEffect;
+          activeEffect = inner;
+          try {
+            return getter();
+          } finally {
+            activeEffect = previous;
+          }
+        };
+        inner.onChange = () => {
+          if (!dirty) {
+            dirty = true;
+            trigger(box, ["value"]);
+          }
+        };
+        return {
+          get value() {
+            track(box, "value");
+            if (dirty) {
+              value = inner.run();
+              dirty = false;
+            }
+            return value;
+          },
+        };
+      }
+      // Regroupe des écritures : les effets concernés ne se rejouent qu'une fois, à la fin.
+      function batch(fn) {
+        batchDepth++;
+        try {
+          return fn();
+        } finally {
+          batchDepth--;
+          if (batchDepth === 0) flush();
+        }
+      }
+      // Lit sans s'abonner : pour un effet qui ne doit pas se rejouer à cause de cette lecture.
+      function untracked(fn) {
+        const previous = activeEffect;
+        activeEffect = null;
+        try {
+          return fn();
+        } finally {
+          activeEffect = previous;
+        }
+      }
+
       const contexts = {
         daily: {
           label: "Vie quotidienne",
@@ -5198,6 +5408,24 @@ dialog {
         ["Droits et signalement", [["authority", "Autorité, entreprise ou groupe puissant"]]],
         ["Autre situation", [["other", "Une autre relation"]]],
       ];
+      // Où se place la personne : quelles relations montrer en premier sur la page des repères de violence.
+      // Seul l'ordre change : aucune relation n'est masquée, aucune n'est choisie à la place de la personne, « Autre situation » reste en dernier.
+      // Clé « niveau/contexte » : précision ; clé « niveau » : valeur par défaut du niveau ; rien : l'ordre d'origine ci-dessus.
+      const violenceFirst = {
+        organization: ["work", "colleague", "authority"],
+        public: ["authority"],
+        "personal/study": ["education", "peers"],
+        "personal/work": ["work", "colleague"],
+        "personal/health": ["care", "vulnerable"],
+        "shared/family": ["family", "sibling", "vulnerable"],
+        "shared/sibling": ["sibling", "family"],
+        "shared/peers": ["peers", "sibling"],
+        "shared/colleague": ["colleague", "work"],
+        "shared/mentoring": ["education", "work"],
+        "shared/neighbors": ["peers"],
+        "organization/coordination": ["colleague", "work"],
+        "organization/service": ["authority", "care", "education"],
+      };
       const violenceData = {
         couple: {
           note: "Tous les genres et toutes les orientations sont concernés. Des moments respectueux n’effacent pas les violences.",
@@ -6529,6 +6757,164 @@ dialog {
       }
       customElements.define("choice-group", ChoiceGroup);
 
+      // Le brouillon : forme de l'état d'un problème, validation et migration des anciens brouillons (v1 -> v2).
+      // Fonctions pures, sans DOM : elles se testent dans Node (tests/unit.spec.cjs).
+      function fresh() {
+        return {
+          version: 2,
+          catalogRevision: 3,
+          step: 0,
+          clarifyPart: 0,
+          context: "other",
+          scale: "personal",
+          scaleChosen: false,
+          reviewScale: false,
+          reviewContext: false,
+          safety: "",
+          energy: "",
+          fields: {
+            situation: "",
+            goal: "",
+            obstacle: "",
+            emotion: "",
+            control: "",
+            outside: "",
+            action: "",
+            when: "",
+            support: "",
+            backup: "",
+            measure: "",
+            reviewDate: "",
+            result: "",
+            learning: "",
+            next: "",
+            trial: "notyet",
+          },
+          options: [
+            { id: 1, text: "", plus: "", minus: "" },
+            { id: 2, text: "", plus: "", minus: "" },
+          ],
+          chosen: null,
+        };
+      }
+      const legacyContextMap = {
+        personal: { daily: "daily", study: "study", work: "work", health: "health" },
+        shared: { couple: "couple", family: "family", work: "other" },
+        organization: { work: "coordination" },
+        public: { collective: "mobility" },
+      };
+      function validateDraft(raw) {
+        if (
+          !raw ||
+          ![1, 2].includes(raw.version) ||
+          !Array.isArray(raw.options) ||
+          raw.options.length < 1 ||
+          raw.options.length > 8
+        )
+          throw Error("invalid");
+        const clean = fresh();
+        if (raw.version === 2 && !Object.hasOwn(scales, raw.scale)) throw Error("invalid");
+        clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
+        if (raw.version === 1) {
+          if (!Object.hasOwn(contexts, raw.context)) throw Error("invalid");
+          clean.context = legacyContextMap[clean.scale][raw.context] || "other";
+          clean.reviewContext = true;
+        } else {
+          if (!Object.hasOwn(contextCatalog[clean.scale], raw.context)) throw Error("invalid");
+          clean.context = raw.context;
+          clean.reviewContext = raw.reviewContext === true || (raw.catalogRevision !== 3 && clean.scale === "shared" && clean.context === "colleague");
+        }
+        clean.scaleChosen = raw.scaleChosen === true;
+        clean.reviewScale = raw.reviewScale === true;
+        clean.step =
+          Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
+            ? raw.step
+            : 0;
+        clean.clarifyPart = Number.isInteger(raw.clarifyPart) && raw.clarifyPart >= 0 && raw.clarifyPart <= 2 ? raw.clarifyPart : 0;
+        clean.energy = ["", "ready", "pause"].includes(raw.energy)
+          ? raw.energy
+          : "";
+        clean.safety = ["", "safe", "unsure", "danger"].includes(raw.safety)
+          ? raw.safety
+          : "";
+        if (!raw.fields || typeof raw.fields !== "object")
+          throw Error("invalid");
+        Object.keys(clean.fields).forEach((k) => {
+          if (typeof raw.fields[k] === "string")
+            clean.fields[k] = raw.fields[k].slice(0, 6000);
+        });
+        clean.fields.trial = ["notyet", "yes", "partly", "no"].includes(
+          clean.fields.trial,
+        )
+          ? clean.fields.trial
+          : "notyet";
+        clean.options = raw.options.map((o, i) => {
+          if (!o || typeof o.text !== "string") throw Error("invalid");
+          const id = i + 1;
+          return {
+            id,
+            text: o.text.slice(0, 6000),
+            plus: typeof o.plus === "string" ? o.plus.slice(0, 6000) : "",
+            minus: typeof o.minus === "string" ? o.minus.slice(0, 6000) : "",
+          };
+        });
+        const choice = raw.options.findIndex((o) => o.id === raw.chosen);
+        clean.chosen =
+          choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
+        if (raw.version === 1) {
+          clean.reviewContext = Object.entries(clean.fields).some(([key, value]) => key !== "trial" && value.trim()) || clean.options.some((option) => option.text.trim());
+          if (clean.reviewContext) {
+            clean.step = 0;
+            clean.clarifyPart = 0;
+          }
+        }
+        return clean;
+      }
+
+      // Dérivés purs : ils lisent des données et des valeurs qu'on leur donne, jamais le DOM ni l'état de la page.
+      // Ils se testent donc dans Node (tests/unit.spec.cjs) et les écrans (effets de app.js) n'ont plus qu'à les afficher.
+
+      // ---- Page des repères de violence : les relations les plus proches du problème en cours viennent d'abord.
+      const violenceFirstFor = (scale, context) => violenceFirst[`${scale}/${context}`] || violenceFirst[scale] || [];
+      // groups : [[titre, [[clé, libellé], ...]], ...] ; first : clés de relations à mettre en tête, dans cet ordre.
+      // Un groupe monte avec sa relation la plus proche ; dans un groupe, les relations proches passent devant ; « Autre situation » reste en dernier.
+      function orderViolenceGroups(groups, first) {
+        if (!first.length) return groups;
+        const rank = (key) => (first.includes(key) ? first.indexOf(key) : first.length);
+        return groups
+          .map(([title, items], index) => ({
+            title,
+            index,
+            items: [...items].sort((a, b) => rank(a[0]) - rank(b[0])),
+            best: Math.min(...items.map(([key]) => rank(key))),
+            last: items.some(([key]) => key === "other") ? 1 : 0,
+          }))
+          .sort((a, b) => a.last - b.last || a.best - b.best || a.index - b.index)
+          .map(({ title, items }) => [title, items]);
+      }
+      // scale vide : aucun problème choisi, ordre d'origine.
+      const violenceGroupsFor = (scale, context) => orderViolenceGroups(violenceGroups, scale ? violenceFirstFor(scale, context) : []);
+      // Phrase qui explique l'ordre ; vide quand l'ordre n'a pas bougé (rien à expliquer).
+      function violenceOriginNote(scale, context) {
+        if (!scale || !Object.hasOwn(scales, scale)) return "";
+        if (JSON.stringify(violenceGroupsFor(scale, context)) === JSON.stringify(violenceGroups)) return "";
+        const where = Object.hasOwn(contextCatalog[scale], context) ? `${scales[scale][0]} · ${contextCatalog[scale][context].label}` : scales[scale][0];
+        return `Classement d’après mon problème (${where}) : les relations les plus proches d’abord. Rien n’est choisi à ma place.`;
+      }
+
+      // ---- Adresse (hash) -> où on est. Une adresse inconnue renvoie à l'accueil.
+      const PAGES = ["accueil", "outil", "soutenir", "groupe", "proche", "violences", "comprendre", "bibliographie", "securite", "recap"];
+      function parseRoute(hash) {
+        const name = String(hash || "").replace(/^#/, "") || "accueil";
+        const scale = /^outil-(personal|shared|organization|public)$/.exec(name)?.[1] || "";
+        const relation = /^violences-([a-z]+)$/.exec(name)?.[1] || "";
+        const violenceKey = relation && (Object.hasOwn(violenceData, relation) || Object.hasOwn(violenceLists, relation)) ? relation : "";
+        const ref = name.startsWith("ref-");
+        const page = ref ? "bibliographie" : scale ? "outil" : violenceKey ? "violences" : PAGES.includes(name) ? name : "accueil";
+        // violence : l'adresse concerne le choix de la relation (liste d'accueil ou relation précise).
+        return { name, page, scale, violenceKey, violence: name === "violences" || Boolean(violenceKey), ref };
+      }
+
       // A facilitator's planning notes stay in memory. The tool never collects survey responses.
       const groupStages = [
         {
@@ -6775,18 +7161,6 @@ dialog {
       // Standalone, zero-dependency application. User input is escaped before HTML rendering.
       const $ = (s, r = document) => r.querySelector(s),
         $$ = (s, r = document) => [...r.querySelectorAll(s)];
-      const esc = (v) =>
-        String(v ?? "").replace(
-          /[&<>"']/g,
-          (c) =>
-            ({
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            })[c],
-        );
       const KEY = "pas-a-pas.brouillon.v2";
       const OLD_KEY = "pas-a-pas.brouillon.v1";
       const stepNames = [
@@ -6797,7 +7171,6 @@ dialog {
         ["Agir", "Un premier pas"],
         ["Faire le point", "Après l’essai"],
       ];
-      let startPart = 0;
       const startParts = () => (state.scaleChosen ? ["context", "safety"] : ["level"]);
       function term(k, label = glossary[k][0].toLowerCase()) {
         return `<button type="button" class="glossary-button" data-term="${k}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button>`;
@@ -6810,52 +7183,23 @@ dialog {
           return key ? term(key, part) : esc(part);
         }).join("");
       }
-      function fresh() {
-        return {
-          version: 2,
-          catalogRevision: 3,
-          step: 0,
-          clarifyPart: 0,
-          context: "other",
-          scale: "personal",
-          scaleChosen: false,
-          reviewScale: false,
-          reviewContext: false,
-          safety: "",
-          energy: "",
-          fields: {
-            situation: "",
-            goal: "",
-            obstacle: "",
-            emotion: "",
-            control: "",
-            outside: "",
-            action: "",
-            when: "",
-            support: "",
-            backup: "",
-            measure: "",
-            reviewDate: "",
-            result: "",
-            learning: "",
-            next: "",
-            trial: "notyet",
-          },
-          options: [
-            { id: 1, text: "", plus: "", minus: "" },
-            { id: 2, text: "", plus: "", minus: "" },
-          ],
-          chosen: null,
-        };
-      }
-      let state = fresh(),
-        remember = false,
+      // L'état de l'exercice (ce qui est gardé dans le brouillon) et l'état de l'interface (transitoire) sont réactifs :
+      // un écran déduit d'eux, comme la page des repères de violence, se met à jour seul quand ils changent (voir scripts/core.js).
+      // `state` reste un objet simple en apparence : on lit et on écrit ses champs comme avant.
+      const state = reactive(fresh());
+      const ui = reactive({ startPart: 0, supportMode: "listen", selectedNeed: null, meterIndex: null, violenceKey: "", recapArrival: false });
+      let remember = false,
         nextId = 4,
         previousFocus = null,
-        pendingConfirm = null,
-        supportMode = "listen",
-        selectedNeed = null,
-        meterIndex = null;
+        pendingConfirm = null;
+      // Remplace tout l'état (brouillon repris, import, effacement) en gardant le même objet : les écrans qui le lisent se mettent à jour une fois.
+      function replaceState(next) {
+        batch(() => {
+          Object.keys(next).forEach((key) => {
+            state[key] = next[key];
+          });
+        });
+      }
       function hasWriting() {
         return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
       }
@@ -6914,7 +7258,6 @@ dialog {
         if (!sections.length) return "Mes réponses s’ajoutent à ma fiche, que je retrouve à la fin.";
         return "Dans ma fiche : " + sections.join(", ") + ". " + link;
       }
-      let recapArrival = false;
       const savedTimers = new Map();
       function savedIdFor(el) {
         if (el.dataset.field) return "saved-" + el.dataset.field;
@@ -6946,12 +7289,6 @@ dialog {
       function stepDocumentTitle() {
         return `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]}`;
       }
-      const legacyContextMap = {
-        personal: { daily: "daily", study: "study", work: "work", health: "health" },
-        shared: { couple: "couple", family: "family", work: "other" },
-        organization: { work: "coordination" },
-        public: { collective: "mobility" },
-      };
       const currentContext = () => contextCatalog[state.scale][state.context];
       const violenceRouteForContext = () => {
         const related = state.scale === "public" ? "authority" : state.scale === "shared" ? {
@@ -6978,87 +7315,22 @@ dialog {
       };
       function selectScale(scale) {
         if (!Object.hasOwn(scales, scale)) return;
-        const changed = state.scale !== scale;
-        if (changed && hasWriting()) {
-          state.reviewScale = true;
-          state.reviewContext = true;
-        }
-        state.scale = scale;
-        state.scaleChosen = true;
-        state.step = 0;
-        state.clarifyPart = 0;
-        startPart = 0;
-        if (!Object.hasOwn(contextCatalog[scale], state.context)) {
-          state.context = "other";
-          if (hasWriting()) state.reviewContext = true;
-        }
-      }
-      function validateDraft(raw) {
-        if (
-          !raw ||
-          ![1, 2].includes(raw.version) ||
-          !Array.isArray(raw.options) ||
-          raw.options.length < 1 ||
-          raw.options.length > 8
-        )
-          throw Error("invalid");
-        const clean = fresh();
-        if (raw.version === 2 && !Object.hasOwn(scales, raw.scale)) throw Error("invalid");
-        clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
-        if (raw.version === 1) {
-          if (!Object.hasOwn(contexts, raw.context)) throw Error("invalid");
-          clean.context = legacyContextMap[clean.scale][raw.context] || "other";
-          clean.reviewContext = true;
-        } else {
-          if (!Object.hasOwn(contextCatalog[clean.scale], raw.context)) throw Error("invalid");
-          clean.context = raw.context;
-          clean.reviewContext = raw.reviewContext === true || (raw.catalogRevision !== 3 && clean.scale === "shared" && clean.context === "colleague");
-        }
-        clean.scaleChosen = raw.scaleChosen === true;
-        clean.reviewScale = raw.reviewScale === true;
-        clean.step =
-          Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
-            ? raw.step
-            : 0;
-        clean.clarifyPart = Number.isInteger(raw.clarifyPart) && raw.clarifyPart >= 0 && raw.clarifyPart <= 2 ? raw.clarifyPart : 0;
-        clean.energy = ["", "ready", "pause"].includes(raw.energy)
-          ? raw.energy
-          : "";
-        clean.safety = ["", "safe", "unsure", "danger"].includes(raw.safety)
-          ? raw.safety
-          : "";
-        if (!raw.fields || typeof raw.fields !== "object")
-          throw Error("invalid");
-        Object.keys(clean.fields).forEach((k) => {
-          if (typeof raw.fields[k] === "string")
-            clean.fields[k] = raw.fields[k].slice(0, 6000);
-        });
-        clean.fields.trial = ["notyet", "yes", "partly", "no"].includes(
-          clean.fields.trial,
-        )
-          ? clean.fields.trial
-          : "notyet";
-        clean.options = raw.options.map((o, i) => {
-          if (!o || typeof o.text !== "string") throw Error("invalid");
-          const id = i + 1;
-          return {
-            id,
-            text: o.text.slice(0, 6000),
-            plus: typeof o.plus === "string" ? o.plus.slice(0, 6000) : "",
-            minus: typeof o.minus === "string" ? o.minus.slice(0, 6000) : "",
-          };
-        });
-        const choice = raw.options.findIndex((o) => o.id === raw.chosen);
-        clean.chosen =
-          choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
-        if (raw.version === 1) {
-          clean.reviewContext = Object.entries(clean.fields).some(([key, value]) => key !== "trial" && value.trim()) || clean.options.some((option) => option.text.trim());
-          if (clean.reviewContext) {
-            clean.step = 0;
-            clean.clarifyPart = 0;
+        batch(() => {
+          const changed = state.scale !== scale;
+          if (changed && hasWriting()) {
+            state.reviewScale = true;
+            state.reviewContext = true;
           }
-        }
-        return clean;
+          state.scale = scale;
+          state.scaleChosen = true;
+          state.step = 0;
+          state.clarifyPart = 0;
+          ui.startPart = 0;
+          if (!Object.hasOwn(contextCatalog[scale], state.context)) {
+            state.context = "other";
+            if (hasWriting()) state.reviewContext = true;
+          }
+        });
       }
       try {
         const saved = localStorage.getItem(KEY);
@@ -7066,7 +7338,7 @@ dialog {
         let restoredFromV2 = false;
         if (saved) {
           try {
-            state = validateDraft(JSON.parse(saved));
+            replaceState(validateDraft(JSON.parse(saved)));
             restored = true;
             restoredFromV2 = true;
           } catch (e) {
@@ -7076,7 +7348,7 @@ dialog {
         if (!restored) {
           const old = localStorage.getItem(OLD_KEY);
           if (old) {
-            state = validateDraft(JSON.parse(old));
+            replaceState(validateDraft(JSON.parse(old)));
             restored = true;
             try {
               localStorage.setItem(KEY, JSON.stringify(state));
@@ -7206,7 +7478,7 @@ dialog {
         const titles = workflow.titles;
         const leads = workflow.leads;
         let body = "";
-        const startScreen = i === 0 ? startParts()[Math.min(startPart, startParts().length - 1)] : "";
+        const startScreen = i === 0 ? startParts()[Math.min(ui.startPart, startParts().length - 1)] : "";
         if (i === 0) {
           const scaleButtons = Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scaleChosen && state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("");
           if (startScreen === "level") {
@@ -7294,7 +7566,7 @@ dialog {
           body += `<details class="section-gap"><summary>Outil utile ici : ${esc(name)}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${esc(source)}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><div class="step-head"><p class="step-counter" id="progress-label"><strong>Étape ${i + 1} sur ${stepNames.length}</strong> · ${stepNames[i][0]}${i === 5 ? " (après l’essai)" : ""}</p><a class="fiche-link" id="fiche-link" href="#recap"${ficheSections().length ? "" : " hidden"}>Ma fiche</a></div><div class="step-bar" aria-hidden="true">${stepNames.map((_, k) => `<span class="${k === i ? "is-current" : stepDone(k) ? "is-done" : ""}${k === 5 ? " is-later" : ""}"></span>`).join("")}</div></div><h2 id="step-title" tabindex="-1" aria-describedby="progress-label">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><p class="fiche-line" id="fiche-line"${ficheLineHtml() ? "" : " hidden"}>${ficheLineHtml()}</p><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 || i === 4 ? "Voir ma fiche" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><div class="step-head"><p class="step-counter" id="progress-label"><strong>Étape ${i + 1} sur ${stepNames.length}</strong> · ${stepNames[i][0]}${i === 5 ? " (après l’essai)" : ""}</p><a class="fiche-link" id="fiche-link" href="#recap"${ficheSections().length ? "" : " hidden"}>Ma fiche</a></div><div class="step-bar" aria-hidden="true">${stepNames.map((_, k) => `<span class="${k === i ? "is-current" : stepDone(k) ? "is-done" : ""}${k === 5 ? " is-later" : ""}"></span>`).join("")}</div></div><h2 id="step-title" tabindex="-1" aria-describedby="progress-label">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><p class="fiche-line" id="fiche-line"${ficheLineHtml() ? "" : " hidden"}>${ficheLineHtml()}</p><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && ui.startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 || i === 4 ? "Voir ma fiche" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         $("#step-container").classList.toggle("question-transition", focusQuestion && i === 1);
         $("#step-container").classList.toggle("is-question-screen", i === 0 || i === 1);
         if (!$("#outil").hidden) document.title = stepDocumentTitle() + " - Pas à pas";
@@ -7322,7 +7594,7 @@ dialog {
         hideToast();
         const destination = Math.max(0, Math.min(5, i));
         if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
-        if (destination === 0 && state.step !== 0 && !keepStartPart) startPart = 0;
+        if (destination === 0 && state.step !== 0 && !keepStartPart) ui.startPart = 0;
         state.step = destination;
         persist();
         $("#mobile-step-picker").open = false;
@@ -7337,8 +7609,8 @@ dialog {
           $(".scale-option")?.focus();
           return;
         }
-        if (state.step === 0 && startPart < startParts().length - 1) {
-          startPart++;
+        if (state.step === 0 && ui.startPart < startParts().length - 1) {
+          ui.startPart++;
           renderStep(true);
           return;
         }
@@ -7358,7 +7630,7 @@ dialog {
           return;
         }
         if (state.step === 4 || state.step === 5) {
-          recapArrival = true;
+          ui.recapArrival = true;
           renderRecap();
           location.hash = "recap";
           return;
@@ -7772,11 +8044,11 @@ dialog {
         );
       }
       function renderSupport() {
-        $("#support-content").innerHTML = supportModes[supportMode];
+        $("#support-content").innerHTML = supportModes[ui.supportMode];
         $$("[data-support-mode]").forEach((b) =>
           b.setAttribute(
             "aria-pressed",
-            String(b.dataset.supportMode === supportMode),
+            String(b.dataset.supportMode === ui.supportMode),
           ),
         );
         const v = supportContexts[$("#support-context").value];
@@ -7788,12 +8060,12 @@ dialog {
           `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young", "work"].includes($("#support-context").value) ? `<a href="${$("#support-context").value === "couple" ? "#violences-couple" : "#violences"}" class="text-button">Explorer les repères de violence →</a>` : ""}</article>`;
       }
       function renderNeedGuidance() {
-        if (!selectedNeed) {
+        if (!ui.selectedNeed) {
           $("#need-guidance").innerHTML = '<p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
           $$("[data-need]").forEach((button) => button.setAttribute("aria-pressed", "false"));
           return;
         }
-        const [title, phrase, action] = needGuidance[selectedNeed];
+        const [title, phrase, action] = needGuidance[ui.selectedNeed];
         const relation = $("#support-relation").value;
         const relationNote = {
           colleague: "Entre collègues, tenir compte de la charge réelle, des rôles et des ressources disponibles.",
@@ -7803,7 +8075,7 @@ dialog {
         }[relation];
         $("#need-guidance").innerHTML = `<h3>${title}</h3><p class="say">${phrase}</p><p>${action}</p><p class="hint">${relationNote}</p>${relation === "close" ? '<a class="text-button" href="#proche">Voir aussi : comment aider un proche ? ↗</a>' : ""}<p class="source-note">Après l’échange : « Est-ce que cette aide te convient ? »</p>`;
         $$("[data-need]").forEach((button) =>
-          button.setAttribute("aria-pressed", String(button.dataset.need === selectedNeed)),
+          button.setAttribute("aria-pressed", String(button.dataset.need === ui.selectedNeed)),
         );
       }
       // These are educational examples, not validated scales or risk scores.
@@ -7815,10 +8087,33 @@ dialog {
         const volets = list.volets.map((v) => `<details><summary>${esc(v.title)}</summary><div class="details-body">${v.intro ? `<p>${esc(v.intro)}</p>` : ""}${v.items ? `<ul>${plain(v.items)}</ul>` : ""}${(v.paragraphs || []).map((text) => `<p>${esc(text)}</p>`).join("")}</div></details>`).join("");
         return `<h2 id="violence-list-title">${esc(list.title)}</h2>${list.lead.map((text) => `<p>${esc(text)}</p>`).join("")}<h3>${esc(list.facts.title)}</h3><p class="hint">${esc(list.facts.hint)}</p><div class="violence-facts">${facts}</div><p class="notice violence-callout">${esc(list.alert)}</p><div class="button-row section-gap"><a href="#securite" class="btn">Voir les possibilités d’aide →</a><button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="hint">Quitter remplace la page par Wikipédia. Cela n’efface ni l’historique ni un brouillon gardé.</p><h3>${esc(list.steps.title)}</h3><p class="hint">${esc(list.steps.hint)}</p><ul>${plain(list.steps.items)}</ul><div class="violence-volets">${volets}</div><p class="source-note">Repère pédagogique, sans échelle. Aucun diagnostic ni score de risque. Sources : ${refLinks}.</p>`;
       }
+      // Page des repères de violence : trois effets, créés au démarrage (voir plus bas), déduisent l'écran de l'état.
+      //  - syncViolenceChooser : l'ORDRE des relations, d'après le problème en cours (state.scale, state.context) ;
+      //  - renderMeter : le repère affiché, d'après la relation de l'adresse (ui.violenceKey) ;
+      //  - renderMeterDetail : l'exemple ouvert, d'après ui.meterIndex.
+      // Aucun ne lit le DOM pour savoir où on en est.
+      let violenceOrderSignature = "";
+      function syncViolenceChooser() {
+        const scale = state.scaleChosen ? state.scale : "";
+        const context = scale ? state.context : "";
+        const groups = violenceGroupsFor(scale, context);
+        const note = $("#violence-origin-note");
+        const text = violenceOriginNote(scale, context);
+        note.textContent = text;
+        note.hidden = !text;
+        $("#violence-return").hidden = !state.scaleChosen;
+        // On ne refait la liste que si l'ordre a changé : la refaire replie le choix et fait perdre le focus clavier.
+        const signature = JSON.stringify(groups);
+        if (signature === violenceOrderSignature) return;
+        violenceOrderSignature = signature;
+        const chooser = $("#violence-context");
+        chooser.render(groups.map(([label, options]) => ({ label, items: options.map(([value, text]) => ({ value, label: text })) })), chooser.value);
+      }
       function renderMeter() {
-        const key = $("#violence-context").value,
+        const key = ui.violenceKey,
           d = Object.hasOwn(violenceData, key) ? violenceData[key] : null,
           list = Object.hasOwn(violenceLists, key) ? violenceLists[key] : null;
+        $("#violence-context").value = key;
         $("#violence-empty").hidden = Boolean(d || list);
         $("#violence-meter-layout").hidden = !d;
         $("#violence-list").hidden = !list;
@@ -7826,7 +8121,6 @@ dialog {
         $("#violence-notice-list").hidden = !list;
         $("#violence-quit").hidden = !list;
         $("#violence-threshold-red").hidden = Boolean(list);
-        $("#violence-return").hidden = !state.scaleChosen;
         if (list) {
           $("#violence-context-note").textContent = list.note;
           $("#violence-credit").innerHTML = `<strong>Ce repère n’est pas un violentomètre :</strong> il ne classe rien. ${esc(list.credit)} <a href="#ref-${list.creditRef}">[${list.creditRef}]</a>.`;
@@ -7849,13 +8143,13 @@ dialog {
         const priorWork = d.priorWork || [];
         $("#violence-credit").innerHTML = `<strong>Crédits des outils antérieurs.</strong> Le <em>Violentómetro</em> mexicain et le Violentomètre français ont ouvert la voie <a href="#ref-7">[7]</a>.${priorWork.length ? ` D’autres équipes ont publié des outils dans des contextes proches : ${priorWork.map(([name, ref]) => `${esc(name)} <a href="#ref-${ref}">[${ref}]</a>`).join(" ; ")}.` : ""} Les exemples de ce guide sont distincts.`;
         $("#violence-credit").hidden = false;
+        // aria-pressed est posé par renderMeterDetail, qui suit l'exemple ouvert : ouvrir un exemple ne refait donc pas la liste (le focus reste sur le bouton).
         $("#meter").innerHTML = d.items
           .map(
             (v, j) =>
-              `<button type="button" data-meter="${j}" aria-pressed="${meterIndex === j}" aria-controls="meter-detail"><span><small>${esc(v[0])}</small>${esc(v[1])}</span><span aria-hidden="true">↗</span></button>`,
+              `<button type="button" data-meter="${j}" aria-pressed="false" aria-controls="meter-detail"><span><small>${esc(v[0])}</small>${esc(v[1])}</span><span aria-hidden="true">↗</span></button>`,
           )
           .join("");
-        renderMeterDetail();
       }
       function glossarize(text) {
         return esc(text)
@@ -7865,56 +8159,37 @@ dialog {
           .replace(/asymétrie pédagogique/g, term("power"));
       }
       function renderMeterDetail() {
-        const d = violenceData[$("#violence-context").value];
+        const d = violenceData[ui.violenceKey];
         if (!d) return;
-        if (meterIndex === null) {
+        if (ui.meterIndex === null) {
           $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je peux choisir un exemple dans la liste. Rien n’est déduit de ma relation avant ce choix.</p><p class="source-note">Ces exemples ne classent pas une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
           $$('[data-meter]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
           return;
         }
-        const v = d.items[meterIndex];
+        const v = d.items[ui.meterIndex];
         $("#meter-detail").innerHTML =
-          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
+          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${ui.meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
         $$("[data-meter]").forEach((b) =>
           b.setAttribute(
             "aria-pressed",
-            String(Number(b.dataset.meter) === meterIndex),
+            String(Number(b.dataset.meter) === ui.meterIndex),
           ),
         );
       }
       function route() {
         hideTooltip();
-        const hash = location.hash.slice(1) || "accueil";
-        const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
-        const violenceMatch = /^violences-([a-z]+)$/.exec(hash);
-        const violenceKey = violenceMatch && (Object.hasOwn(violenceData, violenceMatch[1]) || Object.hasOwn(violenceLists, violenceMatch[1])) ? violenceMatch[1] : null;
-        if (scaleMatch) {
-          selectScale(scaleMatch[1]);
-          persist();
-        }
-        if (hash === "violences" || violenceKey) {
-          $("#violence-context").value = violenceKey || "";
-          meterIndex = null;
-          renderMeter();
-        }
-        const page = hash.startsWith("ref-")
-          ? "bibliographie"
-          : scaleMatch ? "outil"
-          : violenceKey ? "violences"
-          : [
-                "accueil",
-                "outil",
-                "soutenir",
-                "groupe",
-                "proche",
-                "violences",
-                "comprendre",
-                "bibliographie",
-                "securite",
-                "recap",
-              ].includes(hash)
-            ? hash
-            : "accueil";
+        const where = parseRoute(location.hash);
+        batch(() => {
+          if (where.scale) {
+            selectScale(where.scale);
+            persist();
+          }
+          if (where.violence) {
+            ui.violenceKey = where.violenceKey;
+            ui.meterIndex = null;
+          }
+        });
+        const page = where.page;
         const keepViolenceChoiceFocus = page === "violences" && $("#violence-context").hasFocus;
         $$(".view").forEach((el) => (el.hidden = el.id !== page));
         $$("nav a").forEach((a) => {
@@ -7942,16 +8217,16 @@ dialog {
           recap: $("#recap .page-heading h1").textContent,
         }[page];
         document.title = title + " - Pas à pas";
-        if (hash.startsWith("ref-")) {
-          const ref = document.getElementById(hash);
+        if (where.ref) {
+          const ref = document.getElementById(where.name);
           if (ref) {
             ref.tabIndex = -1;
             ref.focus({ preventScroll: true });
             ref.scrollIntoView({ block: "start" });
           }
         } else if (!keepViolenceChoiceFocus) {
-          const arrival = page === "recap" && recapArrival && !$("#recap-banner").hidden;
-          recapArrival = false;
+          const arrival = page === "recap" && ui.recapArrival && !$("#recap-banner").hidden;
+          ui.recapArrival = false;
           (arrival ? $("#recap-banner") : $("#main")).focus({ preventScroll: true });
           window.scrollTo({ top: 0, behavior: "instant" });
           if (arrival) {
@@ -8089,7 +8364,7 @@ dialog {
           return;
         }
         if (b.dataset.supportMode) {
-          supportMode = b.dataset.supportMode;
+          ui.supportMode = b.dataset.supportMode;
           renderSupport();
           return;
         }
@@ -8102,13 +8377,12 @@ dialog {
           return;
         }
         if (b.dataset.need) {
-          selectedNeed = b.dataset.need;
+          ui.selectedNeed = b.dataset.need;
           renderNeedGuidance();
           return;
         }
         if (b.dataset.meter !== undefined) {
-          meterIndex = Number(b.dataset.meter);
-          renderMeterDetail();
+          ui.meterIndex = Number(b.dataset.meter); // renderMeterDetail se rejoue seul
           if (matchMedia("(max-width:600px)").matches)
             $("#meter-detail").scrollIntoView({
               block: "start",
@@ -8121,15 +8395,15 @@ dialog {
             goNext();
             break;
           case "back":
-            if (state.step === 0 && startPart > 0) {
-              startPart--;
+            if (state.step === 0 && ui.startPart > 0) {
+              ui.startPart--;
               renderStep(true);
             } else if (state.step === 1 && state.clarifyPart > 0) {
               state.clarifyPart--;
               persist();
               renderStep(true, true);
             } else {
-              if (state.step === 1) startPart = startParts().length - 1;
+              if (state.step === 1) ui.startPart = startParts().length - 1;
               changeStep(state.step - 1, state.step === 1);
             }
             break;
@@ -8210,7 +8484,7 @@ dialog {
                 } catch (e) {
                   removed = false;
                 }
-                state = fresh();
+                replaceState(fresh());
                 remember = false;
                 staleCopy = !removed;
                 nextId = 4;
@@ -8276,7 +8550,7 @@ dialog {
       });
       document.addEventListener("click", (e) => {
         const link = e.target.closest('a[href="#recap"]');
-        if (link && !$("#outil").hidden) recapArrival = true;
+        if (link && !$("#outil").hidden) ui.recapArrival = true;
       });
       $("#remember").addEventListener("change", (e) => setRemember(e.target.checked));
       $("#import-file").addEventListener("change", async (e) => {
@@ -8295,7 +8569,7 @@ dialog {
             "Reprendre ce brouillon ?",
             "Le fichier remplacera les réponses actuellement affichées. Téléchargez-les d’abord si vous souhaitez les garder.",
             () => {
-              state = imported;
+              replaceState(imported);
               nextId = state.options.length + 1;
               persist();
               updatePrivacy();
@@ -8318,8 +8592,10 @@ dialog {
         if (key && !Object.hasOwn(violenceData, key) && !Object.hasOwn(violenceLists, key)) return;
         const target = key ? `#violences-${key}` : "#violences";
         if (location.hash === target) {
-          meterIndex = null;
-          renderMeter();
+          batch(() => {
+            ui.violenceKey = key;
+            ui.meterIndex = null;
+          });
         } else location.hash = target;
       });
       // Brief hint on hover/focus; a deliberate activation opens the detailed definition.
@@ -8470,8 +8746,10 @@ dialog {
       renderSupport();
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
-      $("#violence-context").render(violenceGroups.map(([label, options]) => ({ label, items: options.map(([value, text]) => ({ value, label: text })) })));
-      renderMeter();
+      // Ordre de création = ordre de rejeu : la liste des relations d'abord, puis le repère, puis l'exemple ouvert.
+      effect(syncViolenceChooser);
+      effect(renderMeter);
+      effect(renderMeterDetail);
       initGroup();
       route();
     </script>

@@ -1,18 +1,6 @@
       // Standalone, zero-dependency application. User input is escaped before HTML rendering.
       const $ = (s, r = document) => r.querySelector(s),
         $$ = (s, r = document) => [...r.querySelectorAll(s)];
-      const esc = (v) =>
-        String(v ?? "").replace(
-          /[&<>"']/g,
-          (c) =>
-            ({
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            })[c],
-        );
       const KEY = "pas-a-pas.brouillon.v2";
       const OLD_KEY = "pas-a-pas.brouillon.v1";
       const stepNames = [
@@ -23,7 +11,6 @@
         ["Agir", "Un premier pas"],
         ["Faire le point", "Après l’essai"],
       ];
-      let startPart = 0;
       const startParts = () => (state.scaleChosen ? ["context", "safety"] : ["level"]);
       function term(k, label = glossary[k][0].toLowerCase()) {
         return `<button type="button" class="glossary-button" data-term="${k}" aria-haspopup="dialog" aria-controls="term-dialog">${esc(label)}</button>`;
@@ -36,52 +23,23 @@
           return key ? term(key, part) : esc(part);
         }).join("");
       }
-      function fresh() {
-        return {
-          version: 2,
-          catalogRevision: 3,
-          step: 0,
-          clarifyPart: 0,
-          context: "other",
-          scale: "personal",
-          scaleChosen: false,
-          reviewScale: false,
-          reviewContext: false,
-          safety: "",
-          energy: "",
-          fields: {
-            situation: "",
-            goal: "",
-            obstacle: "",
-            emotion: "",
-            control: "",
-            outside: "",
-            action: "",
-            when: "",
-            support: "",
-            backup: "",
-            measure: "",
-            reviewDate: "",
-            result: "",
-            learning: "",
-            next: "",
-            trial: "notyet",
-          },
-          options: [
-            { id: 1, text: "", plus: "", minus: "" },
-            { id: 2, text: "", plus: "", minus: "" },
-          ],
-          chosen: null,
-        };
-      }
-      let state = fresh(),
-        remember = false,
+      // L'état de l'exercice (ce qui est gardé dans le brouillon) et l'état de l'interface (transitoire) sont réactifs :
+      // un écran déduit d'eux, comme la page des repères de violence, se met à jour seul quand ils changent (voir scripts/core.js).
+      // `state` reste un objet simple en apparence : on lit et on écrit ses champs comme avant.
+      const state = reactive(fresh());
+      const ui = reactive({ startPart: 0, supportMode: "listen", selectedNeed: null, meterIndex: null, violenceKey: "", recapArrival: false });
+      let remember = false,
         nextId = 4,
         previousFocus = null,
-        pendingConfirm = null,
-        supportMode = "listen",
-        selectedNeed = null,
-        meterIndex = null;
+        pendingConfirm = null;
+      // Remplace tout l'état (brouillon repris, import, effacement) en gardant le même objet : les écrans qui le lisent se mettent à jour une fois.
+      function replaceState(next) {
+        batch(() => {
+          Object.keys(next).forEach((key) => {
+            state[key] = next[key];
+          });
+        });
+      }
       function hasWriting() {
         return Object.entries(state.fields).some(([key, value]) => key !== "trial" && String(value).trim()) || state.options.some((option) => option.text.trim());
       }
@@ -140,7 +98,6 @@
         if (!sections.length) return "Mes réponses s’ajoutent à ma fiche, que je retrouve à la fin.";
         return "Dans ma fiche : " + sections.join(", ") + ". " + link;
       }
-      let recapArrival = false;
       const savedTimers = new Map();
       function savedIdFor(el) {
         if (el.dataset.field) return "saved-" + el.dataset.field;
@@ -172,12 +129,6 @@
       function stepDocumentTitle() {
         return `Étape ${state.step + 1} sur ${stepNames.length} · ${stepNames[state.step][0]}`;
       }
-      const legacyContextMap = {
-        personal: { daily: "daily", study: "study", work: "work", health: "health" },
-        shared: { couple: "couple", family: "family", work: "other" },
-        organization: { work: "coordination" },
-        public: { collective: "mobility" },
-      };
       const currentContext = () => contextCatalog[state.scale][state.context];
       const violenceRouteForContext = () => {
         const related = state.scale === "public" ? "authority" : state.scale === "shared" ? {
@@ -204,87 +155,22 @@
       };
       function selectScale(scale) {
         if (!Object.hasOwn(scales, scale)) return;
-        const changed = state.scale !== scale;
-        if (changed && hasWriting()) {
-          state.reviewScale = true;
-          state.reviewContext = true;
-        }
-        state.scale = scale;
-        state.scaleChosen = true;
-        state.step = 0;
-        state.clarifyPart = 0;
-        startPart = 0;
-        if (!Object.hasOwn(contextCatalog[scale], state.context)) {
-          state.context = "other";
-          if (hasWriting()) state.reviewContext = true;
-        }
-      }
-      function validateDraft(raw) {
-        if (
-          !raw ||
-          ![1, 2].includes(raw.version) ||
-          !Array.isArray(raw.options) ||
-          raw.options.length < 1 ||
-          raw.options.length > 8
-        )
-          throw Error("invalid");
-        const clean = fresh();
-        if (raw.version === 2 && !Object.hasOwn(scales, raw.scale)) throw Error("invalid");
-        clean.scale = Object.hasOwn(scales, raw.scale) ? raw.scale : "personal";
-        if (raw.version === 1) {
-          if (!Object.hasOwn(contexts, raw.context)) throw Error("invalid");
-          clean.context = legacyContextMap[clean.scale][raw.context] || "other";
-          clean.reviewContext = true;
-        } else {
-          if (!Object.hasOwn(contextCatalog[clean.scale], raw.context)) throw Error("invalid");
-          clean.context = raw.context;
-          clean.reviewContext = raw.reviewContext === true || (raw.catalogRevision !== 3 && clean.scale === "shared" && clean.context === "colleague");
-        }
-        clean.scaleChosen = raw.scaleChosen === true;
-        clean.reviewScale = raw.reviewScale === true;
-        clean.step =
-          Number.isInteger(raw.step) && raw.step >= 0 && raw.step < 6
-            ? raw.step
-            : 0;
-        clean.clarifyPart = Number.isInteger(raw.clarifyPart) && raw.clarifyPart >= 0 && raw.clarifyPart <= 2 ? raw.clarifyPart : 0;
-        clean.energy = ["", "ready", "pause"].includes(raw.energy)
-          ? raw.energy
-          : "";
-        clean.safety = ["", "safe", "unsure", "danger"].includes(raw.safety)
-          ? raw.safety
-          : "";
-        if (!raw.fields || typeof raw.fields !== "object")
-          throw Error("invalid");
-        Object.keys(clean.fields).forEach((k) => {
-          if (typeof raw.fields[k] === "string")
-            clean.fields[k] = raw.fields[k].slice(0, 6000);
-        });
-        clean.fields.trial = ["notyet", "yes", "partly", "no"].includes(
-          clean.fields.trial,
-        )
-          ? clean.fields.trial
-          : "notyet";
-        clean.options = raw.options.map((o, i) => {
-          if (!o || typeof o.text !== "string") throw Error("invalid");
-          const id = i + 1;
-          return {
-            id,
-            text: o.text.slice(0, 6000),
-            plus: typeof o.plus === "string" ? o.plus.slice(0, 6000) : "",
-            minus: typeof o.minus === "string" ? o.minus.slice(0, 6000) : "",
-          };
-        });
-        const choice = raw.options.findIndex((o) => o.id === raw.chosen);
-        clean.chosen =
-          choice >= 0 && clean.options[choice].text.trim() ? choice + 1 : null;
-        if (raw.version === 1) {
-          clean.reviewContext = Object.entries(clean.fields).some(([key, value]) => key !== "trial" && value.trim()) || clean.options.some((option) => option.text.trim());
-          if (clean.reviewContext) {
-            clean.step = 0;
-            clean.clarifyPart = 0;
+        batch(() => {
+          const changed = state.scale !== scale;
+          if (changed && hasWriting()) {
+            state.reviewScale = true;
+            state.reviewContext = true;
           }
-        }
-        return clean;
+          state.scale = scale;
+          state.scaleChosen = true;
+          state.step = 0;
+          state.clarifyPart = 0;
+          ui.startPart = 0;
+          if (!Object.hasOwn(contextCatalog[scale], state.context)) {
+            state.context = "other";
+            if (hasWriting()) state.reviewContext = true;
+          }
+        });
       }
       try {
         const saved = localStorage.getItem(KEY);
@@ -292,7 +178,7 @@
         let restoredFromV2 = false;
         if (saved) {
           try {
-            state = validateDraft(JSON.parse(saved));
+            replaceState(validateDraft(JSON.parse(saved)));
             restored = true;
             restoredFromV2 = true;
           } catch (e) {
@@ -302,7 +188,7 @@
         if (!restored) {
           const old = localStorage.getItem(OLD_KEY);
           if (old) {
-            state = validateDraft(JSON.parse(old));
+            replaceState(validateDraft(JSON.parse(old)));
             restored = true;
             try {
               localStorage.setItem(KEY, JSON.stringify(state));
@@ -432,7 +318,7 @@
         const titles = workflow.titles;
         const leads = workflow.leads;
         let body = "";
-        const startScreen = i === 0 ? startParts()[Math.min(startPart, startParts().length - 1)] : "";
+        const startScreen = i === 0 ? startParts()[Math.min(ui.startPart, startParts().length - 1)] : "";
         if (i === 0) {
           const scaleButtons = Object.entries(scales).map(([key, [label, description]]) => `<button class="scale-option" type="button" data-scale="${key}" aria-pressed="${state.scaleChosen && state.scale === key}"><strong>${label}</strong><span>${description}</span></button>`).join("");
           if (startScreen === "level") {
@@ -520,7 +406,7 @@
           body += `<details class="section-gap"><summary>Outil utile ici : ${esc(name)}</summary><div class="details-body"><p>${linkGlossary(description)}</p><p class="source-note">Pourquoi ce repère ? <a href="${esc(source)}">Voir la source et ses limites</a>.</p></div></details>`;
         }
         $("#step-container").innerHTML =
-          `<div class="step-topline"><div class="step-head"><p class="step-counter" id="progress-label"><strong>Étape ${i + 1} sur ${stepNames.length}</strong> · ${stepNames[i][0]}${i === 5 ? " (après l’essai)" : ""}</p><a class="fiche-link" id="fiche-link" href="#recap"${ficheSections().length ? "" : " hidden"}>Ma fiche</a></div><div class="step-bar" aria-hidden="true">${stepNames.map((_, k) => `<span class="${k === i ? "is-current" : stepDone(k) ? "is-done" : ""}${k === 5 ? " is-later" : ""}"></span>`).join("")}</div></div><h2 id="step-title" tabindex="-1" aria-describedby="progress-label">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><p class="fiche-line" id="fiche-line"${ficheLineHtml() ? "" : " hidden"}>${ficheLineHtml()}</p><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 || i === 4 ? "Voir ma fiche" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
+          `<div class="step-topline"><div class="step-head"><p class="step-counter" id="progress-label"><strong>Étape ${i + 1} sur ${stepNames.length}</strong> · ${stepNames[i][0]}${i === 5 ? " (après l’essai)" : ""}</p><a class="fiche-link" id="fiche-link" href="#recap"${ficheSections().length ? "" : " hidden"}>Ma fiche</a></div><div class="step-bar" aria-hidden="true">${stepNames.map((_, k) => `<span class="${k === i ? "is-current" : stepDone(k) ? "is-done" : ""}${k === 5 ? " is-later" : ""}"></span>`).join("")}</div></div><h2 id="step-title" tabindex="-1" aria-describedby="progress-label">${startScreen === "safety" ? "Ma sécurité" : titles[i]}</h2>${leads[i] && !(i === 1 && state.clarifyPart > 0) ? `<p class="step-lead">${linkGlossary(leads[i])}</p>` : ""}<div class="step-content">${body}</div><p class="fiche-line" id="fiche-line"${ficheLineHtml() ? "" : " hidden"}>${ficheLineHtml()}</p><div class="footer-actions"><button class="btn" data-action="back"${i === 0 && ui.startPart === 0 ? " hidden" : ""}>← ${i === 1 && state.clarifyPart > 0 ? "Question précédente" : "Retour"}</button>${startScreen === "safety" ? '<span class="step-meta">Je peux ajuster mon choix plus tard</span>' : ""}<button class="btn primary" data-action="next">${i === 5 || i === 4 ? "Voir ma fiche" : i === 1 && state.clarifyPart < 2 ? `Continuer vers la question ${state.clarifyPart + 2}` : i === 1 ? "Continuer vers les solutions" : "Continuer"} <span aria-hidden="true">→</span></button></div>`;
         $("#step-container").classList.toggle("question-transition", focusQuestion && i === 1);
         $("#step-container").classList.toggle("is-question-screen", i === 0 || i === 1);
         if (!$("#outil").hidden) document.title = stepDocumentTitle() + " - Pas à pas";
@@ -548,7 +434,7 @@
         hideToast();
         const destination = Math.max(0, Math.min(5, i));
         if (destination === 1 && state.step !== 1) state.clarifyPart = 0;
-        if (destination === 0 && state.step !== 0 && !keepStartPart) startPart = 0;
+        if (destination === 0 && state.step !== 0 && !keepStartPart) ui.startPart = 0;
         state.step = destination;
         persist();
         $("#mobile-step-picker").open = false;
@@ -563,8 +449,8 @@
           $(".scale-option")?.focus();
           return;
         }
-        if (state.step === 0 && startPart < startParts().length - 1) {
-          startPart++;
+        if (state.step === 0 && ui.startPart < startParts().length - 1) {
+          ui.startPart++;
           renderStep(true);
           return;
         }
@@ -584,7 +470,7 @@
           return;
         }
         if (state.step === 4 || state.step === 5) {
-          recapArrival = true;
+          ui.recapArrival = true;
           renderRecap();
           location.hash = "recap";
           return;
@@ -998,11 +884,11 @@
         );
       }
       function renderSupport() {
-        $("#support-content").innerHTML = supportModes[supportMode];
+        $("#support-content").innerHTML = supportModes[ui.supportMode];
         $$("[data-support-mode]").forEach((b) =>
           b.setAttribute(
             "aria-pressed",
-            String(b.dataset.supportMode === supportMode),
+            String(b.dataset.supportMode === ui.supportMode),
           ),
         );
         const v = supportContexts[$("#support-context").value];
@@ -1014,12 +900,12 @@
           `<article class="card padded"><h3>${v[0]}</h3><p>${v[1]}</p><div class="say">${v[2]}</div><p>${v[3]}</p>${["couple", "young", "work"].includes($("#support-context").value) ? `<a href="${$("#support-context").value === "couple" ? "#violences-couple" : "#violences"}" class="text-button">Explorer les repères de violence →</a>` : ""}</article>`;
       }
       function renderNeedGuidance() {
-        if (!selectedNeed) {
+        if (!ui.selectedNeed) {
           $("#need-guidance").innerHTML = '<p>Je peux lui demander ce qui serait utile, puis choisir son besoin ci-dessus. Si elle ne sait pas encore ou ne souhaite pas d’aide, je n’insiste pas.</p>';
           $$("[data-need]").forEach((button) => button.setAttribute("aria-pressed", "false"));
           return;
         }
-        const [title, phrase, action] = needGuidance[selectedNeed];
+        const [title, phrase, action] = needGuidance[ui.selectedNeed];
         const relation = $("#support-relation").value;
         const relationNote = {
           colleague: "Entre collègues, tenir compte de la charge réelle, des rôles et des ressources disponibles.",
@@ -1029,7 +915,7 @@
         }[relation];
         $("#need-guidance").innerHTML = `<h3>${title}</h3><p class="say">${phrase}</p><p>${action}</p><p class="hint">${relationNote}</p>${relation === "close" ? '<a class="text-button" href="#proche">Voir aussi : comment aider un proche ? ↗</a>' : ""}<p class="source-note">Après l’échange : « Est-ce que cette aide te convient ? »</p>`;
         $$("[data-need]").forEach((button) =>
-          button.setAttribute("aria-pressed", String(button.dataset.need === selectedNeed)),
+          button.setAttribute("aria-pressed", String(button.dataset.need === ui.selectedNeed)),
         );
       }
       // These are educational examples, not validated scales or risk scores.
@@ -1041,10 +927,33 @@
         const volets = list.volets.map((v) => `<details><summary>${esc(v.title)}</summary><div class="details-body">${v.intro ? `<p>${esc(v.intro)}</p>` : ""}${v.items ? `<ul>${plain(v.items)}</ul>` : ""}${(v.paragraphs || []).map((text) => `<p>${esc(text)}</p>`).join("")}</div></details>`).join("");
         return `<h2 id="violence-list-title">${esc(list.title)}</h2>${list.lead.map((text) => `<p>${esc(text)}</p>`).join("")}<h3>${esc(list.facts.title)}</h3><p class="hint">${esc(list.facts.hint)}</p><div class="violence-facts">${facts}</div><p class="notice violence-callout">${esc(list.alert)}</p><div class="button-row section-gap"><a href="#securite" class="btn">Voir les possibilités d’aide →</a><button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="hint">Quitter remplace la page par Wikipédia. Cela n’efface ni l’historique ni un brouillon gardé.</p><h3>${esc(list.steps.title)}</h3><p class="hint">${esc(list.steps.hint)}</p><ul>${plain(list.steps.items)}</ul><div class="violence-volets">${volets}</div><p class="source-note">Repère pédagogique, sans échelle. Aucun diagnostic ni score de risque. Sources : ${refLinks}.</p>`;
       }
+      // Page des repères de violence : trois effets, créés au démarrage (voir plus bas), déduisent l'écran de l'état.
+      //  - syncViolenceChooser : l'ORDRE des relations, d'après le problème en cours (state.scale, state.context) ;
+      //  - renderMeter : le repère affiché, d'après la relation de l'adresse (ui.violenceKey) ;
+      //  - renderMeterDetail : l'exemple ouvert, d'après ui.meterIndex.
+      // Aucun ne lit le DOM pour savoir où on en est.
+      let violenceOrderSignature = "";
+      function syncViolenceChooser() {
+        const scale = state.scaleChosen ? state.scale : "";
+        const context = scale ? state.context : "";
+        const groups = violenceGroupsFor(scale, context);
+        const note = $("#violence-origin-note");
+        const text = violenceOriginNote(scale, context);
+        note.textContent = text;
+        note.hidden = !text;
+        $("#violence-return").hidden = !state.scaleChosen;
+        // On ne refait la liste que si l'ordre a changé : la refaire replie le choix et fait perdre le focus clavier.
+        const signature = JSON.stringify(groups);
+        if (signature === violenceOrderSignature) return;
+        violenceOrderSignature = signature;
+        const chooser = $("#violence-context");
+        chooser.render(groups.map(([label, options]) => ({ label, items: options.map(([value, text]) => ({ value, label: text })) })), chooser.value);
+      }
       function renderMeter() {
-        const key = $("#violence-context").value,
+        const key = ui.violenceKey,
           d = Object.hasOwn(violenceData, key) ? violenceData[key] : null,
           list = Object.hasOwn(violenceLists, key) ? violenceLists[key] : null;
+        $("#violence-context").value = key;
         $("#violence-empty").hidden = Boolean(d || list);
         $("#violence-meter-layout").hidden = !d;
         $("#violence-list").hidden = !list;
@@ -1052,7 +961,6 @@
         $("#violence-notice-list").hidden = !list;
         $("#violence-quit").hidden = !list;
         $("#violence-threshold-red").hidden = Boolean(list);
-        $("#violence-return").hidden = !state.scaleChosen;
         if (list) {
           $("#violence-context-note").textContent = list.note;
           $("#violence-credit").innerHTML = `<strong>Ce repère n’est pas un violentomètre :</strong> il ne classe rien. ${esc(list.credit)} <a href="#ref-${list.creditRef}">[${list.creditRef}]</a>.`;
@@ -1075,13 +983,13 @@
         const priorWork = d.priorWork || [];
         $("#violence-credit").innerHTML = `<strong>Crédits des outils antérieurs.</strong> Le <em>Violentómetro</em> mexicain et le Violentomètre français ont ouvert la voie <a href="#ref-7">[7]</a>.${priorWork.length ? ` D’autres équipes ont publié des outils dans des contextes proches : ${priorWork.map(([name, ref]) => `${esc(name)} <a href="#ref-${ref}">[${ref}]</a>`).join(" ; ")}.` : ""} Les exemples de ce guide sont distincts.`;
         $("#violence-credit").hidden = false;
+        // aria-pressed est posé par renderMeterDetail, qui suit l'exemple ouvert : ouvrir un exemple ne refait donc pas la liste (le focus reste sur le bouton).
         $("#meter").innerHTML = d.items
           .map(
             (v, j) =>
-              `<button type="button" data-meter="${j}" aria-pressed="${meterIndex === j}" aria-controls="meter-detail"><span><small>${esc(v[0])}</small>${esc(v[1])}</span><span aria-hidden="true">↗</span></button>`,
+              `<button type="button" data-meter="${j}" aria-pressed="false" aria-controls="meter-detail"><span><small>${esc(v[0])}</small>${esc(v[1])}</span><span aria-hidden="true">↗</span></button>`,
           )
           .join("");
-        renderMeterDetail();
       }
       function glossarize(text) {
         return esc(text)
@@ -1091,56 +999,37 @@
           .replace(/asymétrie pédagogique/g, term("power"));
       }
       function renderMeterDetail() {
-        const d = violenceData[$("#violence-context").value];
+        const d = violenceData[ui.violenceKey];
         if (!d) return;
-        if (meterIndex === null) {
+        if (ui.meterIndex === null) {
           $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je peux choisir un exemple dans la liste. Rien n’est déduit de ma relation avant ce choix.</p><p class="source-note">Ces exemples ne classent pas une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
           $$('[data-meter]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
           return;
         }
-        const v = d.items[meterIndex];
+        const v = d.items[ui.meterIndex];
         $("#meter-detail").innerHTML =
-          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
+          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${ui.meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
         $$("[data-meter]").forEach((b) =>
           b.setAttribute(
             "aria-pressed",
-            String(Number(b.dataset.meter) === meterIndex),
+            String(Number(b.dataset.meter) === ui.meterIndex),
           ),
         );
       }
       function route() {
         hideTooltip();
-        const hash = location.hash.slice(1) || "accueil";
-        const scaleMatch = /^outil-(personal|shared|organization|public)$/.exec(hash);
-        const violenceMatch = /^violences-([a-z]+)$/.exec(hash);
-        const violenceKey = violenceMatch && (Object.hasOwn(violenceData, violenceMatch[1]) || Object.hasOwn(violenceLists, violenceMatch[1])) ? violenceMatch[1] : null;
-        if (scaleMatch) {
-          selectScale(scaleMatch[1]);
-          persist();
-        }
-        if (hash === "violences" || violenceKey) {
-          $("#violence-context").value = violenceKey || "";
-          meterIndex = null;
-          renderMeter();
-        }
-        const page = hash.startsWith("ref-")
-          ? "bibliographie"
-          : scaleMatch ? "outil"
-          : violenceKey ? "violences"
-          : [
-                "accueil",
-                "outil",
-                "soutenir",
-                "groupe",
-                "proche",
-                "violences",
-                "comprendre",
-                "bibliographie",
-                "securite",
-                "recap",
-              ].includes(hash)
-            ? hash
-            : "accueil";
+        const where = parseRoute(location.hash);
+        batch(() => {
+          if (where.scale) {
+            selectScale(where.scale);
+            persist();
+          }
+          if (where.violence) {
+            ui.violenceKey = where.violenceKey;
+            ui.meterIndex = null;
+          }
+        });
+        const page = where.page;
         const keepViolenceChoiceFocus = page === "violences" && $("#violence-context").hasFocus;
         $$(".view").forEach((el) => (el.hidden = el.id !== page));
         $$("nav a").forEach((a) => {
@@ -1168,16 +1057,16 @@
           recap: $("#recap .page-heading h1").textContent,
         }[page];
         document.title = title + " - Pas à pas";
-        if (hash.startsWith("ref-")) {
-          const ref = document.getElementById(hash);
+        if (where.ref) {
+          const ref = document.getElementById(where.name);
           if (ref) {
             ref.tabIndex = -1;
             ref.focus({ preventScroll: true });
             ref.scrollIntoView({ block: "start" });
           }
         } else if (!keepViolenceChoiceFocus) {
-          const arrival = page === "recap" && recapArrival && !$("#recap-banner").hidden;
-          recapArrival = false;
+          const arrival = page === "recap" && ui.recapArrival && !$("#recap-banner").hidden;
+          ui.recapArrival = false;
           (arrival ? $("#recap-banner") : $("#main")).focus({ preventScroll: true });
           window.scrollTo({ top: 0, behavior: "instant" });
           if (arrival) {
@@ -1315,7 +1204,7 @@
           return;
         }
         if (b.dataset.supportMode) {
-          supportMode = b.dataset.supportMode;
+          ui.supportMode = b.dataset.supportMode;
           renderSupport();
           return;
         }
@@ -1328,13 +1217,12 @@
           return;
         }
         if (b.dataset.need) {
-          selectedNeed = b.dataset.need;
+          ui.selectedNeed = b.dataset.need;
           renderNeedGuidance();
           return;
         }
         if (b.dataset.meter !== undefined) {
-          meterIndex = Number(b.dataset.meter);
-          renderMeterDetail();
+          ui.meterIndex = Number(b.dataset.meter); // renderMeterDetail se rejoue seul
           if (matchMedia("(max-width:600px)").matches)
             $("#meter-detail").scrollIntoView({
               block: "start",
@@ -1347,15 +1235,15 @@
             goNext();
             break;
           case "back":
-            if (state.step === 0 && startPart > 0) {
-              startPart--;
+            if (state.step === 0 && ui.startPart > 0) {
+              ui.startPart--;
               renderStep(true);
             } else if (state.step === 1 && state.clarifyPart > 0) {
               state.clarifyPart--;
               persist();
               renderStep(true, true);
             } else {
-              if (state.step === 1) startPart = startParts().length - 1;
+              if (state.step === 1) ui.startPart = startParts().length - 1;
               changeStep(state.step - 1, state.step === 1);
             }
             break;
@@ -1436,7 +1324,7 @@
                 } catch (e) {
                   removed = false;
                 }
-                state = fresh();
+                replaceState(fresh());
                 remember = false;
                 staleCopy = !removed;
                 nextId = 4;
@@ -1502,7 +1390,7 @@
       });
       document.addEventListener("click", (e) => {
         const link = e.target.closest('a[href="#recap"]');
-        if (link && !$("#outil").hidden) recapArrival = true;
+        if (link && !$("#outil").hidden) ui.recapArrival = true;
       });
       $("#remember").addEventListener("change", (e) => setRemember(e.target.checked));
       $("#import-file").addEventListener("change", async (e) => {
@@ -1521,7 +1409,7 @@
             "Reprendre ce brouillon ?",
             "Le fichier remplacera les réponses actuellement affichées. Téléchargez-les d’abord si vous souhaitez les garder.",
             () => {
-              state = imported;
+              replaceState(imported);
               nextId = state.options.length + 1;
               persist();
               updatePrivacy();
@@ -1544,8 +1432,10 @@
         if (key && !Object.hasOwn(violenceData, key) && !Object.hasOwn(violenceLists, key)) return;
         const target = key ? `#violences-${key}` : "#violences";
         if (location.hash === target) {
-          meterIndex = null;
-          renderMeter();
+          batch(() => {
+            ui.violenceKey = key;
+            ui.meterIndex = null;
+          });
         } else location.hash = target;
       });
       // Brief hint on hover/focus; a deliberate activation opens the detailed definition.
@@ -1696,7 +1586,9 @@
       renderSupport();
       $("#support-relation").addEventListener("change", renderNeedGuidance);
       renderNeedGuidance();
-      $("#violence-context").render(violenceGroups.map(([label, options]) => ({ label, items: options.map(([value, text]) => ({ value, label: text })) })));
-      renderMeter();
+      // Ordre de création = ordre de rejeu : la liste des relations d'abord, puis le repère, puis l'exemple ouvert.
+      effect(syncViolenceChooser);
+      effect(renderMeter);
+      effect(renderMeterDetail);
       initGroup();
       route();
