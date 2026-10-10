@@ -450,20 +450,30 @@
       // Où se place la personne : quelles relations montrer en premier sur la page des repères de violence.
       // Seul l'ordre change : aucune relation n'est masquée, aucune n'est choisie à la place de la personne, « Autre situation » reste en dernier.
       // Clé « niveau/contexte » : précision ; clé « niveau » : valeur par défaut du niveau ; rien : l'ordre d'origine ci-dessus.
+      // Règle éditoriale : on met en tête la relation que décrit le contexte, puis celle vers laquelle son guide renvoie ou qui s'en approche
+      // le plus ; on n'ajoute rien par simple ressemblance (mieux vaut l'ordre d'origine qu'une proximité inventée).
       const violenceFirst = {
+        // Équipe ou institution : le travail d'abord (responsable / salarié, collègues), puis les pressions et représailles (autorité).
         organization: ["work", "colleague", "authority"],
+        // Priorités et coordination : un désaccord entre collègues d'abord (le guide « collègues » renvoie vers « responsable / salarié » si l'autre décide de mon emploi).
+        "organization/coordination": ["colleague", "work"],
+        // Accès et qualité d'un service : signaler un manquement (autorité), puis les relations avec les usagers (soins, enseignement).
+        "organization/service": ["authority", "care", "education"],
+        // Collectif ou politique : toujours le repère non gradué sur les pressions et les représailles.
         public: ["authority"],
         "personal/study": ["education", "peers"],
         "personal/work": ["work", "colleague"],
-        "personal/health": ["care", "vulnerable"],
+        // Accéder à un soin : la relation avec un professionnel de santé. Le guide « proche adulte aidé » vise une relation d'aide familiale : pas de lien établi ici.
+        "personal/health": ["care"],
         "shared/family": ["family", "sibling", "vulnerable"],
         "shared/sibling": ["sibling", "family"],
-        "shared/peers": ["peers", "sibling"],
+        // Amis, camarades ou colocataires : cette relation seule (la fratrie est un autre guide).
+        "shared/peers": ["peers"],
         "shared/colleague": ["colleague", "work"],
-        "shared/mentoring": ["education", "work"],
+        // Encadrement ou formation : encadrer et évaluer relèvent de la relation responsable / salarié ; « enseignant / élève » ne couvre que l'école et les études.
+        "shared/mentoring": ["work", "education"],
+        // Voisins ou association : aucun guide ne correspond ; la colocation (partage d'un lieu et de règles) est le plus proche.
         "shared/neighbors": ["peers"],
-        "organization/coordination": ["colleague", "work"],
-        "organization/service": ["authority", "care", "education"],
       };
       const violenceData = {
         couple: {

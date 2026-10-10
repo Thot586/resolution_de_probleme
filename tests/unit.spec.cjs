@@ -186,6 +186,7 @@ test("la table d'ordre des repères ne cite que des relations et des contextes q
     const [scale, context] = where.split("/");
     assert(Object.hasOwn(contextCatalog, scale), `${where}: niveau inconnu`);
     if (context) assert(Object.hasOwn(contextCatalog[scale], context), `${where}: contexte inconnu`);
+    assert.equal(new Set(first).size, first.length, `${where}: une relation n'est citée qu'une fois`);
     for (const key of first) {
       assert(relations.has(key), `${where}: relation « ${key} » absente de la liste`);
       assert(Object.hasOwn(violenceData, key) || Object.hasOwn(violenceLists, key), `${where}: « ${key} » n'a ni repère gradué ni repère non gradué`);
@@ -215,6 +216,14 @@ test("l'ordre suit le problème en cours", () => {
   assert.equal(labelsOf(violenceGroupsFor("personal", "work"))[0], "Travail et études");
   assert.equal(labelsOf(violenceGroupsFor("personal", "daily"))[0], "Vie personnelle", "un contexte sans relation proche garde l'ordre d'origine");
   assert.deepEqual(keysOf(violenceGroupsFor("shared", "family")).slice(0, 2), ["family", "sibling"]);
+  // Choix éditoriaux : pas de proximité inventée.
+  assert.deepEqual(labelsOf(violenceGroupsFor("personal", "health")).slice(0, 2), ["Soins", "Vie personnelle"], "accéder à un soin : les soins seuls montent ; le reste garde l'ordre d'origine");
+  assert.deepEqual(keysOf(violenceGroupsFor("personal", "health")).slice(0, 2), ["care", "couple"], "« proche adulte aidé » ne monte pas : ce guide vise une relation d'aide familiale");
+  assert.deepEqual(keysOf(violenceGroupsFor("shared", "peers")).slice(0, 2), ["peers", "couple"], "amis, camarades, colocataires : cette relation seule, pas la fratrie");
+  assert.deepEqual(keysOf(violenceGroupsFor("shared", "mentoring")).slice(0, 3), ["work", "education", "colleague"], "encadrer et évaluer : responsable / salarié d'abord, puis enseignant / élève");
+  assert.deepEqual(keysOf(violenceGroupsFor("organization", "coordination")).slice(0, 3), ["colleague", "work", "education"], "coordination : collègues d'abord ; les pressions et représailles ne montent pas");
+  assert.deepEqual(labelsOf(violenceGroupsFor("organization", "coordination")), ["Travail et études", "Vie personnelle", "Soins", "Droits et signalement", "Autre situation"]);
+  assert.deepEqual(labelsOf(violenceGroupsFor("organization", "service")), ["Droits et signalement", "Soins", "Travail et études", "Vie personnelle", "Autre situation"], "service : signaler un manquement, puis les relations avec les usagers");
   assert.deepEqual(violenceGroupsFor("organization", "inexistant").length, 5, "un contexte inconnu retombe sur le niveau");
 });
 
