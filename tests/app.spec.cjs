@@ -1718,6 +1718,34 @@ const choose = async (target, selector, value) => {
     }
     return texts;
   })));
+  shown.push(["glossary", await plainPage.evaluate(() => JSON.stringify([glossary, glossaryHelp]))]);
+  shown.push(...(await plainPage.evaluate(() => {
+    // The fiche with content, in every way of keeping it, and the status line that follows the same states.
+    const texts = [];
+    state.fields.situation = "Une situation";
+    state.fields.action = "Un premier pas";
+    state.options[0].text = "Une piste";
+    for (const [label, remember, staleCopy, safety, bilan] of [
+      ["fiche on this page", false, false, "safe", false],
+      ["fiche kept in the browser", true, false, "safe", false],
+      ["fiche at risk", false, false, "danger", false],
+      ["fiche, copy not erased", false, true, "safe", false],
+      ["fiche with its bilan", false, false, "safe", true],
+    ]) {
+      ui.remember = remember;
+      ui.staleCopy = staleCopy;
+      state.safety = safety;
+      state.fields.result = bilan ? "Un résultat" : "";
+      state.fields.trial = bilan ? "yes" : "notyet";
+      renderRecap();
+      texts.push([label, document.querySelector("#recap").textContent]);
+      texts.push([label + " (status line)", document.querySelector("#privacy-status").textContent]);
+      for (const kind of ["pause", "notyet"]) texts.push([`${label} (note ${kind})`, keepNoteText(kind)]);
+    }
+    ui.remember = false;
+    ui.staleCopy = false;
+    return texts;
+  })));
   assert(shown.length > 150, "the plain-language check really reads the screens (" + shown.length + ")");
   assert.deepEqual(
     shown.filter(([, text]) => jargon.test(text)).map(([label, text]) => `${label}: ${text.match(jargon)[0]}`),

@@ -1,7 +1,7 @@
       // A facilitator's planning notes stay in memory. The tool never collects survey responses.
       const groupStages = [
         {
-          short: "Qui décide",
+          short: "Préparer",
           title: "Qui participe et qui décide ?",
           intro: "Je vérifie avec le groupe ce qui peut vraiment changer avant de demander des témoignages.",
           points: [
