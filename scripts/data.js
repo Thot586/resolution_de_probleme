@@ -281,7 +281,7 @@
         ],
         violentometer: [
           "Violentomètre",
-          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences. Parmi les travaux antérieurs figurent le Violentómetro de l’Institut polytechnique national du Mexique (2009), le Violentomètre français consacré aux relations amoureuses (2018) et des déclinaisons créées par d’autres équipes. Les guides de cette page sont distincts de ces outils et ne donnent pas de score de danger. Les crédits figurent dans « Origine et limites de ces repères ».",
+          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences. Parmi les travaux antérieurs figurent le Violentómetro de l’Institut polytechnique national du Mexique (2009), le Violentomètre français consacré aux relations amoureuses (2018) et des déclinaisons créées par d’autres équipes. Les repères de cette page sont distincts de ces outils et ne donnent pas de score de danger. Les crédits figurent dans « Origine et limites de ces repères ».",
         ],
         workHarassment: [
           "Harcèlement moral au travail",
@@ -326,7 +326,7 @@
         indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
         feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
         personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
-        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentómetro mexicain, le Violentomètre français et d’autres déclinaisons ont précédé ce site. Leurs créateurs sont crédités dans la page « Repérer une violence selon la relation ». Les guides de ce site sont distincts et ne calculent pas un niveau de danger.", 7],
+        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentómetro mexicain, le Violentomètre français et d’autres déclinaisons ont précédé ce site. Leurs créateurs sont crédités dans la page « Repérer une violence selon la relation ». Les repères de ce site sont distincts et ne calculent pas un niveau de danger.", 7],
         workHarassment: ["Des agissements hostiles répétés au travail.", "Un conflit ou une critique professionnelle ne suffit pas à conclure à un harcèlement moral. Je peux toutefois demander de l'aide dès qu'un fait me préoccupe, sans attendre qu'il se répète.", 35],
         evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
         sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
@@ -775,7 +775,7 @@
           ],
         },
         colleague: {
-          note: "Entre collègues, un désaccord professionnel n'est pas en soi un harcèlement. Des humiliations répétées, des représailles ou une agression justifient de chercher de l'aide. Si l'autre personne décide de votre emploi ou de votre formation, choisissez plutôt le guide lié à cette autorité.",
+          note: "Entre collègues, un désaccord professionnel n'est pas en soi un harcèlement. Des humiliations répétées, des représailles ou une agression justifient de chercher de l'aide. Si l'autre personne décide de votre emploi ou de votre formation, choisissez plutôt le repère lié à cette autorité.",
           refs: "[8, 35]",
           priorWork: [["Violentomètre de la Ville de Paris sur les violences au travail (2020)", 51], ["Violentomètre du monde de la recherche de l’équipe G-RIRE et de la Fondation L’Oréal (2024)", 57]],
           items: [
@@ -818,7 +818,7 @@
           ],
         },
         vulnerable: {
-          note: "Ce guide vise une relation d'aide avec un adulte âgé, malade ou dépendant. Une difficulté de soin ou une erreur ne prouve pas à elle seule une maltraitance ; la sécurité et les besoins de la personne doivent être examinés. Le guide OMS cité porte surtout sur les personnes âgées.",
+          note: "Ce repère vise une relation d'aide avec un adulte âgé, malade ou dépendant. Une difficulté de soin ou une erreur ne prouve pas à elle seule une maltraitance ; la sécurité et les besoins de la personne doivent être examinés. Le guide OMS cité porte surtout sur les personnes âgées.",
           refs: "[37, 39]",
           items: [
             [
@@ -945,7 +945,7 @@
                 "remplacer l’avis d’un juriste ou l’aide d’une organisation spécialisée.",
               ],
               paragraphs: [
-                "Il concerne des actions pacifiques. Il s’appuie sur des textes sur la défense des droits humains et sur le signalement au travail : il ne porte ni sur la compétition entre partis, ni sur les désaccords ordinaires dans un syndicat, une association ou un voisinage ; une personne élue ou syndiquée qui défend un droit humain peut toutefois s’y reconnaître. Pour un problème au travail, à l’école ou dans les soins, le guide de la relation correspondante convient peut-être mieux.",
+                "Il concerne des actions pacifiques. Il s’appuie sur des textes sur la défense des droits humains et sur le signalement au travail : il ne porte ni sur la compétition entre partis, ni sur les désaccords ordinaires dans un syndicat, une association ou un voisinage ; une personne élue ou syndiquée qui défend un droit humain peut toutefois s’y reconnaître. Pour un problème au travail, à l’école ou dans les soins, le repère de la relation correspondante convient peut-être mieux.",
               ],
             },
           ],

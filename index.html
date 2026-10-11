@@ -2788,7 +2788,7 @@ dialog {
           }
         </style>
         <div class="notice amber">
-          Activez JavaScript pour utiliser le parcours interactif. Les
+          Le parcours interactif ne s’affiche pas : votre navigateur bloque les scripts (JavaScript). Autorisez-les pour l’utiliser. Les
           explications, les références et les contacts d’aide restent
           disponibles ci-dessous.
         </div></noscript
@@ -2894,7 +2894,7 @@ dialog {
           <div>
             <div id="step-container" class="step-card card"></div>
             <p class="privacy-line" role="status" aria-atomic="true">
-              <span id="privacy-status">Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page. Rien n’est envoyé.</span>
+              <span id="privacy-status">Mes réponses restent dans ma fiche. Elles disparaissent si je ferme ou recharge cette page. Rien n’est envoyé.</span>
               <button type="button" class="text-button" id="keep-link" data-action="keep-local">Les garder dans ce navigateur</button>
             </p>
             <details class="file-options">
@@ -2907,14 +2907,13 @@ dialog {
                 <p class="hint" id="remember-hint">
                   Sans sauvegarde, mes réponses disparaissent si je ferme ou
                   recharge la page. Avec la sauvegarde, elles restent dans ce
-                  navigateur, sans chiffrement : d’autres personnes utilisant
-                  cet appareil peuvent les lire.
+                  navigateur, sans mot de passe : d’autres personnes qui utilisent cet appareil peuvent les lire.
                 </p>
                 <div class="button-row section-gap">
                   <button class="btn small" data-action="export">
                     Télécharger le brouillon</button
                   ><button class="btn small" data-action="import">
-                    Reprendre un fichier</button
+                    Reprendre un brouillon téléchargé</button
                   ><input
                     id="import-file"
                     type="file"
@@ -2926,8 +2925,7 @@ dialog {
                 </div>
                 <p class="hint">
                   Les fichiers téléchargés contiennent mes réponses.
-                  Conservez-les en lieu sûr. Évitez les noms, adresses et autres
-                  informations identifiantes.
+                  Conservez-les en lieu sûr. Évitez d’y mettre des noms, des adresses ou toute information qui permettrait de vous reconnaître.
                 </p>
               </div>
             </details>
@@ -2957,7 +2955,7 @@ dialog {
                   <p class="hint">J’évite de comparer tout de suite avec ma propre expérience.</p>
                 </article>
                 <article class="card stage-card">
-                  <span class="tag">2 · Relever le besoin</span>
+                  <span class="tag">2 · Demander le besoin</span>
                   <h2>« De quoi aurais-tu besoin de ma part ? »</h2>
                   <p>Je demande ce qui aiderait aujourd’hui : être écouté, comprendre la situation, recevoir une aide concrète, ou discuter d’une idée. La réponse peut être « je ne sais pas ». Je ne propose d’associer un proche que si la personne le souhaite et si cela ne l’expose pas.</p>
                 </article>
@@ -3035,8 +3033,8 @@ dialog {
               <p><strong>Si la confiance a déjà été abîmée :</strong> « Je crois que j’ai comparé trop vite avec mon époque. Je n’ai pas assez écouté ce que tu vis maintenant. Je veux mieux comprendre, si tu le souhaites. »</p>
             </div>
           </details>
-          <div class="notice amber section-gap"><strong>Quand l’exercice ne suffit pas.</strong>En cas de menace, de violence, de harcèlement, de risque pour une personne ou de difficulté relevant d’une décision clinique, cherchez un appui compétent et sûr. <a href="#securite">Voir les aides et repères de sécurité</a>.</div>
-          <p class="source-note">Les repères de l’OMS concernent d’abord les situations de crise ; les études ne démontrent pas qu’ils améliorent à eux seuls la santé mentale dans tous les contextes. Les travaux sur les choix partagés portent surtout sur les soins. Cette adaptation à l’aide quotidienne n’a pas été évaluée. La question sur le point de vue de l’autre s’inspire de l’<button class="glossary-button" type="button" data-term="culturalFormulation" aria-haspopup="dialog" aria-controls="term-dialog">entretien de formulation culturelle</button>, sans le reproduire. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a> <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a> <a href="#ref-45">[45]</a> <a href="#ref-46">[46]</a> <a href="#ref-47">[47]</a></p>
+          <div class="notice amber section-gap"><strong>Quand l’exercice ne suffit pas.</strong>En cas de menace, de violence, de harcèlement, de risque pour une personne ou de difficulté qui demande l’avis d’un professionnel de santé, cherchez un appui compétent et sûr. <a href="#securite">Voir les aides et repères de sécurité</a>.</div>
+          <p class="source-note">Les repères de l’OMS concernent d’abord les situations de crise ; les études ne démontrent pas qu’ils améliorent à eux seuls la santé mentale dans tous les contextes. Les travaux sur les décisions prises ensemble portent surtout sur les soins. Cette adaptation à l’aide quotidienne n’a pas été évaluée. La question sur le point de vue de l’autre s’inspire de l’<button class="glossary-button" type="button" data-term="culturalFormulation" aria-haspopup="dialog" aria-controls="term-dialog">entretien de formulation culturelle</button>, sans le reproduire. <a href="#ref-5">[5]</a> <a href="#ref-18">[18]</a> <a href="#ref-19">[19]</a> <a href="#ref-41">[41]</a> <a href="#ref-42">[42]</a> <a href="#ref-45">[45]</a> <a href="#ref-46">[46]</a> <a href="#ref-47">[47]</a></p>
         </div>
       </section>
       <section id="groupe" class="view" aria-labelledby="group-title" hidden>
@@ -3056,7 +3054,7 @@ dialog {
               <figure class="teaching-figure">
                 <svg viewBox="0 0 360 335" role="img" aria-labelledby="group-map-title group-map-desc" xmlns="http://www.w3.org/2000/svg">
                   <title id="group-map-title">Comprendre, décider, essayer et revoir avec le groupe</title>
-                  <desc id="group-map-desc">Trois blocs se suivent. Comprendre regroupe cadrage, écoute et analyse. Décider regroupe restitution et choix. Essayer et revoir regroupe le test, le suivi et un retour possible à l'écoute.</desc>
+                  <desc id="group-map-desc">Trois blocs se suivent. Comprendre regroupe la question de qui décide, l'écoute et l'analyse. Décider regroupe le retour au groupe et le choix. Essayer et revoir regroupe le test, le suivi et un retour possible à l'écoute.</desc>
                   <!-- Chaque bloc porte ses propres étapes ; les flèches montrent que la démarche peut être reprise. -->
                   <g fill="#fff" stroke="#b9cbe5" stroke-width="2">
                     <rect x="12" y="10" width="336" height="82" rx="15"/>
@@ -3065,9 +3063,9 @@ dialog {
                   </g>
                   <g font-family="Arial, sans-serif" fill="#202b50" text-anchor="middle">
                     <text x="180" y="40" font-size="18" font-weight="700">1. Comprendre</text>
-                    <text x="180" y="66" font-size="14">Cadrer · écouter · analyser</text>
+                    <text x="180" y="66" font-size="14">Qui décide · écouter · analyser</text>
                     <text x="180" y="153" font-size="18" font-weight="700">2. Décider ensemble</text>
-                    <text x="180" y="179" font-size="14">Restituer · choisir</text>
+                    <text x="180" y="179" font-size="14">Rendre compte · choisir</text>
                     <text x="180" y="266" font-size="18" font-weight="700">3. Essayer et revoir</text>
                     <text x="180" y="292" font-size="14">Tester · suivre · ajuster</text>
                   </g>
@@ -3103,7 +3101,7 @@ dialog {
                 </choice-group>
                 <p class="hint" id="group-method-hint"></p>
                 <details class="section-gap" id="group-method-diagram">
-                  <summary>Voir le logigramme : comment écouter le groupe ?</summary>
+                  <summary>Voir le schéma : comment écouter le groupe ?</summary>
                   <div class="details-body">
                     <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits dans « Lire en texte ».</p>
                     <figure class="teaching-figure scrollable-diagram" tabindex="0">
@@ -3158,7 +3156,7 @@ dialog {
                         </g>
                         <text x="180" y="743" fill="#202b50" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14">Puis restituer et suivre la décision.</text>
                       </svg>
-                      <figcaption>Je reprends le choix si une décision devient possible ou si les informations existantes laissent des questions ouvertes. Je vérifie que la langue, l’horaire et le format permettent de participer. Un sondage ne garantit pas la représentativité. Si écouter le groupe risque d’exposer des personnes à des représailles, je cherche d’abord un soutien adapté. Je ne lance pas d’enquête qui les expose.</figcaption>
+                      <figcaption>Je reprends le choix si une décision devient possible ou si les informations existantes laissent des questions ouvertes. Je vérifie que la langue, l’horaire et le format permettent de participer. Un sondage ne garantit pas que les réponses reflètent tout le groupe. Si écouter le groupe risque d’exposer des personnes à des représailles, je cherche d’abord un soutien adapté. Je ne lance pas d’enquête qui les expose.</figcaption>
                     <button type="button" class="btn small figure-save no-print" data-save-figure>Enregistrer l’image</button>
                     </figure>
                     <details class="diagram-text-fold">
@@ -3168,11 +3166,11 @@ dialog {
                       <li>Je clarifie qui décide, ce qui peut changer et l’objectif de l’écoute. Si aucune décision réelle ne peut être influencée, je précise cela avant d’enquêter.</li>
                       <li>Si des informations existent déjà, je les examine et je vérifie leur interprétation avec des personnes concernées. S’il reste des questions, je choisis une autre manière d’écouter.</li>
                       <li>Si les personnes peuvent parler librement ensemble, je peux proposer une discussion volontaire. Si la parole en groupe est difficile, je peux proposer des entretiens individuels volontaires. Je vérifie que la langue, l’horaire et le format ne laissent personne de côté.</li>
-                      <li>Si une même question concerne beaucoup de personnes, un sondage court peut compléter cette écoute. Ses résultats ne sont pas forcément représentatifs. Sinon, le sondage n’est pas nécessaire.</li>
+                      <li>Si une même question concerne beaucoup de personnes, un sondage court peut compléter cette écoute. Ses résultats ne reflètent pas forcément tout le groupe. Sinon, le sondage n’est pas nécessaire.</li>
                     </ol>
                       </div>
                     </details>
-                    <p class="source-note">Ce logigramme est un aide-mémoire pour choisir une méthode, pas un algorithme validé. J’adapte la démarche avec les personnes concernées. <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-28">[28]</a> <a href="#ref-33">[33]</a></p>
+                    <p class="source-note">Ce schéma est un aide-mémoire pour choisir une méthode ; ce n’est pas une règle validée par des études. J’adapte la démarche avec les personnes concernées. <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-28">[28]</a> <a href="#ref-33">[33]</a></p>
                   </div>
                 </details>
               </div>
@@ -3204,7 +3202,7 @@ dialog {
           <div class="notice amber section-gap">
             <strong>Si le groupe subit des violences ou des représailles :</strong> je ne lance pas une confrontation collective. Je cherche une aide adaptée et sûre. <a href="#securite">Voir les repères de sécurité</a>.
           </div>
-          <p class="source-note">Ce parcours assemble des cadres d’évaluation et d’amélioration et des guides de participation. Des études sur certaines interventions participatives en santé publique trouvent des bénéfices, sans établir qu’une séquence unique serait la meilleure pour tous les groupes. Ce parcours n’a pas été évalué comme intervention propre à ce site. <a href="#ref-22">[22]</a> <a href="#ref-23">[23]</a> <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-48">[48]</a> <a href="#ref-49">[49]</a></p>
+          <p class="source-note">Ce parcours s’appuie sur des méthodes publiées pour évaluer et améliorer une action, et sur des guides pour faire participer les personnes concernées. Des études sur certaines actions participatives en santé publique montrent des bénéfices, sans prouver qu’un enchaînement unique serait le meilleur pour tous les groupes. Ce parcours n’a pas été évalué en tant que tel. <a href="#ref-22">[22]</a> <a href="#ref-23">[23]</a> <a href="#ref-25">[25]</a> <a href="#ref-26">[26]</a> <a href="#ref-48">[48]</a> <a href="#ref-49">[49]</a></p>
         </div>
       </section>
       <section id="proche" class="view" hidden>
@@ -3327,17 +3325,17 @@ dialog {
               qu’elles peuvent signifier et où demander de l’aide.
             </p>
           </div>
-          <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver une aide sans parcourir les repères →</a> <span id="violence-quit" hidden><button type="button" class="text-button" data-action="quick-exit">Quitter cette page ↗</button> <small>Remplace la page par Wikipédia ; n’efface pas l’historique.</small></span></p>
+          <p class="violence-urgent"><strong>En danger maintenant ?</strong> <a href="#securite">Trouver de l’aide tout de suite, sans lire la suite →</a> <span id="violence-quit" hidden><button type="button" class="text-button" data-action="quick-exit">Quitter cette page ↗</button> <small>Remplace la page par Wikipédia ; n’efface pas l’historique.</small></span></p>
           <div class="section-gap violence-choice primary-ask">
             <span class="label" id="violence-context-label">Avec qui se passe la situation ?</span>
             <p class="hint" id="violence-origin-note" hidden></p>
             <choice-group id="violence-context" name="violence-context" fold summary-label="Relation choisie :" placeholder="Choisir une relation" aria-labelledby="violence-context-label" aria-describedby="violence-choice-help violence-origin-note violence-context-note"></choice-group>
-            <p class="hint" id="violence-choice-help">Je peux choisir « Une autre relation » si aucun exemple ne convient. Le choix apparaît dans l’adresse.</p>
+            <p class="hint" id="violence-choice-help">Si aucune relation ne correspond, je choisis « Une autre relation ».</p>
           </div>
           <p class="hint" id="violence-context-note"></p>
           <p class="source-note" id="violence-credit" hidden></p>
           <p class="hint violence-threshold">Dès qu’un fait m’inquiète, je peux chercher conseil. <span id="violence-threshold-red">Je n’ai pas à attendre une répétition ou une « case rouge » pour demander de l’aide.</span></p>
-          <div id="violence-empty" class="card padded violence-empty" role="status">Je choisis une relation ci-dessus pour voir les repères qui lui correspondent.</div>
+          <div id="violence-empty" class="card padded violence-empty" role="status">Je choisis une relation ci-dessus pour voir les situations qui lui correspondent.</div>
           <div class="meter-layout section-gap" id="violence-meter-layout" hidden>
             <div>
               <div
@@ -3346,8 +3344,7 @@ dialog {
                 aria-label="Comportements à explorer"
               ></div>
               <p class="source-note">
-                Exemples pédagogiques, pas un test : un seul acte peut être
-                grave. Aucun choix de comportement n’est enregistré.
+                Ces exemples aident à comprendre ; ce n’est pas un test. Un seul acte peut être grave. Rien de ce que je choisis ici n’est enregistré.
               </p>
             </div>
             <article
@@ -3402,22 +3399,14 @@ dialog {
                 <li>Pour la violence politique envers les femmes : des équipes d’observatoires mexicains de la participation politique, dont les violentomètres sont reproduits dans un ouvrage de l’Institut électoral d’Oaxaca <a href="#ref-65">[65]</a>.</li>
               </ul>
               <p>
-                <strong>Les guides de cette page sont des créations distinctes, pas des adaptations officielles.</strong>
-                Le repère « Autorité, entreprise ou groupe puissant » n’est pas un violentomètre : il ne propose ni échelle ni couleurs, car aucune des sources consultées ne soutient un ordre entre ces situations.
-                Ils ne reprennent pas les textes de ces outils et ne revendiquent pas d’avoir été les premiers à décliner le Violentomètre.
-                Ils ne sont ni des échelles cliniques validées, ni des outils
-                prédictifs, ni un avis juridique. Les couleurs ne calculent
-                aucun niveau de risque. Les violences ne suivent pas forcément
-                une progression ; un seul acte peut être grave et des moments
-                respectueux n’effacent pas une violence.
+                <strong>Les repères de cette page sont des créations distinctes, pas des adaptations officielles.</strong> Ils ne reprennent pas les textes de ces outils et ne revendiquent pas d’avoir été les premiers à décliner le Violentomètre. Ils ne sont ni des échelles validées par des études, ni des outils qui prédisent un danger, ni un avis juridique. Les couleurs ne calculent aucun niveau de risque. Les violences ne suivent pas forcément une progression ; un seul acte peut être grave et des moments respectueux n’effacent pas une violence. Le repère « Autorité, entreprise ou groupe puissant » n’est pas un violentomètre : il ne propose ni échelle ni couleurs, car aucune des sources consultées ne soutient un ordre entre ces situations.
               </p>
             </div>
           </details>
           <p class="source-note">
             Situations formulées pour cette page à partir de publications sur
             la santé, le travail, l’éducation, la prévention et la défense des
-            droits. Chaque guide cite
-            ses sources et leurs limites.
+            droits. Chaque repère cite ses sources et leurs limites.
             Le contexte de pouvoir compte ; les droits et recours précis
             dépendent du pays. <a href="#ref-6">[6]</a>
             <a href="#ref-8">[8]</a> <a href="#ref-34">[34]</a>
@@ -3430,8 +3419,7 @@ dialog {
           <div class="page-heading">
             <h1>Comprendre la démarche</h1>
             <p>
-              La résolution de problème transforme une difficulté en options et
-              en actions vérifiables. Elle commence aussi par reconnaître ce qui
+              La résolution de problème aide à passer d’une difficulté à des pistes, puis à des actions dont on peut vérifier l’effet. Elle commence aussi par reconnaître ce qui
               ne dépend pas de nous.
             </p>
           </div>
@@ -3457,7 +3445,7 @@ dialog {
               </ul>
             </div>
           </div>
-          <p class="hint glossary-instruction">Les termes soulignés donnent une explication courte au survol ou avec le clavier. Cliquez ou touchez le terme pour voir une explication et un exemple.</p>
+          <p class="hint glossary-instruction">Les termes soulignés ont une courte explication : passez la souris dessus ou placez-vous dessus au clavier. Cliquez ou touchez un terme pour voir sa définition et un exemple.</p>
           <section class="visual-guides" aria-labelledby="visual-guides-title">
             <h2 id="visual-guides-title" class="block-heading">Quand la décision se prend à plusieurs</h2>
             <details>
@@ -3516,7 +3504,7 @@ dialog {
           <details class="section-gap">
             <summary>Pourquoi voir les étapes avant de commencer ?</summary>
             <div class="details-body">
-              <p>Une vue courte aide à savoir où l’on va. Les détails restent facultatifs pour ne pas charger la première page. Des exemples peuvent aider à commencer ; ils ne remplacent pas l’adaptation à sa propre situation. Ces choix s’appuient sur les principes de charge cognitive et d’apprentissage des adultes, sans preuve que cette interface précise soit supérieure à une autre. <a class="citation" href="#ref-20">[20]</a> <a class="citation" href="#ref-21">[21]</a></p>
+              <p>Une vue courte aide à savoir où l’on va. Les détails restent facultatifs pour ne pas charger la première page. Des exemples peuvent aider à commencer ; ils ne remplacent pas l’adaptation à sa propre situation. Ces choix s’appuient sur des principes connus (ne pas demander trop d’effort de lecture, tenir compte de la façon dont les adultes apprennent), sans preuve que cette présentation précise soit supérieure à une autre. <a class="citation" href="#ref-20">[20]</a> <a class="citation" href="#ref-21">[21]</a></p>
               <p>Dans l’aide à autrui, nous demandons d’abord ce que la personne souhaite. En formation, l’autonomie et la sécurité dans la conversation favorisent un retour utilisable ; le rapport hiérarchique exige une attention particulière. <a class="citation" href="#ref-18">[18]</a> <a class="citation" href="#ref-19">[19]</a></p>
             </div>
           </details>
@@ -3591,8 +3579,7 @@ dialog {
                   méta-analyse
                 </button>
                 en psychologie sociale soutient l’intérêt de ces plans pour
-                atteindre des objectifs, dans des contextes variés. C’est un
-                appui indirect à cette fonctionnalité, pas une preuve
+                atteindre des objectifs, dans des contextes variés. C’est un appui indirect à cette étape, pas une preuve
                 d’efficacité de cette page ni une garantie en cas de violence ou
                 de crise. <a class="citation" href="#ref-4">[4]</a>
               </p>
@@ -3721,7 +3708,7 @@ dialog {
           </details>
           <details>
             <summary>
-              Recommandations professionnelles et choix d’interface
+              Recommandations professionnelles et choix de présentation
             </summary>
             <div class="details-body">
               <p>
@@ -3739,9 +3726,7 @@ dialog {
                 Les étapes visibles, les exemples et les détails repliables
                 suivent des recommandations d’ergonomie. La navigation au
                 clavier, les intitulés explicites et les contrastes visent les
-                règles internationales d’accessibilité des contenus Web (WCAG 2.2). Ces choix ne remplacent pas des tests
-                d’utilisabilité avec le public cible ni un audit complet
-                d’accessibilité. <a class="citation" href="#ref-14">[14]</a>
+                règles internationales d’accessibilité des contenus Web (WCAG 2.2). Ces choix ne remplacent pas des essais avec les personnes qui utiliseront le site, ni un audit complet d’accessibilité. <a class="citation" href="#ref-14">[14]</a>
                 <a class="citation" href="#ref-15">[15]</a>
               </p>
             </div>
@@ -3797,8 +3782,7 @@ dialog {
           </div>
           <div class="notice red">
             <strong
-              >Danger immédiat, blessure grave ou risque de passage à l’acte
-              suicidaire</strong
+              >Danger immédiat, blessure grave ou risque de suicide</strong
             >Rejoignez si possible un lieu sûr et sollicitez les services
             d’urgence locaux ou le service de soins le plus proche. Si vous êtes
             menacé, les forces de l’ordre locales peuvent être une option
@@ -3945,15 +3929,10 @@ dialog {
             <summary>Confidentialité de cette page</summary>
             <div class="details-body">
               <p>
-                Le texte saisi n’est envoyé à aucun serveur par l’application.
-                Il n’y a ni compte, ni outil d’analyse d’audience, ni police
-                chargée depuis un service externe. L’hébergeur peut toutefois
-                recevoir les informations techniques habituelles lors de
-                l’ouverture du site.
+                Ce que vous écrivez n’est envoyé à personne : cela reste sur votre appareil. Il n’y a ni compte, ni statistiques de fréquentation, ni service extérieur chargé pour afficher la page. Comme pour tout site, l’hébergeur peut toutefois enregistrer la visite (par exemple l’heure et l’adresse IP).
               </p>
               <p>
-                La sauvegarde facultative reste dans ce navigateur, sans
-                chiffrement. Le bouton « Tout effacer » retire ce brouillon,
+                La sauvegarde facultative reste dans ce navigateur, sans mot de passe : une personne qui utilise cet appareil peut la lire. Le bouton « Tout effacer » retire ce brouillon,
                 mais ne supprime ni vos téléchargements, ni vos impressions, ni
                 l’historique de navigation. Les liens externes ouvrent des sites
                 avec leur propre politique de confidentialité.
@@ -4666,12 +4645,10 @@ dialog {
           <div class="page-heading">
             <h1>Mon prochain pas</h1>
             <p>
-              Je peux modifier mes réponses. Seuls les éléments que j’ai
-              saisis apparaissent ici.
+              Je peux modifier mes réponses. Seul ce que j’ai écrit apparaît ici.
             </p>
             <p class="print-only">
-              Pas à pas · Fiche de résolution de problème · Outil
-              éducatif, sans validation clinique propre.
+              Pas à pas · Fiche de résolution de problème · Outil éducatif : il ne remplace pas l’avis d’un professionnel.
             </p>
           </div>
           <div class="recap-banner no-print" id="recap-banner" role="group" aria-labelledby="recap-banner-title" tabindex="-1" hidden></div>
@@ -4704,7 +4681,7 @@ dialog {
             </div>
             <p class="hint" id="recap-resume-text">
               Pour reprendre un brouillon téléchargé : « Mon problème », « Gérer
-              mon brouillon », « Reprendre un fichier ».
+              mon brouillon », « Reprendre un brouillon téléchargé ».
             </p>
             <div class="notice section-gap" id="recap-note">
               Une action non réalisée ou un résultat décevant n’est pas un
@@ -5244,7 +5221,7 @@ dialog {
         ],
         violentometer: [
           "Violentomètre",
-          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences. Parmi les travaux antérieurs figurent le Violentómetro de l’Institut polytechnique national du Mexique (2009), le Violentomètre français consacré aux relations amoureuses (2018) et des déclinaisons créées par d’autres équipes. Les guides de cette page sont distincts de ces outils et ne donnent pas de score de danger. Les crédits figurent dans « Origine et limites de ces repères ».",
+          "Support visuel de sensibilisation qui donne des exemples de comportements respectueux, de contrôle et de violences. Parmi les travaux antérieurs figurent le Violentómetro de l’Institut polytechnique national du Mexique (2009), le Violentomètre français consacré aux relations amoureuses (2018) et des déclinaisons créées par d’autres équipes. Les repères de cette page sont distincts de ces outils et ne donnent pas de score de danger. Les crédits figurent dans « Origine et limites de ces repères ».",
         ],
         workHarassment: [
           "Harcèlement moral au travail",
@@ -5289,7 +5266,7 @@ dialog {
         indicator: ["Un signe concret pour suivre un changement.", "Pour des horaires d’accueil, le nombre de personnes qui peuvent obtenir un rendez-vous peut être utile. Je vérifie aussi leur expérience.", 22],
         feedback: ["Rendre les constats au groupe.", "Je présente ce qui ressort, ce qui reste incertain et la décision à venir. Je demande ce que les personnes veulent corriger.", 25],
         personalData: ["Des informations permettant de reconnaître une personne.", "Dans un petit groupe, une citation très précise peut révéler son auteur même sans nom. Je limite ce que je recueille et partage.", 26],
-        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentómetro mexicain, le Violentomètre français et d’autres déclinaisons ont précédé ce site. Leurs créateurs sont crédités dans la page « Repérer une violence selon la relation ». Les guides de ce site sont distincts et ne calculent pas un niveau de danger.", 7],
+        violentometer: ["Des exemples pour reconnaître le contrôle ou la violence.", "Le Violentómetro mexicain, le Violentomètre français et d’autres déclinaisons ont précédé ce site. Leurs créateurs sont crédités dans la page « Repérer une violence selon la relation ». Les repères de ce site sont distincts et ne calculent pas un niveau de danger.", 7],
         workHarassment: ["Des agissements hostiles répétés au travail.", "Un conflit ou une critique professionnelle ne suffit pas à conclure à un harcèlement moral. Je peux toutefois demander de l'aide dès qu'un fait me préoccupe, sans attendre qu'il se répète.", 35],
         evidence: ["Des résultats de recherche examinés avec leurs limites.", "Une étude menée auprès d’élèves peut suggérer une piste pour apprendre, sans démontrer qu’elle aidera de la même façon un adulte utilisant seul cet outil.", 31],
         sharedDecision: ["Chercher une décision avec les personnes concernées.", "Lors d’un soin, le professionnel explique les options et les risques ; la personne dit ce qui compte pour elle et participe au choix, selon ce qu’elle souhaite et peut décider.", 30],
@@ -5738,7 +5715,7 @@ dialog {
           ],
         },
         colleague: {
-          note: "Entre collègues, un désaccord professionnel n'est pas en soi un harcèlement. Des humiliations répétées, des représailles ou une agression justifient de chercher de l'aide. Si l'autre personne décide de votre emploi ou de votre formation, choisissez plutôt le guide lié à cette autorité.",
+          note: "Entre collègues, un désaccord professionnel n'est pas en soi un harcèlement. Des humiliations répétées, des représailles ou une agression justifient de chercher de l'aide. Si l'autre personne décide de votre emploi ou de votre formation, choisissez plutôt le repère lié à cette autorité.",
           refs: "[8, 35]",
           priorWork: [["Violentomètre de la Ville de Paris sur les violences au travail (2020)", 51], ["Violentomètre du monde de la recherche de l’équipe G-RIRE et de la Fondation L’Oréal (2024)", 57]],
           items: [
@@ -5781,7 +5758,7 @@ dialog {
           ],
         },
         vulnerable: {
-          note: "Ce guide vise une relation d'aide avec un adulte âgé, malade ou dépendant. Une difficulté de soin ou une erreur ne prouve pas à elle seule une maltraitance ; la sécurité et les besoins de la personne doivent être examinés. Le guide OMS cité porte surtout sur les personnes âgées.",
+          note: "Ce repère vise une relation d'aide avec un adulte âgé, malade ou dépendant. Une difficulté de soin ou une erreur ne prouve pas à elle seule une maltraitance ; la sécurité et les besoins de la personne doivent être examinés. Le guide OMS cité porte surtout sur les personnes âgées.",
           refs: "[37, 39]",
           items: [
             [
@@ -5908,7 +5885,7 @@ dialog {
                 "remplacer l’avis d’un juriste ou l’aide d’une organisation spécialisée.",
               ],
               paragraphs: [
-                "Il concerne des actions pacifiques. Il s’appuie sur des textes sur la défense des droits humains et sur le signalement au travail : il ne porte ni sur la compétition entre partis, ni sur les désaccords ordinaires dans un syndicat, une association ou un voisinage ; une personne élue ou syndiquée qui défend un droit humain peut toutefois s’y reconnaître. Pour un problème au travail, à l’école ou dans les soins, le guide de la relation correspondante convient peut-être mieux.",
+                "Il concerne des actions pacifiques. Il s’appuie sur des textes sur la défense des droits humains et sur le signalement au travail : il ne porte ni sur la compétition entre partis, ni sur les désaccords ordinaires dans un syndicat, une association ou un voisinage ; une personne élue ou syndiquée qui défend un droit humain peut toutefois s’y reconnaître. Pour un problème au travail, à l’école ou dans les soins, le repère de la relation correspondante convient peut-être mieux.",
               ],
             },
           ],
@@ -5953,18 +5930,18 @@ dialog {
           compare: "La personne peut-elle dire non librement ? Est-ce un essai juste pour les deux ?",
           action: ["Ma proposition de premier pas", "Formulez une invitation, pas une décision prise à la place de l’autre.", "Comment saurons-nous si cela aide ?", "Définissez un signe que chacun pourra observer."],
           actionExamples: ["Proposer un échange de quinze minutes pour écouter nos contraintes.", "Nous avons nommé une répartition qui convient à chacun, ou les désaccords restants."],
-          tools: [null, ["Écoute et reformulation", "Demander le point de vue de l’autre, puis reformuler et vérifier ce que l’on a compris.", "#ref-5"], ["Options co-construites", "Inviter l’autre personne à proposer ses propres pistes avant de choisir.", "#ref-5"], ["Accord libre", "Un compromis n’est utile que si chacun peut exprimer ses limites sans peur.", "#ref-6"], ["Essai réversible", "Prévoir quand demander à chacun si l’accord fonctionne.", "#ref-4"]],
+          tools: [null, ["Écoute et reformulation", "Demander le point de vue de l’autre, puis reformuler et vérifier ce que l’on a compris.", "#ref-5"], ["Pistes trouvées à deux", "Inviter l’autre personne à proposer ses propres pistes avant de choisir.", "#ref-5"], ["Accord libre", "Un compromis n’est utile que si chacun peut exprimer ses limites sans peur.", "#ref-6"], ["Essai réversible", "Prévoir quand demander à chacun si l’accord fonctionne.", "#ref-4"]],
         },
         organization: {
-          steps: ["Le système", "Définir le problème", "Des changements possibles", "Choisir un test", "Tester à petite échelle", "Mesurer et ajuster"],
-          titles: ["Mon contexte", "Quel problème le système produit-il ?", "Quels changements pourrions-nous envisager ?", "Quel test est faisable et équitable ?", "Comment tester à petite échelle ?", "Qu’avons-nous appris du test ?"],
+          steps: ["L’organisation", "Définir le problème", "Des changements possibles", "Choisir un test", "Tester à petite échelle", "Mesurer et ajuster"],
+          titles: ["Mon contexte", "Quel problème notre organisation crée-t-elle ?", "Quels changements pourrions-nous envisager ?", "Quel test est faisable et équitable ?", "Comment tester à petite échelle ?", "Qu’avons-nous appris du test ?"],
           leads: ["", "Je décris les faits, le résultat recherché et les contraintes de l’organisation.", "Je liste plusieurs changements possibles dans le travail, les ressources ou la coordination. Je les comparerai ensuite.", "Je considère les effets du test, qui décide et qui pourrait rester à l’écart.", "Je définis un petit test, un responsable et un indicateur simple.", "Je compare le résultat attendu aux observations et je décide d’ajuster ou d’arrêter."],
           fields: ["Le problème observé dans l’organisation", "Précisez où, quand et pour qui le problème apparaît.", "Le résultat que l’équipe cherche", "Qu’est-ce qui devrait changer pour les personnes concernées ?", "Les contraintes ou causes possibles", "Distinguez les faits vérifiés des hypothèses à examiner."],
           contextCheckTitle: "Qui risque de ne pas être entendu ? (facultatif)",
           contextCheck: "Qui comprend les consignes et qui manque dans la discussion ? La langue des consignes, un horaire, une règle non écrite ou une mise à l’écart empêchent-ils certaines personnes d’agir ?",
           examples: ["Dans l’équipe, trois demandes urgentes arrivent le même jour sans règle de priorité partagée.", "L’équipe saura quelle demande traiter en premier et qui décide.", "Les priorités sont fixées par plusieurs responsables et ne sont pas visibles par tous."],
           idea: "Pour allonger la liste, je peux demander leurs idées aux personnes qui font le travail, chercher des exemples fiables en ligne ou consulter un spécialiste du sujet si nécessaire et accessible.",
-          ideas: ["Cartographier une étape du travail avec les personnes concernées.", "Tester une nouvelle coordination sur une seule situation.", "Demander une ressource ou une décision au responsable compétent."],
+          ideas: ["Dessiner une étape du travail avec les personnes concernées.", "Tester une nouvelle coordination sur une seule situation.", "Demander une ressource ou une décision au responsable compétent."],
           comparison: ["Un petit test permet d’observer si le changement aide.", "Un test local peut ne pas refléter tous les cas et demander du temps."],
           compare: "Le test est-il sûr, mesurable et acceptable pour les personnes concernées ?",
           action: ["Le petit test à organiser", "Précisez qui doit valider, où et quand le test aura lieu.", "Quel signe concret observer ?", "Choisissez un indicateur simple, utile et sans données personnelles inutiles."],
@@ -5985,7 +5962,7 @@ dialog {
           compare: "Les personnes concernées ont-elles réellement voix au chapitre ? La démarche respecte-t-elle leurs choix et leurs risques ?",
           action: ["La première démarche collective", "Précisez qui participe volontairement et à quelle autorité s’adresser.", "Quel signe de progrès public ?", "Par exemple : un rendez-vous, une réponse écrite ou une décision documentée."],
           actionExamples: ["Demander aux personnes intéressées si elles souhaitent coécrire une question au service compétent.", "Le service a répondu par écrit ou indiqué une date de rendez-vous."],
-          tools: [null, ["Problème et personnes concernées", "Identifier le contexte, les groupes touchés et les effets potentiellement inégaux.", "#ref-23"], ["Carte des acteurs", "Repérer qui décide, qui met en œuvre et qui subit les conséquences.", "#ref-24"], ["Effets attendus et effets indésirables", "Comparer les options avec leurs coûts, leurs effets et la possibilité d’un suivi public.", "#ref-24"], ["Demande vérifiable", "Relier la démarche, la décision attendue et un indicateur de réponse.", "#ref-23"]],
+          tools: [null, ["Problème et personnes concernées", "Identifier le contexte, les groupes touchés et les effets potentiellement inégaux.", "#ref-23"], ["Carte des personnes concernées", "Repérer qui décide, qui met en œuvre et qui subit les conséquences.", "#ref-24"], ["Effets attendus et effets indésirables", "Comparer les options avec leurs coûts, leurs effets et la possibilité d’un suivi public.", "#ref-24"], ["Demande dont on peut suivre la réponse", "Relier la démarche, la décision attendue et un signe qui montrera si l’on a obtenu une réponse.", "#ref-23"]],
         },
       };
 
@@ -6023,7 +6000,7 @@ dialog {
           study: {
             label: "Étudier ou apprendre",
             description: "Une consigne, un travail ou une façon d'apprendre.",
-            focus: "Quelle consigne dois-je transformer en premier livrable ?",
+            focus: "Quelle consigne dois-je transformer en un premier travail à rendre ?",
             caution: "Les résultats de la recherche scolaire ne garantissent pas le même effet pour chaque âge ou situation.",
             prompts: [
               "Quel travail est demandé, et quelle partie de la consigne est floue ?",
@@ -6417,7 +6394,7 @@ dialog {
           other: {
             label: "Autre situation dans une organisation",
             description: "Un problème lié à des règles, des ressources ou un processus.",
-            focus: "Quel résultat le système produit-il et qui peut décider d'un changement ?",
+            focus: "Quel résultat obtient-on aujourd'hui, et qui peut décider d'un changement ?",
             caution: "Je vérifie les faits avec les personnes concernées avant d'attribuer le problème à une personne.",
             prompts: ["Où le problème apparaît-il et qui en subit les effets ?", "Quel résultat améliorerait la situation pour ces personnes ?", "Quelle règle, ressource ou coordination manque ?"],
             examples: {
@@ -6551,7 +6528,7 @@ dialog {
         },
       };
 
-      // Ce logigramme aide à préparer une action ; il ne juge pas le danger à la place de la personne.
+      // Ce schéma de décision aide à préparer une action ; il ne juge pas le danger à la place de la personne.
       const firstStepDecisionDiagram = (scale) => {
         const decision = {
           personal: {
@@ -6572,7 +6549,7 @@ dialog {
           },
         }[scale];
         return `<details class="decision-guide section-gap" id="action-decision-diagram">
-          <summary>Avant d’agir : voir les choix en logigramme</summary>
+          <summary>Avant d’agir : voir les questions à se poser en schéma</summary>
           <div class="details-body">
             <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits dans « Lire en texte ».</p>
             <figure class="teaching-figure decision-figure scrollable-diagram" tabindex="0">
@@ -6624,7 +6601,7 @@ dialog {
             </ol>
               </div>
             </details>
-            <p class="source-note">Repère pédagogique, pas un test de sécurité ou une règle valable dans toute situation. <a href="#ref-4">[4]</a> <a href="#ref-22">[22]</a> <a href="#ref-33">[33]</a></p>
+            <p class="source-note">Aide à la réflexion, pas un test de sécurité ni une règle valable dans toute situation. <a href="#ref-4">[4]</a> <a href="#ref-22">[22]</a> <a href="#ref-33">[33]</a></p>
           </div>
         </details>`;
       };
@@ -6911,7 +6888,7 @@ dialog {
         if (!scale || !Object.hasOwn(scales, scale)) return "";
         if (JSON.stringify(violenceGroupsFor(scale, context)) === JSON.stringify(violenceGroups)) return "";
         const where = Object.hasOwn(contextCatalog[scale], context) ? `${scales[scale][0]} · ${contextCatalog[scale][context].label}` : scales[scale][0];
-        return `Classement d’après mon problème (${where}) : les relations les plus proches d’abord. Rien n’est choisi à ma place.`;
+        return `En premier : les relations les plus proches de mon problème (${where}). Je peux choisir n’importe laquelle.`;
       }
 
       // ---- Adresse (hash) -> où on est. Une adresse inconnue renvoie à l'accueil.
@@ -6930,7 +6907,7 @@ dialog {
       // A facilitator's planning notes stay in memory. The tool never collects survey responses.
       const groupStages = [
         {
-          short: "Cadrer",
+          short: "Qui décide",
           title: "Qui participe et qui décide ?",
           intro: "Je vérifie avec le groupe ce qui peut vraiment changer avant de demander des témoignages.",
           points: [
@@ -6938,7 +6915,7 @@ dialog {
             "Quelle décision le groupe peut-il prendre ? Qui doit autoriser ou financer la suite ?",
             "Comment chacun peut-il participer librement, sans risque inutile ?",
           ],
-          note: "Le périmètre, les personnes à associer et la décision possible",
+          note: "Ce qui peut changer, les personnes à associer et la décision possible",
           prompt: "Je note ce qui peut changer, qui peut décider et qui consulter.",
           example: "Dans une association, le bureau peut modifier les horaires de permanence après avoir écouté les bénévoles.",
           refs: [23, 25],
@@ -6992,7 +6969,7 @@ dialog {
           refs: [23, 26],
         },
         {
-          short: "Restituer",
+          short: "Rendre compte",
           title: "Les personnes se reconnaissent-elles dans le résultat ?",
           intro: "Je rends les constats au groupe avant de fixer une solution. Je laisse une place aux corrections et aux désaccords.",
           points: [
@@ -7116,7 +7093,7 @@ dialog {
         updateGroupNoteGuide();
         document.querySelector("#group-note").value = groupNotes[groupIndex];
         const source = document.querySelector("#group-step-source");
-        source.replaceChildren(document.createTextNode("Repères : "));
+        source.replaceChildren(document.createTextNode("Sources : "));
         for (const number of stage.refs) {
           const link = document.createElement("a");
           link.href = `#ref-${number}`;
@@ -7400,8 +7377,8 @@ dialog {
       }
       function privacyText() {
         if (ui.remember) return "Brouillon gardé dans ce navigateur. Rien n’est envoyé.";
-        if (ui.staleCopy) return "Une copie de mes réponses reste dans ce navigateur (retrait impossible). Rien n’est envoyé.";
-        return "Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page. Rien n’est envoyé.";
+        if (ui.staleCopy) return "Une copie de mes réponses reste dans ce navigateur : je n’ai pas pu l’effacer. Rien n’est envoyé.";
+        return "Mes réponses restent dans ma fiche. Elles disparaissent si je ferme ou recharge cette page. Rien n’est envoyé.";
       }
       function updatePrivacy() {
         const status = $("#privacy-status");
@@ -7680,7 +7657,7 @@ dialog {
         if (hasWriting()) {
           const withBilan = ficheSections().includes("mon bilan");
           const bannerTitle = withBilan ? "Mon bilan est noté dans ma fiche" : hasPlan() ? "Ma fiche est prête" : "Voici mes réponses jusqu’ici";
-          const keepSentence = ui.remember ? " Elle est gardée dans ce navigateur." : " Elle reste dans cette page jusqu’à sa fermeture ou son rechargement.";
+          const keepSentence = ui.remember ? " Elle est gardée dans ce navigateur." : " Elle disparaît si je ferme ou recharge cette page.";
           const bannerText = (hasPlan()
             ? "Je peux la relire, la modifier, l’imprimer ou la télécharger." + (withBilan ? "" : " Ensuite, j’essaie mon premier pas, puis je reviens faire le point.")
             : "Ma fiche se complète au fil des étapes. Je peux modifier ce que j’ai écrit, puis continuer l’exercice.") + keepSentence;
@@ -7770,7 +7747,7 @@ dialog {
               make(
                 "p",
                 "",
-                "Fiche de travail · Pas à pas · Outil éducatif, sans validation clinique propre.",
+                "Fiche de travail · Pas à pas · Outil éducatif : il ne remplace pas l’avis d’un professionnel.",
               ),
             );
           pageBody.append(heading);
@@ -8094,7 +8071,7 @@ dialog {
         const refLinks = list.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`);
         const facts = list.facts.items.map(([label, gist, detail]) => `<details><summary><span class="fact-text"><strong>${esc(label)}</strong><span class="fact-gist">${esc(gist)}</span></span></summary><div class="details-body"><p>${esc(detail)}</p></div></details>`).join("");
         const volets = list.volets.map((v) => `<details><summary>${esc(v.title)}</summary><div class="details-body">${v.intro ? `<p>${esc(v.intro)}</p>` : ""}${v.items ? `<ul>${plain(v.items)}</ul>` : ""}${(v.paragraphs || []).map((text) => `<p>${esc(text)}</p>`).join("")}</div></details>`).join("");
-        return `<h2 id="violence-list-title">${esc(list.title)}</h2>${list.lead.map((text) => `<p>${esc(text)}</p>`).join("")}<h3>${esc(list.facts.title)}</h3><p class="hint">${esc(list.facts.hint)}</p><div class="violence-facts">${facts}</div><p class="notice violence-callout">${esc(list.alert)}</p><div class="button-row section-gap"><a href="#securite" class="btn">Voir les possibilités d’aide →</a><button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="hint">Quitter remplace la page par Wikipédia. Cela n’efface ni l’historique ni un brouillon gardé.</p><h3>${esc(list.steps.title)}</h3><p class="hint">${esc(list.steps.hint)}</p><ul>${plain(list.steps.items)}</ul><div class="violence-volets">${volets}</div><p class="source-note">Repère pédagogique, sans échelle. Aucun diagnostic ni score de risque. Sources : ${refLinks}.</p>`;
+        return `<h2 id="violence-list-title">${esc(list.title)}</h2>${list.lead.map((text) => `<p>${esc(text)}</p>`).join("")}<h3>${esc(list.facts.title)}</h3><p class="hint">${esc(list.facts.hint)}</p><div class="violence-facts">${facts}</div><p class="notice violence-callout">${esc(list.alert)}</p><div class="button-row section-gap"><a href="#securite" class="btn">Voir les possibilités d’aide →</a><button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="hint">Quitter remplace la page par Wikipédia. Cela n’efface ni l’historique ni un brouillon gardé.</p><h3>${esc(list.steps.title)}</h3><p class="hint">${esc(list.steps.hint)}</p><ul>${plain(list.steps.items)}</ul><div class="violence-volets">${volets}</div><p class="source-note">Repère pour comprendre, sans échelle, sans diagnostic ni score de risque. Sources : ${refLinks}.</p>`;
       }
       // Page des repères de violence : trois effets, créés au démarrage (voir plus bas), déduisent l'écran de l'état.
       //  - syncViolenceChooser : l'ORDRE des relations, d'après le problème en cours (state.scale, state.context) ;
@@ -8132,7 +8109,7 @@ dialog {
         $("#violence-threshold-red").hidden = Boolean(list);
         if (list) {
           $("#violence-context-note").textContent = list.note;
-          $("#violence-credit").innerHTML = `<strong>Ce repère n’est pas un violentomètre :</strong> il ne classe rien. ${esc(list.credit)} <a href="#ref-${list.creditRef}">[${list.creditRef}]</a>.`;
+          $("#violence-credit").innerHTML = `<strong>Ce repère n’est pas un violentomètre :</strong> il ne range pas les situations par gravité. ${esc(list.credit)} <a href="#ref-${list.creditRef}">[${list.creditRef}]</a>.`;
           $("#violence-credit").hidden = false;
           $("#meter").replaceChildren();
           $("#meter-detail").replaceChildren();
@@ -8150,7 +8127,7 @@ dialog {
         }
         $("#violence-context-note").textContent = d.note;
         const priorWork = d.priorWork || [];
-        $("#violence-credit").innerHTML = `<strong>Crédits des outils antérieurs.</strong> Le <em>Violentómetro</em> mexicain et le Violentomètre français ont ouvert la voie <a href="#ref-7">[7]</a>.${priorWork.length ? ` D’autres équipes ont publié des outils dans des contextes proches : ${priorWork.map(([name, ref]) => `${esc(name)} <a href="#ref-${ref}">[${ref}]</a>`).join(" ; ")}.` : ""} Les exemples de ce guide sont distincts.`;
+        $("#violence-credit").innerHTML = `<strong>Crédits des outils antérieurs.</strong> Le <em>Violentómetro</em> mexicain et le Violentomètre français ont ouvert la voie <a href="#ref-7">[7]</a>.${priorWork.length ? ` D’autres équipes ont publié des outils dans des contextes proches : ${priorWork.map(([name, ref]) => `${esc(name)} <a href="#ref-${ref}">[${ref}]</a>`).join(" ; ")}.` : ""} Les exemples ci-dessous ont été écrits pour ce site.`;
         $("#violence-credit").hidden = false;
         // aria-pressed est posé par renderMeterDetail, qui suit l'exemple ouvert : ouvrir un exemple ne refait donc pas la liste (le focus reste sur le bouton).
         $("#meter").innerHTML = d.items
@@ -8171,13 +8148,13 @@ dialog {
         const d = violenceData[ui.violenceKey];
         if (!d) return;
         if (ui.meterIndex === null) {
-          $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je peux choisir un exemple dans la liste. Rien n’est déduit de ma relation avant ce choix.</p><p class="source-note">Ces exemples ne classent pas une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
+          $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je choisis un exemple dans la liste. Le site n’en tire aucune conclusion sur ma relation.</p><p class="source-note">Ces exemples ne servent pas à juger une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
           $$('[data-meter]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
           return;
         }
         const v = d.items[ui.meterIndex];
         $("#meter-detail").innerHTML =
-          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${ui.meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
+          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${ui.meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pour comprendre, sans diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Voir les autres exemples</button>`;
         $$("[data-meter]").forEach((b) =>
           b.setAttribute(
             "aria-pressed",
@@ -8442,7 +8419,7 @@ dialog {
             if ($("#outil").hidden) {
               confirmAction(
                 "Garder votre brouillon dans ce navigateur ?",
-                "Vos réponses seront gardées dans ce navigateur, sans chiffrement : d’autres personnes utilisant cet appareil peuvent les lire. Vous pouvez les effacer à tout moment : « Mon problème », « Gérer mon brouillon », puis « Tout effacer ».",
+                "Vos réponses seront gardées dans ce navigateur, sans mot de passe : d’autres personnes qui utilisent cet appareil peuvent les lire. Vous pouvez les effacer à tout moment : « Mon problème », « Gérer mon brouillon », puis « Tout effacer ».",
                 () => {
                   setRemember(true);
                   $("#recap-keep-text")?.focus();
@@ -8473,7 +8450,7 @@ dialog {
             break;
           case "text":
             exportText();
-            toast("Récapitulatif téléchargé. Il contient vos réponses personnelles.");
+            toast("Fiche téléchargée. Elle contient vos réponses personnelles.");
             break;
           case "print":
             preparePrint();
@@ -8504,7 +8481,7 @@ dialog {
                 toast(
                   removed
                     ? "Brouillon effacé. Vous pouvez repartir d’un nouveau problème."
-                    : "Réponses effacées de la page ; le stockage du navigateur n’a pas pu être effacé.",
+                    : "Réponses effacées de la page ; la copie gardée dans ce navigateur n’a pas pu être effacée.",
                 );
               },
               "Tout effacer",
@@ -8563,7 +8540,7 @@ dialog {
         if (!file) return;
         if (file.size > 250000) {
           toast(
-            "Ce fichier est trop volumineux. Choisissez un brouillon de cet outil.",
+            "Ce fichier est trop gros pour être un brouillon de cet outil.",
           );
           return;
         }
@@ -8585,7 +8562,7 @@ dialog {
           );
         } catch (e) {
           toast(
-            "Fichier non reconnu. Utilisez un brouillon JSON téléchargé depuis cet outil.",
+            "Ce fichier n’est pas un brouillon de cet outil. Choisissez un fichier obtenu avec « Télécharger le brouillon ».",
           );
         }
       });

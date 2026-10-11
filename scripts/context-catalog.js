@@ -32,7 +32,7 @@
           study: {
             label: "Étudier ou apprendre",
             description: "Une consigne, un travail ou une façon d'apprendre.",
-            focus: "Quelle consigne dois-je transformer en premier livrable ?",
+            focus: "Quelle consigne dois-je transformer en un premier travail à rendre ?",
             caution: "Les résultats de la recherche scolaire ne garantissent pas le même effet pour chaque âge ou situation.",
             prompts: [
               "Quel travail est demandé, et quelle partie de la consigne est floue ?",
@@ -426,7 +426,7 @@
           other: {
             label: "Autre situation dans une organisation",
             description: "Un problème lié à des règles, des ressources ou un processus.",
-            focus: "Quel résultat le système produit-il et qui peut décider d'un changement ?",
+            focus: "Quel résultat obtient-on aujourd'hui, et qui peut décider d'un changement ?",
             caution: "Je vérifie les faits avec les personnes concernées avant d'attribuer le problème à une personne.",
             prompts: ["Où le problème apparaît-il et qui en subit les effets ?", "Quel résultat améliorerait la situation pour ces personnes ?", "Quelle règle, ressource ou coordination manque ?"],
             examples: {

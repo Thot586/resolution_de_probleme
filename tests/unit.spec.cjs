@@ -229,7 +229,7 @@ test("l'ordre suit le problème en cours", () => {
 
 test("la note d'origine nomme le niveau et le contexte, et se tait quand rien n'a bougé", () => {
   const { violenceOriginNote } = derived();
-  assert.match(violenceOriginNote("organization", "conditions"), /Équipe ou institution · Conditions de travail et sécurité.*Rien n’est choisi à ma place/);
+  assert.match(violenceOriginNote("organization", "conditions"), /Équipe ou institution · Conditions de travail et sécurité.*Je peux choisir n’importe laquelle/);
   assert.equal(violenceOriginNote("", ""), "");
   assert.equal(violenceOriginNote("personal", "daily"), "", "ordre inchangé : pas de note");
   assert.equal(violenceOriginNote("shared", "couple"), "", "ordre inchangé : pas de note");

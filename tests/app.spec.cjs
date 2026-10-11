@@ -248,7 +248,7 @@ const choose = async (target, selector, value) => {
   for (const [scale, expected] of [
     ["personal", /Quel est mon problème/],
     ["shared", /Qu’est-ce qui compte pour chacun/],
-    ["organization", /Quel problème le système produit/],
+    ["organization", /Quel problème notre organisation crée/],
     ["public", /Qui est touché et quelle décision manque/],
   ]) {
     await page.locator(`#accueil [data-start-scale="${scale}"]`).click();
@@ -611,7 +611,7 @@ const choose = async (target, selector, value) => {
   // Assistive technology: the warning belongs to the checkbox and to the confirmation dialog.
   assert.equal(await page.locator("#remember").getAttribute("role"), "switch", "keeping the draft is a real switch");
   assert.equal(await page.locator("#remember").getAttribute("aria-describedby"), "remember-hint");
-  assert.match(await page.locator("#remember-hint").textContent(), /sans chiffrement/);
+  assert.match(await page.locator("#remember-hint").textContent(), /sans mot de passe/);
   assert.equal(await page.locator("#confirm-dialog").getAttribute("aria-describedby"), "dialog-description");
   // The level is shown as chosen only once it was chosen.
   const freshLevel = await context.newPage();
@@ -658,7 +658,7 @@ const choose = async (target, selector, value) => {
     page,
     "#group-method-diagram",
     [/décision réelle/, /Clarifier qui décide/, /informations/, /Examiner les infos/, /parole est-elle libre/, /Discussion volontaire/, /Entretiens volontaires/, /Sondage en complément/, /Pas de sondage requis/],
-    [/décision réelle/, /informations/, /discussion volontaire/, /entretiens individuels volontaires/, /sondage court/, /représentatifs/],
+    [/décision réelle/, /informations/, /discussion volontaire/, /entretiens individuels volontaires/, /sondage court/, /ne reflètent pas forcément tout le groupe/],
   );
   assert.match(await groupFlow.locator("figcaption").innerText(), /représailles/);
   await groupFlow.locator(".teaching-figure").screenshot({ path: path.join(output, "group-method-flow-desktop.png") });
@@ -696,7 +696,7 @@ const choose = async (target, selector, value) => {
   assert.equal(await page.evaluate(() => localStorage.length), 0);
   for (const [scale, expected] of [
     ["shared", /Qu’est-ce qui compte pour chacun/],
-    ["organization", /Quel problème le système produit/],
+    ["organization", /Quel problème notre organisation crée/],
     ["public", /Qui est touché et quelle décision manque/],
   ]) {
     await page.locator("#change-level summary").click();
@@ -877,14 +877,14 @@ const choose = async (target, selector, value) => {
   assert.equal(await page.locator("[data-action=export]").count(), 1, "The fiche uses its own download action name");
   await page.locator("#recap-keep").click();
   await visible("#confirm-dialog");
-  assert.match(await page.locator("#dialog-description").innerText(), /sans chiffrement/);
+  assert.match(await page.locator("#dialog-description").innerText(), /sans mot de passe/);
   await page.locator("#dialog-cancel").click();
   assert.equal(await page.evaluate(() => localStorage.length), 0, "Cancelling keeps nothing");
   await axe("recap-ready");
   const txtPromise = page.waitForEvent("download");
   await page.locator("[data-action=text]").click();
   const txt = await txtPromise;
-  assert.match(await page.locator("#toast").innerText(), /Récapitulatif téléchargé/);
+  assert.match(await page.locator("#toast").innerText(), /Fiche téléchargée/);
   const text = await fs.readFile(await txt.path(), "utf8");
   assert.match(text, /MON PROCHAIN PAS/);
   assert.match(text, /Ma collègue/);
@@ -946,7 +946,7 @@ const choose = async (target, selector, value) => {
   assert.equal(await page.evaluate(() => window.PWNED), undefined);
   // Saving is explicit; export/import round trip and malformed-file rejection.
   await visit("outil");
-  assert.match(await page.locator("#privacy-status").innerText(), /Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page\. Rien n’est envoyé\./);
+  assert.match(await page.locator("#privacy-status").innerText(), /Mes réponses restent dans ma fiche\. Elles disparaissent si je ferme ou recharge cette page\. Rien n’est envoyé\./);
   assert.equal(await page.locator(".privacy-line").getAttribute("role"), "status");
   assert(await page.locator("#keep-link").isVisible());
   assert.equal(await page.locator(".file-options").evaluate((node) => node.open), false, "Draft options stay closed until asked");
@@ -979,9 +979,9 @@ const choose = async (target, selector, value) => {
     buffer: Buffer.from('{"version":100}'),
   });
   await page.waitForFunction(() =>
-    document.querySelector("#toast").textContent.includes("non reconnu"),
+    document.querySelector("#toast").textContent.includes("n’est pas un brouillon de cet outil"),
   );
-  assert.match(await page.locator("#toast").innerText(), /non reconnu/);
+  assert.match(await page.locator("#toast").innerText(), /n’est pas un brouillon de cet outil/);
   await page.locator("#import-file").setInputFiles(savedPath);
   await visible("#confirm-dialog");
   await page.locator("#dialog-cancel").click();
@@ -1120,7 +1120,7 @@ const choose = async (target, selector, value) => {
   await toViolence.click();
   await originPage.locator("#violences").waitFor({ state: "visible" });
   assert.deepEqual(await legendsOf(), ["Travail et études", "Droits et signalement", "Vie personnelle", "Soins", "Autre situation"], "from the team level, work relations come first");
-  assert.match(await originPage.locator("#violence-origin-note").innerText(), /Équipe ou institution · Conditions de travail et sécurité.*Rien n’est choisi à ma place/);
+  assert.match(await originPage.locator("#violence-origin-note").innerText(), /Équipe ou institution · Conditions de travail et sécurité.*Je peux choisir n’importe laquelle/);
   assert.equal(await originPage.locator("#violence-return").isVisible(), true);
   assert.equal(await choiceValue(originPage, "#violence-context"), "", "nothing is chosen for the person");
   assert.deepEqual((await choiceValues(originPage, "#violence-context")).sort(), allRelations, "every relation stays reachable");
@@ -1644,6 +1644,87 @@ const choose = async (target, selector, value) => {
   await bp.locator("#remember").click();
   assert(!(await bp.locator("#remember").isChecked()));
   await blocked.close();
+  // Plain language: what people read must not describe how the page works inside, or use words that mean nothing to a lay reader.
+  // A short list of such words is checked on every page, on every step screen of every level and context, and on every violence guide.
+  const jargon = /(?<![\p{L}])(URL|JSON|HTML|serveur|chiffrement|logigrammes?|rechargement|localStorage|hash|algorithmes?|fonctionnalité|cookies?)(?![\p{L}])|dans l’adresse|police chargée|validation clinique|décision clinique|Rien n’est déduit/iu;
+  const plainPage = await context.newPage();
+  plainPage.on("pageerror", (e) => errors.push(e.message));
+  await plainPage.goto(url);
+  const shown = [];
+  for (const id of ["accueil", "outil", "soutenir", "groupe", "proche", "violences", "comprendre", "securite", "recap"]) {
+    await plainPage.evaluate((name) => { location.hash = name; }, id);
+    await plainPage.locator("#" + id).waitFor({ state: "visible" });
+    shown.push([`page #${id}`, await plainPage.locator("#" + id).evaluate((section) => section.textContent)]);
+  }
+  shown.push(["page title", await plainPage.title()]);
+  shown.push(["footer", await plainPage.locator("footer").evaluate((element) => element.textContent)]);
+  shown.push(...(await plainPage.evaluate(() => {
+    const texts = [];
+    const read = (label) => texts.push([label, document.querySelector("#step-container").textContent]);
+    for (const scale of Object.keys(scales)) {
+      for (const key of Object.keys(contextCatalog[scale])) {
+        state.scale = scale;
+        state.scaleChosen = true;
+        state.context = key;
+        state.options[0].text = "Une piste";
+        state.chosen = state.options[0].id;
+        const where = `${scale}/${key}`;
+        state.step = 0;
+        ui.startPart = 0;
+        renderStep();
+        read(`step 1 context ${where}`);
+        ui.startPart = 1;
+        for (const safety of ["safe", "unsure", "danger"]) {
+          state.safety = safety;
+          renderStep();
+          read(`step 1 safety ${safety} ${where}`);
+        }
+        for (let part = 0; part < 3; part += 1) {
+          state.step = 1;
+          state.clarifyPart = part;
+          renderStep();
+          read(`step 2 part ${part + 1} ${where}`);
+        }
+        for (const step of [2, 3, 4]) {
+          state.step = step;
+          renderStep();
+          read(`step ${step + 1} ${where}`);
+        }
+        for (const trial of ["notyet", "yes"]) {
+          state.step = 5;
+          state.fields.trial = trial;
+          renderStep();
+          read(`step 6 ${trial} ${where}`);
+        }
+      }
+    }
+    return texts;
+  })));
+  shown.push(...(await plainPage.evaluate(async () => {
+    const texts = [];
+    const wait = () => new Promise((resolve) => setTimeout(resolve, 0));
+    location.hash = "violences";
+    await wait();
+    for (const key of [...Object.keys(violenceData), ...Object.keys(violenceLists)]) {
+      ui.violenceKey = key;
+      ui.meterIndex = null;
+      await wait();
+      texts.push([`violence ${key}`, document.querySelector("#violences").textContent]);
+      for (let index = 0; index < (violenceData[key]?.items.length || 0); index += 1) {
+        ui.meterIndex = index;
+        await wait();
+        texts.push([`violence ${key} example ${index + 1}`, document.querySelector("#meter-detail").textContent]);
+      }
+    }
+    return texts;
+  })));
+  assert(shown.length > 150, "the plain-language check really reads the screens (" + shown.length + ")");
+  assert.deepEqual(
+    shown.filter(([, text]) => jargon.test(text)).map(([label, text]) => `${label}: ${text.match(jargon)[0]}`),
+    [],
+    "No technical wording in what people read",
+  );
+  await plainPage.close();
   const offline = await browser.newContext();
   const op = await offline.newPage();
   await op.goto("file://" + path.join(root, "index.html"));

@@ -26,7 +26,7 @@
         if (!scale || !Object.hasOwn(scales, scale)) return "";
         if (JSON.stringify(violenceGroupsFor(scale, context)) === JSON.stringify(violenceGroups)) return "";
         const where = Object.hasOwn(contextCatalog[scale], context) ? `${scales[scale][0]} · ${contextCatalog[scale][context].label}` : scales[scale][0];
-        return `Classement d’après mon problème (${where}) : les relations les plus proches d’abord. Rien n’est choisi à ma place.`;
+        return `En premier : les relations les plus proches de mon problème (${where}). Je peux choisir n’importe laquelle.`;
       }
 
       // ---- Adresse (hash) -> où on est. Une adresse inconnue renvoie à l'accueil.

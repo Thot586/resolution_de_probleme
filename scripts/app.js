@@ -228,8 +228,8 @@
       }
       function privacyText() {
         if (ui.remember) return "Brouillon gardé dans ce navigateur. Rien n’est envoyé.";
-        if (ui.staleCopy) return "Une copie de mes réponses reste dans ce navigateur (retrait impossible). Rien n’est envoyé.";
-        return "Mes réponses restent dans ma fiche jusqu’à la fermeture ou au rechargement de cette page. Rien n’est envoyé.";
+        if (ui.staleCopy) return "Une copie de mes réponses reste dans ce navigateur : je n’ai pas pu l’effacer. Rien n’est envoyé.";
+        return "Mes réponses restent dans ma fiche. Elles disparaissent si je ferme ou recharge cette page. Rien n’est envoyé.";
       }
       function updatePrivacy() {
         const status = $("#privacy-status");
@@ -508,7 +508,7 @@
         if (hasWriting()) {
           const withBilan = ficheSections().includes("mon bilan");
           const bannerTitle = withBilan ? "Mon bilan est noté dans ma fiche" : hasPlan() ? "Ma fiche est prête" : "Voici mes réponses jusqu’ici";
-          const keepSentence = ui.remember ? " Elle est gardée dans ce navigateur." : " Elle reste dans cette page jusqu’à sa fermeture ou son rechargement.";
+          const keepSentence = ui.remember ? " Elle est gardée dans ce navigateur." : " Elle disparaît si je ferme ou recharge cette page.";
           const bannerText = (hasPlan()
             ? "Je peux la relire, la modifier, l’imprimer ou la télécharger." + (withBilan ? "" : " Ensuite, j’essaie mon premier pas, puis je reviens faire le point.")
             : "Ma fiche se complète au fil des étapes. Je peux modifier ce que j’ai écrit, puis continuer l’exercice.") + keepSentence;
@@ -598,7 +598,7 @@
               make(
                 "p",
                 "",
-                "Fiche de travail · Pas à pas · Outil éducatif, sans validation clinique propre.",
+                "Fiche de travail · Pas à pas · Outil éducatif : il ne remplace pas l’avis d’un professionnel.",
               ),
             );
           pageBody.append(heading);
@@ -922,7 +922,7 @@
         const refLinks = list.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`);
         const facts = list.facts.items.map(([label, gist, detail]) => `<details><summary><span class="fact-text"><strong>${esc(label)}</strong><span class="fact-gist">${esc(gist)}</span></span></summary><div class="details-body"><p>${esc(detail)}</p></div></details>`).join("");
         const volets = list.volets.map((v) => `<details><summary>${esc(v.title)}</summary><div class="details-body">${v.intro ? `<p>${esc(v.intro)}</p>` : ""}${v.items ? `<ul>${plain(v.items)}</ul>` : ""}${(v.paragraphs || []).map((text) => `<p>${esc(text)}</p>`).join("")}</div></details>`).join("");
-        return `<h2 id="violence-list-title">${esc(list.title)}</h2>${list.lead.map((text) => `<p>${esc(text)}</p>`).join("")}<h3>${esc(list.facts.title)}</h3><p class="hint">${esc(list.facts.hint)}</p><div class="violence-facts">${facts}</div><p class="notice violence-callout">${esc(list.alert)}</p><div class="button-row section-gap"><a href="#securite" class="btn">Voir les possibilités d’aide →</a><button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="hint">Quitter remplace la page par Wikipédia. Cela n’efface ni l’historique ni un brouillon gardé.</p><h3>${esc(list.steps.title)}</h3><p class="hint">${esc(list.steps.hint)}</p><ul>${plain(list.steps.items)}</ul><div class="violence-volets">${volets}</div><p class="source-note">Repère pédagogique, sans échelle. Aucun diagnostic ni score de risque. Sources : ${refLinks}.</p>`;
+        return `<h2 id="violence-list-title">${esc(list.title)}</h2>${list.lead.map((text) => `<p>${esc(text)}</p>`).join("")}<h3>${esc(list.facts.title)}</h3><p class="hint">${esc(list.facts.hint)}</p><div class="violence-facts">${facts}</div><p class="notice violence-callout">${esc(list.alert)}</p><div class="button-row section-gap"><a href="#securite" class="btn">Voir les possibilités d’aide →</a><button class="btn" type="button" data-action="quick-exit">Quitter cette page ↗</button></div><p class="hint">Quitter remplace la page par Wikipédia. Cela n’efface ni l’historique ni un brouillon gardé.</p><h3>${esc(list.steps.title)}</h3><p class="hint">${esc(list.steps.hint)}</p><ul>${plain(list.steps.items)}</ul><div class="violence-volets">${volets}</div><p class="source-note">Repère pour comprendre, sans échelle, sans diagnostic ni score de risque. Sources : ${refLinks}.</p>`;
       }
       // Page des repères de violence : trois effets, créés au démarrage (voir plus bas), déduisent l'écran de l'état.
       //  - syncViolenceChooser : l'ORDRE des relations, d'après le problème en cours (state.scale, state.context) ;
@@ -960,7 +960,7 @@
         $("#violence-threshold-red").hidden = Boolean(list);
         if (list) {
           $("#violence-context-note").textContent = list.note;
-          $("#violence-credit").innerHTML = `<strong>Ce repère n’est pas un violentomètre :</strong> il ne classe rien. ${esc(list.credit)} <a href="#ref-${list.creditRef}">[${list.creditRef}]</a>.`;
+          $("#violence-credit").innerHTML = `<strong>Ce repère n’est pas un violentomètre :</strong> il ne range pas les situations par gravité. ${esc(list.credit)} <a href="#ref-${list.creditRef}">[${list.creditRef}]</a>.`;
           $("#violence-credit").hidden = false;
           $("#meter").replaceChildren();
           $("#meter-detail").replaceChildren();
@@ -978,7 +978,7 @@
         }
         $("#violence-context-note").textContent = d.note;
         const priorWork = d.priorWork || [];
-        $("#violence-credit").innerHTML = `<strong>Crédits des outils antérieurs.</strong> Le <em>Violentómetro</em> mexicain et le Violentomètre français ont ouvert la voie <a href="#ref-7">[7]</a>.${priorWork.length ? ` D’autres équipes ont publié des outils dans des contextes proches : ${priorWork.map(([name, ref]) => `${esc(name)} <a href="#ref-${ref}">[${ref}]</a>`).join(" ; ")}.` : ""} Les exemples de ce guide sont distincts.`;
+        $("#violence-credit").innerHTML = `<strong>Crédits des outils antérieurs.</strong> Le <em>Violentómetro</em> mexicain et le Violentomètre français ont ouvert la voie <a href="#ref-7">[7]</a>.${priorWork.length ? ` D’autres équipes ont publié des outils dans des contextes proches : ${priorWork.map(([name, ref]) => `${esc(name)} <a href="#ref-${ref}">[${ref}]</a>`).join(" ; ")}.` : ""} Les exemples ci-dessous ont été écrits pour ce site.`;
         $("#violence-credit").hidden = false;
         // aria-pressed est posé par renderMeterDetail, qui suit l'exemple ouvert : ouvrir un exemple ne refait donc pas la liste (le focus reste sur le bouton).
         $("#meter").innerHTML = d.items
@@ -999,13 +999,13 @@
         const d = violenceData[ui.violenceKey];
         if (!d) return;
         if (ui.meterIndex === null) {
-          $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je peux choisir un exemple dans la liste. Rien n’est déduit de ma relation avant ce choix.</p><p class="source-note">Ces exemples ne classent pas une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
+          $("#meter-detail").innerHTML = '<h3>Quel comportement me questionne ?</h3><p>Je choisis un exemple dans la liste. Le site n’en tire aucune conclusion sur ma relation.</p><p class="source-note">Ces exemples ne servent pas à juger une personne ou une relation. Je peux demander de l’aide dès qu’un fait m’inquiète.</p>';
           $$('[data-meter]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
           return;
         }
         const v = d.items[ui.meterIndex];
         $("#meter-detail").innerHTML =
-          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${ui.meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pédagogique. Aucun diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Explorer les autres repères</button>`;
+          `<span class="tag">${esc(v[0])}</span><h3>${esc(v[1])}</h3><p>${glossarize(v[2])}</p><p class="label">Un repère pour agir</p><p>${esc(v[3])}</p>${ui.meterIndex >= 2 ? '<a href="#securite" class="btn section-gap">Voir les possibilités d’aide →</a>' : ""}<p class="source-note">Exemple pour comprendre, sans diagnostic ni score de risque. Sources : ${d.refs.replace(/\d+/g, (n) => `<a href="#ref-${n}">${n}</a>`)}.</p><button class="text-button section-gap" data-action="meter-back">← Voir les autres exemples</button>`;
         $$("[data-meter]").forEach((b) =>
           b.setAttribute(
             "aria-pressed",
@@ -1270,7 +1270,7 @@
             if ($("#outil").hidden) {
               confirmAction(
                 "Garder votre brouillon dans ce navigateur ?",
-                "Vos réponses seront gardées dans ce navigateur, sans chiffrement : d’autres personnes utilisant cet appareil peuvent les lire. Vous pouvez les effacer à tout moment : « Mon problème », « Gérer mon brouillon », puis « Tout effacer ».",
+                "Vos réponses seront gardées dans ce navigateur, sans mot de passe : d’autres personnes qui utilisent cet appareil peuvent les lire. Vous pouvez les effacer à tout moment : « Mon problème », « Gérer mon brouillon », puis « Tout effacer ».",
                 () => {
                   setRemember(true);
                   $("#recap-keep-text")?.focus();
@@ -1301,7 +1301,7 @@
             break;
           case "text":
             exportText();
-            toast("Récapitulatif téléchargé. Il contient vos réponses personnelles.");
+            toast("Fiche téléchargée. Elle contient vos réponses personnelles.");
             break;
           case "print":
             preparePrint();
@@ -1332,7 +1332,7 @@
                 toast(
                   removed
                     ? "Brouillon effacé. Vous pouvez repartir d’un nouveau problème."
-                    : "Réponses effacées de la page ; le stockage du navigateur n’a pas pu être effacé.",
+                    : "Réponses effacées de la page ; la copie gardée dans ce navigateur n’a pas pu être effacée.",
                 );
               },
               "Tout effacer",
@@ -1391,7 +1391,7 @@
         if (!file) return;
         if (file.size > 250000) {
           toast(
-            "Ce fichier est trop volumineux. Choisissez un brouillon de cet outil.",
+            "Ce fichier est trop gros pour être un brouillon de cet outil.",
           );
           return;
         }
@@ -1413,7 +1413,7 @@
           );
         } catch (e) {
           toast(
-            "Fichier non reconnu. Utilisez un brouillon JSON téléchargé depuis cet outil.",
+            "Ce fichier n’est pas un brouillon de cet outil. Choisissez un fichier obtenu avec « Télécharger le brouillon ».",
           );
         }
       });

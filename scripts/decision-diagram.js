@@ -1,4 +1,4 @@
-      // Ce logigramme aide à préparer une action ; il ne juge pas le danger à la place de la personne.
+      // Ce schéma de décision aide à préparer une action ; il ne juge pas le danger à la place de la personne.
       const firstStepDecisionDiagram = (scale) => {
         const decision = {
           personal: {
@@ -19,7 +19,7 @@
           },
         }[scale];
         return `<details class="decision-guide section-gap" id="action-decision-diagram">
-          <summary>Avant d’agir : voir les choix en logigramme</summary>
+          <summary>Avant d’agir : voir les questions à se poser en schéma</summary>
           <div class="details-body">
             <p class="hint diagram-scroll-hint">Sur un écran étroit, je peux faire glisser le dessin horizontalement. Les choix sont aussi écrits dans « Lire en texte ».</p>
             <figure class="teaching-figure decision-figure scrollable-diagram" tabindex="0">
@@ -71,7 +71,7 @@
             </ol>
               </div>
             </details>
-            <p class="source-note">Repère pédagogique, pas un test de sécurité ou une règle valable dans toute situation. <a href="#ref-4">[4]</a> <a href="#ref-22">[22]</a> <a href="#ref-33">[33]</a></p>
+            <p class="source-note">Aide à la réflexion, pas un test de sécurité ni une règle valable dans toute situation. <a href="#ref-4">[4]</a> <a href="#ref-22">[22]</a> <a href="#ref-33">[33]</a></p>
           </div>
         </details>`;
       };

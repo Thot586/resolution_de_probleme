@@ -1,7 +1,7 @@
       // A facilitator's planning notes stay in memory. The tool never collects survey responses.
       const groupStages = [
         {
-          short: "Cadrer",
+          short: "Qui décide",
           title: "Qui participe et qui décide ?",
           intro: "Je vérifie avec le groupe ce qui peut vraiment changer avant de demander des témoignages.",
           points: [
@@ -9,7 +9,7 @@
             "Quelle décision le groupe peut-il prendre ? Qui doit autoriser ou financer la suite ?",
             "Comment chacun peut-il participer librement, sans risque inutile ?",
           ],
-          note: "Le périmètre, les personnes à associer et la décision possible",
+          note: "Ce qui peut changer, les personnes à associer et la décision possible",
           prompt: "Je note ce qui peut changer, qui peut décider et qui consulter.",
           example: "Dans une association, le bureau peut modifier les horaires de permanence après avoir écouté les bénévoles.",
           refs: [23, 25],
@@ -63,7 +63,7 @@
           refs: [23, 26],
         },
         {
-          short: "Restituer",
+          short: "Rendre compte",
           title: "Les personnes se reconnaissent-elles dans le résultat ?",
           intro: "Je rends les constats au groupe avant de fixer une solution. Je laisse une place aux corrections et aux désaccords.",
           points: [
@@ -187,7 +187,7 @@
         updateGroupNoteGuide();
         document.querySelector("#group-note").value = groupNotes[groupIndex];
         const source = document.querySelector("#group-step-source");
-        source.replaceChildren(document.createTextNode("Repères : "));
+        source.replaceChildren(document.createTextNode("Sources : "));
         for (const number of stage.refs) {
           const link = document.createElement("a");
           link.href = `#ref-${number}`;
